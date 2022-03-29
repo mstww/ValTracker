@@ -45,7 +45,7 @@ if (colorData.isCustomTheme == true) {
     var directoryName = path2.split("/").pop();
 
     var page = pathvar.split("/").pop();
-    if (page == "fakeLoadingIndex.html") {
+    if (page == "decoyIndex.html") {
         $('.home-loading-img').attr("src", "../iconss/VALTracker_Logo_default.png")
     }
 
@@ -79,7 +79,7 @@ if (colorData.isCustomTheme == true) {
     var directoryName = path2.split("/").pop();
 
     var page = pathvar.split("/").pop();
-    if (page == "fakeLoadingIndex.html") {
+    if (page == "decoyIndex.html") {
         if (newColorData.logo_style == "default" || newColorData.logo_style == undefined) {
             $('.home-loading-img').attr("src", "../iconss/VALTracker_Logo_default.png")
         } else {

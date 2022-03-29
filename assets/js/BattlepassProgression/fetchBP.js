@@ -262,7 +262,6 @@ $(document).ready(() => {
                 if (contractData.data.content.chapters[i].freeRewards !== null) {
                     var extra_tier_count = 0;
                     for (var i2 = 0; i2 < contractData.data.content.chapters[i].freeRewards.length; i2++) { // All Frees
-                        totalFreeItems++;
                         // Create HTML Element
                         var card_handler = document.createElement('div');
                         card_handler.className = "bp-reward-card";
@@ -544,7 +543,6 @@ $(document).ready(() => {
                         if (contractData.data.content.chapters[i].freeRewards !== null) {
                             var extra_tier_count = 0;
                             for (var i2 = 0; i2 < contractData.data.content.chapters[i].freeRewards.length; i2++) { // All Frees
-                                totalFreeItems++;
                                 // Create HTML Element
                                 var card_handler = document.createElement('div');
                                 card_handler.className = "bp-reward-card";

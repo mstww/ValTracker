@@ -188,7 +188,30 @@ const patchnotes_acitivity = {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
         small_image: "patchnotes",
-        small_text: "Browsing patchnotes",
+        small_text: "Browsing the patchnotes",
+    },
+    buttons: [{
+            "label": "Download VALTracker",
+            "url": "https://valtracker.gg"
+        },
+        {
+            "label": "Join the Discord",
+            "url": "https://discord.gg/aJfQ4yHysG"
+        }
+    ],
+    timestamps: {
+        start: Date.now()
+    },
+    instance: true
+}
+
+const matchview_activity = {
+    details: "Looking at a Match",
+    assets: {
+        large_image: "valtracker_logo",
+        large_text: "VALTracker.gg",
+        small_image: "search",
+        small_text: "Looking at a Match",
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -238,5 +261,6 @@ module.exports = {
     playersearch_acitivity,
     settings_acitivity,
     patchnotes_acitivity,
+    matchview_activity,
     anonymous_activity
 }

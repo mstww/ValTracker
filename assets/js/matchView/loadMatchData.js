@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    ipcRenderer.send("changeDiscordRP", `matchview_activity`);
     var matchID = sessionStorage.getItem("matchID");
     var playerName = sessionStorage.getItem("player_name");
     var playerTag = sessionStorage.getItem("player_tag");
@@ -23,34 +24,8 @@ $(document).ready(function () {
                     var playerDmg = Math.round(data.data.players.all_players[i].damage_made / data.data.rounds.length);
                     var playerTeam = data.data.players.all_players[i].team
                     
-                    var rankIcons = [
-                        '../assets/img/iron_1.png', '../assets/img/iron_2.png', '../assets/img/iron_3.png',
-                        '../assets/img/bronze_1.png', '../assets/img/bronze_2.png', '../assets/img/bronze_3.png',
-                        '../assets/img/silver_1.png', '../assets/img/silver_2.png', '../assets/img/silver_3.png',
-                        '../assets/img/gold_1.png', '../assets/img/gold_2.png', '../assets/img/gold_3.png',
-                        '../assets/img/plat_1.png', '../assets/img/plat_2.png', '../assets/img/plat_3.png',
-                        '../assets/img/dia_1.png', '../assets/img/dia_2.png', '../assets/img/dia_3.png',
-                        '../assets/img/immortal_1.png', '../assets/img/immortal_2.png', '../assets/img/immortal_3.png',
-                        '../assets/img/radiant.png',
-                        '../assets/img/unranked.png',
-                    ]
-                    var rankIcons = [
-                        '../assets/img/iron_1.png', '../assets/img/iron_2.png', '../assets/img/iron_3.png',
-                        '../assets/img/bronze_1.png', '../assets/img/bronze_2.png', '../assets/img/bronze_3.png',
-                        '../assets/img/silver_1.png', '../assets/img/silver_2.png', '../assets/img/silver_3.png',
-                        '../assets/img/gold_1.png', '../assets/img/gold_2.png', '../assets/img/gold_3.png',
-                        '../assets/img/plat_1.png', '../assets/img/plat_2.png', '../assets/img/plat_3.png',
-                        '../assets/img/dia_1.png', '../assets/img/dia_2.png', '../assets/img/dia_3.png',
-                        '../assets/img/immortal_1.png', '../assets/img/immortal_2.png', '../assets/img/immortal_3.png',
-                        '../assets/img/radiant.png',
-                        '../assets/img/unranked.png',
-                    ]
                     if(data.data.metadata.mode == "Competitive") {
-                        if(data.data.players.all_players[i].currenttier -3) {
-                            $('.rank-img-small').attr('src', rankIcons[data.data.players.all_players[i].currenttier -3])
-                        } else {
-                            $('.rank-img-small').attr('src', "../assets/img/unranked.png")
-                        }
+                        $('.rank-img-small').attr('src', `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[i].currenttier}/largeicon.png`)
                     } else {
                         $('.rank-img-small').css("display", "none")
                     }
@@ -101,7 +76,7 @@ $(document).ready(function () {
                 wrapper.insertBefore(roundWrapper, lastElement)
 
                 var sep = document.createElement("hr")
-                sep.setAttribute("style", "border-color: grey;")
+                sep.setAttribute("style", "border-color: rgba(47, 53, 77, 0.9);")
                 wrapper.insertBefore(sep, roundWrapper)
             }
 
@@ -141,18 +116,7 @@ $(document).ready(function () {
             for (var count = 0; count < data.data.players.all_players.length; count++) {
                 if (data.data.players.all_players[count].name == playerName && data.data.players.all_players[count].tag == playerTag) {
                     if (data.data.metadata.mode == "Competitive") {
-                        var rankIcons = [
-                            '../assets/img/iron_1.png', '../assets/img/iron_2.png', '../assets/img/iron_3.png',
-                            '../assets/img/bronze_1.png', '../assets/img/bronze_2.png', '../assets/img/bronze_3.png',
-                            '../assets/img/silver_1.png', '../assets/img/silver_2.png', '../assets/img/silver_3.png',
-                            '../assets/img/gold_1.png', '../assets/img/gold_2.png', '../assets/img/gold_3.png',
-                            '../assets/img/plat_1.png', '../assets/img/plat_2.png', '../assets/img/plat_3.png',
-                            '../assets/img/dia_1.png', '../assets/img/dia_2.png', '../assets/img/dia_3.png',
-                            '../assets/img/immortal_1.png', '../assets/img/immortal_2.png', '../assets/img/immortal_3.png',
-                            '../assets/img/radiant.png',
-                            '../assets/img/unranked.png',
-                        ]
-                        $('.matchview-playerrank-img').attr("src", rankIcons[data.data.players.all_players[count].currenttier - 3])
+                        $('.matchview-playerrank-img').attr("src",  `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[count].currenttier}/largeicon.png`)
                     }
                     var dmgperround = Math.round(data.data.players.all_players[count].damage_made / data.data.rounds.length);
                     $(`.insertDmgPerRound`).append(dmgperround);

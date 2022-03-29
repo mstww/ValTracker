@@ -1,7 +1,7 @@
 function loadMatchView(matchID) {
     sessionStorage.setItem("matchID", matchID)
     var path = page.split("/").pop();
-    if (path == "fakeLoadingIndex.html") {
+    if (path == "decoyIndex.html") {
         var redirectPath = "index.html"
     } else {
         var redirectPath = page

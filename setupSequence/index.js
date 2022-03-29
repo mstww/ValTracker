@@ -25,7 +25,7 @@ function leaveFade2() {
 function leaveFade3() {
     $('.setup-wrapper-3').fadeTo(950, 0);
     setTimeout(function () {
-        window.location.href = "../pages/fakeLoadingIndex.html"
+        window.location.href = "../pages/decoyIndex.html"
     }, 1000)
 }
 

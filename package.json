@@ -58,6 +58,7 @@
     "electron-updater": "^4.6.5",
     "fetch": "^1.1.0",
     "fetch-cookie": "^2.0.3",
+    "find-process": "^1.4.7",
     "follow-redirects": ">=1.14.9",
     "fs-browsers": "^1.1.6",
     "fs-extra": "^10.0.1",
@@ -68,11 +69,14 @@
     "jquery": ">=3.6.0",
     "moment-timezone": "^0.5.34",
     "node-fetch": "^3.2.3",
+    "ps-list": "^8.1.0",
+    "ps-node": "^0.1.6",
     "sanitize-filename": "^1.6.3",
     "showdown": "^2.0.3",
     "tough-cookie": "^4.0.0",
     "trim": "^1.0.1",
     "update-electron-app": "^2.0.1",
+    "ws": "^8.5.0",
     "yargs-parser": ">=21.0.1"
   }
 }

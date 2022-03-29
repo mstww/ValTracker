@@ -32,13 +32,8 @@ function hexToRgb(hex) {
 
 var values = colorData2.box_shadow.split(')');
 var r = values[0] + ")"
-var pre_g = values[1]
-var pre_b = values[2]
 
-var g = pre_g.replace(", ", "") + ")"
-var b = pre_b.replace(", ", "") + ")"
-
-var r2 = r.replace("0 0 5px rgba(", "")
+var r2 = r.replace("0 0 2.5px rgba(", "")
 var r3 = r2.replace(")", "")
 
 var values2 = r3.split(', ');

@@ -64,21 +64,7 @@ $(document).ready(() => {
 
                                 var matchRRimg = document.createElement("img");
                                 matchRRimg.className = "match-rr-img-pp";
-                                var rankIcons = [
-                                    '../assets/img/iron_1.png', '../assets/img/iron_2.png', '../assets/img/iron_3.png',
-                                    '../assets/img/bronze_1.png', '../assets/img/bronze_2.png', '../assets/img/bronze_3.png',
-                                    '../assets/img/silver_1.png', '../assets/img/silver_2.png', '../assets/img/silver_3.png',
-                                    '../assets/img/gold_1.png', '../assets/img/gold_2.png', '../assets/img/gold_3.png',
-                                    '../assets/img/plat_1.png', '../assets/img/plat_2.png', '../assets/img/plat_3.png',
-                                    '../assets/img/dia_1.png', '../assets/img/dia_2.png', '../assets/img/dia_3.png',
-                                    '../assets/img/immortal_1.png', '../assets/img/immortal_2.png', '../assets/img/immortal_3.png',
-                                    '../assets/img/radiant.png',
-                                    '../assets/img/unranked.png',
-                                ]
-                                matchRRimg.setAttribute("src", `${rankIcons[data.data.players.all_players[playerCount].currenttier -3]}`)
-                                if (matchRRimg.getAttribute("src") == "undefined") {
-                                    matchRRimg.src = "../assets/img/unranked.png"
-                                }
+                                matchRRimg.setAttribute("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[playerCount].currenttier}/largeicon.png`)
 
                                 matchRRwrapper.appendChild(matchRRimg)
 
@@ -267,21 +253,7 @@ $(document).ready(() => {
 
                                     var matchRRimg = document.createElement("img");
                                     matchRRimg.className = "match-rr-img-pp";
-                                    var rankIcons = [
-                                        '../assets/img/iron_1.png', '../assets/img/iron_2.png', '../assets/img/iron_3.png',
-                                        '../assets/img/bronze_1.png', '../assets/img/bronze_2.png', '../assets/img/bronze_3.png',
-                                        '../assets/img/silver_1.png', '../assets/img/silver_2.png', '../assets/img/silver_3.png',
-                                        '../assets/img/gold_1.png', '../assets/img/gold_2.png', '../assets/img/gold_3.png',
-                                        '../assets/img/plat_1.png', '../assets/img/plat_2.png', '../assets/img/plat_3.png',
-                                        '../assets/img/dia_1.png', '../assets/img/dia_2.png', '../assets/img/dia_3.png',
-                                        '../assets/img/immortal_1.png', '../assets/img/immortal_2.png', '../assets/img/immortal_3.png',
-                                        '../assets/img/radiant.png',
-                                        '../assets/img/unranked.png',
-                                    ]
-                                    matchRRimg.setAttribute("src", `${rankIcons[data.data.players.all_players[playerCount].currenttier -3]}`)
-                                    if (matchRRimg.getAttribute("src") == "undefined") {
-                                        matchRRimg.src = "../assets/img/unranked.png"
-                                    }
+                                    matchRRimg.setAttribute("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[playerCount].currenttier}/largeicon.png`)
 
                                     matchRRwrapper.appendChild(matchRRimg)
 

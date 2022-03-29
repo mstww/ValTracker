@@ -150,7 +150,7 @@ $(document).ready(() => {
                         var pathvar = document.location.pathname;
                         var page = pathvar.split("/").pop();
 
-                        if (page == "index.html" || page == "fakeLoadingIndex.html") {
+                        if (page == "index.html" || page == "decoyIndex.html") {
                             $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                             $('.featured-bundle-time-left').css("opacity", "0");
                         }
@@ -195,7 +195,7 @@ $(document).ready(() => {
                                 var pathvar = document.location.pathname;
                                 var page = pathvar.split("/").pop();
 
-                                if (page == "index.html" || page == "fakeLoadingIndex.html") {
+                                if (page == "index.html" || page == "decoyIndex.html") {
                                     $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                                     $('.featured-bundle-time-left').css("opacity", "0");
                                 }
@@ -238,7 +238,7 @@ $(document).ready(() => {
                                 var pathvar = document.location.pathname;
                                 var page = pathvar.split("/").pop();
 
-                                if (page == "index.html" || page == "fakeLoadingIndex.html") {
+                                if (page == "index.html" || page == "decoyIndex.html") {
                                     $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                                     $('.featured-bundle-time-left').css("opacity", "0");
                                 }

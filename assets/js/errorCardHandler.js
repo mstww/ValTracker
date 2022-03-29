@@ -117,6 +117,7 @@ function createErrorCard(called_api, error_code) {
         "[///// API ERROR /////]\n" + // Header, [] Brackets for red color
         "\nAPI: " + called_api + "\n" + // API that was being called
         "Error Code: " + error_code + errorMeaning + "\n" + // Error code + Meaning
+        "Page: " + window.location.href.split("/").pop() + '\n' + // Page the error happened on
         "\nTime of Error: " + date + ", " + time + // Time of Error, converted to Berlin TZ
         "\n```"; // End of codeblock
 
@@ -134,7 +135,7 @@ function createErrorCard(called_api, error_code) {
     $(discordHrefSpan).css("cursor", "pointer");
 
     textSpan.appendChild(discordHrefSpan);
-    textSpan.appendChild(document.createTextNode(", copy the info and paste it into the #support channel for help."))
+    textSpan.appendChild(document.createTextNode(", copy the info below and paste it into the #support channel for help."))
 
     if (rateLimitError == true) {
         $(textSpan).empty();

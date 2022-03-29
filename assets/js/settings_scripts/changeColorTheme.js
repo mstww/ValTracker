@@ -291,7 +291,7 @@ $(document).ready(() => {
 
     const {
         shell
-    } = require('electron').remote
+    } = require('electron')
     $('#open-custom-theme-folder-button').on("click", function () {
         shell.openPath(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes");
     })

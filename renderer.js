@@ -5,7 +5,7 @@ document.onreadystatechange = (event) => {
         handleWindowControls();
     }
 };
-
+ 
 async function handleWindowControls() {
 
     var windowState = await ipcRenderer.invoke('checkWindowState')
