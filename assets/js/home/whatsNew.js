@@ -13,11 +13,12 @@ $(document).ready(() => {
         var pjson = require('../package.json');
         $('#version-num').append(pjson.version);
         $.ajax({
-            url: `https://raw.githubusercontent.com/SpiritLetsPlays/VALTracker_src/main/whats_new.md`,
+            url: `https://api.valtracker.gg/patchnotes/v${pjson.version}`,
             type: 'get',
             success: function (data, xhr) {
-                var html1 = converter.makeHtml(data.split("///")[1]);
-                var html2 = converter.makeHtml(data.split("///")[2]);
+                console.log(data)
+                var html1 = converter.makeHtml(data.data.whats_new.additions);
+                var html2 = converter.makeHtml(data.data.whats_new.fixes);
                 $('.whats-new-content').append(html1)
                 $('.whats-new-fixes').append(html2)
                 $('.header-relative-div #toggle').css("cursor", "not-allowed");

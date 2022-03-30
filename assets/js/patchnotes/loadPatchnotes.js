@@ -8,10 +8,12 @@ $(document).ready(() => {
     var pjson = require('../package.json');
     $('#patchnotes-pageheader').append("Patchnotes for " + pjson.version)
     $.ajax({
-        url: `https://raw.githubusercontent.com/SpiritLetsPlays/VALTracker_src/main/PATCHNOTES.md`,
+        url: `https://api.valtracker.gg/patchnotes/v${pjson.version}`,
         type: 'get',
         success: function (data, xhr) {
-            var html = converter.makeHtml(data);
+            console.log(data)
+            var patchnotes = data.data.patchnotes
+            var html = converter.makeHtml(patchnotes);
             $('#patchnotes-wrapper').append(html);
         },
         error: function (jqXHR) {

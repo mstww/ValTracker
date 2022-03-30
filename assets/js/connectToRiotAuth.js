@@ -1,4 +1,4 @@
-const electron = require('electron')
+const { BrowserWindow } = require('@electron/remote')
 var authfs = require('fs')
 const riotIPC = require('electron').ipcRenderer
 
@@ -26,7 +26,7 @@ function getTokenDataFromURL(url) {
 
 async function showSignIn() {
     return new Promise((resolve, reject) => {
-        const loginWindow = new electron.remote.BrowserWindow({
+        const loginWindow = new BrowserWindow({
             show: false,
             width: 470,
             height: 880,
@@ -211,6 +211,7 @@ $(document).ready(() => {
                                 }
 
                                 authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+                                window.location.href = ""
                             });
                         });
 

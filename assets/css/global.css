@@ -1319,10 +1319,6 @@ select:focus::-ms-value {
   margin-right: 5%;
 }
 
-.user-greetings {
-  align-self: center;
-}
-
 .user-rank-icon {
   width: 4rem;
   z-index: 900;
