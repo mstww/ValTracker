@@ -10,7 +10,7 @@ $(document).ready(() => {
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(loadData))
     }
     if (loadData.hasReadLatestPatchnotes == false) {
-        var pjson = require('./package.json');
+        var pjson = require('../package.json');
         $('#version-num').append(pjson.version);
         $.ajax({
             url: `https://raw.githubusercontent.com/SpiritLetsPlays/VALTracker_src/main/whats_new.md`,

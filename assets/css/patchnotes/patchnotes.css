@@ -1,0 +1,11 @@
+
+
+#patchnotes-wrapper {
+  margin-top: 2%;
+  margin-left: 5%;
+  width: 85%;
+}
+
+.patchnotes-wrapper ul li p {
+  color: white !important;
+}

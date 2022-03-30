@@ -1,0 +1,442 @@
+#main-matchview {
+  height: calc(100% - 32px);
+  overflow-y: auto;
+  padding-top: 0%;
+  padding-left: 6%;
+  padding-right: 6%;
+  opacity: 0;
+}
+
+.matchview-result {
+  color: rgb(255, 244, 197);
+  margin-top: 3rem;
+}
+
+.matchview-nav {
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.3em;
+}
+
+.matchview-result {
+  text-align: center;
+  font-size: 3em;
+}
+
+.matchview-navitem {
+  -webkit-transition: all 300ms ease-in;
+  -o-transition: all 300ms ease-in;
+  transition: all 300ms ease-in;
+  position: relative;
+  text-decoration: none;
+  -webkit-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+}
+
+.matchview-navitem:hover {
+  cursor: pointer;
+}
+
+.matchview-navitem {
+  display: inline-block;
+}
+
+.matchview-navitem::after {
+  position: absolute;
+  content: "";
+  top: 100%;
+  left: 0rem;
+  width: 100%;
+  height: 1px;
+  background: #fff1ff;
+  -webkit-transform: scaleX(0);
+  -ms-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transform-origin: right;
+  -ms-transform-origin: right;
+  transform-origin: right;
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: -webkit-transform 0.3s;
+  -o-transition: transform 0.3s;
+  transition: transform 0.3s;
+  transition: transform 0.3s, -webkit-transform 0.3s;
+  box-shadow: 0 0 2.5px rgba(255, 255, 255, 0.7),
+    0 0 10px rgba(148, 148, 148, 0.7), 0 0 30px rgba(138, 138, 138, 0.7);
+}
+
+.matchview-navitem:hover::after {
+  -webkit-transform: scaleX(1);
+  -ms-transform: scaleX(1);
+  transform: scaleX(1);
+  -webkit-transform-origin: left;
+  -ms-transform-origin: left;
+  transform-origin: left;
+}
+
+.matchview-navitem.active::after {
+  -webkit-transform: scaleX(1);
+  -ms-transform: scaleX(1);
+  transform: scaleX(1);
+  -webkit-transform-origin: left;
+  -ms-transform-origin: left;
+  transform-origin: left;
+}
+
+.matchview-agent {
+  width: 75%;
+}
+
+.matchview-playeragent-name {
+  width: 10rem;
+}
+
+.matchview-subinfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.matchview-matchmode,
+.matchview-map,
+.matchview-matchstart,
+.matchview-matchduration {
+  text-align: center;
+}
+
+.matchview-header {
+  display: flex;
+  align-items: center;
+}
+
+.matchview-playerinfo {
+  display: inline-block;
+  align-items: center;
+  text-justify: center;
+}
+
+.matchview-subinfo {
+  margin-left: auto;
+}
+
+.matchview-playerrank-rr {
+  width: 18rem;
+}
+
+.matchview-playerrank-rr,
+.matchview-playername {
+  font-size: 1.5em;
+}
+
+.matchview-playeragent-name,
+.matchview-playerrank-rr {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+}
+
+.matchview-wrapper-1 {
+  margin-top: 2rem;
+  height: 72vh;
+}
+
+.matchview-wrapper-flex {
+  flex-direction: row;
+  display: flex;
+  height: 100%;
+}
+
+.matchview-wrapper-line-small {
+  height: 100%;
+  width: 20%;
+}
+
+.matchview-wrapper-line-large {
+  max-height: 100%;
+  height: 100%;
+  width: 60%;
+  border: 1px dashed rgb(78, 78, 78);
+  overflow: auto;
+}
+
+.matchview-rounds-header {
+  display: flex;
+  font-size: 1.2em;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  padding-left: 1rem;
+}
+
+.matchview-rounds-header div {
+  max-width: 25%;
+  width: 25%;
+}
+
+.matchview-round {
+  display: flex;
+  align-items: center;
+  padding-left: 1rem;
+  margin-top: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+.matchview-round div {
+  max-width: 25%;
+  width: 25%;
+}
+
+.matchview-round {
+  height: 4rem !important;
+  max-height: 4rem;
+  border-radius: 4px;
+}
+
+.matchview-match-info {
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.matchview-round td {
+  padding: 0;
+}
+
+.agent-image-wrapper {
+  height: 40%;
+  width: 100%;
+  display: relative;
+}
+
+.player-name-rank {
+  margin-left: 1rem;
+  font-size: 1.4em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.rank-img-small {
+  width: 20%;
+  margin-right: 0.5rem;
+}
+
+.agent-image {
+  height: 10rem;
+  margin: 1rem;
+}
+
+.agent-ability-usage {
+  height: 60%;
+}
+
+.agent-ability-wrapper {
+  height: 25%;
+}
+
+.matchview-match-info {
+  height: 40%;
+  justify-content: center;
+  align-content: center;
+}
+
+.matchview-stats {
+  text-align: center;
+}
+
+.jett-silhouette {
+  height: 100%;
+}
+
+.agent-ability-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1.2em;
+}
+
+.agent-ability-wrapper div {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.matchview-playerstats {
+  display: flex;
+  flex-direction: column;
+}
+
+.matchview-player-abilitiesperround li {
+  display: flex;
+  align-items: center;
+  position: relative;
+  left: -1rem;
+  margin-bottom: 0.5rem;
+}
+
+#matchview-abilityicon {
+  width: 20%;
+}
+
+#matchview-abilityname {
+  margin-left: 0.5rem;
+}
+
+.matchview-nav {
+  position: relative;
+}
+
+.matchview-blue-standing {
+  color: #00ffd5;
+  text-shadow: 0 0 2.5px rgba(0, 255, 213, 0.7), 0 0 5px rgba(0, 255, 213, 0.7),
+    0 0 15px rgba(0, 255, 213, 0.7);
+}
+
+.matchview-red-standing {
+  color: #ff0062;
+  text-shadow: 0 0 2.5px rgba(255, 0, 98, 0.7), 0 0 5px rgba(255, 0, 98, 0.7),
+    0 0 15px rgba(255, 0, 98, 0.7);
+}
+
+.playerinfo-wrapper {
+  display: flex;
+  text-align: center;
+  position: relative;
+  margin-top: 0.2rem;
+}
+
+.matchview-playerrank-img {
+  margin-left: 0.5rem;
+  width: 23%;
+}
+
+.match-wrapper {
+  cursor: pointer;
+}
+.matchview-wrapper-2 {
+  display: none;
+  margin-top: 2rem;
+}
+
+.scoreboard {
+  width: 100%;
+  font-size: 1.2em;
+}
+
+.scoreboard-header {
+  height: 10rem;
+  display: contents;
+}
+
+.played_agent_img {
+  width: 40%;
+}
+
+.played_agent {
+  width: 10%;
+}
+
+.playertag_grey {
+  color: rgb(185, 185, 185);
+}
+
+.header-td span {
+  width: fit-content;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.header-td span.active {
+  text-decoration: underline;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
+    0 0 20px rgba(255, 255, 255, 0.7), 0 0 50px rgba(255, 255, 255, 0.7);
+}
+
+/*
+  
+  ROUND-VIEW WIP
+  
+  #round-wrapper {
+    height: 80vh;
+    display: flex;
+  }
+  
+  .matchview-round-small {
+    width: 30%;
+    border: 1px solid orangered;
+    height: 100%;
+  }
+  
+  .matchview-round-large {
+    width: 40%;
+    border: 1px solid blueviolet;
+    height: 100%;
+  }
+  
+  .matchview-round-map-image-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+    height: auto;
+    width: auto;
+  }
+  
+  .matchview-round-map-image {
+    width: 90%;
+    height: 90%;
+  }
+  
+  .matchview-round-killfeed {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2rem;
+  }
+  
+  .matchview-round-kill-event {
+    height: 3rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    color: var(--global-textcolor);
+    margin-bottom: 0.5rem;
+    font-size: 0.8em;
+  }
+  
+  .kill-event-killer {
+    position: absolute;
+    width: 55%;
+    height: 100%;
+    background-color: var(--gradient-left);
+    clip-path: polygon(0% 0%, 90% 0%, 100% 50%, 90% 100%, 0% 100%);
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .kill-event-victim {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: var(--gradient-right);
+    clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 10% 50%, 0% 0%);
+    z-index: 1;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+  }
+  
+  .kill-event-agent-img {
+    height: 90%;
+    width: auto;
+    margin-right: 0.5rem;
+    margin-left: 0.5rem;
+  }
+  
+  .kill-event-agent-img.reverse {
+    transform: rotateY(180deg);
+  }*/

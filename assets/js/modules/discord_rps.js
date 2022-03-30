@@ -228,6 +228,29 @@ const matchview_activity = {
     instance: true
 }
 
+const shop_activity = {
+    details: "Checking the Store",
+    assets: {
+        large_image: "valtracker_logo",
+        large_text: "VALTracker.gg",
+        small_image: "shop",
+        small_text: "Checking the Store",
+    },
+    buttons: [{
+            "label": "Download VALTracker",
+            "url": "https://valtracker.gg"
+        },
+        {
+            "label": "Join the Discord",
+            "url": "https://discord.gg/aJfQ4yHysG"
+        }
+    ],
+    timestamps: {
+        start: Date.now()
+    },
+    instance: true
+}
+
 const anonymous_activity = {
     details: "Browsing VALTracker",
     assets: {
@@ -262,5 +285,6 @@ module.exports = {
     settings_acitivity,
     patchnotes_acitivity,
     matchview_activity,
+    shop_activity,
     anonymous_activity
 }

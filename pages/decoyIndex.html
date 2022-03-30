@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css"
     type="text/css">
   <link rel="stylesheet" type="text/css" href="../assets/css/global.css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/home/home.css">
 
   <script src="https://kit.fontawesome.com/0fb7a47199.js" crossorigin="anonymous"></script>
 </head>
@@ -108,7 +109,7 @@
       </div>
       <div class="whats-new-card-header">
         <span style="margin-bottom: 0.1rem; font-weight: bold; font-size: 1.2em;">VALTRACKER HAS BEEN UPDATED!</span>
-        <p style="color: rgba(47, 53, 77, 0.9); margin-top: 0;" id="version-num">Version </p>
+        <p style="color: rgb(77 89 152); margin-top: 0;" id="version-num">Version </p>
       </div>
       <div class="whats-new-content" id="card-ul-wrapper">
         <div class="whats-new-content-header">
@@ -127,14 +128,14 @@
   <div class="error-code-mention-wrapper" id="insertErrorCodes">
     <hr id="lastErrorElement" style="display: none;">
   </div>
-  <div class="app" id="main-home">
+  <div class="app" id="main-home" style="overflow: initial;">
     <div class="pageheader-home">
       <h1 class="user-greetings"></h1>
       <hr class="rotated-sep-home">
       <img class="user-rank-icon">
       <span class="user-rr-wrapper">RR: <span class="user-rankrating"></span></span>
     </div>
-    <div class="home-main">
+    <div class="home-main" style="overflow: initial;">
       <div class="News">
         <div class="slideshow-container">
           <h2 style="margin: 0; text-decoration: underline;">Newsfeed</h2>
@@ -165,18 +166,28 @@
       </div>
       <div class="Match-Stats">
         <div class="home-upper-right">
-          <h2 style="margin: 0; text-decoration: underline;" id="home-stats-header">Stats of your last 5 Matches</h2>
-          <ul class="last-5-matches-info">
-            <li>AVG KDA:<span class="home-avg-kda"></span></li>
-            <li>AVG Score:<span class="home-avg-score"></span></li>
-            <li>AVG Dmg/Round:<span class="home-avg-dmg_match"></span></li>
-            <br>
-            <li>Headshot Percentage:<span class="home-avg-headshots"></span></li>
-            <li>Bodyshot Percentage:<span class="home-avg-bodyshots"></span></li>
-            <li>Legshot Percentage:<span class="home-avg-legshots"></span></li>
-            <br>
-            <li>RR Change: <span class="home-avg-rrchange"></span></li>
-          </ul>
+          <h2 style="margin-bottom: 1rem; margin-top: 0; text-decoration: underline;" id="home-stats-header">Stats of your last 5 Matches</h2>
+          <div class="home-stats-wrapper">
+            <div>
+              <span style="font-size: 1.1em; font-weight: 600; margin-bottom: 1rem;">Bodypart Hit Percentages:</span>
+              <div class="hit-percentages">
+                <img src="../assets/img/Jett_Agent_Valorant_black.png" class="jett-silhouette">
+                <div class="percentage-numbers">
+                  <div class="home-avg-headshots">Head: </div>
+                  <div class="home-avg-bodyshots" style="margin-bottom: 1.5rem;">Body: </div>
+                  <div class="home-avg-legshots" style="margin-bottom: 3rem;">Legs: </div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-left: auto; margin-right: auto;">
+              <span style="font-size: 1.1em; font-weight: 600;">Other:</span>
+              <div style="margin-top: 1rem">
+                <div>Dmg/Round: <span class="home-avg-dmg_match"></span> </div>
+                <div>AVG Score: <span class="home-avg-score"></span> </div>
+                <div>AVG RR Change: <span class="home-avg-rrchange"></span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="Last-Matches">

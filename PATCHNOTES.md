@@ -4,13 +4,19 @@
 
 - The Matchview now has it's own Discord Status.
 
+- Reworked the Hub's Stats Tab. It still displays the same information, but is sorted a bit better.
+
+- The Player Store now has it's own Discord Status.
+
 - You can now see your last 5 searched players on the player search page! Clicking on one of these tiles will load their player profile and display it as usual.
 
-- Added a custom VALORANT Rich Presence Feature. It will automatically activate if you don't turn it off in the settings. This Rich Presence will show what Map and Mode you are currently playing.
+- Added a custom VALORANT Rich Presence Feature. It will automatically activate if you don't turn it off in the settings. The Rich Presence will show what Map and Mode you are currently playing.
 
 - Changed VALTracker's Font! (From 'Readex Pro' to 'Bahnschrift')
 
 - Changed the color of a few borders.
+
+- Changed a few other visual misalignments/weird looking things.
 
 ## __Bugfixes__
 
@@ -33,6 +39,10 @@
 - Fixed a bug that prevented you from changing the app's main colors and saving it.
 
 - Fixed a bug that showed the wrong rank icon in some cases. (This has been fixed by switching from local files to online hosted images with specific IDs.)
+
+- Fixed a bug that would load the normal app instead of the Setup if a user quit during the setup sequence.
+
+- Fixed a bug that would prevent a player's UUID from being saved in the user data file after logging in without a Riot Account. Now, the app will check on startup for a UUID, and if none is found, it will be refetched.
 
 ## __Everything Else__
 

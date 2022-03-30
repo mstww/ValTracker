@@ -1,0 +1,21 @@
+.cardview-wrapper {
+  width: 95%;
+}
+
+.cards-header {
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.6em;
+}
+
+.card-images {
+  display: flex;
+  justify-content: space-around;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}

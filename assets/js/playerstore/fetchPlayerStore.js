@@ -139,6 +139,7 @@ function getTokenDataFromURL(url) {
 }
 
 $(document).ready(() => {
+    riotIPC.send('changeDiscordRP', `shop_activity`)
     async function getShop() {
         const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json')
         const tokenData = JSON.parse(rawTokenData)

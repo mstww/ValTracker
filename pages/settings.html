@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css"
     type="text/css">
   <link rel="stylesheet" type="text/css" href="../assets/css/global.css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/settings/settings.css">
 
   <script src="https://kit.fontawesome.com/0fb7a47199.js" crossorigin="anonymous"></script>
 </head>
@@ -143,7 +144,7 @@
         <option value="Kayo">Kay/O</option>
         <option value="Chamber">Chamber</option>
         <option value="Neon">Neon</option>
-        <option value="" disabled>-(Custom) THEMES --</option>
+        <option value="" disabled>-- CUSTOM THEMES --</option>
         <option style="display: none;" id="themes-bottom"></option>
       </select>
       <button style="margin-left: 1rem;" id="reset-colortheme-button">Reset</button>
@@ -176,6 +177,18 @@
         <option value="false">Off</option>
       </select>
       <span id="replace-textspan-5" style="display: block; margin-bottom: 1rem; margin-top: 0.5rem;"></span>
+      <br>
+
+      <div class="discord-rp-settings">
+        <h2>VALORANT Game Presence</h2>
+        <p style="width: 40%; color: rgba(255, 255, 255, 0.4);">Share your VALORANT Match with all users on
+          Discord!</p>
+      </div>
+      <select id="valorant-rp-option" name="valorant-rp-select">
+        <option value="true" selected>On</option>
+        <option value="false">Off</option>
+      </select>
+      <span id="replace-textspan-7" style="display: block; margin-bottom: 1rem; margin-top: 0.5rem;"></span>
       <br>
 
       <div class="riot-acc-settings">
@@ -242,6 +255,7 @@
   <script type="application/javascript" src="../assets/js/settings_scripts/riotAccManagement.js"></script>
   <script type="application/javascript" src="../assets/js/settings_scripts/changeColorTheme.js"></script>
   <script type="application/javascript" src="../assets/js/settings_scripts/changeDRP.js"></script>
+  <script type="application/javascript" src="../assets/js/settings_scripts/changeVALPresence.js"></script>
   <script type="application/javascript" src="../assets/js/navslideToggle.js"></script>
   <script type="application/javascript" src="../assets/js/redirects.js"></script>
   <script type="application/javascript" src="../assets/js/errorCardHandler.js"></script>

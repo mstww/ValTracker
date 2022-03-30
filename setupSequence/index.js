@@ -1,5 +1,5 @@
 const fs = require('fs')
-const electron = require('electron')
+const { BrowserWindow } = require('@electron/remote')
 const riotIPC = require('electron').ipcRenderer
 
 function loadFade() {
@@ -110,7 +110,7 @@ function getTokenDataFromURL(url) {
 
 async function showSignIn() {
     return new Promise((resolve, reject) => {
-        const loginWindow = new electron.remote.BrowserWindow({
+        const loginWindow = new BrowserWindow({
             show: false,
             width: 470,
             height: 880,
@@ -202,6 +202,7 @@ async function getShopData() {
 }
 
 $(document).ready(() => {
+    riotIPC.send('isInSetup');
     loadFade();
     $('#openRiotLogin').on("click", async function () {
         const data = await showSignIn();
@@ -367,6 +368,7 @@ $(document).ready(() => {
 
                             var searchedPlayerName = data.data.name
                             var searchedPlayerTag = data.data.tag
+                            var puuid = data.data.puuid
                             var searchedRegion = playerRegion;
 
                             let finishedData = {
