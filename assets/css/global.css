@@ -41,6 +41,7 @@ body {
   font-family: Bahnschrift, sans-serif;
   color: var(--global-textcolor);
   overflow: hidden;
+  background-color: var(--app-color);
 }
 
 h1 {

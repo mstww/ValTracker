@@ -32,7 +32,7 @@
   pointer-events: auto !important;
   z-index: 2;
   border-radius: 4px;
-  border: 1px solid rgb(156, 156, 156);
+  border: 1px solid rgba(47, 53, 77, 0.9);
 }
 
 .bundlecard:active > .bundlecard-hovertext span {
