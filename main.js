@@ -130,6 +130,9 @@ ipc.on("changeDiscordRP", function (event, arg) {
           activity: discord_rps.shop_activity,
         });
         break;
+      case "clear":
+        discordClient.clearActivity(process.pid)
+        break;
     }
   } else if (loadData3.hasDiscordRPenabled == "anonymous") {
     discordClient.request("SET_ACTIVITY", {
@@ -767,6 +770,14 @@ async function createWindow() {
       createThemes();
     }
 
+    if(!fs.existsSync(app_data + '/user_data/message_data')) {
+      fs.mkdirSync(app_data + '/user_data/message_data');
+      var dateData = {
+        "date": 0
+      }
+      fs.writeFileSync(app_data + '/user_data/message_data/last_checked_date.json', JSON.stringify(dateData))
+    }
+
     if(fs.existsSync(app_data + '/user_data/user_creds.json')) {
       var raw = fs.readFileSync(app_data + '/user_data/user_creds.json');
       var user_creds = JSON.parse(raw)
@@ -776,6 +787,8 @@ async function createWindow() {
         fs.writeFileSync(app_data + '/user_data/user_creds.json', JSON.stringify(user_creds))
       }
     }
+    
+    await reauthCycle();
 
     mainWindow.loadFile("./pages/decoyIndex.html");
   }
@@ -1158,7 +1171,7 @@ async function reauthCycle() {
 var load_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json')
 var load_data = JSON.parse(load_data_raw)
 
-if(load_data.hasValorantRPenabled == true || load_data.hasValorantRPenabled == undefined) {
+if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled == undefined) {
   setTimeout(async function() {
     (async () => {
       let lockData = null;

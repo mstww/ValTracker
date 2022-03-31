@@ -297,7 +297,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   border-radius: 4px;
-  width: 17.5rem;
+  height: 100%;
+  width: 96%;
 }
 
 #card-tile img {
@@ -606,4 +607,8 @@
   height: calc(fit-content - 5%);
   top: -4rem;
   left: 15%;
+}
+
+.maximized #sec-skins {
+  top: 13% !important;
 }

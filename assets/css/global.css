@@ -938,15 +938,26 @@ video:focus {
   border-image-slice: 1;
 }
 
-.header-relative-div-video {
+.maximized .header-relative-div-video {
   position: fixed;
-  left: 79%;
-  top: 9rem;
+  left: 82%;
+  top: 9% !important;
   width: 100%;
   -webkit-transition: 0.4s ease;
   -o-transition: 0.4s ease;
   transition: 0.4s ease;
   z-index: 1000;
+}
+
+.header-relative-div-video {
+  position: fixed;
+  left: 79%;
+  width: 100%;
+  -webkit-transition: 0.4s ease;
+  -o-transition: 0.4s ease;
+  transition: 0.4s ease;
+  z-index: 1000;
+  top: 15% !important;
 }
 
 .header-relative-div-video #toggle::after {
@@ -1006,28 +1017,6 @@ video:focus {
   height: calc(fit-content - 5%);
   top: -5rem;
   left: 15%;
-}
-
-.maximized .header-relative-div-video {
-  position: fixed;
-  left: 79.5%;
-  top: 12% !important;
-  width: 100%;
-  -webkit-transition: 0.4s ease;
-  -o-transition: 0.4s ease;
-  transition: 0.4s ease;
-  z-index: 1000;
-}
-
-.header-relative-div-video {
-  position: fixed;
-  left: -80%;
-  top: 14% !important;
-  width: 100%;
-  -webkit-transition: 0.4s ease;
-  -o-transition: 0.4s ease;
-  transition: 0.4s ease;
-  z-index: 1000;
 }
 
 .header-relative-div-largeview {
@@ -1600,4 +1589,74 @@ select:focus::-ms-value {
 .MatchMVP {
   text-shadow: 0 0 5px rgba(255, 251, 0, 0.7), 0 0 20px rgba(255, 251, 0, 0.7),
     0 0 50px rgba(255, 251, 0, 0.7);
+}
+
+.messages-layer {
+  height: 100vh;
+  width: 100vw;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.messages-card:first-child {
+  margin-top: auto;
+}
+
+.messages-card:last-child {
+  margin-bottom: 2rem;
+}
+
+.messages-card {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+  background-color: var(--app-color-light);
+  border: 2px solid var(--gradient-left);
+  border-radius: 4px;
+  width: 20rem;
+  padding: 1rem;
+  pointer-events: auto;
+}
+
+.close-card {
+  -webkit-transition: 0.4s ease;
+  -o-transition: 0.4s ease;
+  transition: 0.4s ease;
+  z-index: 21;
+  margin-left: auto;
+  position: relative;
+  width: fit-content;
+  margin-right: 1.5rem;
+  cursor: pointer;
+  top: -1.4rem;
+}
+
+.close-card #toggle::after {
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) rotate(-45deg);
+  -ms-transform: translate(-50%, -50%) rotate(-45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
+  box-shadow: var(--box-shadow)
+}
+
+.close-card #toggle::before {
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) rotate(45deg);
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow: var(--box-shadow)
+}
+
+.message-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 2rem;
+  margin-bottom: 1rem;
 }

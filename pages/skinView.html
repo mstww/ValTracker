@@ -80,7 +80,7 @@
       <div class="content">
         <li class="collectables-sub" id="collects-sub-bundles">Bundles</li>
         <li class="collectables-sub color" id="collects-sub-skins">Skins</li>
-        <li class="collectables-sub" id="collects-sub-bp">Battlepass</li>
+        <!--<li class="collectables-sub" id="collects-sub-bp">Battlepass</li>-->
         <!--<li class="collectables-sub" id="collects-sub-search">Search</li>-->
       </div>
       <!--<li id="agents" class="navslide-li"><span class="" id="tools-nav">Agents</span></li>
@@ -100,6 +100,9 @@
   </div>
   <div class="error-code-mention-wrapper" id="insertErrorCodes">
     <hr id="lastErrorElement" style="display: none;">
+  </div>
+  <div class="messages-layer" id="messages-handler">
+    <hr id="lastMessageElement" style="display: none;">
   </div>
 
   <div class="app" id="main-collection">
@@ -135,7 +138,7 @@
       <button class="show-skinvid">Show Video</button>
     </div>
     <div class="largeview-vid" id="promo-vid-div">
-      <div class="header-relative-div-video" id="sec" onclick="hideVideo()" style="opacity: 0;">
+      <div class="header-relative-div-video" id="sec-skins" onclick="hideVideo()" style="opacity: 0; left: 78%;">
         <div id="toggle"></div>
       </div>
       <video controls onloadstart="this.volume=0.25" class="skinview-weapon-video" src=""
@@ -196,6 +199,7 @@
   <script type="application/javascript" src="../assets/js/redirects.js"></script>
   <script type="application/javascript" src="../assets/js/errorCardHandler.js"></script>
   <script type="application/javascript" src="../assets/js/loadColorThemes.js"></script>
+  <script type="application/javascript" src="../assets/js/fetchMessages.js"></script>
 </body>
 
 </html>

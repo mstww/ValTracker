@@ -81,7 +81,7 @@
       <div class="content">
         <li class="collectables-sub" id="collects-sub-bundles">Bundles</li>
         <li class="collectables-sub" id="collects-sub-skins">Skins</li>
-        <li class="collectables-sub" id="collects-sub-bp">Battlepass</li>
+        <!--<li class="collectables-sub" id="collects-sub-bp">Battlepass</li>-->
         <!--<li class="collectables-sub" id="collects-sub-search">Search</li>-->
       </div>
       <!--<li id="agents" class="navslide-li"><span class="" id="tools-nav">Agents</span></li>
@@ -101,6 +101,9 @@
   </div>
   <div class="error-code-mention-wrapper" id="insertErrorCodes">
     <hr id="lastErrorElement" style="display: none;">
+  </div>
+  <div class="messages-layer" id="messages-handler">
+    <hr id="lastMessageElement" style="display: none;">
   </div>
 
   <div class="app" id="main-matchview">
@@ -194,7 +197,7 @@
             <td class="header-td"><span id="dmg">Dmg/Round</span></td>
           </tr>
           <tr>
-            <td>
+            <td id="hidden-spacing">
               <hr style="opacity: 0;">
             </td>
           </tr>
@@ -279,6 +282,7 @@
   <script type="application/javascript" src="../assets/js/errorCardHandler.js"></script>
   <script type="application/javascript" src="../assets/js/navslideToggle.js"></script>
   <script type="application/javascript" src="../assets/js/loadColorThemes.js"></script>
+  <script type="application/javascript" src="../assets/js/fetchMessages.js"></script>
   <script type="application/javascript" src="../assets/js/matchView/loadMatchData.js"></script>
   <script type="application/javascript" src="../assets/js/matchView/changeTabs.js"></script>
 </body>

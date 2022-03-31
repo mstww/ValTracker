@@ -27,8 +27,8 @@ $(document).ready(() => {
             let dataToWrite = JSON.stringify(dataToRead);
             fs.writeFileSync(loadFile, dataToWrite);
             if (JSON.parse(newSettingVal) == false) {
-                replaceText5("Settings changed! Discord Rich Presence has been turned to anonymous and will be turned off on the next restart.")
-                ipc.send('changeDiscordRP', `anonymous_activity`)
+                replaceText5("Settings changed!")
+                ipc.send('changeDiscordRP', `clear`)
             } else {
                 replaceText5("Settings changed!")
                 ipc.send('changeDiscordRP', `settings_activity`)

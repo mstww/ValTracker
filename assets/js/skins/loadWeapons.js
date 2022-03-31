@@ -158,7 +158,7 @@ function makeCallAndBuildElements() {
                               if (!data.data[count].skins[count2].displayIcon) {
                                  skinimg.setAttribute("src", data.data[count].skins[count2].chromas[0].fullRender);
                               } else {
-                                 skinimg.setAttribute("src", data.data[count].skins[count2].displayIcon);
+                                 skinimg.setAttribute("src", data.data[count].skins[count2].levels[0].displayIcon);
                               }
                            }
 

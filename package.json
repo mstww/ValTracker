@@ -48,6 +48,7 @@
     "@electron/remote": "^2.0.8",
     "axios": "^0.26.1",
     "clean-deep": "^3.4.0",
+    "dayjs": "^1.11.0",
     "discord-rpc": "^4.0.1",
     "ejs": "^3.1.6",
     "ejs-electron": "^2.1.1",

@@ -260,12 +260,12 @@ const anonymous_activity = {
         //small_text: "",
     },
     buttons: [{
-            "label": "Open VALTracker",
-            "url": "valtracker-ptcl://open"
-        },
-        {
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
+        },
+        {
+            "label": "Join the Discord",
+            "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
     timestamps: {

@@ -136,7 +136,7 @@
 }
 
 .matchview-wrapper-1 {
-  margin-top: 2rem;
+  margin-top: 1rem;
   height: 72vh;
 }
 
@@ -313,7 +313,7 @@
 }
 .matchview-wrapper-2 {
   display: none;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .scoreboard {
@@ -332,6 +332,7 @@
 
 .played_agent {
   width: 10%;
+  padding-top: 0.25rem;
 }
 
 .playertag_grey {
@@ -391,7 +392,7 @@
     width: 95%;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 2rem;
+    margin-top: 1rem;
   }
   
   .matchview-round-kill-event {
@@ -439,4 +440,6 @@
   
   .kill-event-agent-img.reverse {
     transform: rotateY(180deg);
-  }*/
+  }
+  
+*/
