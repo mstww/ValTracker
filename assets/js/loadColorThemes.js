@@ -89,7 +89,7 @@ if (colorData.isCustomTheme == true) {
     }
 
     if (directoryName == "CollectablePages") {
-        logo_top.setAttribute("src", `.../iconss/VALTracker_Logo_${newColorData.logo_style}.ico`);
+        logo_top.setAttribute("src", `../iconss/VALTracker_Logo_${newColorData.logo_style}.ico`);
     } else {
         logo_top.setAttribute("src", `../iconss/VALTracker_Logo_${newColorData.logo_style}.ico`);
     }
