@@ -29,7 +29,6 @@ function closeMessage(message, date) {
 
 $(document).ready(async () => {
     var messages = (await axios.get(`https://api.valtracker.gg/messages`)).data.data
-    console.log(messages)
     var i = 0;
     messages.forEach(message => {
         if(lastDate < message.date && i < 6) {

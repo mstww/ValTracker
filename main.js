@@ -1165,6 +1165,7 @@ async function reauthCycle() {
   var tokensFromUrl = await (access_tokens).data.response.parameters.uri
 
   newTokenData = getTokenDataFromURL(tokensFromUrl);
+  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(newTokenData))
   return newTokenData;
 }
 
@@ -1186,14 +1187,11 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
     
       console.log("Got lock data...");
     
-      console.log(lockData)
-    
       let sessionData = null;
       let lastRetryMessage = 0;
       do {
         try {
           sessionData = await getSession(lockData.port, lockData.password);
-          console.log(sessionData)
           if (sessionData.loaded === false) {
             await asyncTimeout(1500);
             sessionData = null;
@@ -1266,7 +1264,9 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
     
       var isPractice = false;
   
-      var practiceTimeout = false;
+      var gameTimeout = false;
+
+      var messageCount = 0;
     
       ws.on("open", async () => {
         await find('name', 'VALORANT-Win64-Shipping.exe', true)
@@ -1317,8 +1317,7 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
             httpAgent: agent
           }).catch(error => {console.log(error);})
   
-          // Map 
-          //console.log(gameStatus.data)
+          // Map
           map = gameStatus.data.MapID;
   
           var allMaps = await(await axios.get('https://valorant-api.com/v1/maps').catch(error => {console.log(error);})).data;
@@ -1332,8 +1331,6 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
   
           // Mode
           matchType = gameStatus.data.Mode;
-  
-          //console.log(matchType)
   
           // Make a switch statement to get the correct mode
           switch(matchType) {
@@ -1396,7 +1393,6 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
             case '/Game/GameModes/GunGame/GunGameTeamsGameMode.GunGameTeamsGameMode_C': 
               // Map 
               map = gameStatus.data.MapID;
-              console.log(map)
     
               var allMaps = await(await axios.get('https://valorant-api.com/v1/maps').catch(error => {console.log(error);})).data;
     
@@ -1404,14 +1400,12 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
                 if(map == allMaps.data[i].mapUrl) {
                   mapText = allMaps.data[i].displayName;
                   map = allMaps.data[i].displayName.toLowerCase();
-                  console.log(allMaps.data[i].displayName)
                 }
               }
     
               matchType = 'escalation'
   
               // Mode
-              console.log(gameStatus.data.ProvisioningFlow)
               if(gameStatus.data.ProvisioningFlow == 'CustomGame') {
                 matchTypeText = 'Escalation (Custom)';
               } else {
@@ -1442,7 +1436,8 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
             },
             instance: true
           }
-          
+
+          discordClient.clearActivity(process.pid)
           discordVALPresence.request("SET_ACTIVITY", {
             pid: parseInt(presencePID),
             activity: discordRPObj,
@@ -1485,8 +1480,6 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
     
             // Mode
             matchType = gameStatus.data.ModeID;
-  
-            console.log(matchType)
     
             // Make a switch statement to get the correct mode
             switch(matchType) {
@@ -1549,7 +1542,6 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
               case '/Game/GameModes/GunGame/GunGameTeamsGameMode.GunGameTeamsGameMode_C': 
                 // Map 
                 map = gameStatus.data.MapID;
-                console.log(map)
       
                 var allMaps = await(await axios.get('https://valorant-api.com/v1/maps').catch(error => {console.log(error);})).data;
       
@@ -1557,14 +1549,12 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
                   if(map == allMaps.data[i].mapUrl) {
                     mapText = allMaps.data[i].displayName;
                     map = allMaps.data[i].displayName.toLowerCase();
-                    console.log(allMaps.data[i].displayName)
                   }
                 }
       
                 matchType = 'escalation'
   
                 // Mode
-                console.log(gameStatus.data.ProvisioningFlow)
                 if(gameStatus.data.ProvisioningFlow == 'CustomGame') {
                   matchTypeText = 'Escalation (Custom)';
                 } else {
@@ -1617,6 +1607,7 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
               isPractice = false;
             }
             
+            discordClient.clearActivity(process.pid)
             discordVALPresence.request("SET_ACTIVITY", {
               pid: parseInt(presencePID),
               activity: discordRPObj,
@@ -1629,7 +1620,6 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
       });
     
       ws.on("message", async (data) => {
-    
         // Get new entitlement token for every match in case it refreshed
         if(entitlement_token == null) {
           entitlement_token = true;
@@ -1748,6 +1738,7 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
                 instance: true
               }
               
+              discordClient.clearActivity(process.pid)
               discordVALPresence.request("SET_ACTIVITY", {
                 pid: parseInt(presencePID),
                 activity: discordRPObj,
@@ -1758,11 +1749,10 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
     
           // Get Match ID (Emitted when match is starting, so switch RP)
           if(matchData[1] == 'OnJsonApiEvent_riot-messaging-service_v1_message' && matchData[2].uri.split('/').slice(0, -1).join('/') == '/riot-messaging-service/v1/message/ares-core-game/core-game/v1/matches') {
-            if(practiceTimeout == false) {
+            messageCount++;
+            if(gameTimeout == false && messageCount > 3) {
+              messageCount = 0;
               console.log('Entered CoreGame.')
-              console.log(matchData[2].uri.split('/').pop())
-  
-              console.log(matchData)
       
               if(activeGameStatus == null) {
                 if(matchHadPreGame == false) { // Deachmatch / Escalation Match
@@ -1777,8 +1767,6 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
                   }).catch(error => {console.log(error);})
       
                   gameStatus = gameStatus.data
-  
-                  console.log(gameStatus)
       
                   if(gameStatus.ModeID == '/Game/GameModes/Deathmatch/DeathmatchGameMode.DeathmatchGameMode_C') { // FFA
                     // Map 
@@ -1817,7 +1805,6 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
                     matchType = 'escalation'
       
                     // Mode
-                    console.log(gameStatus.ProvisioningFlowID)
                     if(gameStatus.ProvisioningFlowID == 'CustomGame') {
                       matchTypeText = 'Escalation (Custom)';
                     } else {
@@ -1869,6 +1856,7 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
                   isPractice = true;
                 }
                 
+                discordClient.clearActivity(process.pid)
                 discordVALPresence.request("SET_ACTIVITY", {
                   pid: parseInt(presencePID),
                   activity: discordRPObj,
@@ -1892,18 +1880,22 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
               entitlement_token = null;
             
               discordRPObj = null;
+
+              messageCount = 0;
             
               pregameCalcFinished = false;
               if(isPractice == true) {
                 isPractice = false;
-                practiceTimeout = true;
-                async function timeout() {
-                  setTimeout(function() {
-                    practiceTimeout = false;
-                  }, 5000)
-                }
-                timeout();
               }
+              gameTimeout = true;
+              async function timeout() {
+                setTimeout(function() {
+                  gameTimeout = false;
+                }, 7500)
+              }
+              timeout();
+          
+              mainWindow.webContents.send('restartDiscordRP')
       
               discordVALPresence.clearActivity(presencePID)
             }
@@ -1928,6 +1920,7 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
       
         isPractice = false;
   
+        mainWindow.webContents.send('restartDiscordRP')
         discordVALPresence.clearActivity(presencePID)
         console.log("Websocket closed!");
       });
