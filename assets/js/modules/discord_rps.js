@@ -188,7 +188,53 @@ const patchnotes_acitivity = {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
         small_image: "patchnotes",
-        small_text: "Browsing patchnotes",
+        small_text: "Browsing the patchnotes",
+    },
+    buttons: [{
+            "label": "Download VALTracker",
+            "url": "https://valtracker.gg"
+        },
+        {
+            "label": "Join the Discord",
+            "url": "https://discord.gg/aJfQ4yHysG"
+        }
+    ],
+    timestamps: {
+        start: Date.now()
+    },
+    instance: true
+}
+
+const matchview_activity = {
+    details: "Looking at a Match",
+    assets: {
+        large_image: "valtracker_logo",
+        large_text: "VALTracker.gg",
+        small_image: "search",
+        small_text: "Looking at a Match",
+    },
+    buttons: [{
+            "label": "Download VALTracker",
+            "url": "https://valtracker.gg"
+        },
+        {
+            "label": "Join the Discord",
+            "url": "https://discord.gg/aJfQ4yHysG"
+        }
+    ],
+    timestamps: {
+        start: Date.now()
+    },
+    instance: true
+}
+
+const shop_activity = {
+    details: "Checking the Store",
+    assets: {
+        large_image: "valtracker_logo",
+        large_text: "VALTracker.gg",
+        small_image: "shop",
+        small_text: "Checking the Store",
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -214,12 +260,12 @@ const anonymous_activity = {
         //small_text: "",
     },
     buttons: [{
-            "label": "Open VALTracker",
-            "url": "valtracker-ptcl://open"
-        },
-        {
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
+        },
+        {
+            "label": "Join the Discord",
+            "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
     timestamps: {
@@ -238,5 +284,7 @@ module.exports = {
     playersearch_acitivity,
     settings_acitivity,
     patchnotes_acitivity,
+    matchview_activity,
+    shop_activity,
     anonymous_activity
 }

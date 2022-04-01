@@ -57,7 +57,6 @@ async function showSignIn() {
                         if (riotcookie.name == "ssid") {
                             cookieString = riotcookie.value
                         }
-                        console.log(JSON.parse(JSON.stringify(riotcookie)))
                     })
                     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
                     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
@@ -157,21 +156,17 @@ $(document).ready(() => {
 
         riotIPC.send('setCookies', 'please')
         riotIPC.on('tdid', async function (event, arg) {
-            console.log(arg)
             requiredCookie = "tdid=" + arg
 
             puuid = await getPlayerUUID();
-            console.log(puuid);
 
             entitlement_token = await getEntitlement();
 
             var reagiondata = await getXMPPRegion();
-            console.log(reagiondata)
             region = reagiondata.affinities.live
 
             var shopData = await getShopData();
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-            console.log(shopData)
 
             Date.prototype.addSeconds = function (seconds) {
                 var copiedDate = new Date(this.getTime());

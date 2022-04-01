@@ -139,6 +139,7 @@ function getTokenDataFromURL(url) {
 }
 
 $(document).ready(() => {
+    riotIPC.send('changeDiscordRP', `shop_activity`)
     async function getShop() {
         const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json')
         const tokenData = JSON.parse(rawTokenData)
@@ -151,12 +152,10 @@ $(document).ready(() => {
         if (typeof entitlement_token === "string") {
 
             var reagiondata = await getXMPPRegion();
-            console.log(reagiondata)
             region = reagiondata.affinities.live
 
             var shopData = await getShopData();
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-            console.log(shopData)
 
             var walletData = await getWallet();
             var VP = walletData.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
@@ -168,6 +167,13 @@ $(document).ready(() => {
             var bundleID = shopData.FeaturedBundle.Bundle.DataAssetID
             var dailyShop = shopData.SkinsPanelLayout.SingleItemOffers
 
+            // Calculate Bundle Price
+            var bundlePrice = 0;
+            for(var i = 0; i < shopData.FeaturedBundle.Bundles[0].Items.length; i++) {
+                bundlePrice = bundlePrice + parseInt(shopData.FeaturedBundle.Bundles[0].Items[i].DiscountedPrice)
+            }
+            $('.insert-bundle-price').append(bundlePrice)
+
             var nightMarketSecondsRemaining = false;
             if (shopData.BonusStore !== undefined) {
                 nightMarketSecondsRemaining = shopData.BonusStore.BonusStoreRemainingDurationInSeconds
@@ -178,7 +184,6 @@ $(document).ready(() => {
                     type: 'get',
                     success: function (data2, xhr) {
                         for (var i = 0; i < nightmarket.length; i++) { //Array
-                            console.log(nightmarket[i])
                             $(`.night-market-offer.${i+1}`).attr('id', nightmarket[i].Offer.OfferID)
                             for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
                                 for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
@@ -272,9 +277,6 @@ $(document).ready(() => {
             }
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
 
-            console.log(singleOfferSecondsRemaining)
-            console.log(bundleSecondsRemaining)
-
             bundleSecondsRemaining--;
             singleOfferSecondsRemaining--;
 
@@ -324,21 +326,17 @@ $(document).ready(() => {
 
                 riotIPC.send('setCookies', 'please')
                 riotIPC.on('tdid', async function (event, arg) {
-                    console.log(arg)
                     requiredCookie = "tdid=" + arg
 
                     puuid = await getPlayerUUID();
-                    console.log(puuid);
 
                     entitlement_token = await getEntitlement();
 
                     var reagiondata = await getXMPPRegion();
-                    console.log(reagiondata)
                     region = reagiondata.affinities.live
 
                     var shopData = await getShopData();
                     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-                    console.log(shopData)
 
                     var walletData = await getWallet();
                     var VP = walletData.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
@@ -360,7 +358,6 @@ $(document).ready(() => {
                             type: 'get',
                             success: function (data2, xhr) {
                                 for (var i = 0; i < nightmarket.length; i++) { //Array
-                                    console.log(nightmarket[i])
                                     $(`.night-market-offer.${i+1}`).attr('id', nightmarket[i].Offer.OfferID)
                                     for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
                                         for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
@@ -450,9 +447,6 @@ $(document).ready(() => {
                     }
                     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
 
-                    console.log(singleOfferSecondsRemaining)
-                    console.log(bundleSecondsRemaining)
-
                     bundleSecondsRemaining--;
                     singleOfferSecondsRemaining--;
 
@@ -490,7 +484,6 @@ $(document).ready(() => {
             })
         }
         const inventoryData = await checkForBoughtSkins();
-        console.log(inventoryData.EntitlementsByTypes)
         var storeIDs = [];
         var nightmarketIDs = [];
         var storeOffers = document.getElementsByClassName("single-item");
@@ -503,8 +496,6 @@ $(document).ready(() => {
         for (let item of nightmarketOffers) {
             nightmarketIDs.push(item.id);
         }
-        console.log(storeIDs)
-        console.log(nightmarketIDs)
 
         for (var i = 0; i < inventoryData.EntitlementsByTypes.length; i++) {
             if (inventoryData.EntitlementsByTypes[i].ItemTypeID == "e7c63390-eda7-46e0-bb7a-a6abdacd2433") {

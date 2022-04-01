@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>VALTracker</title>
+
+  <script>
+    window.$ = window.jQuery = require('jquery');
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css"
+    type="text/css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/global.css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/skins/skins.css">
+
+  <script src="https://kit.fontawesome.com/0fb7a47199.js" crossorigin="anonymous"></script>
+</head>
+<div class="update-banner" style="display: none;">
+  <span style="margin-top: 1rem;">An Update has been downloaded. Close the App to install. Dont forget to give
+    permission afterwards!</span>
+  <button class="close-app" id="noti-close-button">Close App</button>
+  <div class="update-relative-div" id="update-sec">
+    <div id="toggle"></div>
+  </div>
+</div>
+<div class="download-banner" style="display: none;">
+  <span style="margin-top: 1rem;">An Update is being downloaded. Please don't close this Window. You can continue using
+    the app.</span>
+  <progress class="download-bar" id="download-bar" max="100" value="0"></progress>
+  <div class="download-relative-div" id="download-sec">
+    <div id="toggle"></div>
+  </div>
+</div>
+
+<body>
+  <header id="titlebar">
+    <div id="drag-region">
+      <div id="window-title">
+        <img class="titlebar-img" id="valtracker-logo">
+        <span id="WindowName"></span>
+      </div>
+      <div id="window-controls">
+
+        <div class="button" id="min-button">
+          <img class="icon"
+            srcset="../iconss/min-w-10.png 1x, ../iconss/min-w-12.png 1.25x, ../iconss/min-w-15.png 1.5x, ../iconss/min-w-15.png 1.75x, ../iconss/min-w-20.png 2x, ../iconss/min-w-20.png 2.25x, ../iconss/min-w-24.png 2.5x, ../iconss/min-w-30.png 3x, ../iconss/min-w-30.png 3.5x"
+            draggable="false" />
+        </div>
+        <div class="button" id="max-button">
+          <img class="icon"
+            srcset="../iconss/max-w-10.png 1x, ../iconss/max-w-12.png 1.25x, ../iconss/max-w-15.png 1.5x, ../iconss/max-w-15.png 1.75x, ../iconss/max-w-20.png 2x, ../iconss/max-w-20.png 2.25x, ../iconss/max-w-24.png 2.5x, ../iconss/max-w-30.png 3x, ../iconss/max-w-30.png 3.5x"
+            draggable="false" />
+        </div>
+        <div class="button" id="restore-button">
+          <img class="icon"
+            srcset="../iconss/restore-w-10.png 1x, ../iconss/restore-w-12.png 1.25x, ../iconss/restore-w-15.png 1.5x, ../iconss/restore-w-15.png 1.75x, ../iconss/restore-w-20.png 2x, ../iconss/restore-w-20.png 2.25x, ../iconss/restore-w-24.png 2.5x, ../iconss/restore-w-30.png 3x, ../iconss/restore-w-30.png 3.5x"
+            draggable="false" />
+        </div>
+        <div class="button" id="close-button">
+          <img class="icon"
+            srcset="../iconss/close-w-10.png 1x, ../iconss/close-w-12.png 1.25x, ../iconss/close-w-15.png 1.5x, ../iconss/close-w-15.png 1.75x, ../iconss/close-w-20.png 2x, ../iconss/close-w-20.png 2.25x, ../iconss/close-w-24.png 2.5x, ../iconss/close-w-30.png 3x, ../iconss/close-w-30.png 3.5x"
+            draggable="false" />
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <div class="header-relative-div" id="sec" onclick="toggle()">
+    <div id="toggle"></div>
+  </div>
+  <div class="navslide">
+    <ul class="navslide-ul-container">
+      <li id="home" class="navslide-li"><span class="" id="home-nav">Home</span></li>
+      <li id="store" class="navslide-li"><span class="" id="store-nav">Your Store</span></li>
+      <li id="favs" class="navslide-li"><span class="" id="favs-nav">Favourite Matches</span></li>
+      <li id="psearch" class="navslide-li"><span class="" id="search-nav">Playersearch</span></li>
+      <li id="collects" class="collapsible"><span class="" id="collectables-nav"> Collectables</span></li>
+      <div class="content">
+        <li class="collectables-sub" id="collects-sub-bundles">Bundles</li>
+        <li class="collectables-sub color" id="collects-sub-skins">Skins</li>
+        <!--<li class="collectables-sub" id="collects-sub-bp">Battlepass</li>-->
+        <!--<li class="collectables-sub" id="collects-sub-search">Search</li>-->
+      </div>
+      <!--<li id="agents" class="navslide-li"><span class="" id="tools-nav">Agents</span></li>
+        <li id="m-n-l" class="navslide-li"><span class="" id="tools-nav">Maps & Lineups</span></li>
+        <li id="leads" class="navslide-li"><span class="" id="projects-nav">Leaderboards</span></li>
+        <li id="lft" class="navslide-li"><span class="" id="contact-nav">LFT</span></li>-->
+    </ul>
+    <li id="patchnotes" class="navslide-li" style="list-style-type: none;"><span>Patchnotes</span></li>
+    <li id="settings" class="navslide-li" style="list-style-type: none;"><span><i class="fas fa-user-cog"></i>
+        Settings</span></li>
+    <hr
+      style="position: absolute; bottom: 2.9rem; left: 1rem; width: 10rem; background: linear-gradient(to right, var(--gradient-left),  var(--gradient-right)); height: 2px; border: none; box-shadow: var(--box-shadow);">
+    <li id="socials" class="navslide-li" style="list-style-type: none;"><span id="socials-span"><i
+          class="fab fa-discord" id="socials-i" style="margin-right: 1rem;"></i><i class="fab fa-twitter" id="socials-i"
+          style="margin-right: 1rem;"></i><i class="fab fa-github" id="socials-i" style="margin-right: 1rem;"></i><i
+          class="fas fa-globe"></i></a></li>
+  </div>
+  <div class="error-code-mention-wrapper" id="insertErrorCodes">
+    <hr id="lastErrorElement" style="display: none;">
+  </div>
+  <div class="messages-layer" id="messages-handler">
+    <hr id="lastMessageElement" style="display: none;">
+  </div>
+
+  <div class="app" id="main-collection" style="transform: scale(0.9);">
+    <div class="main-inv">
+      <div class="Classic" id="weapon-tile">
+        <span class="type-header">Sidearms</span>
+        <img src="../assets/img/classic.png" class="weapon-img">
+        <span class="gunname">Classic</span>
+      </div>
+      <div class="Shorty" id="weapon-tile">
+        <img src="../assets/img/shorty.png" class="weapon-img">
+        <span class="gunname">Shorty</span>
+      </div>
+      <div class="Frenzy" id="weapon-tile">
+        <img src="../assets/img/frenzy.png" class="weapon-img">
+        <span class="gunname">Frenzy</span>
+      </div>
+      <div class="Ghost" id="weapon-tile">
+        <img src="../assets/img/ghost.png" class="weapon-img">
+        <span class="gunname">Ghost</span>
+      </div>
+      <div class="Sheriff" id="weapon-tile">
+        <img src="../assets/img/sheriff.png" class="weapon-img">
+        <span class="gunname">Sheriff</span>
+      </div>
+      <div class="Stinger" id="weapon-tile">
+        <span class="type-header">SMGs</span>
+        <img src="../assets/img/stinger.png" class="weapon-img">
+        <span class="gunname">Stinger</span>
+      </div>
+      <div class="Spectre" id="weapon-tile">
+        <img src="../assets/img/spectre.png" class="weapon-img">
+        <span class="gunname">Spectre</span>
+      </div>
+      <div class="Bucky" id="weapon-tile">
+        <span class="type-header">Shotguns</span>
+        <img src="../assets/img/bucky.png" class="weapon-img">
+        <span class="gunname">Bucky</span>
+      </div>
+      <div class="Judge" id="weapon-tile">
+        <img src="../assets/img/judge.png" class="weapon-img">
+        <span class="gunname">Judge</span>
+      </div>
+      <div class="Free-Space"></div>
+      <div class="Bulldog" id="weapon-tile">
+        <span class="type-header">Rifles</span>
+        <img src="../assets/img/bulldog.png" class="weapon-img">
+        <span class="gunname">Bulldog</span>
+      </div>
+      <div class="Guardian" id="weapon-tile">
+        <img src="../assets/img/guardian.png" class="weapon-img">
+        <span class="gunname">Guardian</span>
+      </div>
+      <div class="Phantom" id="weapon-tile">
+        <img src="../assets/img/phantom.png" class="weapon-img">
+        <span class="gunname">Phantom</span>
+      </div>
+      <div class="Vandal" id="weapon-tile">
+        <img src="../assets/img/vandal.png" class="weapon-img">
+        <span class="gunname">Vandal</span>
+      </div>
+      <div class="Marshal" id="weapon-tile">
+        <span class="type-header">Sniper Rifles</span>
+        <img src="../assets/img/marshal.png" class="weapon-img">
+        <span class="gunname">Marshal</span>
+      </div>
+      <div class="Operator" id="weapon-tile">
+        <img src="../assets/img/operator.png" class="weapon-img">
+        <span class="gunname">Operator</span>
+      </div>
+      <div class="Ares" id="weapon-tile">
+        <span class="type-header">LMGs</span>
+        <img src="../assets/img/ares.png" class="weapon-img">
+        <span class="gunname">Ares</span>
+      </div>
+      <div class="Odin" id="weapon-tile">
+        <img src="../assets/img/odin.png" class="weapon-img">
+        <span class="gunname">Odin</span>
+        <img class="hover-effect-tile" src="">
+      </div>
+      <div class="Melee" id="weapon-tile">
+        <span class="type-header">Melee</span>
+        <img src="../assets/img/melee.png" class="weapon-img">
+        <span class="gunname">Melee</span>
+      </div>
+
+      <div class="Card" id="card-tile">
+        <span class="card-header">Other</span>
+        <img src="../assets/img/largeart.png" class="playercard-img">
+      </div>
+      <div class="Title" id="weapon-tile">
+        <span>Titles</span>
+      </div>
+      <div class="Spray" id="weapon-tile">
+        <span>Sprays</span>
+      </div>
+    </div>
+  </div>
+
+  <!---->
+  <div class="bundle-largeview" id="largeview-handler" style="display: none;">
+    <div class="header-relative-div-largeview" id="sec" onclick="leaveToBundles()" style="opacity: 0;">
+      <div id="toggle"></div>
+    </div>
+
+    <!---->
+    <div class="largeview-vid" id="promo-vid-div">
+      <div class="header-relative-div-video" id="sec" onclick="hideVideo()" style="opacity: 0;">
+        <div id="toggle"></div>
+      </div>
+      <video controls onloadstart="this.volume=0.25" class="largeview-weapon-video" src=""
+        id="largeview-vid-element"></video>
+    </div>
+
+    <script>
+      require('../renderer.js')
+    </script>
+    <script>
+      window.onload = function () {
+        if (sessionStorage.getItem("Update-downloaded") == true) {
+          $('.update-banner').css("display", "block");
+        }
+        if (sessionStorage.getItem("Update-available") == true) {
+          $('.download-banner').css("display", "block");
+        }
+      }
+      // Listen for messages
+      const {
+        ipcRenderer
+      } = require('electron');
+      ipcRenderer.on('message', function (event, text) {
+        console.log(text);
+      })
+      //Update downloaded
+      ipcRenderer.on('showUpdateWindow', function (event) {
+        sessionStorage.setItem("Update-downloaded", true);
+        $('.download-banner').css("display", "none");
+        $('.update-banner').css("display", "block");
+      })
+      //Update Found, about to download
+      ipcRenderer.on('update-available', function (event, value) {
+        sessionStorage.setItem("Update-available", true);
+        $('.update-banner').css("display", "none");
+        $('.download-banner').css("display", "block");
+      })
+      //Update downloading
+      $('.download-bar').css("display", "block");
+      ipcRenderer.on('download-percent', function (event, value) {
+
+        $('.download-banner').css("display", "block");
+        document.getElementById("download-bar").value = value
+      })
+      $('.update-relative-div').on("click", function () {
+        $('.update-banner').css("display", "none");
+      })
+      $('#noti-close-button').on("click", function () {
+        window.close()
+      })
+      $('.download-relative-div').on("click", function () {
+        $('.download-banner').css("display", "none");
+      })
+    </script>
+
+    <script type="application/javascript" src="../assets/js/navslideToggle.js"></script>
+    <script type="application/javascript" src="../assets/js/redirects.js"></script>
+    <script type="application/javascript" src="../assets/js/errorCardHandler.js"></script>
+    <script type="application/javascript" src="../assets/js/loadColorThemes.js"></script>
+  <script type="application/javascript" src="../assets/js/fetchMessages.js"></script>
+    <script type="application/javascript" src="../assets/js/skins/toggleWeaponDrop.js"></script>
+</body>
+
+</html>

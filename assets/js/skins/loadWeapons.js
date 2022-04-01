@@ -1,8 +1,7 @@
-function redirectToSkinView(imageLinkForID) {
-   var id = imageLinkForID.split("/")[4]
-   sessionStorage.setItem("skinID", id)
+function redirectToSkinView(uuid) {
+   sessionStorage.setItem("skinID", uuid)
    sessionStorage.setItem("last_page", window.location.href)
-   window.location.href = "../skinView.html"
+   window.location.href = "../pages/skinView.html"
 }
 
 const ipc = require('electron').ipcRenderer;
@@ -149,7 +148,7 @@ function makeCallAndBuildElements() {
 
                            var skinHandler = document.createElement("div");
                            skinHandler.className = "skin-wrapper";
-                           skinHandler.setAttribute("onclick", "redirectToSkinView(this.children[0].src)")
+                           skinHandler.setAttribute("onclick", "redirectToSkinView(this.children[3].textContent)")
 
                            var skinimg = document.createElement("img");
                            skinimg.className = "single-skin-img";
@@ -159,7 +158,7 @@ function makeCallAndBuildElements() {
                               if (!data.data[count].skins[count2].displayIcon) {
                                  skinimg.setAttribute("src", data.data[count].skins[count2].chromas[0].fullRender);
                               } else {
-                                 skinimg.setAttribute("src", data.data[count].skins[count2].displayIcon);
+                                 skinimg.setAttribute("src", data.data[count].skins[count2].levels[0].displayIcon);
                               }
                            }
 
@@ -200,9 +199,14 @@ function makeCallAndBuildElements() {
                               skinPriceWrapper.appendChild(skinPriceImg)
                            }
 
+                           var hiddenSkinUUID = document.createElement("span");
+                           hiddenSkinUUID.setAttribute("style", "display: none;")
+                           hiddenSkinUUID.textContent = data.data[count].skins[count2].levels[0].uuid
+
                            skinHandler.appendChild(skinimg);
                            skinHandler.appendChild(skinName);
                            skinHandler.appendChild(skinPriceWrapper);
+                           skinHandler.appendChild(hiddenSkinUUID);
 
                            var wrapper = document.getElementById("skins-handler");
                            var nextElement = document.getElementById("pageBottom");
@@ -227,6 +231,6 @@ $(document).ready(() => {
    ipc.send('changeDiscordRP', `skins_activity`)
    makeCallAndBuildElements();
    $('#backToLastPage').on("click", function () {
-      window.location.href = "../weaponskins.html"
+      window.location.href = "../pages/weaponskins.html"
    });
 })

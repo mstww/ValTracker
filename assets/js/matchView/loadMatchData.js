@@ -1,20 +1,84 @@
 $(document).ready(function () {
+    ipcRenderer.send("changeDiscordRP", `matchview_activity`);
     var matchID = sessionStorage.getItem("matchID");
     var playerName = sessionStorage.getItem("player_name");
     var playerTag = sessionStorage.getItem("player_tag");
     var lastPage = sessionStorage.getItem("last_page");
+    $('.player-name-rank').append(playerName)
     $('#backToLastPage').on("click", function () {
         window.location.href = lastPage
     })
     $.ajax({
         url: `https://api.henrikdev.xyz/valorant/v2/match/${matchID}`,
         type: 'get',
-        success: function (data, jqXHR) {
+        success: async function (data, jqXHR) {
             $('.matchview-matchmode').append(data.data.metadata.mode)
             $('.insertMapName').append(data.data.metadata.map)
             var date = new Date(data.data.metadata.game_length);
+            if(date.getSeconds().toString().length == 1) var seconds = '0' + date.getSeconds()
+            else var seconds = date.getSeconds()
             $('.matchview-matchstart').append(data.data.metadata.game_start_patched);
-            $('.insertGameLength').append(`${date.getMinutes()}:${date.getSeconds()}`);
+            $('.insertGameLength').append(`${date.getMinutes()}:${seconds} min`);
+            for(var i = 0; i < data.data.players.all_players.length; i++) {
+                if(data.data.players.all_players[i].name + "#" + data.data.players.all_players[i].tag == playerName + '#' + playerTag) {
+                    var playerDmg = Math.round(data.data.players.all_players[i].damage_made / data.data.rounds.length);
+                    var playerTeam = data.data.players.all_players[i].team
+                    
+                    if(data.data.metadata.mode == "Competitive") {
+                        $('.rank-img-small').attr('src', `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[i].currenttier}/largeicon.png`)
+                    } else {
+                        $('.rank-img-small').css("display", "none")
+                    }
+                }
+            }
+            for(var i = 0; i < data.data.rounds.length; i++) {
+                var roundWrapper = document.createElement("div");
+                roundWrapper.className = "matchview-round"
+
+                var roundCount = document.createElement("div");
+                roundCount.appendChild(document.createTextNode(`Round ${i+1}`))
+
+                var kd = document.createElement("div");
+                var kills;
+                var deaths = 0;
+                for(var i2 = 0; i2 < data.data.rounds[i].player_stats.length; i2++) {
+                    if(data.data.rounds[i].player_stats[i2].player_display_name == playerName + '#' + playerTag) {
+                        kills = data.data.rounds[i].player_stats[i2].kills
+                    }
+                    for(var i3 = 0; i3 < data.data.rounds[i].player_stats[i2].kill_events.length; i3++) {
+                        if(data.data.rounds[i].player_stats[i2].kill_events[i3].victim_display_name == playerName + '#' + playerTag) {
+                            deaths++;
+                        }
+                    }
+                }
+                if(kills >= 5) kd.className = "MatchMVP"
+                kd.textContent = `${kills}/${deaths}`
+
+                var round_end = document.createElement("div");
+                if(data.data.rounds[i].winning_team == playerTeam) {
+                    round_end.textContent = "WON"
+                    round_end.className = "matchview-blue-standing"
+                } else {
+                    round_end.textContent = "LOST"
+                    round_end.className = "matchview-red-standing"
+                }
+
+                var end_type = document.createElement("div");
+                end_type.textContent = data.data.rounds[i].end_type;
+
+                roundWrapper.appendChild(roundCount)
+                roundWrapper.appendChild(kd)
+                roundWrapper.appendChild(round_end)
+                roundWrapper.appendChild(end_type)
+
+                var wrapper = document.getElementById("matchtiles-wrapper")
+                var lastElement = document.getElementById("lastMatchtilesEl")
+                wrapper.insertBefore(roundWrapper, lastElement)
+
+                var sep = document.createElement("hr")
+                sep.setAttribute("style", "border-color: rgba(47, 53, 77, 0.9);")
+                wrapper.insertBefore(sep, roundWrapper)
+            }
 
             var agentUUID_url;
             var headshot_before = 0;
@@ -52,18 +116,7 @@ $(document).ready(function () {
             for (var count = 0; count < data.data.players.all_players.length; count++) {
                 if (data.data.players.all_players[count].name == playerName && data.data.players.all_players[count].tag == playerTag) {
                     if (data.data.metadata.mode == "Competitive") {
-                        var rankIcons = [
-                            './assets/img/iron_1.png', './assets/img/iron_2.png', './assets/img/iron_3.png',
-                            './assets/img/bronze_1.png', './assets/img/bronze_2.png', './assets/img/bronze_3.png',
-                            './assets/img/silver_1.png', './assets/img/silver_2.png', './assets/img/silver_3.png',
-                            './assets/img/gold_1.png', './assets/img/gold_2.png', './assets/img/gold_3.png',
-                            './assets/img/plat_1.png', './assets/img/plat_2.png', './assets/img/plat_3.png',
-                            './assets/img/dia_1.png', './assets/img/dia_2.png', './assets/img/dia_3.png',
-                            './assets/img/immortal_1.png', './assets/img/immortal_2.png', './assets/img/immortal_3.png',
-                            './assets/img/radiant.png',
-                            './assets/img/unranked.png',
-                        ]
-                        $('.matchview-playerrank-img').attr("src", rankIcons[data.data.players.all_players[count].currenttier - 3])
+                        $('.matchview-playerrank-img').attr("src",  `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[count].currenttier}/largeicon.png`)
                     }
                     var dmgperround = Math.round(data.data.players.all_players[count].damage_made / data.data.rounds.length);
                     $(`.insertDmgPerRound`).append(dmgperround);
@@ -108,9 +161,13 @@ $(document).ready(function () {
                     var agentUUID = sessionStorage.getItem("agentUUID")
                     for (var count = 0; count < data2.data.length; count++) {
                         if (data2.data[count].uuid == agentUUID) {
+                            if(data2.data[count].uuid.displayName == playerAgent) {
+                                $('.agent-image').attr('src', data2.data[count].displayIcon)
+                            }
+                            $('.insertDmgRound').append(`${playerDmg}`)
                             for (var iconCount = 0; iconCount < data2.data[count].abilities.length; iconCount++) {
                                 $(`.matchview-abilityicon-${iconCount}`).attr("src", data2.data[count].abilities[iconCount].displayIcon)
-                                $(`.matchview-abilityname-${iconCount}`).append(data2.data[count].abilities[iconCount].displayName + ": ")
+                                $(`#insertability-${iconCount}`).append(data2.data[count].abilities[iconCount].displayName + ": ")
                             }
                         } else {
                             continue;

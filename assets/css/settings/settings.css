@@ -1,0 +1,95 @@
+.settings-wrapper {
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 5%;
+  height: 80%;
+}
+
+.settings-username-input {
+  text-align: left;
+  width: 20%;
+  border: 0;
+  border-bottom: 3px solid #9b9b9b;
+  outline: 0;
+  font-size: 1.3rem;
+  color: var(--global-textcolor);
+  padding: 7px 0;
+  background: transparent;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.settings-username-input:focus {
+  padding-bottom: 7px;
+  border-width: 3px;
+  border-image: linear-gradient(
+    to right,
+    var(--gradient-left),
+    var(--gradient-right)
+  );
+  border-image-slice: 1;
+}
+
+.settings-usertag-input {
+  text-align: left;
+  width: 5%;
+  border: 0;
+  border-bottom: 3px solid #9b9b9b;
+  outline: 0;
+  font-size: 1.3rem;
+  color: var(--global-textcolor);
+  padding: 7px 0;
+  background: transparent;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.settings-usertag-input:focus {
+  padding-bottom: 7px;
+  border-width: 3px;
+  border-image: linear-gradient(
+    to right,
+    var(--gradient-left),
+    var(--gradient-right)
+  );
+  border-image-slice: 1;
+}
+
+.settings-home-username-input {
+  text-align: left;
+  width: 20%;
+  border: 0;
+  border-bottom: 3px solid #9b9b9b;
+  outline: 0;
+  font-size: 1.3rem;
+  color: var(--global-textcolor);
+  padding: 7px 0;
+  background: transparent;
+  -webkit-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.settings-home-username-input:focus {
+  padding-bottom: 7px;
+  border-width: 3px;
+  border-image: linear-gradient(
+    to right,
+    var(--gradient-left),
+    var(--gradient-right)
+  );
+  border-image-slice: 1;
+}
+#selected-color-theme {
+  width: 20%;
+}
+
+.preview-flexdiv {
+  display: flex;
+  flex-direction: row;
+}

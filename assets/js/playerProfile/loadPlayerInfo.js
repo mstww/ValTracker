@@ -12,6 +12,8 @@ function makeCallAndBuildElements() {
         type: 'get',
         success: function (data, xhr) {
             $('.player-pageheader').append(data.data.name + "#" + data.data.tag);
+            sessionStorage.setItem("player_name", data.data.name);
+            sessionStorage.setItem("player_tag", data.data.tag);
             $('.player-card-img').attr("src", data.data.card.small);
             $('.player-card-img').attr("onclick", `cardRedirect(this, this.src, window.location.href)`);
             $('.last-updated').append("Last updated: " + data.data.last_update);

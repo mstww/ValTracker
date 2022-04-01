@@ -1,13 +1,16 @@
 const fs = require('fs');
 $(document).ready(() => {
-    setTimeout(function () {
+    setTimeout(async function () {
         let rawuserdata = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
         let userdataToRead = JSON.parse(rawuserdata);
         var playerName = userdataToRead.playerName
         var playerTag = userdataToRead.playerTag
         let favrawdata = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/matches.json');
         let dataToRead = JSON.parse(favrawdata);
-        $("#selected-matchtype").change(function () {
+
+        var allMaps = await(await fetch('https://valorant-api.com/v1/maps')).json();
+    
+        $("#selected-matchtype").change(async function () {
             document.querySelectorAll('.match-wrapper').forEach(e => e.remove());
             var filterType = document.getElementById('selected-matchtype').value;
             if (filterType == "") {
@@ -23,7 +26,6 @@ $(document).ready(() => {
                     function pad(i) {
                         return ('0' + i).slice(-2);
                     }
-                    var str = d.getUTCHours() + ':' + pad(d.getUTCMinutes()) + ':' + pad(d.getUTCSeconds());
 
                     var Matchcontainer = document.createElement("div");
                     Matchcontainer.className = "match-wrapper";
@@ -32,15 +34,23 @@ $(document).ready(() => {
                     matchmodeIcon.className = "match-mode-icon";
                     var matchmode = data.data.metadata.mode
                     if (matchmode == "Unrated" || matchmode == "Competitive" || matchmode == "Custom Game") {
-                        matchmodeIcon.setAttribute("src", "./assets/img/standard.png")
+                        matchmodeIcon.setAttribute("src", "../assets/img/standard.png")
                     } else {
-                        matchmodeIcon.setAttribute("src", `./assets/img/${matchmode.toLowerCase()}.png`)
+                        matchmodeIcon.setAttribute("src", `../assets/img/${matchmode.toLowerCase()}.png`)
                     }
+
+                    var matchMapDiv = document.createElement("div");
+                    matchMapDiv.className = "match-map-gradient"
 
                     var matchMap = document.createElement("img");
                     matchMap.className = "match-map";
-                    //matchMap.src = `./assets/img/${data.data[count].metadata.map.toLowerCase()}.png`
-                    matchMap.setAttribute("src", `./assets/img/${data.data.metadata.map.toLowerCase()}.png`)
+                    for(var i = 0; i < allMaps.data.length; i++) {
+                        if(allMaps.data[i].displayName == data.data.metadata.map) {
+                            matchMap.setAttribute("src", allMaps.data[i].listViewIcon)
+                        }
+                    }
+
+                    matchMapDiv.appendChild(matchMap)
 
                     var playedAgent = document.createElement("img");
                     playedAgent.className = "match-played-agent";
@@ -54,21 +64,7 @@ $(document).ready(() => {
 
                                 var matchRRimg = document.createElement("img");
                                 matchRRimg.className = "match-rr-img-pp";
-                                var rankIcons = [
-                                    './assets/img/iron_1.png', './assets/img/iron_2.png', './assets/img/iron_3.png',
-                                    './assets/img/bronze_1.png', './assets/img/bronze_2.png', './assets/img/bronze_3.png',
-                                    './assets/img/silver_1.png', './assets/img/silver_2.png', './assets/img/silver_3.png',
-                                    './assets/img/gold_1.png', './assets/img/gold_2.png', './assets/img/gold_3.png',
-                                    './assets/img/plat_1.png', './assets/img/plat_2.png', './assets/img/plat_3.png',
-                                    './assets/img/dia_1.png', './assets/img/dia_2.png', './assets/img/dia_3.png',
-                                    './assets/img/immortal_1.png', './assets/img/immortal_2.png', './assets/img/immortal_3.png',
-                                    './assets/img/radiant.png',
-                                    './assets/img/unranked.png',
-                                ]
-                                matchRRimg.setAttribute("src", `${rankIcons[data.data.players.all_players[playerCount].currenttier -3]}`)
-                                if (matchRRimg.getAttribute("src") == "undefined") {
-                                    matchRRimg.src = "./assets/img/unranked.png"
-                                }
+                                matchRRimg.setAttribute("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[playerCount].currenttier}/largeicon.png`)
 
                                 matchRRwrapper.appendChild(matchRRimg)
 
@@ -187,7 +183,7 @@ $(document).ready(() => {
                         Matchcontainer.appendChild(matchRRwrapper);
                     }
                     Matchcontainer.appendChild(startedOn);
-                    Matchcontainer.appendChild(matchMap);
+                    Matchcontainer.appendChild(matchMapDiv);
 
                     var wrapper = document.getElementById("loading-layer");
                     var nextElement = document.getElementById("lastElement");
@@ -226,15 +222,24 @@ $(document).ready(() => {
                         matchmodeIcon.className = "match-mode-icon";
                         var matchmode = data.data.metadata.mode
                         if (matchmode == "Unrated" || matchmode == "Competitive" || matchmode == "Custom Game") {
-                            matchmodeIcon.setAttribute("src", "./assets/img/standard.png")
+                            matchmodeIcon.setAttribute("src", "../assets/img/standard.png")
                         } else {
-                            matchmodeIcon.setAttribute("src", `./assets/img/${matchmode.toLowerCase()}.png`)
+                            matchmodeIcon.setAttribute("src", `../assets/img/${matchmode.toLowerCase()}.png`)
                         }
 
+                        var matchMapDiv = document.createElement("div");
+                        matchMapDiv.className = "match-map-gradient"
+    
                         var matchMap = document.createElement("img");
                         matchMap.className = "match-map";
-                        //matchMap.src = `./assets/img/${data.data[count].metadata.map.toLowerCase()}.png`
-                        matchMap.setAttribute("src", `./assets/img/${data.data.metadata.map.toLowerCase()}.png`)
+                        for(var i = 0; i < allMaps.data.length; i++) {
+                            if(allMaps.data[i].displayName == data.data.metadata.map) {
+                                matchMap.setAttribute("src", allMaps.data[i].listViewIcon)
+                            }
+                        }
+    
+    
+                        matchMapDiv.appendChild(matchMap)
 
                         var playedAgent = document.createElement("img");
                         playedAgent.className = "match-played-agent";
@@ -248,21 +253,7 @@ $(document).ready(() => {
 
                                     var matchRRimg = document.createElement("img");
                                     matchRRimg.className = "match-rr-img-pp";
-                                    var rankIcons = [
-                                        './assets/img/iron_1.png', './assets/img/iron_2.png', './assets/img/iron_3.png',
-                                        './assets/img/bronze_1.png', './assets/img/bronze_2.png', './assets/img/bronze_3.png',
-                                        './assets/img/silver_1.png', './assets/img/silver_2.png', './assets/img/silver_3.png',
-                                        './assets/img/gold_1.png', './assets/img/gold_2.png', './assets/img/gold_3.png',
-                                        './assets/img/plat_1.png', './assets/img/plat_2.png', './assets/img/plat_3.png',
-                                        './assets/img/dia_1.png', './assets/img/dia_2.png', './assets/img/dia_3.png',
-                                        './assets/img/immortal_1.png', './assets/img/immortal_2.png', './assets/img/immortal_3.png',
-                                        './assets/img/radiant.png',
-                                        './assets/img/unranked.png',
-                                    ]
-                                    matchRRimg.setAttribute("src", `${rankIcons[data.data.players.all_players[playerCount].currenttier -3]}`)
-                                    if (matchRRimg.getAttribute("src") == "undefined") {
-                                        matchRRimg.src = "./assets/img/unranked.png"
-                                    }
+                                    matchRRimg.setAttribute("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[playerCount].currenttier}/largeicon.png`)
 
                                     matchRRwrapper.appendChild(matchRRimg)
 
@@ -381,7 +372,7 @@ $(document).ready(() => {
                             Matchcontainer.appendChild(matchRRwrapper);
                         }
                         Matchcontainer.appendChild(startedOn);
-                        Matchcontainer.appendChild(matchMap);
+                        Matchcontainer.appendChild(matchMapDiv);
 
                         var wrapper = document.getElementById("loading-layer");
                         var nextElement = document.getElementById("lastElement");

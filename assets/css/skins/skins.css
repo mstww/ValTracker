@@ -1,0 +1,614 @@
+.weapon-image {
+  width: 25%;
+  margin-right: 2rem;
+  filter: drop-shadow(0px 0px 5px rgb(0, 0, 0));
+  -webkit-filter: drop-shadow(0px 0px 5px rgb(0, 0, 0));
+}
+
+.weapon-name {
+  font-size: 1.6em;
+}
+
+.weapon-skins {
+  font-size: 1.4em;
+  color: #000000;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  margin-bottom: 1rem;
+  height: 101%;
+}
+
+.weapon-sub {
+  font-size: 1.35em !important;
+  font-weight: 400;
+  margin-left: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.weapon-sub:hover {
+  color: white;
+}
+
+.weapon-sub.color {
+  background: linear-gradient(
+    to right,
+    var(--gradient-left),
+    var(--gradient-right)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.maximized .main-inv {
+  display: grid;
+  position: relative;
+  grid-template-columns: 15% 15% 21% 21% 25%;
+  grid-template-rows: 20% 20% 20% 20% 20%;
+  gap: 2.8% 1%;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "Card Classic Stinger Bulldog Marshal"
+    "Card Shorty Spectre Guardian Operator"
+    "Card Frenzy Bucky Phantom Ares"
+    "Title Ghost Judge Vandal Odin"
+    "Spray-3 Sheriff Free-Space Free-Space Melee";
+  height: 100%;
+  transform: scale(0.88) !important;
+  width: 100% !important;
+  left: 0 !important;
+  top: -3.85%;
+}
+
+.main-inv {
+  display: grid;
+  position: relative;
+  grid-template-columns: 15% 15% 21% 21% 25%;
+  grid-template-rows: 20% 20% 20% 20% 20%;
+  gap: 2.8% 1%;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "Card Classic Stinger Bulldog Marshal"
+    "Card Shorty Spectre Guardian Operator"
+    "Card Frenzy Bucky Phantom Ares"
+    "Title Ghost Judge Vandal Odin"
+    "Spray-3 Sheriff Free-Space Free-Space Melee";
+  height: 100%;
+  width: 105%;
+  left: -4%;
+  transform: scale(0.85);
+  top: -3.85%;
+}
+
+.Classic {
+  grid-area: Classic;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Shorty {
+  grid-area: Shorty;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Frenzy {
+  grid-area: Frenzy;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Ghost {
+  grid-area: Ghost;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Sheriff {
+  grid-area: Sheriff;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Stinger {
+  grid-area: Stinger;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Spectre {
+  grid-area: Spectre;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Bucky {
+  grid-area: Bucky;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Judge {
+  grid-area: Judge;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Free-Space {
+  grid-area: Free-Space;
+}
+
+.Bulldog {
+  grid-area: Bulldog;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Guardian {
+  grid-area: Guardian;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Phantom {
+  grid-area: Phantom;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Vandal {
+  grid-area: Vandal;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Marshal {
+  grid-area: Marshal;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Operator {
+  grid-area: Operator;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Ares {
+  grid-area: Ares;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Odin {
+  grid-area: Odin;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Melee {
+  grid-area: Melee;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Card {
+  grid-area: Card;
+  position: relative;
+  text-align: center;
+  text-justify: baseline;
+}
+
+.Spray {
+  grid-area: Spray-3;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.Title {
+  grid-area: Title;
+  background-color: rgba(224, 60, 60, 0.2);
+}
+
+.main-inv div {
+  position: relative;
+  color: #000000;
+  font-size: 1.6em;
+  text-align: baseline;
+  align-content: center;
+  justify-items: center;
+  display: grid;
+  user-select: none;
+  min-width: 90%;
+  max-width: 110%;
+}
+
+.main-inv div img {
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.weapon-img {
+  width: 80%;
+  height: auto;
+  transition: all 0.2s ease;
+  -webkit-user-drag: none;
+}
+
+.maximized .playercard-img {
+  width: 100% !important;
+  height: 100%;
+  transition: all 0.2s ease;
+}
+
+.playercard-img {
+  width: 100%;
+  height: 100%;
+  transition: all 0.2s ease;
+  z-index: 1;
+  -webkit-user-drag: none;
+}
+
+.type-header {
+  color: white;
+  position: absolute;
+  top: -15%;
+  pointer-events: none;
+}
+
+.card-header {
+  color: white;
+  position: absolute;
+  top: -4.8%;
+  z-index: 2;
+}
+
+.gunname {
+  position: absolute;
+  bottom: 0;
+  font-size: 1.1em;
+  width: 100%;
+  text-align: center;
+  background-color: rgba(243, 44, 44, 0.3);
+}
+
+#weapon-tile {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: 2px solid rgba(47, 53, 77, 0.9);
+  border-radius: 4px;
+}
+
+#weapon-tile span {
+  transition: all 0.2s ease;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+#weapon-tile img {
+  position: relative;
+  top: -10%;
+}
+
+#weapon-tile::before {
+  content: "";
+  background-color: #1b1b1b;
+  width: 100%;
+  height: auto;
+  transform: skewX(20deg) translateX(-110%);
+}
+
+#weapon-tile:hover > #weapon-tile::before {
+  content: "";
+  background-color: #1b1b1b;
+  transform: skewX(20deg) translateX(0);
+}
+
+#weapon-tile:hover:not(.type-header)
+  > *:not(.type-header):not(.card-header):not(.gunname) {
+  transform: scale(1.1);
+}
+
+#card-tile {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+  height: 100%;
+  width: 96%;
+}
+
+#card-tile img {
+  border-radius: 4px;
+  border: 2px solid rgb(100, 100, 100);
+  filter: drop-shadow(0px 0px 2px #000000);
+}
+
+#card-tile:hover:not(.type-header)
+  > *:not(.type-header):not(.card-header):not(.gunname) {
+  transform: scale(1.025);
+}
+#currentSkinsPage {
+  margin-left: 8%;
+}
+
+#currentSkinsPage::before {
+  content: "\2BA9";
+}
+
+.collectable-skins-wrapper {
+  margin: 1% 5% 0 5%;
+}
+
+.skin-page-default-img {
+  width: 10%;
+  margin-left: 5.5rem;
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.skin-wrapper {
+  display: flex;
+  height: 5rem;
+  padding: 0.7rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(47, 53, 77, 0.9);
+  border-radius: 4px;
+}
+
+.skin-color-options {
+  color: #ffa2bb;
+}
+
+.skin-color-options-grey {
+  color: #7c7c7c;
+}
+
+.skin-wrapper span {
+  margin-left: 3rem;
+}
+
+.single-skin-img {
+  height: 100%;
+  filter: drop-shadow(0px 0px 10px #000000);
+}
+
+.weapon-info {
+  display: flex;
+  margin-left: 5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.pageheader-skincount {
+  position: relative;
+  margin-top: 1.5rem;
+  font-size: 1.4em;
+}
+
+.skin-page-default-img-wrapper {
+  margin-top: 5rem;
+}
+
+.skin-wrapper {
+  align-items: center;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.skin-levels-grey {
+  color: rgba(47, 53, 77, 0.9);
+}
+
+.title-wrapper {
+  display: flex;
+  height: 0.8rem;
+  font-size: 1.25em;
+  align-items: center;
+  padding: 0.7rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(47, 53, 77, 0.9);
+  border-radius: 4px;
+}
+
+.exclusive-title {
+  margin-left: auto;
+  color: #ff0044;
+}
+
+.card-wrapper {
+  display: flex;
+  height: 4rem;
+  padding: 0.7rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(47, 53, 77, 0.9);
+  border-radius: 4px;
+  align-items: center;
+  font-size: 1.3em;
+  cursor: pointer;
+}
+
+.card-wrapper:hover > .wide-card-image {
+  transform: scale(1.05);
+}
+
+.wide-card-image {
+  height: 100%;
+  border-radius: 4px;
+  margin-right: 1rem;
+  filter: drop-shadow(0px 0px 10px #000000);
+  transition: all 0.2s ease;
+}
+
+.spray-wrapper {
+  display: flex;
+  height: 5rem;
+  padding: 0.7rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid rgba(47, 53, 77, 0.9);
+  border-radius: 4px;
+  align-items: center;
+  font-size: 1.3em;
+}
+
+.skin-info {
+  width: 10%;
+}
+
+.currency-icon-small {
+  width: 2rem;
+  margin-left: 1rem;
+}
+
+.flex-li {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.skin-price {
+  font-size: 1.3em;
+  margin-left: auto;
+}
+
+.weapon-image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weapon-image {
+  border: 1px solid rgba(47, 53, 77, 0.9);
+  padding: 5rem;
+  min-width: 25rem;
+  max-width: 25rem;
+  width: 25rem;
+  border-radius: 4px;
+}
+
+.level-options {
+  width: 20%;
+  position: absolute;
+  right: 8rem;
+}
+
+.level-options-ul {
+  padding-left: initial;
+}
+
+.level-options-li {
+  display: flex;
+  height: 3.5rem;
+  padding-left: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: var(--global-textcolor);
+  background-color: var(--app-color-light);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.level-options-li:hover {
+  display: flex;
+  height: 3.5rem;
+  padding-left: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: var(--button-color-var);
+  background-color: var(--button-hover-color);
+  border-radius: 4px;
+}
+
+.level-options-li.active-option {
+  background-color: var(--button-color);
+  color: var(--button-color-var);
+}
+
+.level-options-li.active-option:hover {
+  background-color: var(--button-color);
+}
+
+.singleview-colors {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.singleview-swatch-wrapper {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.singleview-swatch {
+  cursor: pointer;
+  width: 4rem;
+  filter: drop-shadow(0px 0px 5px #000000);
+  -webkit-filter: drop-shadow(0px 0px 5px #000000);
+  -webkit-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+.singleview-swatch.swatch-active {
+  filter: drop-shadow(0px 0px 5px var(--button-color));
+}
+
+.singleview-swatch.swatch-active:hover {
+  transform: scale(1);
+}
+
+.singleview-swatch:not(:last-child) {
+  margin-right: 2rem;
+}
+
+.singleview-swatch:hover {
+  -webkit-transform: scale(1.05);
+  -ms-transform: scale(1.05);
+  transform: scale(1.05);
+}
+
+.skin-price.vp.disabled {
+  color: #ff0062;
+  text-shadow: 0 0 2.5px rgba(255, 0, 98, 0.7), 0 0 5px rgba(255, 0, 98, 0.7),
+    0 0 15px rgba(255, 0, 98, 0.7);
+}
+
+.skin-price-wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  width: 15rem;
+  align-items: center;
+}
+
+.skin-price-img {
+  width: 15%;
+  height: 15%;
+  margin-left: 0.5rem;
+}
+
+.skin-price {
+  margin-left: auto !important;
+}
+
+.skin-price.disabled {
+  color: #ff0062;
+  text-shadow: 0 0 2.5px rgba(255, 0, 98, 0.7), 0 0 5px rgba(255, 0, 98, 0.7),
+    0 0 15px rgba(255, 0, 98, 0.7);
+}
+
+.show-skinvid {
+  display: none;
+}
+
+.maximized .skinview-weapon-video {
+  position: relative;
+  width: 80rem;
+  height: 70%;
+  top: -3rem;
+  left: -2%;
+}
+
+.skinview-weapon-video {
+  position: relative;
+  width: 70%;
+  height: calc(fit-content - 5%);
+  top: -4rem;
+  left: 15%;
+}
+
+.maximized #sec-skins {
+  top: 13% !important;
+}

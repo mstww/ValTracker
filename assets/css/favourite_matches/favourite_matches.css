@@ -1,0 +1,112 @@
+.match-header-favMatches {
+  position: relative;
+  top: 2rem;
+}
+
+.fav-matchwrapper {
+  height: 5rem;
+  width: 90%;
+}
+
+.match-result-lost-favmatch {
+  color: #ff0044;
+  width: 8%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.match-result-won-favmatch {
+  color: #00ffd5;
+  width: 8%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.match-result-draw-favmatch {
+  color: #fff09e;
+  width: 8%;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+#favStarFavs {
+  position: absolute;
+  font-size: 1.3em;
+  right: 1.6rem !important;
+  cursor: pointer;
+  color: rgb(255, 251, 0);
+  transition: all 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+
+#favStarFavs:hover {
+  color: rgb(190, 188, 20);
+}
+
+.remove-fav-promt-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  display: none;
+}
+
+.remove-fav-promt-window {
+  transform: scale(0.8);
+  background-color: #000000;
+  width: 30%;
+  height: fit-content;
+  padding: 1rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.match-to-delete-agent {
+  width: 20%;
+}
+
+.delete-favmatch-button {
+  margin-top: 0.5rem;
+}
+
+.deletefav-relative-div-largeview {
+  position: relative;
+  margin-left: 93%;
+  margin-top: 0.5%;
+  width: 100%;
+  -webkit-transition: 0.4s ease;
+  -o-transition: 0.4s ease;
+  transition: 0.4s ease;
+  z-index: 1000;
+}
+
+.deletefav-relative-div-largeview #toggle::after {
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) rotate(-45deg);
+  -ms-transform: translate(-50%, -50%) rotate(-45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
+  border-color: #bc0233;
+  color: #bc0233;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
+    0 0 20px rgba(192, 192, 192, 0.7), 0 0 50px rgba(112, 112, 112, 0.7);
+}
+
+.deletefav-relative-div-largeview #toggle::before {
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) rotate(45deg);
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+  border-color: #bc0233;
+  color: #bc0233;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
+    0 0 20px rgba(192, 192, 192, 0.7), 0 0 50px rgba(112, 112, 112, 0.7);
+}

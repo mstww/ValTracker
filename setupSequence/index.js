@@ -1,6 +1,5 @@
 const fs = require('fs')
-const fs_extra = require('fs-extra')
-const electron = require('electron')
+const { BrowserWindow } = require('@electron/remote')
 const riotIPC = require('electron').ipcRenderer
 
 function loadFade() {
@@ -26,7 +25,7 @@ function leaveFade2() {
 function leaveFade3() {
     $('.setup-wrapper-3').fadeTo(950, 0);
     setTimeout(function () {
-        window.location.href = "../fakeLoadingIndex.html"
+        window.location.href = "../pages/decoyIndex.html"
     }, 1000)
 }
 
@@ -111,7 +110,7 @@ function getTokenDataFromURL(url) {
 
 async function showSignIn() {
     return new Promise((resolve, reject) => {
-        const loginWindow = new electron.remote.BrowserWindow({
+        const loginWindow = new BrowserWindow({
             show: false,
             width: 470,
             height: 880,
@@ -138,7 +137,6 @@ async function showSignIn() {
                         if (riotcookie.name == "ssid") {
                             cookieString = riotcookie.value
                         }
-                        console.log(JSON.parse(JSON.stringify(riotcookie)))
                     })
                     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
                     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
@@ -204,6 +202,7 @@ async function getShopData() {
 }
 
 $(document).ready(() => {
+    riotIPC.send('isInSetup');
     loadFade();
     $('#openRiotLogin').on("click", async function () {
         const data = await showSignIn();
@@ -212,21 +211,17 @@ $(document).ready(() => {
 
         riotIPC.send('setCookies', 'please')
         riotIPC.on('tdid', async function (event, arg) {
-            console.log(arg)
             requiredCookie = "tdid=" + arg
 
             puuid = await getPlayerUUID();
-            console.log(puuid);
 
             entitlement_token = await getEntitlement();
 
             var reagiondata = await getXMPPRegion();
-            console.log(reagiondata)
             region = reagiondata.affinities.live
 
             var shopData = await getShopData();
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-            console.log(shopData)
 
             Date.prototype.addSeconds = function (seconds) {
                 var copiedDate = new Date(this.getTime());
@@ -355,7 +350,6 @@ $(document).ready(() => {
                         $('.player-pageheader').empty();
                         $('.player-pageheader').append(data.data.name + "#" + data.data.tag);
                         $('.player-card-img-setup').attr("src", data.data.card.small);
-                        //console.log("Card: " + data.data.card.small);
                         $('.last-updated').empty();
                         $('.last-updated').append("Last updated: " + data.data.last_update);
                         $('.player-account-level').empty();
@@ -374,6 +368,7 @@ $(document).ready(() => {
 
                             var searchedPlayerName = data.data.name
                             var searchedPlayerTag = data.data.tag
+                            var puuid = data.data.puuid
                             var searchedRegion = playerRegion;
 
                             let finishedData = {

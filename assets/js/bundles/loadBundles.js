@@ -7,8 +7,7 @@ function makeCallAndBuildElements() {
       url: `https://api.valtracker.gg/bundles`,
       type: 'get',
       success: function (data, jqXHR) {
-         var count;
-         for (var count = 0; count < data.data.length; count++) {
+         for (var count = (data.data.length-1); count > -1; count--) {
             if (data.data[count].displayIcon2 == "https://media.valorant-api.com/bundles/fc723fef-444a-4013-a741-3e85a97382f2/displayicon2.png" || data.data[count].displayIcon2 == "https://media.valorant-api.com/bundles/338cabdb-473f-1f37-fa35-47a3d994517f/displayicon2.png") {
                ApiCall_BundleTitle = data.data[count].name + " 2.0"
                ApiCall_ImageSource = data.data[count].displayIcon2

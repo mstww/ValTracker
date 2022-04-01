@@ -2,9 +2,9 @@ $(document).ready(() => {
     let rawdata = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
     let dataToRead = JSON.parse(rawdata);
 
-    var playerName = dataToRead.playerName
-    var playerTag = dataToRead.playerTag
     var playerRegion = dataToRead.playerRegion
+    var playerUUID = dataToRead.playerUUID
+
     $('#sec').css("display", "none")
     setTimeout(function () {
         if (sessionStorage.getItem("afterReload")) {
@@ -35,18 +35,18 @@ $(document).ready(() => {
 
             $.ajax({
                 dataType: "json",
-                url: `https://api.henrikdev.xyz/valorant/v1/mmr-history/${playerRegion}/${playerName}/${playerTag}`,
+                url: `https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr-history/${playerRegion}/${playerUUID}`,
                 type: 'get',
-                success: function (data, xhr) {
+                success: function (data, jqXHR) {
                     if (data.data == null || data.name == null) {
-                        $('.user-rank-icon').attr("src", "./assets/img/unranked.png")
+                        $('.user-rank-icon').attr("src", "../assets/img/unranked.png")
                         $('.user-rankrating').append("0")
                         $('.home-avg-rrchange').empty()
                         $('.home-avg-rrchange').append("You haven't played any competitive matches yet!")
 
                         var path = window.location.pathname;
                         var page = path.split("/").pop();
-                        if (page == "fakeLoadingIndex.html") {
+                        if (page == "decoyIndex.html") {
                             setTimeout(function () {
                                 $('.loading-div-home').fadeTo(950, 0)
                                 $('.user-rank-icon').fadeTo(950, 1)
@@ -76,18 +76,7 @@ $(document).ready(() => {
                         function ispositive(n) {
                             return 1 / (n * 0) === 1 / 0
                         }
-                        var rankIcons = [
-                            './assets/img/unranked.png',
-                            './assets/img/iron_1.png', './assets/img/iron_2.png', './assets/img/iron_3.png',
-                            './assets/img/bronze_1.png', './assets/img/bronze_2.png', './assets/img/bronze_3.png',
-                            './assets/img/silver_1.png', './assets/img/silver_2.png', './assets/img/silver_3.png',
-                            './assets/img/gold_1.png', './assets/img/gold_2.png', './assets/img/gold_3.png',
-                            './assets/img/plat_1.png', './assets/img/plat_2.png', './assets/img/plat_3.png',
-                            './assets/img/dia_1.png', './assets/img/dia_2.png', './assets/img/dia_3.png',
-                            './assets/img/immortal_1.png', './assets/img/immortal_2.png', './assets/img/immortal_3.png',
-                            './assets/img/radiant.png',
-                        ]
-                        $('.user-rank-icon').attr("src", rankIcons[data.data[0].currenttier - 3])
+                        $('.user-rank-icon').attr("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data[0].currenttier}/largeicon.png`)
                         var i = 0;
                         for (var count = 0; count < data.data.length; count++) {
                             if (ispositive(data.data[count].mmr_change_to_last_game) == true) {
@@ -110,7 +99,7 @@ $(document).ready(() => {
                         }
                         var path = window.location.pathname;
                         var page = path.split("/").pop();
-                        if (page == "fakeLoadingIndex.html") {
+                        if (page == "decoyIndex.html") {
                             setTimeout(function () {
                                 $('.loading-div-home').fadeTo(950, 0)
                                 $('.user-rank-icon').fadeTo(950, 1)
@@ -132,10 +121,10 @@ $(document).ready(() => {
                         }
                     }
                 },
-                error: function () {
+                error: function (jqXHR) {
                     var path = window.location.pathname;
                     var page = path.split("/").pop();
-                    if (page == "fakeLoadingIndex.html") {
+                    if (page == "decoyIndex.html") {
                         setTimeout(function () {
                             $('.loading-div-home').fadeTo(950, 0)
                             $('#sec').css("opacity", "0")

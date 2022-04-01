@@ -1,4 +1,4 @@
-const electron = require('electron')
+const { BrowserWindow } = require('@electron/remote')
 var authfs = require('fs')
 const riotIPC = require('electron').ipcRenderer
 
@@ -26,7 +26,7 @@ function getTokenDataFromURL(url) {
 
 async function showSignIn() {
     return new Promise((resolve, reject) => {
-        const loginWindow = new electron.remote.BrowserWindow({
+        const loginWindow = new BrowserWindow({
             show: false,
             width: 470,
             height: 880,
@@ -53,7 +53,6 @@ async function showSignIn() {
                         if (riotcookie.name == "ssid") {
                             cookieString = riotcookie.value
                         }
-                        console.log(JSON.parse(JSON.stringify(riotcookie)))
                     })
                     authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
                     authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
@@ -135,7 +134,6 @@ $(document).ready(() => {
                 async function checkData() {
                     var rawOldTokenData = authfs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
                     oldTokenData = JSON.parse(rawOldTokenData)
-                    console.log(oldTokenData)
 
                     bearer = oldTokenData.accessToken;
                     id_token = oldTokenData.id_token;
@@ -144,17 +142,15 @@ $(document).ready(() => {
                     entitlement_token = await getEntitlement();
                     if (typeof entitlement_token === "string") {
                         var reagiondata = await getXMPPRegion();
-                        console.log(reagiondata)
                         region = reagiondata.affinities.live
 
                         var shopData = await getShopData();
                         authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-                        console.log(shopData)
 
                         var pathvar = document.location.pathname;
                         var page = pathvar.split("/").pop();
 
-                        if (page == "index.html" || page == "fakeLoadingIndex.html") {
+                        if (page == "index.html" || page == "decoyIndex.html") {
                             $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                             $('.featured-bundle-time-left').css("opacity", "0");
                         }
@@ -184,26 +180,22 @@ $(document).ready(() => {
 
                             riotIPC.send('setCookies', 'please')
                             riotIPC.on('tdid', async function (event, arg) {
-                                console.log(arg)
                                 requiredCookie = "tdid=" + arg
 
                                 puuid = await getPlayerUUID();
-                                console.log(puuid);
 
                                 entitlement_token = await getEntitlement();
 
                                 var reagiondata = await getXMPPRegion();
-                                console.log(reagiondata)
                                 region = reagiondata.affinities.live
 
                                 var shopData = await getShopData();
                                 authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-                                console.log(shopData)
 
                                 var pathvar = document.location.pathname;
                                 var page = pathvar.split("/").pop();
 
-                                if (page == "index.html" || page == "fakeLoadingIndex.html") {
+                                if (page == "index.html" || page == "decoyIndex.html") {
                                     $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                                     $('.featured-bundle-time-left').css("opacity", "0");
                                 }
@@ -219,13 +211,12 @@ $(document).ready(() => {
                                 }
 
                                 authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+                                window.location.href = ""
                             });
                         });
 
                         riotIPC.on('reauthSuccess', async function (event, arg) {
-                            console.log(arg)
                             const tokenData = getTokenDataFromURL(arg)
-                            console.log(tokenData.expiresIn)
                             authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
 
                             bearer = tokenData.accessToken;
@@ -233,26 +224,22 @@ $(document).ready(() => {
 
                             riotIPC.send('setCookies', 'please')
                             riotIPC.on('tdid', async function (event, arg) {
-                                console.log(arg)
                                 requiredCookie = "tdid=" + arg
 
                                 puuid = await getPlayerUUID();
-                                console.log(puuid);
 
                                 entitlement_token = await getEntitlement();
 
                                 var reagiondata = await getXMPPRegion();
-                                console.log(reagiondata)
                                 region = reagiondata.affinities.live
 
                                 var shopData = await getShopData();
                                 authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-                                console.log(shopData)
 
                                 var pathvar = document.location.pathname;
                                 var page = pathvar.split("/").pop();
 
-                                if (page == "index.html" || page == "fakeLoadingIndex.html") {
+                                if (page == "index.html" || page == "decoyIndex.html") {
                                     $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                                     $('.featured-bundle-time-left').css("opacity", "0");
                                 }

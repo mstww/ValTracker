@@ -10,13 +10,9 @@ $(document).ready(() => {
   var path2 = pathvar.substring(pathvar.indexOf('/'), pathvar.lastIndexOf('/'));
   var directoryName = path2.split("/").pop();
 
-  if (directoryName == "CollectablePages") {
-    var pjson = require('../package.json');
-    $('#WindowName').append("VALTracker v" + pjson.version)
-  } else {
-    var pjson = require('./package.json');
-    $('#WindowName').append("VALTracker v" + pjson.version)
-  }
+  var pjson = require('../package.json');
+  $('#WindowName').append("VALTracker v" + pjson.version)
+
   var coll = document.getElementsByClassName("collapsible");
   var i;
   var path = window.location.pathname;

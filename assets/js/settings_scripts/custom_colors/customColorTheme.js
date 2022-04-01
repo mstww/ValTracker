@@ -9,7 +9,7 @@ if (colorDataPre.isCustomTheme == true) {
     let rawColorData3 = colorFS2.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataPre.themeName}.json`);
     colorData2 = JSON.parse(rawColorData3);
 } else {
-    let rawColorData2 = colorFS2.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/${colorDataPre.themeName}.json`);
+    let rawColorData2 = colorFS2.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/preset_themes/${colorDataPre.themeName}.json`);
     colorData2 = JSON.parse(rawColorData2);
 }
 
@@ -32,13 +32,8 @@ function hexToRgb(hex) {
 
 var values = colorData2.box_shadow.split(')');
 var r = values[0] + ")"
-var pre_g = values[1]
-var pre_b = values[2]
 
-var g = pre_g.replace(", ", "") + ")"
-var b = pre_b.replace(", ", "") + ")"
-
-var r2 = r.replace("0 0 5px rgba(", "")
+var r2 = r.replace("0 0 2.5px rgba(", "")
 var r3 = r2.replace(")", "")
 
 var values2 = r3.split(', ');

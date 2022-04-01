@@ -97,7 +97,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
 
    var data = await getBundles();
 
-   if (data.data.price != undefined) {
+   if (data.data.price !== undefined) {
       bundleInfoLi1Span.appendChild(document.createTextNode(data.data.price))
    } else {
       bundleInfoLi1Span.appendChild(document.createTextNode("Bundle not being sold."))
@@ -146,7 +146,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
 
          var flexLi3 = document.createElement("li");
          var flexLi3Span = document.createElement("span");
-         if (data.data.weapons[i2].price != undefined) {
+         if (data.data.weapons[i2].price !== undefined) {
             flexLi3Span.className = "single-weapon-price";
             flexLi3Span.appendChild(document.createTextNode("Cost: " + data.data.weapons[i2].price))
          } else {
