@@ -1661,3 +1661,13 @@ select:focus::-ms-value {
   height: 2rem;
   margin-bottom: 1rem;
 }
+
+.message a {
+  transition: all 0.2s ease;
+  color: var(--gradient-left);
+}
+
+.message a:hover {
+  text-decoration: underline;
+  color: var(--gradient-right);
+}

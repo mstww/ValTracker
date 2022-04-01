@@ -1,5 +1,7 @@
 const redfs = require('fs')
 
+var { shell } = require('electron')
+
 function loadFade() {
     $('.app').fadeTo(150, 1);
 }
@@ -12,10 +14,6 @@ function toggle() {
     var sec = document.getElementById('sec');
     sec.classList.toggle('active');
 }
-
-var {
-    shell
-} = require('electron')
 
 function openInDefaultBrowser(href) {
     shell.openExternal(href);
@@ -30,7 +28,7 @@ $('.fab.fa-twitter').on("click", function () {
 })
 
 $('.fab.fa-github').on("click", function () {
-    openInDefaultBrowser("https://github.com/SpiritLetsPlays/VALTracker_src")
+    openInDefaultBrowser("https://github.com/VALTracker/DesktopClient")
 })
 
 $('.fas.fa-globe').on("click", function () {

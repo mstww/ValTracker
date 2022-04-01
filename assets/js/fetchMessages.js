@@ -85,6 +85,8 @@ $(document).ready(async () => {
             var lastElement = document.getElementById("lastMessageElement");
 
             messageHandler.insertBefore(wrapper, lastElement)
+
+            $('.message a').attr('onclick', 'event.preventDefault(); openInDefaultBrowser(this.href);')
             
             i++;
         }

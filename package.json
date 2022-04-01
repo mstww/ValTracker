@@ -1,7 +1,7 @@
 {
   "name": "valtracker",
   "productName": "VALTracker",
-  "version": "0.8.28-alpha",
+  "version": "0.8.29-alpha",
   "description": "A free Desktop app to look up your VALORANT Statistics and Ingame Collectables.",
   "main": "main.js",
   "scripts": {
@@ -29,13 +29,13 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "SpiritLetsPlays",
-        "repo": "VALTracker_desktop"
+        "owner": "VALTracker",
+        "repo": "DesktopClient"
       }
     ]
   },
   "author": "Spirit",
-  "repository": "https://github.com/spiritletsplays/VALTracker_desktop",
+  "repository": "https://github.com/VALTracker/DesktopClient",
   "license": "MIT",
   "devDependencies": {
     "ansi-regex": "^6.0.1",

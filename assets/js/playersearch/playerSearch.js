@@ -2,36 +2,37 @@ const ipc = require('electron').ipcRenderer;
 const fs = require('fs')
 
 if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json')) {
+}
+
+async function deleteSearchedPlayer(DOMElement, playerSlot) {
   var lastSearchedMatches = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json');
   var parsedLastSearchedMatches = JSON.parse(lastSearchedMatches)
+  
+  $(DOMElement).remove();
+  $('.removeLastSearch').addClass('disabled');
+  parsedLastSearchedMatches.splice(playerSlot, 1);
+  fs.writeFile(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json', JSON.stringify(parsedLastSearchedMatches), err => {
+    if(err) console.log(err)
+    $('.removeLastSearch').removeClass('disabled');
+  })
+}
 
-  async function deleteSearchedPlayer(DOMElement, playerSlot) {
-    $(DOMElement).remove();
-    $('.removeLastSearch').addClass('disabled');
-    parsedLastSearchedMatches.splice(playerSlot, 1);
-    fs.writeFile(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json', JSON.stringify(parsedLastSearchedMatches), err => {
-      if(err) console.log(err)
-      $('.removeLastSearch').removeClass('disabled');
-    })
-  }
+async function openSearchedPlayer(playerData) {
+  var splitPlayerData = playerData.split(";")
+  var p_uuid = splitPlayerData[0]
+  var p_name = splitPlayerData[1]
+  var p_tag = splitPlayerData[2]
+  var p_reg = splitPlayerData[3]
+
+  sessionStorage.setItem("puuid", p_uuid);
+  sessionStorage.setItem("player_name", p_name);
+  sessionStorage.setItem("player_tag", p_tag);
+  sessionStorage.setItem("player_region", p_reg);
+
+  var page = window.location.href;
+  sessionStorage.setItem("last_page", page);
   
-  async function openSearchedPlayer(playerData) {
-    var splitPlayerData = playerData.split(";")
-    var p_uuid = splitPlayerData[0]
-    var p_name = splitPlayerData[1]
-    var p_tag = splitPlayerData[2]
-    var p_reg = splitPlayerData[3]
-  
-    sessionStorage.setItem("puuid", p_uuid);
-    sessionStorage.setItem("player_name", p_name);
-    sessionStorage.setItem("player_tag", p_tag);
-    sessionStorage.setItem("player_region", p_reg);
-  
-    var page = window.location.href;
-    sessionStorage.setItem("last_page", page);
-    
-    window.location.href = "playerProfile.html";
-  }
+  window.location.href = "playerProfile.html";
 }
 
 $(document).ready(() => {
@@ -50,6 +51,9 @@ $(document).ready(() => {
 
   playerCount = 0;
   if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json')) {
+    var lastSearchedMatches = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json');
+    var parsedLastSearchedMatches = JSON.parse(lastSearchedMatches)
+
     parsedLastSearchedMatches.forEach(player => {
       var playerWrapper = document.createElement("div");
       playerWrapper.className = "last-searched-player";
