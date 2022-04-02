@@ -802,11 +802,11 @@ var updateCheck;
 
 app.on("ready", async function () {
   createWindow();
-  if (!isDev) {
+  if(!isDev) {
     autoUpdater.checkForUpdates();
     updateCheck = setInterval(function () {
       autoUpdater.checkForUpdates();
-    }, 600000);
+    }, 300000);
   }
   let onLoadData = fs.readFileSync(
     process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json"
@@ -834,7 +834,7 @@ autoUpdater.on("checking-for-update", () => {
 autoUpdater.on("update-available", (info) => {
   sendStatusToWindow("Update available.");
   mainWindow.webContents.send("update-available");
-  window.clearInterval(updateCheck);
+  clearInterval(updateCheck);
 });
 
 autoUpdater.on("update-not-available", (info) => {
@@ -924,6 +924,7 @@ function getTokenDataFromURL(url) {
     throw new Error(err);
   }
 }
+
 ipc.on("startReauthCycle", async function (event, arg) {
   async function reauthCycle() {
     if (
@@ -1265,8 +1266,6 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
       var isPractice = false;
   
       var gameTimeout = false;
-
-      var messageCount = 0;
     
       ws.on("open", async () => {
         await find('name', 'VALORANT-Win64-Shipping.exe', true)
@@ -1749,22 +1748,21 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
     
           // Get Match ID (Emitted when match is starting, so switch RP)
           if(matchData[1] == 'OnJsonApiEvent_riot-messaging-service_v1_message' && matchData[2].uri.split('/').slice(0, -1).join('/') == '/riot-messaging-service/v1/message/ares-core-game/core-game/v1/matches') {
-            messageCount++;
-            if(gameTimeout == false && messageCount > 3) {
-              messageCount = 0;
-              console.log('Entered CoreGame.')
+            if(gameTimeout == false) {
+              //console.log('Entered CoreGame.')
+
+              var matchID = matchData[2].data.resource.split("/").pop()
+
+              var gameStatus = await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/core-game/v1/matches/${matchID}`, {
+                headers: {
+                  'X-Riot-Entitlements-JWT': entitlement_token,
+                  Authorization: 'Bearer ' + tokenData.accessToken
+                },
+                httpAgent: agent
+              }).catch(error => {console.log(error);})
       
-              if(activeGameStatus == null) {
+              if(activeGameStatus == null && gameStatus.data.State == "IN_PROGRESS") {
                 if(matchHadPreGame == false) { // Deachmatch / Escalation Match
-                  var matchID = matchData[2].data.resource.split("/").pop()
-      
-                  var gameStatus = await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/core-game/v1/matches/${matchID}`, {
-                    headers: {
-                      'X-Riot-Entitlements-JWT': entitlement_token,
-                      Authorization: 'Bearer ' + tokenData.accessToken
-                    },
-                    httpAgent: agent
-                  }).catch(error => {console.log(error);})
       
                   gameStatus = gameStatus.data
       
@@ -1867,7 +1865,9 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
           }
           
           if(matchData[1] == 'OnJsonApiEvent_chat_v5_participants' && matchData[2].eventType == 'Delete') {
-            if(activeGameStatus == true) {
+            if(activeGameStatus == true && matchData[2].uri != '/chat/v5/participants' && matchData[2].uri != '/chat/v5/participants/ares-pregame') {
+              console.log("Game ended.")
+              console.log(matchData)
               // End Rich presence and clear variables
               map = null;
               mapText = null;
@@ -1875,18 +1875,18 @@ if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled ==
               matchTypeText = null;
             
               preGameStatus = null;
-              activeGameStatus = null;
+              //activeGameStatus = null;
             
               entitlement_token = null;
             
               discordRPObj = null;
-
-              messageCount = 0;
             
               pregameCalcFinished = false;
+
               if(isPractice == true) {
                 isPractice = false;
               }
+              
               gameTimeout = true;
               async function timeout() {
                 setTimeout(function() {

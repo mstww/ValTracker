@@ -15,7 +15,11 @@ $(document).ready(() => {
                 for (var count = 0; count < 3; count++) {
                     $(`#text-${count}`).append(data.data[count].title);
                     $(`#img-${count}`).attr("src", data.data[count].banner_url);
-                    $(`#hiddenurl-${count}`).append(data.data[count].url)
+                    if(data.data[count].external_link) {
+                        $(`#hiddenurl-${count}`).append(data.data[count].external_link)
+                    } else {
+                        $(`#hiddenurl-${count}`).append(data.data[count].url)
+                    }
                 }
             },
             error: function (jqXHR) {

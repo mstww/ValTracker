@@ -1186,6 +1186,20 @@ select {
   -webkit-appearance: none;
   appearance: none;
   border: none;
+  background-color: var(--app-color);
+  border: 2px solid var(--gradient-left);
+}
+
+select {
+  color: #eee !important;
+}
+
+select optgroup {
+  color: grey;
+}
+
+select optgroup option {
+  color: #eee !important;
 }
 
 select::-ms-expand {

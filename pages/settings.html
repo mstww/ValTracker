@@ -128,27 +128,30 @@
       </div>
       <select id="selected-color-theme" name="color-theme">
         <option value="Default" selected>Default</option>
-        <option value="" disabled>-- AGENTS --</option>
-        <option value="Brimstone">Brimstone</option>
-        <option value="Phoenix">Phoenix</option>
-        <option value="Sage">Sage</option>
-        <option value="Sova">Sova</option>
-        <option value="Viper">Viper</option>
-        <option value="Cypher">Cypher</option>
-        <option value="Reyna">Reyna</option>
-        <option value="Killjoy">Killjoy</option>
-        <option value="Breach">Breach</option>
-        <option value="Omen">Omen</option>
-        <option value="Jett">Jett</option>
-        <option value="Raze">Raze</option>
-        <option value="Skye">Skye</option>
-        <option value="Yoru">Yoru</option>
-        <option value="Astra">Astra</option>
-        <option value="Kayo">Kay/O</option>
-        <option value="Chamber">Chamber</option>
-        <option value="Neon">Neon</option>
-        <option value="" disabled>-- CUSTOM THEMES --</option>
-        <option style="display: none;" id="themes-bottom"></option>
+        <!--<option value="" disabled>-- AGENTS --</option>-->
+        <optgroup label="-- Agents --">
+          <option value="Brimstone">Brimstone</option>
+          <option value="Phoenix">Phoenix</option>
+          <option value="Sage">Sage</option>
+          <option value="Sova">Sova</option>
+          <option value="Viper">Viper</option>
+          <option value="Cypher">Cypher</option>
+          <option value="Reyna">Reyna</option>
+          <option value="Killjoy">Killjoy</option>
+          <option value="Breach">Breach</option>
+          <option value="Omen">Omen</option>
+          <option value="Jett">Jett</option>
+          <option value="Raze">Raze</option>
+          <option value="Skye">Skye</option>
+          <option value="Yoru">Yoru</option>
+          <option value="Astra">Astra</option>
+          <option value="Kayo">Kay/O</option>
+          <option value="Chamber">Chamber</option>
+          <option value="Neon">Neon</option>
+        </optgroup>
+        <optgroup id="custom-color-themes" label="-- Custom Themes --">
+          <option style="display: none;" id="themes-bottom"></option>
+        </optgroup>
       </select>
       <button style="margin-left: 1rem;" id="reset-colortheme-button">Reset</button>
       <a href="editCustomTheme.html"><button id="edit-custom-theme-button"

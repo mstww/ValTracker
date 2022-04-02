@@ -291,7 +291,9 @@ $(document).ready(() => {
                         $('.loading-layer').css("opacity", "0");
                         $('.loading-layer').css("display", "block");
                         $('.loading-layer').fadeTo(150, 1)
-                        ipc.send('changeDiscordRP', `hub_activity`)
+                        if(!sessionStorage.getItem('afterReload')) {
+                            ipc.send('changeDiscordRP', `hub_activity`)
+                        }
                     }, 200)
                 },
                 error: function (jqXHR) {
@@ -582,7 +584,9 @@ $(document).ready(() => {
                         $('.loading-layer').css("opacity", "0");
                         $('.loading-layer').css("display", "block");
                         $('.loading-layer').fadeTo(150, 1)
-                        ipc.send('changeDiscordRP', `hub_activity`)
+                        if(!sessionStorage.getItem('afterReload')) {
+                            ipc.send('changeDiscordRP', `hub_activity`)
+                        }
                     }, 200)
                 },
                 error: function (jqXHR) {

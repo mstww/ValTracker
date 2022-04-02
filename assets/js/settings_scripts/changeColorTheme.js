@@ -263,7 +263,7 @@ $(document).ready(() => {
             option.value = `custom-theme`
             option.className = "customThemeOption"
 
-            var wrapper = document.getElementById("selected-color-theme")
+            var wrapper = document.getElementById("custom-color-themes")
             var nextElement = document.getElementById("themes-bottom");
             wrapper.insertBefore(option, nextElement);
             i++;
