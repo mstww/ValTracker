@@ -8,4 +8,4 @@ A completely free Stats Tracker/Gameinfo Client for VALORANT.
 
 Download [here](https://valtracker.gg/).
 
-All data is stored locally on your PC in the form of tokens (Not your actual Password + Username), we do not store your data on any server.
+Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)
