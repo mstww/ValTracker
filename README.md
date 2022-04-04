@@ -6,4 +6,6 @@
 
 A completely free Stats Tracker/Gameinfo Client for VALORANT.
 
-Download [here](https://valtracker.gg/)
+Download [here](https://valtracker.gg/).
+
+Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)
