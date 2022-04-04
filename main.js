@@ -801,7 +801,11 @@ async function createWindow() {
       }
     }
     
-    await reauthCycle();
+    var raw = fs.readFileSync(app_data + '/user_data/user_creds.json')
+    var parsed = JSON.parse(raw)
+    if(parsed.usesRiotAccount == !false) {
+      await reauthCycle();
+    }
 
     mainWindow.loadFile("./pages/decoyIndex.html");
   }
