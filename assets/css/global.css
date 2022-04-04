@@ -1221,11 +1221,11 @@ select {
 }
 
 select:hover {
-  box-shadow: var(--box-shadow);
+  border: 2px solid var(--gradient-right);
 }
 
 select:focus {
-  box-shadow: var(--box-shadow);
+  border: 2px solid var(--gradient-right);
 }
 
 select:focus::-ms-value {

@@ -3,6 +3,8 @@ const colorFS2 = require('fs')
 let rawColorDataPre = colorFS2.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
 let colorDataPre = JSON.parse(rawColorDataPre);
 
+$('#colortheme-name').val(colorDataPre.themeName)
+
 var colorData2;
 
 if (colorDataPre.isCustomTheme == true) {
@@ -147,7 +149,7 @@ $(document).ready(() => {
         if (element) element.innerText = text
     }
     $('#save-colortheme').on("click", function () {
-        var searchbar = document.getElementById('colortheme-name')
+        var theme_name = document.getElementById('colortheme-name').value
         replaceText("")
         var newLeftGradient = select1.value;
         var newRightGradient = select2.value;
@@ -161,7 +163,7 @@ $(document).ready(() => {
         var newSubColor2 = select9.value;
         var newFontColor = select10.value;
 
-        let colorDataToRead = colorFS.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
+        let colorDataToRead = colorFS2.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
         let colorDataToEdit = JSON.parse(colorDataToRead);
 
         var dataToWrite = {
@@ -180,7 +182,21 @@ $(document).ready(() => {
         }
 
         var dataToWriteDown = JSON.stringify(dataToWrite)
-        colorFS2.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataToEdit.customThemeName}.json`, dataToWriteDown)
+        colorFS2.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${theme_name}.json`, dataToWriteDown)
+
+        if(theme_name != colorDataToEdit.themeName) {
+            colorFS2.unlinkSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataToEdit.themeName}.json`, (err) => {
+              if (err) console.log(err);
+            });
+        }
+
+        var data = {
+            "isCustomTheme": true,
+            "themeName": theme_name
+        }
+        colorFS2.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data))
+
+        console.log(colorDataToEdit.themeName)
 
         window.location.href = "settings.html"
     })

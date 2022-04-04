@@ -263,6 +263,7 @@ $(document).ready(() => {
                     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', data2);
                     leaveFade();
                     leaveFade2();
+                    riotIPC.send('finishedSetup');
                 },
                 error: function (xhr) {
                     if (xhr.status == 400) {
@@ -365,6 +366,7 @@ $(document).ready(() => {
 
                         $('.setup-button-next').on("click", function () {
                             leaveFade6();
+                            riotIPC.send('finishedSetup');
 
                             var searchedPlayerName = data.data.name
                             var searchedPlayerTag = data.data.tag

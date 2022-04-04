@@ -1,7 +1,7 @@
 {
   "name": "valtracker",
   "productName": "VALTracker",
-  "version": "0.8.29-alpha-hotfix-1",
+  "version": "0.8.29-alpha-hotfix-2",
   "description": "A free Desktop app to look up your VALORANT Statistics and Ingame Collectables.",
   "main": "main.js",
   "scripts": {
@@ -47,6 +47,7 @@
   "dependencies": {
     "@electron/remote": "^2.0.8",
     "axios": "^0.26.1",
+    "chokidar": "^3.5.3",
     "clean-deep": "^3.4.0",
     "dayjs": "^1.11.0",
     "discord-rpc": "^4.0.1",

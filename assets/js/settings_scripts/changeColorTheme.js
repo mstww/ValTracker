@@ -2,6 +2,7 @@ var ipc = require('electron').ipcRenderer;
 const path = require('path')
 var select = document.getElementById('selected-color-theme');
 const fs = require('fs')
+const chokidar = require('chokidar')
 
 //JSON check + colors writen
 if (!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json')) {
@@ -258,15 +259,17 @@ $(document).ready(() => {
     var i = 0;
     fs.readdir(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes", (err, files) => {
         files.forEach(file => {
-            var option = document.createElement("option")
-            option.appendChild(document.createTextNode(path.parse(file).name))
-            option.value = `custom-theme`
-            option.className = "customThemeOption"
+            if(file.split(".").pop() == "json") {
+                var option = document.createElement("option")
+                option.appendChild(document.createTextNode(path.parse(file).name))
+                option.value = `custom-theme`
+                option.className = "customThemeOption"
 
-            var wrapper = document.getElementById("custom-color-themes")
-            var nextElement = document.getElementById("themes-bottom");
-            wrapper.insertBefore(option, nextElement);
-            i++;
+                var wrapper = document.getElementById("custom-color-themes")
+                var nextElement = document.getElementById("themes-bottom");
+                wrapper.insertBefore(option, nextElement);
+                i++;
+            }
         });
     });
 
@@ -279,6 +282,7 @@ $(document).ready(() => {
                 }
             }
             $('#edit-custom-theme-button').css("display", "inline-block");
+            $('#delete-custom-theme-button').css("display", "inline-block");
         } else {
             let word = colorData.themeName;
             if (word == "normal") {
@@ -295,4 +299,88 @@ $(document).ready(() => {
     $('#open-custom-theme-folder-button').on("click", function () {
         shell.openPath(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes");
     })
+
+    var watcher = chokidar.watch(process.env.APPDATA + '/VALTracker/user_data/themes/custom_themes', { awaitWriteFinish: true});
+
+    setTimeout(function() {
+        watcher.on('add', async function(file) {
+            if(file.split(".").pop() == "json") {
+                var usedTheme = colorData.themeName;
+
+                $('.customThemeOption').remove();
+                
+                var files = fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes")
+                files.forEach(file => {
+                    if(file.split(".").pop() == "json") {
+                        var option = document.createElement("option")
+                        option.appendChild(document.createTextNode(path.parse(file).name))
+                        if(path.parse(file).name == usedTheme) {
+                            option.value = `custom-theme-used`
+                        } else {
+                            option.value = `custom-theme`
+                        }
+                        option.className = "customThemeOption"
+        
+                        var wrapper = document.getElementById("custom-color-themes")
+                        var nextElement = document.getElementById("themes-bottom");
+                        wrapper.insertBefore(option, nextElement);
+                    }
+                });
+
+                if(colorData.isCustomTheme == true) {
+                    $(`.customThemeOption[value="${usedTheme}"]`).val("custom-theme-used")
+
+                    $(select).val("custom-theme-used")
+                }
+            }
+        })
+        watcher.on('unlink', async function(file) {
+            var currentTheme = colorData.themeName
+            var deletedTheme = file.split('\\').pop()
+            if(colorData.isCustomTheme == false) {
+                var deletedFileWithoutType = deletedTheme.substring(0, deletedTheme.lastIndexOf("."));
+                $(`#custom-color-themes option[value="${deletedFileWithoutType}"]`).remove();
+            } else {
+                if(currentTheme == deletedTheme) {
+                    var dataToWrite = {
+                        "isCustomTheme": false,
+                        "themeName": "normal"
+                    }
+        
+                    var dataToWriteDown = JSON.stringify(dataToWrite)
+        
+                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
+                    window.location.href = ""
+                } else {
+                    var deletedFileWithoutType = deletedTheme.substring(0, deletedTheme.lastIndexOf("."));
+                    $(`#custom-color-themes option[value="${deletedFileWithoutType}"]`).remove();
+                }
+            }
+        })
+    }, 200)
+    
+    $('#delete-custom-theme-button').on("click", function() {
+        console.log("E")
+        if(colorData.isCustomTheme == true) {
+            var files = fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes")
+            files.forEach(file => {
+                if(file.split(".").pop() == "json") {
+                    if(file.substring(0, file.lastIndexOf(".")) == colorData.themeName) {
+                        fs.unlinkSync(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes/" + file)
+                        
+                        var dataToWrite = {
+                            "isCustomTheme": false,
+                            "themeName": "normal"
+                        }
+            
+                        var dataToWriteDown = JSON.stringify(dataToWrite)
+            
+                        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
+
+                        window.location.href = ""
+                    }
+                }
+            });
+        }
+    });
 })

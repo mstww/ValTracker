@@ -291,7 +291,7 @@ $(document).ready(() => {
                         $('.loading-layer').css("opacity", "0");
                         $('.loading-layer').css("display", "block");
                         $('.loading-layer').fadeTo(150, 1)
-                        if(!sessionStorage.getItem('afterReload')) {
+                        if(sessionStorage.getItem(`afterReload`)) {
                             ipc.send('changeDiscordRP', `hub_activity`)
                         }
                     }, 200)
@@ -584,7 +584,7 @@ $(document).ready(() => {
                         $('.loading-layer').css("opacity", "0");
                         $('.loading-layer').css("display", "block");
                         $('.loading-layer').fadeTo(150, 1)
-                        if(!sessionStorage.getItem('afterReload')) {
+                        if(sessionStorage.getItem(`afterReload`)) {
                             ipc.send('changeDiscordRP', `hub_activity`)
                         }
                     }, 200)
