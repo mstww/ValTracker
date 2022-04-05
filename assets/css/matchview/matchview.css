@@ -328,6 +328,8 @@
 
 .played_agent_img {
   width: 40%;
+  position: relative;
+  left: 5px;
 }
 
 .played_agent {
@@ -349,6 +351,15 @@
   text-decoration: underline;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
     0 0 20px rgba(255, 255, 255, 0.7), 0 0 50px rgba(255, 255, 255, 0.7);
+}
+
+.matchview-player-row:hover {
+  cursor: pointer;
+  background-color: var(--app-color-light);
+}
+
+.hidden_puuid {
+  display: none;
 }
 
 /*

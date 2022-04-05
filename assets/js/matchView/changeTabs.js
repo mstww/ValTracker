@@ -1,3 +1,23 @@
+var fs = require('fs')
+function redirectToPlayerProfile(p_uuid, playerNameTag) {
+    var p_name = playerNameTag.split("#")[0];
+    var p_tag = playerNameTag.split("#")[1];
+
+    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+    var parsed = JSON.parse(raw);
+    var region = parsed.playerRegion;
+    
+    var page = window.location.href;
+    sessionStorage.setItem("last_page", page);
+
+    sessionStorage.setItem("puuid", p_uuid);
+    sessionStorage.setItem("player_name", p_name);
+    sessionStorage.setItem("player_tag", p_tag);
+    sessionStorage.setItem("player_region", region);
+    
+    window.location.href = "playerProfile.html";
+}
+
 function sortTableWithFBs() {
     var table, rows, switching, i, x, y, shouldSwitch;
     table = document.getElementById("scoreboard-table");

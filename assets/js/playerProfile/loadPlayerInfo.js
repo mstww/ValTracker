@@ -35,6 +35,6 @@ function makeCallAndBuildElements() {
 $(document).ready(() => {
     makeCallAndBuildElements();
     $('#backToLastPage').on("click", function () {
-        window.location.href = "playersearch.html"
+        window.location.href = sessionStorage.getItem("last_page");
     })
 });

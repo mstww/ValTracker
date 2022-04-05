@@ -800,12 +800,6 @@ async function createWindow() {
         fs.writeFileSync(app_data + '/user_data/user_creds.json', JSON.stringify(user_creds))
       }
     }
-    
-    var raw = fs.readFileSync(app_data + '/user_data/user_creds.json')
-    var parsed = JSON.parse(raw)
-    if(parsed.usesRiotAccount == !false) {
-      await reauthCycle();
-    }
 
     mainWindow.loadFile("./pages/decoyIndex.html");
   }
@@ -944,90 +938,97 @@ function getTokenDataFromURL(url) {
 
 ipc.on("startReauthCycle", async function (event, arg) {
   async function reauthCycle() {
-    if (
-      !fs.existsSync(
-        process.env.APPDATA +
-          "/VALTracker/user_data/riot_games_data/cookies.json"
-      )
-    ) {
-      const newCookiesFile = {};
-      fs.writeFileSync(
-        process.env.APPDATA +
-          "/VALTracker/user_data/riot_games_data/cookies.json",
-        JSON.stringify(newCookiesFile)
+    try {
+      if (
+        !fs.existsSync(
+          process.env.APPDATA +
+            "/VALTracker/user_data/riot_games_data/cookies.json"
+        )
+      ) {
+        const newCookiesFile = {};
+        fs.writeFileSync(
+          process.env.APPDATA +
+            "/VALTracker/user_data/riot_games_data/cookies.json",
+          JSON.stringify(newCookiesFile)
+        );
+      }
+      var rawCookies = fs.readFileSync(
+        process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json"
       );
-    }
-    var rawCookies = fs.readFileSync(
-      process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json"
-    );
-    var bakedCookies = JSON.parse(rawCookies);
+      var bakedCookies = JSON.parse(rawCookies);
 
-    var ssid;
+      var ssid;
 
-    var jsontype = typeof bakedCookies[0] === "string";
+      var jsontype = typeof bakedCookies[0] === "string";
 
-    //check if json is object or array
+      //check if json is object or array
 
-    if (jsontype == true) {
-      for (var i = 0; i < bakedCookies.length; i++) {
-        if (bakedCookies[i].includes("ssid=")) {
-          ssid = bakedCookies[i];
+      if (jsontype == true) {
+        for (var i = 0; i < bakedCookies.length; i++) {
+          if (bakedCookies[i].includes("ssid=")) {
+            ssid = bakedCookies[i];
+          }
+        }
+      } else {
+        for (var i = 0; i < bakedCookies.length; i++) {
+          if (bakedCookies[i].name == "ssid") {
+            ssid = `ssid=${bakedCookies[i].value}; Domain=${bakedCookies[i].domain}; Path=${bakedCookies[i].path}; hostOnly=${bakedCookies[i].hostOnly}; secure=${bakedCookies[i].secure}; httpOnly=${bakedCookies[i].httpOnly}; session=${bakedCookies[i].session}; sameSite=${bakedCookies[i].sameSite};`;
+          }
         }
       }
-    } else {
-      for (var i = 0; i < bakedCookies.length; i++) {
-        if (bakedCookies[i].name == "ssid") {
-          ssid = `ssid=${bakedCookies[i].value}; Domain=${bakedCookies[i].domain}; Path=${bakedCookies[i].path}; hostOnly=${bakedCookies[i].hostOnly}; secure=${bakedCookies[i].secure}; httpOnly=${bakedCookies[i].httpOnly}; session=${bakedCookies[i].session}; sameSite=${bakedCookies[i].sameSite};`;
-        }
-      }
-    }
 
-    const ciphers = [
-      "TLS_CHACHA20_POLY1305_SHA256",
-      "TLS_AES_128_GCM_SHA256",
-      "TLS_AES_256_GCM_SHA384",
-      "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
-    ];
+      const ciphers = [
+        "TLS_CHACHA20_POLY1305_SHA256",
+        "TLS_AES_128_GCM_SHA256",
+        "TLS_AES_256_GCM_SHA384",
+        "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+      ];
 
-    const agent = new Agent({
-      ciphers: ciphers.join(":"),
-      honorCipherOrder: true,
-      minVersion: "TLSv1.2",
-    });
+      const agent = new Agent({
+        ciphers: ciphers.join(":"),
+        honorCipherOrder: true,
+        minVersion: "TLSv1.2",
+      });
 
-    const access_tokens = await axios.post(
-      "https://auth.riotgames.com/api/v1/authorization",
-      {
-        client_id: "play-valorant-web-prod",
-        nonce: 1,
-        redirect_uri: "https://playvalorant.com/opt_in",
-        response_type: "token id_token",
-        scope: "account openid",
-      },
-      {
-        headers: {
-          Cookie: ssid,
-          "User-Agent":
-            "RiotClient/43.0.1.4195386.4190634 rso-auth (Windows; 10;;Professional, x64)",
+      console.log(ssid)
+
+      const access_tokens = await axios.post(
+        "https://auth.riotgames.com/api/v1/authorization",
+        {
+          client_id: "play-valorant-web-prod",
+          nonce: 1,
+          redirect_uri: "https://playvalorant.com/opt_in",
+          response_type: "token id_token",
+          scope: "account openid",
         },
-        httpsAgent: agent,
-      }
-    );
+        {
+          headers: {
+            Cookie: ssid,
+            "User-Agent":
+              "RiotClient/43.0.1.4195386.4190634 rso-auth (Windows; 10;;Professional, x64)",
+          },
+          httpsAgent: agent,
+        }
+      );
 
-    if (access_tokens.data.response == undefined) {
+      if (access_tokens.data.response == undefined) {
+        event.sender.send("reauthFail");
+      } else {
+        fs.writeFileSync(
+          process.env.APPDATA +
+            "/VALTracker/user_data/riot_games_data/cookies.json",
+          JSON.stringify(access_tokens.headers["set-cookie"])
+        );
+        event.sender.send(
+          "reauthSuccess",
+          access_tokens.data.response.parameters.uri
+        );
+        newTokenData = getTokenDataFromURL(access_tokens.data.response.parameters.uri);
+        return newTokenData;
+      }
+    } catch (err) {
+      console.log(err)
       event.sender.send("reauthFail");
-    } else {
-      fs.writeFileSync(
-        process.env.APPDATA +
-          "/VALTracker/user_data/riot_games_data/cookies.json",
-        JSON.stringify(access_tokens.headers["set-cookie"])
-      );
-      event.sender.send(
-        "reauthSuccess",
-        access_tokens.data.response.parameters.uri
-      );
-      newTokenData = getTokenDataFromURL(access_tokens.data.response.parameters.uri);
-      return newTokenData;
     }
   }
   await reauthCycle();
@@ -1180,7 +1181,7 @@ async function reauthCycle() {
     JSON.stringify(access_tokens.headers["set-cookie"])
   );
 
-  var tokensFromUrl = await (access_tokens).data.response.parameters.uri
+  var tokensFromUrl = access_tokens.data.response.parameters.uri
 
   newTokenData = getTokenDataFromURL(tokensFromUrl);
   fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(newTokenData))
@@ -1271,6 +1272,9 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
         var mapText = null;
         var matchType = null;
         var matchTypeText = null;
+        
+        var agentName = null;
+        var agentText = null;
       
         var preGameStatus = null;
         var activeGameStatus = null;
@@ -1284,6 +1288,10 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
         var isPractice = false;
     
         var gameTimeout = false;
+
+        var globalPartyState = String;
+
+        var globalRPCstart = null;
       
         ws.on("open", async () => {
           await find('name', 'VALORANT-Win64-Shipping.exe', true)
@@ -1358,7 +1366,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                 } else {
                   matchType = 'unrated';
     
-                  if(gameStatus.data.ProvisioningFlowID == 'CustomGame') {
+                  if(gameStatus.data.ProvisioningFlowID == 'CustomGame' || gameStatus.data.ProvisioningFlow == 'CustomGame') {
                     matchTypeText = 'Unrated (Custom)';
                   } else {
                     matchTypeText = 'Unrated';
@@ -1369,7 +1377,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
               case '/Game/GameModes/QuickBomb/QuickBombGameMode.QuickBombGameMode_C':
                 matchType = 'spike_rush';
                   
-                if(gameStatus.data.ProvisioningFlowID == 'CustomGame') {
+                if(gameStatus.data.ProvisioningFlowID == 'CustomGame' || gameStatus.data.ProvisioningFlow == 'CustomGame') {
                   matchTypeText = 'Spike Rush (Custom)';
                 } else {
                   matchTypeText = 'Spike Rush';
@@ -1379,7 +1387,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
               case '/Game/GameModes/OneForAll/OneForAll_GameMode.OneForAll_GameMode_C':
                 matchType = 'replication';
                   
-                if(gameStatus.data.ProvisioningFlowID == 'CustomGame') {
+                if(gameStatus.data.ProvisioningFlowID == 'CustomGame' || gameStatus.data.ProvisioningFlow == 'CustomGame') {
                   matchTypeText = 'Replication (Custom)';
                 } else {
                   matchTypeText = 'Replication';
@@ -1433,6 +1441,10 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                 isPractice = true;
                 break;
             }
+
+            if(globalRPCstart == null) {
+              globalRPCstart = Date.now()
+            }
     
             discordRPObj = {
               details: matchTypeText + ' - Agent Select',
@@ -1449,7 +1461,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                 },
               ],
               timestamps: {
-                start: Date.now()
+                start: globalRPCstart
               },
               instance: true
             }
@@ -1482,6 +1494,14 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                 },
                 httpAgent: agent
               }).catch(error => {console.log(error);})
+
+              for(var i = 0; i < gameStatus.data.Players.length; i++) {
+                if(gameStatus.data.Players[i].Subject == user_puuid) {
+                  var playerAgent = await axios.get(`https://valorant-api.com/v1/agents/${gameStatus.data.Players[i].CharacterID}`)
+                  agentText = playerAgent.data.data.displayName
+                  agentName = agentText.toLowerCase()
+                }
+              }
       
               // Map 
               map = gameStatus.data.MapID;
@@ -1507,7 +1527,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                   } else {
                     matchType = 'unrated';
       
-                    if(gameStatus.data.ProvisioningFlowID == 'CustomGame') {
+                    if(gameStatus.data.ProvisioningFlowID == 'CustomGame' || gameStatus.data.ProvisioningFlow == 'CustomGame') {
                       matchTypeText = 'Unrated (Custom)';
                     } else {
                       matchTypeText = 'Unrated';
@@ -1518,7 +1538,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                 case '/Game/GameModes/QuickBomb/QuickBombGameMode.QuickBombGameMode_C':
                   matchType = 'spike_rush';
                     
-                  if(gameStatus.data.ProvisioningFlowID == 'CustomGame') {
+                  if(gameStatus.data.ProvisioningFlowID == 'CustomGame' || gameStatus.data.ProvisioningFlow == 'CustomGame') {
                     matchTypeText = 'Spike Rush (Custom)';
                   } else {
                     matchTypeText = 'Spike Rush';
@@ -1528,7 +1548,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                 case '/Game/GameModes/OneForAll/OneForAll_GameMode.OneForAll_GameMode_C':
                   matchType = 'replication';
                     
-                  if(gameStatus.data.ProvisioningFlowID == 'CustomGame') {
+                  if(gameStatus.data.ProvisioningFlowID == 'CustomGame' || gameStatus.data.ProvisioningFlow == 'CustomGame') {
                     matchTypeText = 'Replication (Custom)';
                   } else {
                     matchTypeText = 'Replication';
@@ -1582,15 +1602,42 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                   isPractice = true;
                   break;
               }
+              
+              var options = {
+                method: 'GET',
+                url: 'https://127.0.0.1:'+ lockData.port + '/chat/v4/presences',
+                headers: {Authorization: 'Basic cmlvdDpaNV9tMDNpU3MwSHotQ0pVT0ZidHZB'},
+                httpsAgent: localAgent,
+              };
+              
+              var matchStanding = await axios.request(options).catch(function (error) { console.error(error); });
+
+              var presences = matchStanding.data.presences;
+
+              for(var i = 0; i < presences.length; i++) {
+                if(presences[i].puuid == user_puuid) {
+                  var buff = Buffer.from(presences[i].private.toString(), 'base64');
+                  var data = JSON.parse(buff.toString('utf-8'))
+
+                  globalPartyState = data["sessionLoopState"]
+                  console.log(data["sessionLoopState"])
+                  var setState = data["partyOwnerMatchScoreAllyTeam"] + " - " + data["partyOwnerMatchScoreEnemyTeam"]
+                }
+              }
+
+              if(globalRPCstart == null) {
+                globalRPCstart = Date.now()
+              }
       
               if(isPractice == false) {
                 discordRPObj = {
                   details: matchTypeText + ' - In Match',
+                  state: setState,
                   assets: {
                     large_image: map, // Map
                     large_text: mapText, // Playing a VALORANT Match
-                    small_image: matchType, // Mode
-                    small_text: matchTypeText, // Mode
+                    small_image: agentName, // Mode
+                    small_text: agentText, // Mode
                   },
                   buttons: [
                     {
@@ -1599,7 +1646,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                     },
                   ],
                   timestamps: {
-                    start: Date.now()
+                    start: globalRPCstart
                   },
                   instance: true
                 }
@@ -1617,7 +1664,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                     },
                   ],
                   timestamps: {
-                    start: Date.now()
+                    start: globalRPCstart
                   },
                   instance: true
                 }
@@ -1734,6 +1781,10 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                     }
                     break;
                 }
+
+                if(globalRPCstart == null) {
+                  globalRPCstart = Date.now()
+                }
       
                 discordRPObj = {
                   details: matchTypeText + ' - Agent Select',
@@ -1750,7 +1801,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                     },
                   ],
                   timestamps: {
-                    start: Date.now()
+                    start: globalRPCstart
                   },
                   instance: true
                 }
@@ -1767,8 +1818,6 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
             // Get Match ID (Emitted when match is starting, so switch RP)
             if(matchData[1] == 'OnJsonApiEvent_riot-messaging-service_v1_message' && matchData[2].uri.split('/').slice(0, -1).join('/') == '/riot-messaging-service/v1/message/ares-core-game/core-game/v1/matches') {
               if(gameTimeout == false) {
-                //console.log('Entered CoreGame.')
-  
                 var matchID = matchData[2].data.resource.split("/").pop()
   
                 var gameStatus = await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/core-game/v1/matches/${matchID}`, {
@@ -1778,6 +1827,14 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                   },
                   httpAgent: agent
                 }).catch(error => {console.log(error);})
+
+                for(var i = 0; i < gameStatus.data.Players.length; i++) {
+                  if(gameStatus.data.Players[i].Subject == user_puuid) {
+                    var playerAgent = await axios.get(`https://valorant-api.com/v1/agents/${gameStatus.data.Players[i].CharacterID}`)
+                    agentText = playerAgent.data.data.displayName
+                    agentName = agentText.toLowerCase()
+                  }
+                }
         
                 if(activeGameStatus == null && gameStatus.data.State == "IN_PROGRESS") {
                   if(matchHadPreGame == false) { // Deachmatch / Escalation Match
@@ -1830,15 +1887,20 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                       isPractice = true;
                     }
                   } 
+
+                  if(globalRPCstart == null) {
+                    globalRPCstart = Date.now()
+                  }
         
                   if(isPractice == false) {
                     discordRPObj = {
                       details: matchTypeText + ' - In Match',
+                      state: '0 - 0',
                       assets: {
                         large_image: map, // Map
                         large_text: mapText, // Playing a VALORANT Match
-                        small_image: matchType, // Mode
-                        small_text: matchTypeText, // Mode
+                        small_image: agentName, // Mode
+                        small_text: agentText, // Mode
                       },
                       buttons: [
                         {
@@ -1847,7 +1909,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                         },
                       ],
                       timestamps: {
-                        start: Date.now()
+                        start: globalRPCstart,
                       },
                       instance: true
                     }
@@ -1865,7 +1927,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                         },
                       ],
                       timestamps: {
-                        start: Date.now()
+                        start: globalRPCstart,
                       },
                       instance: true
                     }
@@ -1885,21 +1947,26 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
             if(matchData[1] == 'OnJsonApiEvent_chat_v5_participants' && matchData[2].eventType == 'Delete') {
               if(activeGameStatus == true && matchData[2].uri != '/chat/v5/participants' && matchData[2].uri != '/chat/v5/participants/ares-pregame') {
                 console.log("Game ended.")
-                console.log(matchData)
                 // End Rich presence and clear variables
                 map = null;
                 mapText = null;
+                agentName = null;
+                agentText = null;
                 matchType = null;
                 matchTypeText = null;
               
                 preGameStatus = null;
-                //activeGameStatus = null;
+                activeGameStatus = null;
               
                 entitlement_token = null;
               
                 discordRPObj = null;
               
                 pregameCalcFinished = false;
+              
+                matchHadPreGame = false;
+
+                globalPartyState = "null";
   
                 if(isPractice == true) {
                   isPractice = false;
@@ -1917,6 +1984,59 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
         
                 discordVALPresence.clearActivity(presencePID)
               }
+              
+              if(activeGameStatus == null && matchData[2].uri == '/chat/v5/participants/ares-pregame') {
+                console.log("May have quit!")
+                setTimeout(function() {
+                  if(globalPartyState != "INGAME") {
+                    console.log("User quit!")
+                    mainWindow.webContents.send('restartDiscordRP')
+            
+                    discordVALPresence.clearActivity(presencePID)
+                  }
+                }, 2500)
+              }
+            }
+
+            if(matchData[1] == 'OnJsonApiEvent_chat_v4_presences' && matchData[2]) {
+              for(var i = 0; i < matchData[2].data.presences.length; i++) {
+                if(matchData[2].data.presences[i].puuid == user_puuid) {
+                  var buff = Buffer.from(matchData[2].data.presences[i].private.toString(), 'base64');
+                  var data = JSON.parse(buff.toString('utf-8'))
+
+                  globalPartyState = data["sessionLoopState"]
+                  console.log(data["sessionLoopState"])
+                  if(data["sessionLoopState"] == "INGAME") {
+                    console.log("TEAM_1: " + data["partyOwnerMatchScoreAllyTeam"] + "\n" + "TEAM_2: " + data["partyOwnerMatchScoreEnemyTeam"]);
+                    // data.partyOwnerMatchScoreAllyTeam is the score of your own team, data.partyOwnerMatchScoreEnemyTeam is the enemy team
+                    // UPDATE SCORE PRESENCE HERE, EVERY TIME.
+                    discordRPObj = {
+                      details: matchTypeText + ' - In Match',
+                      state: data["partyOwnerMatchScoreAllyTeam"] + " - " + data["partyOwnerMatchScoreEnemyTeam"],
+                      assets: {
+                        large_image: map, // Map
+                        large_text: mapText, // Playing a VALORANT Match
+                        small_image: agentName, // Mode
+                        small_text: agentText, // Mode
+                      },
+                      buttons: [
+                        {
+                          "label": "Download VALTracker",
+                          "url": "https://valtracker.gg"
+                        },
+                      ],
+                      timestamps: {
+                        start: globalRPCstart,
+                      },
+                      instance: true
+                    }
+                    discordVALPresence.request("SET_ACTIVITY", {
+                      pid: parseInt(presencePID),
+                      activity: discordRPObj,
+                    });
+                  }
+                }
+              }
             }
           }
         });
@@ -1924,6 +2044,8 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
         ws.on("close", () => {
           map = null;
           mapText = null;
+          agentName = null;
+          agentText = null;
           matchType = null;
           matchTypeText = null;
         
@@ -1936,6 +2058,10 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
         
           pregameCalcFinished = false;
         
+          matchHadPreGame = false;
+
+          globalPartyState = "null";
+
           isPractice = false;
     
           mainWindow.webContents.send('restartDiscordRP')

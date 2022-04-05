@@ -35,6 +35,10 @@ $('.fas.fa-globe').on("click", function () {
     openInDefaultBrowser("https://valtracker.gg")
 })
 
+$('.fas.fa-hand-holding-usd').on("click", function () {
+    openInDefaultBrowser("https://ko-fi.com/valtrackergg")
+})
+
 var pathvar = document.location.pathname;
 var path2 = pathvar.substring(pathvar.indexOf('/'), pathvar.lastIndexOf('/'));
 var directoryName = path2.split("/").pop();

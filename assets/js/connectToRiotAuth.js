@@ -54,6 +54,7 @@ async function showSignIn() {
                             cookieString = riotcookie.value
                         }
                     })
+                    console.log(riotcookies)
                     authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
                     authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
                 });
@@ -138,6 +139,7 @@ $(document).ready(() => {
                     bearer = oldTokenData.accessToken;
                     id_token = oldTokenData.id_token;
 
+                    console.log(bearer)
                     puuid = await getPlayerUUID();
                     entitlement_token = await getEntitlement();
                     if (typeof entitlement_token === "string") {

@@ -3,7 +3,7 @@ $(document).ready(function () {
     var matchID = sessionStorage.getItem("matchID");
     var playerName = sessionStorage.getItem("player_name");
     var playerTag = sessionStorage.getItem("player_tag");
-    var lastPage = sessionStorage.getItem("last_page");
+    var lastPage = sessionStorage.getItem("last_matchview_page");
     $('.player-name-rank').append(playerName)
     $('#backToLastPage').on("click", function () {
         window.location.href = lastPage
@@ -185,6 +185,9 @@ $(document).ready(function () {
                     for (var playercount = 0; playercount < data.data.players.all_players.length; playercount++) {
 
                         var tr = document.createElement("tr")
+                        tr.className = "matchview-player-row"
+
+                        tr.setAttribute("onclick", "redirectToPlayerProfile(this.lastChild.textContent, this.children[1].textContent)")
 
                         var playerAgent = document.createElement("td")
                         playerAgent.className = "played_agent";
@@ -211,11 +214,16 @@ $(document).ready(function () {
                         } else {
                             player_name.setAttribute("style", "color: #00ffd5")
                         }
+
                         var player_tagspan = document.createElement("span");
                         player_tagspan.className = "playertag_grey"
                         player_tagspan.textContent = "#" + data.data.players.all_players[playercount].tag
                         player_name.textContent = data.data.players.all_players[playercount].name
                         player_name.appendChild(player_tagspan)
+
+                        var hidden_puuid = document.createElement("td"); 
+                        hidden_puuid.className = "hidden_puuid";
+                        hidden_puuid.textContent = data.data.players.all_players[playercount].puuid
 
                         var player_kda = document.createElement("td");
                         player_kda.className = "player-kda";
@@ -285,6 +293,7 @@ $(document).ready(function () {
                         tr.appendChild(player_d_f);
                         tr.appendChild(player_fbs);
                         tr.appendChild(player_dmg_round);
+                        tr.appendChild(hidden_puuid);
 
                         var wrapper = document.getElementById("test-scoreboard");
                         var nextElement = document.getElementById("lastElement");

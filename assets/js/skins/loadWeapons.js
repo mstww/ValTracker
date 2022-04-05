@@ -231,6 +231,6 @@ $(document).ready(() => {
    ipc.send('changeDiscordRP', `skins_activity`)
    makeCallAndBuildElements();
    $('#backToLastPage').on("click", function () {
-      window.location.href = "../pages/weaponskins.html"
+      window.location.href = sessionStorage.getItem("last_page");
    });
 })

@@ -6,6 +6,6 @@ function loadMatchView(matchID) {
     } else {
         var redirectPath = page
     }
-    sessionStorage.setItem("last_page", redirectPath);
+    sessionStorage.setItem("last_matchview_page", redirectPath);
     window.location.href = "./matchView.html"
 }
