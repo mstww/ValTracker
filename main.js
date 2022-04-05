@@ -65,82 +65,85 @@ discordVALPresence.on("ready", () => {
 });
 
 // Change Discord RP if App requests it
+var RPState = null;
 ipc.on("changeDiscordRP", function (event, arg) {
-  let onLoadData3 = fs.readFileSync(
-    process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json"
-  );
-  let loadData3 = JSON.parse(onLoadData3);
-  if (loadData3.hasDiscordRPenabled == true) {
-    switch (arg) {
-      case "hub_activity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.hub_activity,
-        });
-        break;
-      case "skins_activity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.skins_activity,
-        });
-        break;
-      case "bundle_acitivity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.bundles_activity,
-        });
-        break;
-      case "pprofile_acitivity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.pprofile_acitivity,
-        });
-        break;
-      case "favmatches_activity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.favmatches_acitivity,
-        });
-        break;
-      case "playersearch_acitivity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.playersearch_acitivity,
-        });
-        break;
-      case "settings_activity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.settings_acitivity,
-        });
-        break;
-      case "patchnotes_activity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.patchnotes_acitivity,
-        });
-        break;
-      case "matchview_activity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.matchview_activity,
-        });
-        break;
-      case "shop_activity":
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.shop_activity,
-        });
-        break;
-      case "clear":
-        discordClient.clearActivity(process.pid)
-        break;
+  if(RPState == null || RPState == "APP") {
+    let onLoadData3 = fs.readFileSync(
+      process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json"
+    );
+    let loadData3 = JSON.parse(onLoadData3);
+    if (loadData3.hasDiscordRPenabled == true) {
+      switch (arg) {
+        case "hub_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.hub_activity,
+          });
+          break;
+        case "skins_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.skins_activity,
+          });
+          break;
+        case "bundle_acitivity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.bundles_activity,
+          });
+          break;
+        case "pprofile_acitivity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.pprofile_acitivity,
+          });
+          break;
+        case "favmatches_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.favmatches_acitivity,
+          });
+          break;
+        case "playersearch_acitivity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.playersearch_acitivity,
+          });
+          break;
+        case "settings_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.settings_acitivity,
+          });
+          break;
+        case "patchnotes_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.patchnotes_acitivity,
+          });
+          break;
+        case "matchview_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.matchview_activity,
+          });
+          break;
+        case "shop_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.shop_activity,
+          });
+          break;
+        case "clear":
+          discordClient.clearActivity(process.pid)
+          break;
+      }
+    } else if (loadData3.hasDiscordRPenabled == "anonymous") {
+      discordClient.request("SET_ACTIVITY", {
+        pid: process.pid,
+        activity: discord_rps.anonymous_activity,
+      });
     }
-  } else if (loadData3.hasDiscordRPenabled == "anonymous") {
-    discordClient.request("SET_ACTIVITY", {
-      pid: process.pid,
-      activity: discord_rps.anonymous_activity,
-    });
   }
 });
 
@@ -791,6 +794,10 @@ async function createWindow() {
       createMessageData();
     }
 
+    if(!fs.existsSync(app_data + '/user_data/user_accounts/')) {
+      fs.mkdirSync(app_data + '/user_data/user_accounts/');
+    }
+
     if(fs.existsSync(app_data + '/user_data/user_creds.json')) {
       var raw = fs.readFileSync(app_data + '/user_data/user_creds.json');
       var user_creds = JSON.parse(raw)
@@ -799,6 +806,7 @@ async function createWindow() {
         user_creds.playerUUID = account_data.data.data.puuid
         fs.writeFileSync(app_data + '/user_data/user_creds.json', JSON.stringify(user_creds))
       }
+      fs.writeFileSync(app_data + '/user_data/user_accounts/' + user_creds.playerUUID + '.json', JSON.stringify(user_creds))
     }
 
     mainWindow.loadFile("./pages/decoyIndex.html");
@@ -1181,6 +1189,8 @@ async function reauthCycle() {
     JSON.stringify(access_tokens.headers["set-cookie"])
   );
 
+  console.log(access_tokens)
+
   var tokensFromUrl = access_tokens.data.response.parameters.uri
 
   newTokenData = getTokenDataFromURL(tokensFromUrl);
@@ -1330,6 +1340,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
             },
             httpAgent: agent
           }).then(async (response) => {
+            RPState = "GAME"
             isInPreGame = true;
             console.log('USER IN PRE-GAME.')
             var matchID = response.data.MatchID
@@ -1484,6 +1495,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
               },
               httpAgent: agent
             }).then(async (response) => {
+              RPState = "GAME"
               console.log('USER IN MATCH.')
               var matchID = response.data.MatchID
       
@@ -1707,7 +1719,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
       
             // Pregame Event
             if(matchData[1] == 'OnJsonApiEvent_riot-messaging-service_v1_message' && matchData[2].uri.split('/').slice(0, -1).join('/') == '/riot-messaging-service/v1/message/ares-pregame/pregame/v1/matches') {
-              
+              RPState = "GAME"
               // Match ID
               var matchID = matchData[2].data.resource.split("/").pop();
       
@@ -1817,6 +1829,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
       
             // Get Match ID (Emitted when match is starting, so switch RP)
             if(matchData[1] == 'OnJsonApiEvent_riot-messaging-service_v1_message' && matchData[2].uri.split('/').slice(0, -1).join('/') == '/riot-messaging-service/v1/message/ares-core-game/core-game/v1/matches') {
+              RPState = "GAME"
               if(gameTimeout == false) {
                 var matchID = matchData[2].data.resource.split("/").pop()
   
@@ -1945,6 +1958,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
             }
             
             if(matchData[1] == 'OnJsonApiEvent_chat_v5_participants' && matchData[2].eventType == 'Delete') {
+              RPState = "APP"
               if(activeGameStatus == true && matchData[2].uri != '/chat/v5/participants' && matchData[2].uri != '/chat/v5/participants/ares-pregame') {
                 console.log("Game ended.")
                 // End Rich presence and clear variables
@@ -2042,6 +2056,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
         });
       
         ws.on("close", () => {
+          RPState = "APP"
           map = null;
           mapText = null;
           agentName = null;
@@ -2063,6 +2078,8 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
           globalPartyState = "null";
 
           isPractice = false;
+
+          globalRPCstart = null;
     
           mainWindow.webContents.send('restartDiscordRP')
           discordVALPresence.clearActivity(presencePID)

@@ -186,16 +186,10 @@ $(document).ready(() => {
             }
         }, 500);
     });
-    $('#collects-sub-buddys').on("click", function () {
-        leaveFade();
-        toggle();
-        setTimeout(function () {
-            if (directoryName == "CollectablePages") {
-                window.location.href = "../pages/buddys.html";
-            } else {
-                window.location.href = "buddys.html";
-            }
-        }, 500);
+    $('#acc-switcher').on("click", function () {
+        // Make a popup window for switching accounts. Clicking on "Add account" will open a new window with the riot login page.
+        // Clicking on the trashbin will remove the account from the user_data/user_creds.json file.
+        // Clicking on the account will switch to the account.
     });
     $('#settings').on("click", function () {
         leaveFade();

@@ -267,5 +267,6 @@ $(document).ready(() => {
     } else {
         $('#store').css("display", "none")
         $('#collects-sub-bp').css("display", "none")
+        $('#acc-switcher').css("display", "none")
     }
 })

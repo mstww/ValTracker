@@ -1444,6 +1444,13 @@ select:focus::-ms-value {
 
 #patchnotes {
   position: absolute;
+  bottom: 10rem;
+  left: 1rem;
+  cursor: pointer;
+}
+
+#acc-switcher {
+  position: absolute;
   bottom: 7rem;
   left: 1rem;
   cursor: pointer;
