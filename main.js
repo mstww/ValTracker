@@ -2032,6 +2032,32 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                 setTimeout(function() {
                   if(globalPartyState != "INGAME") {
                     console.log("User quit!")
+
+                    RPState = "APP"
+                    map = null;
+                    mapText = null;
+                    agentName = null;
+                    agentText = null;
+                    matchType = null;
+                    matchTypeText = null;
+                  
+                    preGameStatus = null;
+                    activeGameStatus = null;
+                  
+                    entitlement_token = null;
+                  
+                    discordRPObj = null;
+                  
+                    pregameCalcFinished = false;
+                  
+                    matchHadPreGame = false;
+          
+                    globalPartyState = "null";
+          
+                    isPractice = false;
+          
+                    globalRPCstart = null;
+                    
                     mainWindow.webContents.send('restartDiscordRP')
             
                     discordVALPresence.clearActivity(presencePID)
