@@ -181,11 +181,18 @@ $(document).ready(() => {
 
             riotIPC.send('startReauthCycle', 'again')
             $.ajax({
-                url: `https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${region}/${puuid}`,
-                type: 'get',
+                "async": true,
+                "crossDomain": true,
+                "url": "https://pd." + region + ".a.pvp.net/name-service/v2/players",
+                "method": "PUT",
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "processData": false,
+                "data": "[\"" + puuid + "\"]",
                 success: function (data, xhr) {
-                    var searchedPlayerName = data.data.name
-                    var searchedPlayerTag = data.data.tag
+                    var searchedPlayerName = data[0].GameName
+                    var searchedPlayerTag = data[0].TagLine
                     var searchedRegion = region;
 
                     let userData = {

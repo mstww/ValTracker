@@ -1325,7 +1325,7 @@ select:focus::-ms-value {
 
 .user-rank-icon {
   width: 4rem;
-  z-index: 900;
+  z-index: 90;
   align-self: center;
   opacity: 0;
 }
@@ -1701,4 +1701,137 @@ select:focus::-ms-value {
 .message a:hover {
   text-decoration: underline;
   color: var(--gradient-right);
+}
+
+.switch-acc-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  display: none;
+}
+
+.switch-acc-card {
+  width: 30rem;
+  padding: 1rem;
+  background-color: var(--app-color);
+  min-height: 55%;
+  border-radius: 4px;
+  position: relative;
+  border: 1px solid rgba(47, 53, 77, 0.9);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.7),
+    0 0 50px rgba(0, 0, 0, 0.7);
+  transition: all 0.3s ease;
+  transform: scale(0.8);
+  display: none;
+}
+
+#switch-acc-content-header-hr {
+  height: 1px;
+  background: linear-gradient(to right, #00ffaa, #00ff15);
+  border: none;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 2.5px rgba(0, 255, 170, 0.7), 0 0 10px rgba(0, 255, 170, 0.7),
+    0 0 30px rgba(0, 255, 170, 0.7);
+}
+
+#switch-acc-fixes-header-hr {
+  height: 1px;
+  background: linear-gradient(to right, #ff0080, #ff004c);
+  border: none;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 2.5px rgba(255, 0, 128, 0.7), 0 0 10px rgba(255, 0, 128, 0.7),
+    0 0 30px rgba(255, 0, 128, 0.7);
+}
+
+.acc-relative-div-largeview {
+  position: absolute;
+  left: 29rem;
+  width: 100%;
+  -webkit-transition: 0.4s ease;
+  -o-transition: 0.4s ease;
+  transition: 0.4s ease;
+}
+
+.acc-relative-div-largeview #toggle::after {
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) rotate(-45deg);
+  -ms-transform: translate(-50%, -50%) rotate(-45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
+  box-shadow: var(--box-shadow);
+}
+
+.acc-relative-div-largeview #toggle::before {
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) rotate(45deg);
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+  box-shadow: var(--box-shadow);
+}
+
+.switch-acc-account-tile {
+  background-color: var(--app-color-light);
+  border: 2px solid rgba(47, 53, 77, 0.9);
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.switch-acc-account-tile.active-acc {
+  background-color: var(--app-color-light) !important;
+  border: 2px solid var(--gradient-left);
+  cursor: initial !important;
+}
+
+.switch-acc-account-tile.active-acc:hover {
+  background-color: var(--app-color-light);
+}
+
+.switch-acc-account-tile:hover {
+  background-color: var(--app-color-lightest);
+}
+
+.switch-acc-account-tile > .fas.fa-check-circle {
+  display: none;
+}
+
+.switch-acc-account-tile.active-acc > .fas.fa-check-circle {
+  display: block;
+}
+
+.account-tile-name {
+  font-size: 1.3em;
+}
+
+.account-tile-region {
+  font-size: 1.3em;
+  margin-left: 2rem;
+  font-weight: 500;
+}
+
+.switch-acc-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+}
+
+#add-acc-button {
+  margin-right: 0.5rem;
 }

@@ -39,7 +39,7 @@ $(document).ready(() => {
                 type: 'get',
                 success: function (data, jqXHR) {
                     if (data.data == null || data.name == null) {
-                        $('.user-rank-icon').attr("src", "../assets/img/unranked.png")
+                        $('.user-rank-icon').attr("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/largeicon.png`)
                         $('.user-rankrating').append("0")
                         $('.home-avg-rrchange').empty()
                         $('.home-avg-rrchange').append("You haven't played any competitive matches yet!")
@@ -61,7 +61,7 @@ $(document).ready(() => {
                             $('#sec').css("opacity", "1")
                             $('#sec').css("display", "block")
                             $('.user-rank-icon').css("display", "block")
-                            $('.user-rank-icon').css("opacity", "1")
+                            $('.user-rank-icon').fadeTo(950, 1)
                             setTimeout(function () {
                                 $('.loading-div-home').css("display", "none")
                             }, 1000)
@@ -77,6 +77,10 @@ $(document).ready(() => {
                             return 1 / (n * 0) === 1 / 0
                         }
                         $('.user-rank-icon').attr("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data[0].currenttier}/largeicon.png`)
+                        var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+                        var parsed = JSON.parse(raw);
+                        parsed.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data[0].currenttier}/largeicon.png`
+                        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(parsed));
                         var i = 0;
                         for (var count = 0; count < data.data.length; count++) {
                             if (ispositive(data.data[count].mmr_change_to_last_game) == true) {
@@ -104,7 +108,7 @@ $(document).ready(() => {
                                 $('.loading-div-home').fadeTo(950, 0)
                                 $('.user-rank-icon').fadeTo(950, 1)
                                 $('#sec').css("opacity", "0")
-                                $('#sec').css("display", "block")
+                                $('.user-rank-icon').fadeTo(950, 1)
                                 $('#sec').fadeTo(950, 1)
                                 setTimeout(function () {
                                     $('.loading-div-home').css("display", "none")
@@ -114,7 +118,7 @@ $(document).ready(() => {
                             $('#sec').css("opacity", "1")
                             $('#sec').css("display", "block")
                             $('.user-rank-icon').css("display", "block")
-                            $('.user-rank-icon').css("opacity", "1")
+                            $('.user-rank-icon').fadeTo(950, 1)
                             setTimeout(function () {
                                 $('.loading-div-home').css("display", "none")
                             }, 1000)

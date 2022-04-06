@@ -804,9 +804,31 @@ async function createWindow() {
       if(!user_creds.playerUUID) {
         var account_data = await axios.get(`https://api.henrikdev.xyz/valorant/v1/account/${user_creds.playerName}/${user_creds.playerTag}`)
         user_creds.playerUUID = account_data.data.data.puuid
-        fs.writeFileSync(app_data + '/user_data/user_creds.json', JSON.stringify(user_creds))
       }
+      if(!user_creds.playerRank) {
+        var mmr_data = await axios.get(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${user_creds.playerRegion}/${user_creds.playerUUID}`)
+        if(user_creds.playerRank != undefined) {
+          user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${mmr_data.data.data.currenttier}/largeicon.png`;
+        } else {
+          user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/largeicon.png`;
+        }
+      }
+      fs.writeFileSync(app_data + '/user_data/user_creds.json', JSON.stringify(user_creds))
       fs.writeFileSync(app_data + '/user_data/user_accounts/' + user_creds.playerUUID + '.json', JSON.stringify(user_creds))
+
+      if(!fs.existsSync(app_data + '/user_data/riot_games_data/' + user_creds.playerUUID)) {
+        fs.mkdirSync(app_data + '/user_data/riot_games_data/' + user_creds.playerUUID)
+      }
+
+      if(fs.existsSync(app_data + '/user_data/riot_games_data/token_data.json')) {
+        var raw = fs.readFileSync(app_data + '/user_data/riot_games_data/token_data.json');
+        fs.writeFileSync(app_data + '/user_data/riot_games_data/' + user_creds.playerUUID + '/token_data.json', JSON.stringify(user_creds))
+      }
+
+      if(fs.existsSync(app_data + '/user_data/riot_games_data/cookies.json')) {
+        var raw = fs.readFileSync(app_data + '/user_data/riot_games_data/cookies.json');
+        fs.writeFileSync(app_data + '/user_data/riot_games_data/' + user_creds.playerUUID + '/cookies.json', JSON.stringify(user_creds))
+      }
     }
 
     mainWindow.loadFile("./pages/decoyIndex.html");
@@ -902,7 +924,13 @@ ipc.on("setCookies", function (event, arg) {
     .then((cookies) => {
       cookies.forEach((cookie) => {
         if (cookie.name == "tdid") {
-          event.sender.send("tdid", cookie.value);
+          if(arg == "addedNewAccount") {
+            event.sender.send("newAccountTdid", cookie.value);
+          } else if(arg == "reauth") {
+            event.sender.send("reauthTdid", cookie.value);
+          } else {
+            event.sender.send("tdid", cookie.value);
+          }
         }
       });
     })
@@ -1618,7 +1646,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
               var options = {
                 method: 'GET',
                 url: 'https://127.0.0.1:'+ lockData.port + '/chat/v4/presences',
-                headers: {Authorization: 'Basic cmlvdDpaNV9tMDNpU3MwSHotQ0pVT0ZidHZB'},
+                headers: {Authorization: 'Basic ' + lockData.password},
                 httpsAgent: localAgent,
               };
               

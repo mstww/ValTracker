@@ -321,9 +321,10 @@
 
 .user-rank-icon {
   width: 4rem;
-  z-index: 900;
+  z-index: 10;
   align-self: center;
   opacity: 0;
+  filter: drop-shadow(0px 0px 2px #000000);
 }
 
 .user-rr-wrapper {

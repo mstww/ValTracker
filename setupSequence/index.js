@@ -1,6 +1,7 @@
 const fs = require('fs')
 const { BrowserWindow } = require('@electron/remote')
 const riotIPC = require('electron').ipcRenderer
+const axios = require('axios')
 
 function loadFade() {
     $('.setup-wrapper').fadeTo(950, 1);
@@ -214,6 +215,7 @@ $(document).ready(() => {
             requiredCookie = "tdid=" + arg
 
             puuid = await getPlayerUUID();
+            console.log(puuid)
 
             entitlement_token = await getEntitlement();
 
@@ -235,12 +237,21 @@ $(document).ready(() => {
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
 
             riotIPC.send('startReauthCycle', 'again')
+            
             $.ajax({
-                url: `https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${region}/${puuid}`,
-                type: 'get',
+                "async": true,
+                "crossDomain": true,
+                "url": "https://pd." + region + ".a.pvp.net/name-service/v2/players",
+                "method": "PUT",
+                "headers": {
+                  "Content-Type": "application/json"
+                },
+                "processData": false,
+                "data": "[\"" + puuid + "\"]",
                 success: function (data, xhr) {
-                    var searchedPlayerName = data.data.name
-                    var searchedPlayerTag = data.data.tag
+                    console.log(data[0].GameName)
+                    var searchedPlayerName = data[0].GameName
+                    var searchedPlayerTag = data[0].TagLine
                     var searchedRegion = region;
 
                     let finishedData = {
