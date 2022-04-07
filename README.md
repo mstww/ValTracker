@@ -65,7 +65,7 @@
       </details>
 
 
-- **Account Switching**
+- **Account Switching (Currently being worked on. Release next patch!)**
   - Log in with up to 5 Accounts to switch between them!
 
       <details>
@@ -94,7 +94,7 @@
       </details>
 
  
-- **VALORANT Rich Presence**
+- **VALORANT Rich Presence (Update for shown pictures coming next patch!)**
   - If VALTracker is running while you play, a custom Rich Presence will be shown on Discord for your Match! (Can be turned off in the settings.)
 
       <details>
