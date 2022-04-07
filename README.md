@@ -22,6 +22,10 @@
   - Stats of your last 5 Matches
   - Matchhistory for your last 5 Matches
   - Featured Bundle with Timer
+<details>
+  <summary>Screenshot:</summary>
+  <img src="https://media.codedotspirit.dev/assets/valtracker/github/the-hub.png" align="center">
+</details>
 
 - Playerstore
   - See the current Bundle and your current Shop/Night Market
@@ -49,6 +53,8 @@
  
 - VALORANT Rich Presence
   - If VALTracker is running while you play, a custom Rich Presence will be shown on Discord for your Match!
+
+- More coming soon!
  
 
 #### Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)
