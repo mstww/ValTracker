@@ -34,9 +34,8 @@
   - Search for any player to get info on their Matches!
 
 - Collectables
-  - Bundles:
-    - See all Bundles in the Game, with Skins and Prices
-    - See all weapon skins with prices individually
+  - See all Bundles in the Game, with Skins and Prices
+  - See all weapon skins with prices individually
 
 - Account Switching
   - Log in with up to 5 Accounts to switch between them!
