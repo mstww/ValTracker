@@ -14,6 +14,6 @@
   <a href="https://valtracker.gg"><img width="250px" src="https://media.codedotspirit.dev/assets/valtracker/github/download-button.png?version=1"></a>
 </p>
 
-Download [here](https://valtracker.gg/).
+## Features
 
 Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)
