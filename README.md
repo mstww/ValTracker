@@ -16,7 +16,7 @@
 
 # Features
 
-- * The Hub
+- **The Hub**
   - Current Rank and RR
   - Integrated Website Newsfeed
   - Stats of your last 5 Matches
@@ -27,7 +27,7 @@
         <img src="https://media.codedotspirit.dev/assets/valtracker/github/the-hub.png" align="center">
       </details>
 
-- Playerstore
+- **Playerstore**
   - See the current Bundle and your current Shop/Night Market
   - Click on any Item to get a view with all levels and chromas, videos included
       <details>
@@ -36,7 +36,7 @@
         <img src="https://media.codedotspirit.dev/assets/valtracker/github/night-market.png" align="center">
       </details>
 
-- Favourite Matches
+- **Favourite Matches**
   - Set any of your Matches as favourite to view them even after they are not visible in your Match History anymore
     
       <details>
@@ -45,7 +45,7 @@
       </details>
 
 
-- Playersearch
+- **Playersearch**
   - Search for any player to get info on their Matches!
 
       <details>
@@ -54,7 +54,7 @@
       </details>
 
 
-- Collectables
+- **Collectables**
   - See all Bundles in the Game, with Skins and Prices
   - See all weapon skins with prices individually
 
@@ -65,7 +65,7 @@
       </details>
 
 
-- Account Switching
+- **Account Switching**
   - Log in with up to 5 Accounts to switch between them!
 
       <details>
@@ -74,7 +74,7 @@
       </details>
 
  
-- Preset/Custom Color Themes
+- **Preset/Custom Color Themes**
   - Choose between Themes for every Agent!
   - Create your own Themes with the in-app Theme Creator!
 
@@ -85,7 +85,7 @@
       </details>
 
 
-- Discord Rich Presence
+- **Discord Rich Presence**
   - Show your friends that you're cool with VALTracker's custom Rich Presence! (Can be turned off in the settings.)
 
       <details>
@@ -94,7 +94,7 @@
       </details>
 
  
-- VALORANT Rich Presence
+- **VALORANT Rich Presence**
   - If VALTracker is running while you play, a custom Rich Presence will be shown on Discord for your Match! (Can be turned off in the settings.)
 
       <details>
@@ -103,6 +103,6 @@
       </details>
 
 
-- More coming soon!
+- **__More coming soon!__**
 
 #### Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)
