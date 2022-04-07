@@ -1789,6 +1789,7 @@ select:focus::-ms-value {
   margin-bottom: 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  pointer-events: auto;
 }
 
 .switch-acc-account-tile.active-acc {
@@ -1834,4 +1835,24 @@ select:focus::-ms-value {
 
 #add-acc-button {
   margin-right: 0.5rem;
+}
+
+.switch-acc-account-tile.delete-active > .fas.fa-check-circle {
+  display: none;
+}
+
+.switch-acc-account-tile.delete-active {
+  pointer-events: none;
+}
+
+.switch-acc-account-tile.delete-active > .fas.fa-minus-circle {
+  pointer-events: auto;
+}
+
+.fas.fa-minus-circle:hover {
+  color: var(--gradient-left);
+}
+
+.switch-acc-buttons button {
+  width: 13.5rem;
 }

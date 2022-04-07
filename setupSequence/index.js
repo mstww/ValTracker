@@ -1,7 +1,6 @@
 const fs = require('fs')
 const { BrowserWindow } = require('@electron/remote')
 const riotIPC = require('electron').ipcRenderer
-const axios = require('axios')
 
 function loadFade() {
     $('.setup-wrapper').fadeTo(950, 1);
@@ -87,7 +86,7 @@ const replaceText2 = (text) => {
 
 //////////////////////////////////////////////
 
-const signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
+var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
 
 var bearer;
 var puuid;

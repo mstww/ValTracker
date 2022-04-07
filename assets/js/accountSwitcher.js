@@ -1,5 +1,8 @@
 var accIpc = require('electron').ipcRenderer;
-var accFs = require('fs')
+var accFs = require('fs');
+var { BrowserWindow } = require('@electron/remote');
+
+var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
 
 var bearer;
 var id_token;
@@ -158,6 +161,13 @@ $(document).ready(() => {
         accountRegion.className = 'account-tile-region';
         accountRegion.textContent = account_data.playerRegion.toUpperCase();
 
+        var accountRemove = document.createElement('i');
+        accountRemove.className = 'fas fa-minus-circle';
+        accountRemove.style.fontSize = "1.8em";
+        accountRemove.style.marginRight = "1rem";
+        accountRemove.style.marginLeft = "auto";
+        accountRemove.style.display = "none";
+
         var accountCheckmark = document.createElement('i');
         accountCheckmark.className = 'fas fa-check-circle';
 
@@ -172,6 +182,7 @@ $(document).ready(() => {
         accountTile.appendChild(accRankWrapper);
         accountTile.appendChild(accountName);
         accountTile.appendChild(accountRegion);
+        accountTile.appendChild(accountRemove);
         accountTile.appendChild(accountCheckmark);
         accountTile.appendChild(hiddenPUUID);
         
@@ -264,6 +275,13 @@ $(document).ready(() => {
                 var accountRegion = document.createElement('span');
                 accountRegion.className = 'account-tile-region';
                 accountRegion.textContent = region.toUpperCase();
+
+                var accountRemove = document.createElement('i');
+                accountRemove.className = 'fas fa-minus-circle';
+                accountRemove.style.fontSize = "1.8em";
+                accountRemove.style.marginRight = "1rem";
+                accountRemove.style.marginLeft = "auto";
+                accountRemove.style.display = "none";
         
                 var accountCheckmark = document.createElement('i');
                 accountCheckmark.className = 'fas fa-check-circle';
@@ -279,8 +297,9 @@ $(document).ready(() => {
                 accountTile.appendChild(accRankWrapper);
                 accountTile.appendChild(accountName);
                 accountTile.appendChild(accountRegion);
+                accountTile.appendChild(accountRemove);
                 accountTile.appendChild(accountCheckmark);
-                hiddenPUUID.appendChild(accountCheckmark);
+                accountTile.appendChild(hiddenPUUID);
         
                 var wrapper = document.getElementById('switch-acc-accounts-wrapper');
                 var lastElement = document.getElementById('lastAccountElement');
@@ -289,60 +308,107 @@ $(document).ready(() => {
         }
     });
 
-    $('.switch-acc-account-tile:not(.active-acc)').on("click", function() {
-        var currentPuuid = $('.switch-acc-account-tile.active-acc')[0].lastChild.textContent
-        var currentUserCreds = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-        accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + currentPuuid + '.json', currentUserCreds)
+    $('.switch-acc-account-tile:not(.active-acc)').on("click", function(e) {
+        // Get event target element type
+        var targetType = e.target.tagName.toLowerCase();
 
-        var currentUserTokens = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-        accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/token_data.json', currentUserTokens)
+        if(targetType != "i") {
+            var currentPuuid = $('.switch-acc-account-tile.active-acc')[0].lastChild.textContent
+            var currentUserCreds = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + currentPuuid + '.json', currentUserCreds)
+    
+            var currentUserTokens = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
+            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/token_data.json', currentUserTokens)
+    
+            var currentUserCookies = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json');
+            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/cookies.json', currentUserCookies)
+    
+            var puuidToBeSwitchedTo = this.lastChild.textContent;
+            console.log(puuidToBeSwitchedTo)
+            var newUserCreds = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeSwitchedTo + '.json');
+            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', newUserCreds);
+    
+            var newTokenData_raw = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/token_data.json');
+            var newTokenData = JSON.parse(newTokenData_raw);
+            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', newTokenData_raw);
+    
+            var newCookieData_raw = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/cookies.json');
+            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', newCookieData_raw);
+    
+            bearer = newTokenData.accessToken;
+            id_token = newTokenData.id_token;
+    
+            accIpc.send('setCookies', 'reauth')
+            console.log("E3")
+            accIpc.on('reauthTdid', async function (event, arg) {
+                console.log("E")
+                requiredCookie = "tdid=" + arg
+    
+                puuid = await getPlayerUUID();
+    
+                entitlement_token = await getEntitlement();
+    
+                var reagiondata = await getXMPPRegion();
+                region = reagiondata.affinities.live
+    
+                var shopData = await getShopData();
+                accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+    
+                Date.prototype.addSeconds = function (seconds) {
+                    var copiedDate = new Date(this.getTime());
+                    return new Date(copiedDate.getTime() + seconds * 1000);
+                }
+    
+                var dateData = {
+                    lastCkeckedDate: new Date().getTime(),
+                    willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
+                }
+    
+                accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+                window.location.href = ""
+            });
+        } else {
+            var puuidToBeDeleted = this.lastChild.textContent;
+            accFs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeDeleted + '.json');
+            accFs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted + '/token_data.json');
+            accFs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted + '/cookies.json');
+            accFs.rmdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted);
+            this.remove();
 
-        var currentUserCookies = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json');
-        accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/cookies.json', currentUserCookies)
+            $('.switch-acc-account-tile.delete-active').removeClass('delete-active');
+            $('.switch-acc-account-tile i.fas.fa-minus-circle').css('display', 'none');
 
-        var puuidToBeSwitchedTo = this.lastChild.textContent;
-        console.log(puuidToBeSwitchedTo)
-        var newUserCreds = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeSwitchedTo + '.json');
-        accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', newUserCreds);
+            $('.switch-acc-account-tile.active-acc').css("display", "flex");
+    
+            $('#delete-acc-button').removeClass('cancel-active');
+            $('#delete-acc-button').empty();
+            $('#delete-acc-button').append('Remove an Account');
+        }
+    });
 
-        var newTokenData_raw = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/token_data.json');
-        var newTokenData = JSON.parse(newTokenData_raw);
-        accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', newTokenData_raw);
+    var currentActiveAccount;
 
-        var newCookieData_raw = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/cookies.json');
-        accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', newCookieData_raw);
+    $('#delete-acc-button').on("click", function() {
+        if(this.textContent == "Remove an Account") {
+            currentActiveAccount = $('.switch-acc-account-tile.active-acc');
 
-        bearer = newTokenData.accessToken;
-        id_token = newTokenData.id_token;
+            $('.switch-acc-account-tile.active-acc').css("display", "none");
+    
+            $('.switch-acc-account-tile:not(.active-acc)').addClass('delete-active');
+            $('.switch-acc-account-tile.delete-active i.fas.fa-minus-circle').css('display', 'block');
+    
+            $('#delete-acc-button').addClass('cancel-active');
+            $('#delete-acc-button').empty();
+            $('#delete-acc-button').append('Cancel');
+        } else if(this.textContent == "Cancel") {
+            $('.switch-acc-account-tile.delete-active').removeClass('delete-active');
+            $('.switch-acc-account-tile i.fas.fa-minus-circle').css('display', 'none');
 
-        accIpc.send('setCookies', 'reauth')
-        console.log("E3")
-        accIpc.on('reauthTdid', async function (event, arg) {
-            console.log("E")
-            requiredCookie = "tdid=" + arg
-
-            puuid = await getPlayerUUID();
-
-            entitlement_token = await getEntitlement();
-
-            var reagiondata = await getXMPPRegion();
-            region = reagiondata.affinities.live
-
-            var shopData = await getShopData();
-            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-
-            Date.prototype.addSeconds = function (seconds) {
-                var copiedDate = new Date(this.getTime());
-                return new Date(copiedDate.getTime() + seconds * 1000);
-            }
-
-            var dateData = {
-                lastCkeckedDate: new Date().getTime(),
-                willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
-            }
-
-            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
-            window.location.href = ""
-        });
+            $('.switch-acc-account-tile.active-acc').css("display", "flex");
+    
+            $('#delete-acc-button').removeClass('cancel-active');
+            $('#delete-acc-button').empty();
+            $('#delete-acc-button').append('Remove an Account');
+        }
     });
 })

@@ -1217,7 +1217,7 @@ async function reauthCycle() {
     JSON.stringify(access_tokens.headers["set-cookie"])
   );
 
-  console.log(access_tokens)
+  console.log(access_tokens.data.response)
 
   var tokensFromUrl = access_tokens.data.response.parameters.uri
 
@@ -2057,7 +2057,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load
                     isPractice = false;
           
                     globalRPCstart = null;
-                    
+
                     mainWindow.webContents.send('restartDiscordRP')
             
                     discordVALPresence.clearActivity(presencePID)
