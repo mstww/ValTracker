@@ -4,7 +4,7 @@
 
 ![GitHub](https://img.shields.io/github/license/VALTracker/DesktopClient?label=License) [![Discord](https://img.shields.io/discord/927898163094900777?color=%235865F2&label=Our%20Discord)](https://discord.gg/aJfQ4yHysG)<br> [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/J3J2BUBT8)
 
-A completely free Stats Tracker/Gameinfo Client for VALORANT.
+<h3 align="center">A completely free Stats Tracker/Gameinfo Client for VALORANT.</h3>
 
 Download [here](https://valtracker.gg/).
 
