@@ -10,7 +10,7 @@
   <br>
   <a href="https://ko-fi.com/valtrackergg"><img src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
   <br>
-  <a href="https://valtracker.gg"><img width="500px" src="https://media.codedotspirit.dev/assets/valtracker/github/download-button.png"></a>
+  <a href="https://valtracker.gg"><img style="margin-top: 1rem;" width="500px" src="https://media.codedotspirit.dev/assets/valtracker/github/download-button.png"></a>
 </p>
 
 Download [here](https://valtracker.gg/).
