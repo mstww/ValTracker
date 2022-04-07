@@ -36,6 +36,20 @@
 - Collectables
   - Bundles:
     - See all Bundles in the Game, with Skins and Prices
-    - 
+    - See all weapon skins with prices individually
 
-<!--Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)-->
+- Account Switching
+  - Log in with up to 5 Accounts to switch between them!
+ 
+- Preset/Custom Color Themes
+  - Choose between Themes for every Agent!
+  - Create your own Themes with the in-app Theme Creator!
+
+- Discord Rich Presence
+  - Show your friends that you're cool with VALTracker's custom Rich Presence! (Can be turned off in the settings.)
+ 
+- VALORANT Rich Presence
+  - If VALTracker is running while you play, a custom Rich Presence will be shown on Discord for your Match!
+ 
+
+#### Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)
