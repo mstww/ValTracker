@@ -22,7 +22,7 @@
   - Stats of your last 5 Matches
   - Matchhistory for your last 5 Matches
   - Featured Bundle with Timer
-<details style="margin-left: 5rem;">
+<details>
   <summary>Screenshot:</summary>
   <img src="https://media.codedotspirit.dev/assets/valtracker/github/the-hub.png" align="center">
 </details>
@@ -31,7 +31,7 @@
   - See the current Bundle and your current Shop/Night Market
   - Click on any Item to get a view with all levels and chromas, videos included
 <details>
-  <summary>Screenshot:</summary>
+  <summary>Screenshots:</summary>
   <img src="https://media.codedotspirit.dev/assets/valtracker/github/player-store.png" align="center">
   <img src="https://media.codedotspirit.dev/assets/valtracker/github/night-market.png" align="center">
 </details>
@@ -59,7 +59,7 @@
   - See all weapon skins with prices individually
 
 <details>
-  <summary>Screenshot:</summary>
+  <summary>Screenshots:</summary>
   <img src="https://media.codedotspirit.dev/assets/valtracker/github/bundles.png" align="center">
   <img src="https://media.codedotspirit.dev/assets/valtracker/github/single-skins.png" align="center">
 </details>
@@ -79,7 +79,7 @@
   - Create your own Themes with the in-app Theme Creator!
 
 <details>
-  <summary>Screenshot:</summary>
+  <summary>Screenshots:</summary>
   <img src="https://media.codedotspirit.dev/assets/valtracker/github/color-theme-creator.png" align="center">
   <img src="https://media.codedotspirit.dev/assets/valtracker/github/color-theme-creator-2.png" align="center">
 </details>
