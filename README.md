@@ -14,6 +14,28 @@
   <a href="https://valtracker.gg"><img width="250px" src="https://media.codedotspirit.dev/assets/valtracker/github/download-button.png?version=1"></a>
 </p>
 
-## Features
+# Features
 
-Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)
+- The Hub
+  - Current Rank and RR
+  - Integrated Website Newsfeed
+  - Stats of your last 5 Matches
+  - Matchhistory for your last 5 Matches
+  - Featured Bundle with Timer
+
+- Playerstore
+  - See the current Bundle and your current Shop/Night Market
+  - Click on any Item to get a view with all levels and chromas, videos included
+
+- Favourite Matches
+  - Set any of your Matches as favourite to view them even after they are not visible in your Match History anymore
+
+- Playersearch
+  - Search for any player to get info on their Matches!
+
+- Collectables
+  - Bundles:
+    - See all Bundles in the Game, with Skins and Prices
+    - 
+
+<!--Take a look at how we store/use data: [Privacy Policy](https://valtracker.gg/privacy)-->
