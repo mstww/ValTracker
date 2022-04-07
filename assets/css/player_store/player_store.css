@@ -55,6 +55,16 @@
   width: 90%;
 }
 
+.nm-item-name {
+  font-size: 1.2em;
+  margin-top: 0.2rem;
+  margin-left: 0.2rem;
+  top: 0.4rem;
+  left: 0.4rem;
+  z-index: 100 !important;
+  width: 90%;
+}
+
 .single-items-header,
 .single-skins-time-left {
   display: block;
@@ -270,6 +280,7 @@
   align-items: center;
   justify-content: center;
   overflow-y: visible;
+  z-index: 90 !important;
 }
 
 .reveal-item-wrapper {
