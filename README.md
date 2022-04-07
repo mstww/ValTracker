@@ -8,6 +8,7 @@
   </a>
   <a href="https://discord.gg/aJfQ4yHysG"><img src="https://discordapp.com/api/guilds/927898163094900777/widget.png"></a>
   <a href="https://twitter.com/valtracker_gg"><img src="https://img.shields.io/badge/Twitter-@VALTracker_gg-1da1f2.svg?logo=twitter?style=for-the-badge&logo=appveyor"></a>
+  <br>
   <a href="https://ko-fi.com/valtrackergg"><img src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
 </p>
 
