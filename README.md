@@ -16,7 +16,7 @@
 
 # Features
 
-- The Hub
+- * The Hub
   - Current Rank and RR
   - Integrated Website Newsfeed
   - Stats of your last 5 Matches
