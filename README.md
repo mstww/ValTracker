@@ -22,7 +22,7 @@
   - Stats of your last 5 Matches
   - Matchhistory for your last 5 Matches
   - Featured Bundle with Timer
-<details>
+<details style="margin-left: 5rem;">
   <summary>Screenshot:</summary>
   <img src="https://media.codedotspirit.dev/assets/valtracker/github/the-hub.png" align="center">
 </details>
