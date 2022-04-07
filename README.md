@@ -22,10 +22,12 @@
   - Stats of your last 5 Matches
   - Matchhistory for your last 5 Matches
   - Featured Bundle with Timer
-<details>
-  <summary>Screenshot:</summary>
-  <img src="https://media.codedotspirit.dev/assets/valtracker/github/the-hub.png" align="center">
-</details>
+  <li>
+    <details>
+      <summary>Screenshot:</summary>
+      <img src="https://media.codedotspirit.dev/assets/valtracker/github/the-hub.png" align="center">
+    </details>
+  </li>
 
 - Playerstore
   - See the current Bundle and your current Shop/Night Market
