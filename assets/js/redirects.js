@@ -85,6 +85,7 @@ $(document).ready(() => {
     if (check.usesRiotAccount == false) {
         $('#store').css("display", "none")
         $('#collects-sub-bp').css("display", "none")
+        $('#acc-switcher').css("display", "none")
     }
     loadFade();
     $('#home').on("click", function () {

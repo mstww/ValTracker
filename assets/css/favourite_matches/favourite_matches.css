@@ -117,8 +117,6 @@
   transform: translate(-50%, -50%) rotate(-45deg);
   border-color: #bc0233;
   color: #bc0233;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
-    0 0 20px rgba(192, 192, 192, 0.7), 0 0 50px rgba(112, 112, 112, 0.7);
 }
 
 .deletefav-relative-div-largeview #toggle::before {
@@ -129,6 +127,4 @@
   transform: translate(-50%, -50%) rotate(45deg);
   border-color: #bc0233;
   color: #bc0233;
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
-    0 0 20px rgba(192, 192, 192, 0.7), 0 0 50px rgba(112, 112, 112, 0.7);
 }

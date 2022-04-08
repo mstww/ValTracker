@@ -65,6 +65,10 @@ $(document).ready(() => {
                                 var matchRRimg = document.createElement("img");
                                 matchRRimg.className = "match-rr-img-pp";
                                 matchRRimg.setAttribute("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[playerCount].currenttier}/largeicon.png`)
+                                
+                                if(data.data.players.all_players[playerCount].currenttier == 0) {
+                                    matchRRimg.classList.add('unranked');
+                                }
 
                                 matchRRwrapper.appendChild(matchRRimg)
 
@@ -254,6 +258,10 @@ $(document).ready(() => {
                                     var matchRRimg = document.createElement("img");
                                     matchRRimg.className = "match-rr-img-pp";
                                     matchRRimg.setAttribute("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[playerCount].currenttier}/largeicon.png`)
+                                
+                                    if(data.data.players.all_players[playerCount].currenttier == 0) {
+                                        matchRRimg.classList.add('unranked');
+                                    }
 
                                     matchRRwrapper.appendChild(matchRRimg)
 

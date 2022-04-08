@@ -200,9 +200,9 @@ $(document).ready(() => {
                                         }
 
                                         if (data2.data[i2].skins[i3].displayName.length < 23) {
-                                            $(`.night-market-offer.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
+                                            $(`.night-market-offer.${i+1} .nm-item-name`).append(data2.data[i2].skins[i3].displayName)
                                         } else {
-                                            $(`.night-market-offer.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName.slice(0, 23) + '...')
+                                            $(`.night-market-offer.${i+1} .nm-item-name`).append(data2.data[i2].skins[i3].displayName.slice(0, 23) + '...')
                                         }
 
                                         $(`.night-market-offer.${i+1} .nm-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)

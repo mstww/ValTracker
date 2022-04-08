@@ -240,6 +240,13 @@
 .rank-img-small {
   width: 20%;
   margin-right: 0.5rem;
+  filter: drop-shadow(0px 0px 5px #000000);
+}
+
+.rank-img-small.unranked {
+  width: 20%;
+  margin-right: 0.5rem;
+  filter: drop-shadow(0px 0px 5px #000000);
 }
 
 .agent-image {
@@ -382,6 +389,25 @@
 
 .hidden_puuid {
   display: none;
+}
+
+.display_name {
+  display: flex;
+  align-items: center;
+}
+
+.matchview-player-rank-img {
+  width: 6%;
+  margin-right: 0.8rem;
+  filter: drop-shadow(0px 0px 5px #000000);
+}
+
+.matchview-player-rank-img.unranked {
+  width: 6%;
+  margin-right: 0.8rem;
+  filter: drop-shadow(0px 0px 5px #000000);
+  position: relative;
+  top: 5px;
 }
 
 /*

@@ -26,6 +26,9 @@ $(document).ready(function () {
                     
                     if(data.data.metadata.mode == "Competitive") {
                         $('.rank-img-small').attr('src', `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[i].currenttier}/largeicon.png`)
+                        if(data.data.players.all_players[i].currenttier == 0) {
+                            $('.rank-img-small').addClass("unranked")
+                        }
                     } else {
                         $('.rank-img-small').css("display", "none")
                     }
@@ -117,6 +120,9 @@ $(document).ready(function () {
                 if (data.data.players.all_players[count].name == playerName && data.data.players.all_players[count].tag == playerTag) {
                     if (data.data.metadata.mode == "Competitive") {
                         $('.matchview-playerrank-img').attr("src",  `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[count].currenttier}/largeicon.png`)
+                        if(data.data.players.all_players[count].currenttier == 0){
+                            $('.matchview-playerrank-img').addClass("unranked")
+                        }
                     }
                     var dmgperround = Math.round(data.data.players.all_players[count].damage_made / data.data.rounds.length);
                     $(`.insertDmgPerRound`).append(dmgperround);
@@ -207,7 +213,19 @@ $(document).ready(function () {
                         }
                         playerAgent.appendChild(playerAgent_img)
 
-                        var player_name = document.createElement("td");
+                        var player_name_td = document.createElement("td");
+                        var player_name = document.createElement("div");
+
+                        if(data.data.metadata.mode == "Competitive") {
+                            var player_rank = document.createElement("img");
+                            player_rank.className = "matchview-player-rank-img"
+                            player_rank.src = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[playercount].currenttier}/largeicon.png`
+                            if(data.data.players.all_players[playercount].currenttier == 0){
+                                player_rank.classList.add("unranked")
+                            }
+                            player_name.appendChild(player_rank)
+                        }
+
                         player_name.className = "display_name"
                         if (data.data.players.all_players[playercount].team == "Red") {
                             player_name.setAttribute("style", "color: #ff0044")
@@ -218,8 +236,14 @@ $(document).ready(function () {
                         var player_tagspan = document.createElement("span");
                         player_tagspan.className = "playertag_grey"
                         player_tagspan.textContent = "#" + data.data.players.all_players[playercount].tag
-                        player_name.textContent = data.data.players.all_players[playercount].name
+
+                        var player_name_span = document.createElement("span");
+                        player_name_span.textContent = data.data.players.all_players[playercount].name
+
+                        player_name.appendChild(player_name_span)
                         player_name.appendChild(player_tagspan)
+
+                        player_name_td.appendChild(player_name)
 
                         var hidden_puuid = document.createElement("td"); 
                         hidden_puuid.className = "hidden_puuid";
@@ -288,7 +312,7 @@ $(document).ready(function () {
                         var dmgperround = Math.round(data.data.players.all_players[playercount].damage_made / data.data.rounds.length);
                         player_dmg_round.appendChild(document.createTextNode(dmgperround))
                         tr.appendChild(playerAgent);
-                        tr.appendChild(player_name);
+                        tr.appendChild(player_name_td);
                         tr.appendChild(player_kda);
                         tr.appendChild(player_d_f);
                         tr.appendChild(player_fbs);

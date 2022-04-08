@@ -38,7 +38,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Brimstone":
             var dataToWrite = {
@@ -50,7 +50,7 @@ select.addEventListener('change', function () {
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
 
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Phoenix":
             var dataToWrite = {
@@ -61,7 +61,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Sage":
             var dataToWrite = {
@@ -72,7 +72,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Sova":
             var dataToWrite = {
@@ -83,7 +83,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Viper":
             var dataToWrite = {
@@ -94,7 +94,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Cypher":
             var dataToWrite = {
@@ -105,7 +105,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Reyna":
             var dataToWrite = {
@@ -116,7 +116,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Killjoy":
             var dataToWrite = {
@@ -127,7 +127,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Breach":
             var dataToWrite = {
@@ -138,7 +138,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Omen":
             var dataToWrite = {
@@ -149,7 +149,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Jett":
             var dataToWrite = {
@@ -160,7 +160,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Raze":
             var dataToWrite = {
@@ -171,7 +171,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Skye":
             var dataToWrite = {
@@ -182,7 +182,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Yoru":
             var dataToWrite = {
@@ -193,7 +193,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Astra":
             var dataToWrite = {
@@ -204,7 +204,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Kayo":
             var dataToWrite = {
@@ -215,7 +215,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Chamber":
             var dataToWrite = {
@@ -226,7 +226,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "Neon":
             var dataToWrite = {
@@ -237,7 +237,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
         case "custom-theme":
             var dataToWrite = {
@@ -247,7 +247,7 @@ select.addEventListener('change', function () {
             var dataToWriteDown = JSON.stringify(dataToWrite)
 
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', dataToWriteDown)
-            window.location.href = ""
+            window.location.href = "./settings.html?tab=themes"
             break;
     }
 });
@@ -283,6 +283,7 @@ $(document).ready(() => {
             }
             $('#edit-custom-theme-button').css("display", "inline-block");
             $('#delete-custom-theme-button').css("display", "inline-block");
+            $('#custom-theme-req').css("display", "flex");
         } else {
             let word = colorData.themeName;
             if (word == "normal") {
@@ -291,7 +292,7 @@ $(document).ready(() => {
             let titleCase = word[0].toUpperCase() + word.substr(1);
             $(select).val(titleCase)
         }
-    }, 200)
+    }, 100)
 
     const {
         shell
@@ -357,7 +358,7 @@ $(document).ready(() => {
                 }
             }
         })
-    }, 200)
+    }, 100)
     
     $('#delete-custom-theme-button').on("click", function() {
         console.log("E")

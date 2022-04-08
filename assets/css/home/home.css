@@ -50,7 +50,7 @@
 /* Next & previous buttons */
 .prev,
 .next {
-  cursor: pointer;
+  cursor: initial;
   position: absolute;
   top: 52%;
   width: auto;
@@ -176,7 +176,6 @@
   border-radius: 4px;
   z-index: 2 !important;
   text-align: center;
-  cursor: pointer;
   transition: all 0.2s ease;
 }
 
@@ -274,7 +273,6 @@
 .mySlides {
   transition: all 0.2s ease;
   border-radius: 4px;
-  cursor: pointer;
 }
 
 .mySlides:hover {
@@ -510,7 +508,6 @@
   -webkit-transform: translate(-50%, -50%) rotate(-45deg);
   -ms-transform: translate(-50%, -50%) rotate(-45deg);
   transform: translate(-50%, -50%) rotate(-45deg);
-  box-shadow: var(--box-shadow);
 }
 
 .card-relative-div-largeview #toggle::before {
@@ -519,7 +516,6 @@
   -webkit-transform: translate(-50%, -50%) rotate(45deg);
   -ms-transform: translate(-50%, -50%) rotate(45deg);
   transform: translate(-50%, -50%) rotate(45deg);
-  box-shadow: var(--box-shadow);
 }
 
 .whats-new-content {

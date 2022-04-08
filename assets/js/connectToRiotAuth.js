@@ -143,31 +143,35 @@ $(document).ready(() => {
                     puuid = await getPlayerUUID();
                     entitlement_token = await getEntitlement();
                     if (typeof entitlement_token === "string") {
-                        var reagiondata = await getXMPPRegion();
-                        region = reagiondata.affinities.live
-
-                        var shopData = await getShopData();
-                        authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-
-                        var pathvar = document.location.pathname;
-                        var page = pathvar.split("/").pop();
-
-                        if (page == "index.html" || page == "decoyIndex.html") {
-                            $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
-                            $('.featured-bundle-time-left').css("opacity", "0");
+                        try {
+                            var reagiondata = await getXMPPRegion();
+                            region = reagiondata.affinities.live
+    
+                            var shopData = await getShopData();
+                            authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+    
+                            var pathvar = document.location.pathname;
+                            var page = pathvar.split("/").pop();
+    
+                            if (page == "index.html" || page == "decoyIndex.html") {
+                                $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
+                                $('.featured-bundle-time-left').css("opacity", "0");
+                            }
+    
+                            Date.prototype.addSeconds = function (seconds) {
+                                var copiedDate = new Date(this.getTime());
+                                return new Date(copiedDate.getTime() + seconds * 1000);
+                            }
+    
+                            var dateData = {
+                                lastCkeckedDate: new Date().getTime(),
+                                willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
+                            }
+    
+                            authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+                        } catch(err) {
+                            window.location.href = ""
                         }
-
-                        Date.prototype.addSeconds = function (seconds) {
-                            var copiedDate = new Date(this.getTime());
-                            return new Date(copiedDate.getTime() + seconds * 1000);
-                        }
-
-                        var dateData = {
-                            lastCkeckedDate: new Date().getTime(),
-                            willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
-                        }
-
-                        authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
                     } else {
                         function reauth() {
                             riotIPC.send('startReauthCycle', 'now');

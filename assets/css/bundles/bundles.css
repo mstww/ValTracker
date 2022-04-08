@@ -212,21 +212,6 @@
 }
 
 .largeview-seperator {
-  background: -webkit-linear-gradient(
-    to right,
-    var(--gradient-left),
-    var(--gradient-right)
-  );
-  background: -o-linear-gradient(
-    to right,
-    var(--gradient-left),
-    var(--gradient-right)
-  );
-  background: -moz-linear-gradient(
-    to right,
-    var(--gradient-left),
-    var(--gradient-right)
-  );
   background: linear-gradient(
     to right,
     var(--gradient-left),

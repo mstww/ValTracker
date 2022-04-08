@@ -43,11 +43,7 @@ ipcRenderer.on('restartDiscordRP', async function() {
             case 'playerStore.html':
                 ipcRenderer.send('changeDiscordRP', `shop_activity`);
                 break;
-            default:
-                ipcRenderer.send('changeDiscordRP', `anonymous_activity`);
         }
-    } else if(parsed.hasDiscordRPenabled == 'anonymous') {
-        ipcRenderer.send('changeDiscordRP', `anonymous_activity`);
     }
 })
 

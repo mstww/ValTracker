@@ -40,6 +40,7 @@ $(document).ready(() => {
                 success: function (data, jqXHR) {
                     if (data.data == null || data.name == null) {
                         $('.user-rank-icon').attr("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/largeicon.png`)
+                        $('.user-rank-icon').addClass("unranked")
                         $('.user-rankrating').append("0")
                         $('.home-avg-rrchange').empty()
                         $('.home-avg-rrchange').append("You haven't played any competitive matches yet!")
@@ -77,6 +78,9 @@ $(document).ready(() => {
                             return 1 / (n * 0) === 1 / 0
                         }
                         $('.user-rank-icon').attr("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data[0].currenttier}/largeicon.png`)
+                        if(data.data[0].currenttier == 0){
+                            $('.user-rank-icon').addClass("unranked")
+                        }
                         var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
                         var parsed = JSON.parse(raw);
                         parsed.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data[0].currenttier}/largeicon.png`
