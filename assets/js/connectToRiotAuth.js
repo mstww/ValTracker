@@ -34,9 +34,9 @@ async function showSignIn() {
         });
         let foundToken = false;
         loginWindow.webContents.on('will-redirect', (event, url) => {
-            console.log('Login window redirecting...');
+            // Login window redirecting...
             if (!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
-                console.log('Redirecting to url with tokens');
+                // Redirecting to url with tokens
                 const tokenData = getTokenDataFromURL(url);
                 foundToken = true;
 
@@ -54,7 +54,7 @@ async function showSignIn() {
                             cookieString = riotcookie.value
                         }
                     })
-                    console.log(riotcookies)
+                    
                     authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
                     authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
                 });
@@ -64,7 +64,7 @@ async function showSignIn() {
             loginWindow.show();
         });
         loginWindow.on('close', () => {
-            console.log('Login window was closed');
+            // Login window was closed
             reject('window closed');
         });
         window.loginWindow = loginWindow;
@@ -139,7 +139,6 @@ $(document).ready(() => {
                     bearer = oldTokenData.accessToken;
                     id_token = oldTokenData.id_token;
 
-                    console.log(bearer)
                     puuid = await getPlayerUUID();
                     entitlement_token = await getEntitlement();
                     if (typeof entitlement_token === "string") {

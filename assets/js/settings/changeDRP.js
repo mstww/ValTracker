@@ -11,7 +11,6 @@ $(document).ready(() => {
     }
 
     $('#app-rp-switch').on('change', function () {
-        console.log($(`#app-rp-switch input[type="checkbox"]`).is( ":checked" ))
         if($(`#app-rp-switch input[type="checkbox"]`).is( ":checked" )) {
             dataToRead.hasDiscordRPenabled = true;
 

@@ -9,7 +9,6 @@ $(document).ready(() => {
     }
 
     $('#val-rp-switch').on('change', function () {
-        console.log($(`#val-rp-switch input[type="checkbox"]`).is( ":checked" ))
         if($(`#val-rp-switch input[type="checkbox"]`).is( ":checked" )) {
             dataToRead.hasValorantRPenabled = true;
     

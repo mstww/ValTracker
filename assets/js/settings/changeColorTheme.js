@@ -361,7 +361,6 @@ $(document).ready(() => {
     }, 100)
     
     $('#delete-custom-theme-button').on("click", function() {
-        console.log("E")
         if(colorData.isCustomTheme == true) {
             var files = fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes")
             files.forEach(file => {

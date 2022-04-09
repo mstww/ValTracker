@@ -2,12 +2,10 @@ const ipcRenderer = require('electron').ipcRenderer
 const fs = require('fs')
 
 ipcRenderer.on('restartDiscordRP', async function() {
-    console.log("GOT A MESSAGE")
     var path = window.location.href;
     var page = path.split('/').pop();
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var parsed = JSON.parse(raw);
-    console.log(page)
     if(parsed.hasDiscordRPenabled == true) {
         switch(page) {
             case 'index.html':

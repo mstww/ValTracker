@@ -25,7 +25,6 @@ $('.reveal-item-button').on("click", function () {
         setTimeout(function () {
             $(censorbanner).css("display", "none");
             var itemWrapper = censorbanner.parentElement;
-            console.log(itemWrapper)
             $(itemWrapper).removeClass('notSeenYet');
         }, 700)
     }, 700);

@@ -169,7 +169,6 @@ $(document).ready(() => {
                     files.forEach(file => {
                         if (fixedThemeName + ".json" == file) {
                             themeAlreadyFound = true;
-                            console.log("ERROR")
                             replaceText("You already have a Theme with this Name.")
                         }
                     });

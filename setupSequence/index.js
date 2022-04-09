@@ -118,9 +118,9 @@ async function showSignIn() {
         });
         let foundToken = false;
         loginWindow.webContents.on('will-redirect', (event, url) => {
-            console.log('Login window redirecting...');
+            // Login window redirecting...
             if (!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
-                console.log('Redirecting to url with tokens');
+                // Redirecting to url with tokens
                 const tokenData = getTokenDataFromURL(url);
                 foundToken = true;
 
@@ -147,7 +147,7 @@ async function showSignIn() {
             loginWindow.show();
         });
         loginWindow.on('close', () => {
-            console.log('Login window was closed');
+            // Login window was closed
             reject('window closed');
         });
         window.loginWindow = loginWindow;
@@ -214,7 +214,6 @@ $(document).ready(() => {
             requiredCookie = "tdid=" + arg
 
             puuid = await getPlayerUUID();
-            console.log(puuid)
 
             entitlement_token = await getEntitlement();
 
@@ -248,7 +247,7 @@ $(document).ready(() => {
                 "processData": false,
                 "data": "[\"" + puuid + "\"]",
                 success: function (data, xhr) {
-                    console.log(data[0].GameName)
+                    // data[0].GameName
                     var searchedPlayerName = data[0].GameName
                     var searchedPlayerTag = data[0].TagLine
                     var searchedRegion = region;

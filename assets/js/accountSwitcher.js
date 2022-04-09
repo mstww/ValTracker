@@ -21,9 +21,9 @@ function openSwitcherLoginWindow() {
         });
         let foundToken = false;
         loginWindow.webContents.on('will-redirect', (event, url) => {
-            console.log('Login window redirecting...');
+            // Login window redirecting...
             if (!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
-                console.log('Redirecting to url with tokens');
+                // Redirecting to url with tokens
                 const tokenData = getTokenDataFromURL(url);
                 foundToken = true;
 
@@ -48,7 +48,7 @@ function openSwitcherLoginWindow() {
             loginWindow.show();
         });
         loginWindow.on('close', () => {
-            console.log('Login window was closed');
+            // Login window was closed
             reject('window closed');
         });
         window.loginWindow = loginWindow;
@@ -146,7 +146,6 @@ $(document).ready(() => {
         accRankWrapper.style.width = "14%";
 
         var accRankImg = document.createElement('img');
-        console.log(account_data)
         accRankImg.src = account_data.playerRank;
         accRankImg.className = "user-rank-img";
         accRankImg.style.width = "85%";
@@ -213,7 +212,6 @@ $(document).ready(() => {
         var id = this.id
         if(accounts.length <= 5) {
             const data = await openSwitcherLoginWindow();
-            console.log(data)
             bearer = data.tokenData.accessToken;
             id_token = data.tokenData.id_token;
     
@@ -233,8 +231,6 @@ $(document).ready(() => {
 
                 var account_rank_data = await acc_axios.get(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${region}/${puuid}`)
 
-                console.log(account_rank_data)
-
                 var currenttier = 0;
                 if(account_rank_data.data.data.currenttier != undefined) {
                     var currenttier = account_rank_data.data.data.currenttier
@@ -247,8 +243,6 @@ $(document).ready(() => {
                     playerUUID: puuid,
                     playerRank: `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${currenttier}/largeicon.png`,
                 }
-        
-                console.log(accObj)
 
                 accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(accObj));
         
@@ -338,7 +332,6 @@ $(document).ready(() => {
             accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/cookies.json', currentUserCookies)
     
             var puuidToBeSwitchedTo = this.lastChild.textContent;
-            console.log(puuidToBeSwitchedTo)
             var newUserCreds = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeSwitchedTo + '.json');
             accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', newUserCreds);
     

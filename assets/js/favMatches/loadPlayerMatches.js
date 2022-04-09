@@ -294,7 +294,7 @@ $(document).ready(async () => {
                         type: 'get',
                         async: false,
                         success: function (APIdata, xhr) {
-                            console.log("DOWNLOADED MATCH NOT FOUND, DOWNLOADING DATA")
+                            // DOWNLOADED MATCH NOT FOUND, DOWNLOADING DATA
                             fs.writeFileSync(checkedPath, JSON.stringify(APIdata));
                             window.location.href = ""
                         },
@@ -305,7 +305,7 @@ $(document).ready(async () => {
                 }
             } else { //No folder found
                 fs.mkdirSync(checkedFolder)
-                console.log("NO FOLDER FOUND, CREATING FOLDER AND DOWNLOADING DATA")
+                // NO FOLDER FOUND, CREATING FOLDER AND DOWNLOADING DATA
                 window.location.href = ""
             }
         }
@@ -314,7 +314,7 @@ $(document).ready(async () => {
         if (err) {
             console.log(err);
             fs.mkdirSync(checkedFolder)
-            console.log("NO FOLDER FOUND, CREATING FOLDER")
+            // NO FOLDER FOUND, CREATING FOLDER
             fs.writeFileSync(checkedPath, JSON.stringify(APIdata));
             window.location.href = ""
         } else {

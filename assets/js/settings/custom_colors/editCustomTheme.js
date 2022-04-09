@@ -196,8 +196,6 @@ $(document).ready(() => {
         }
         colorFS2.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data))
 
-        console.log(colorDataToEdit.themeName)
-
         window.location.href = "settings.html"
     })
     $('#back-to-settings').on("click", function () {

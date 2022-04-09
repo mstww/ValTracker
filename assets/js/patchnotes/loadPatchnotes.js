@@ -11,7 +11,6 @@ $(document).ready(() => {
         url: `https://api.valtracker.gg/patchnotes/v${pjson.version}`,
         type: 'get',
         success: function (data, xhr) {
-            console.log(data)
             var patchnotes = data.data.patchnotes
             var html = converter.makeHtml(patchnotes);
             $('#patchnotes-wrapper').append(html);

@@ -135,11 +135,9 @@ $(document).ready(() => {
             }
             if(alreadyInLast5 == false) {
               parsedLastSearchedMatches.splice(0, 0, lastSearchedPlayerObj)
-              console.log(parsedLastSearchedMatches)
               if(parsedLastSearchedMatches.length > 5) {
                 parsedLastSearchedMatches.splice(-1, 1);
               }
-              console.log(parsedLastSearchedMatches)
               fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json', JSON.stringify(parsedLastSearchedMatches))
             }
             sessionStorage.setItem("player_name", searchedPlayerName);

@@ -5,7 +5,6 @@ const appFolder = path.dirname(process.execPath)
 const exeName = path.basename(process.execPath)
 
 $(document).ready(async () => {
-    console.log(appFolder)
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
 
@@ -21,7 +20,7 @@ $(document).ready(async () => {
         });
     } else {
         ipc.invoke('is-dev').then((isDev) => {
-            if(!isDev) {
+            if(!isDev) { 
                 app.setLoginItemSettings({
                   openAtLogin: false
                 })
@@ -34,7 +33,6 @@ $(document).ready(async () => {
     }
 
     $('#valtracker-startup-behavior-switch').on('change', function () {
-        console.log($(`#valtracker-startup-behavior-switch input[type="checkbox"]`).is( ":checked" ))
         if($(`#valtracker-startup-behavior-switch input[type="checkbox"]`).is( ":checked" )) {
             ipc.invoke('is-dev').then((isDev) => {
                 if(!isDev) {
@@ -65,7 +63,6 @@ $(document).ready(async () => {
     });
 
     $('#valtracker-closing-behavior-switch').on('change', function () {
-        console.log($(`#valtracker-closing-behavior-switch input[type="checkbox"]`).is( ":checked" ))
         if($(`#valtracker-closing-behavior-switch input[type="checkbox"]`).is( ":checked" )) {
             // Minimize app on close
             var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');

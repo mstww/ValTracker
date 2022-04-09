@@ -282,6 +282,46 @@ function createMessageData() {
   );
 }
 
+async function checkUserData() {
+  var raw = fs.readFileSync(app_data + "/user_data/user_creds.json");
+  var user_creds = JSON.parse(raw);
+  
+  if(!user_creds.playerName) {
+    axios({
+      "url": "https://pd." + user_creds.playerRegion + ".a.pvp.net/name-service/v2/players",
+      "method": "PUT",
+      "data": "[\"" + user_creds.playerUUID + "\"]",
+    }).then(function(response) {
+      user_creds.playerName = response.data[0].GameName;
+      user_creds.playerTag = response.data[0].TagLine;
+      fs.writeFileSync(app_data + "/user_data/user_creds.json", JSON.stringify(user_creds));
+      fs.writeFileSync(app_data + "/user_data/user_accounts/" + user_creds.playerUUID + ".json", JSON.stringify(user_creds));
+    });
+  }
+
+  if (!user_creds.playerUUID) {
+    var account_data = await axios.get(
+      `https://api.henrikdev.xyz/valorant/v1/account/${user_creds.playerName}/${user_creds.playerTag}`
+    );
+    user_creds.playerUUID = account_data.data.data.puuid;
+    fs.writeFileSync(app_data + "/user_data/user_creds.json", JSON.stringify(user_creds));
+    fs.writeFileSync(app_data + "/user_data/user_accounts/" + user_creds.playerUUID + ".json", JSON.stringify(user_creds));
+  }
+
+  if (!user_creds.playerRank) {
+    var mmr_data = await axios.get(
+      `https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${user_creds.playerRegion}/${user_creds.playerUUID}`
+    );
+    if (user_creds.playerRank != undefined) {
+      user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${mmr_data.data.data.currenttier}/largeicon.png`;
+    } else {
+      user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/largeicon.png`;
+    }
+    fs.writeFileSync(app_data + "/user_data/user_creds.json", JSON.stringify(user_creds));
+    fs.writeFileSync(app_data + "/user_data/user_accounts/" + user_creds.playerUUID + ".json", JSON.stringify(user_creds));
+  }
+}
+
 function noFilesFound() {
   // Create /user_data dir and all files in it
   createUserData();
@@ -686,17 +726,14 @@ async function createWindow() {
     var isInSetup = false;
     ipcMain.on("isInSetup", function () {
       isInSetup = true;
-      console.log("IS IN SETUP!");
     });
 
     ipcMain.on("finishedSetup", function () {
       isInSetup = false;
-      console.log("LEFT SETUP!");
     });
 
     app.on("before-quit", () => {
       if (isInSetup == true) {
-        console.log("Deleting Folder...");
         fs.rmSync(app_data + "/user_data", { recursive: true, force: true });
       }
     });
@@ -839,35 +876,10 @@ async function createWindow() {
     }
 
     if (fs.existsSync(app_data + "/user_data/user_creds.json")) {
+      await checkUserData(); 
+
       var raw = fs.readFileSync(app_data + "/user_data/user_creds.json");
       var user_creds = JSON.parse(raw);
-      if (!user_creds.playerUUID) {
-        var account_data = await axios.get(
-          `https://api.henrikdev.xyz/valorant/v1/account/${user_creds.playerName}/${user_creds.playerTag}`
-        );
-        user_creds.playerUUID = account_data.data.data.puuid;
-      }
-      if (!user_creds.playerRank) {
-        var mmr_data = await axios.get(
-          `https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${user_creds.playerRegion}/${user_creds.playerUUID}`
-        );
-        if (user_creds.playerRank != undefined) {
-          user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${mmr_data.data.data.currenttier}/largeicon.png`;
-        } else {
-          user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/largeicon.png`;
-        }
-      }
-      fs.writeFileSync(
-        app_data + "/user_data/user_creds.json",
-        JSON.stringify(user_creds)
-      );
-      fs.writeFileSync(
-        app_data +
-          "/user_data/user_accounts/" +
-          user_creds.playerUUID +
-          ".json",
-        JSON.stringify(user_creds)
-      );
 
       if (!fs.existsSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID)) {
         fs.mkdirSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID);
@@ -935,11 +947,7 @@ async function reauthAccount(puuid) {
       minVersion: "TLSv1.2",
     });
 
-    console.log(ssid);
-
-    const access_tokens = await axios.post(
-      "https://auth.riotgames.com/api/v1/authorization",
-      {
+    const access_tokens = await axios.post("https://auth.riotgames.com/api/v1/authorization", {
         client_id: "play-valorant-web-prod",
         nonce: 1,
         redirect_uri: "https://playvalorant.com/opt_in",
@@ -956,38 +964,19 @@ async function reauthAccount(puuid) {
       }
     );
 
-    newTokenData = getTokenDataFromURL(
-      access_tokens.data.response.parameters.uri
-    );
+    newTokenData = getTokenDataFromURL(access_tokens.data.response.parameters.uri);
 
     if(puuid.startsWith(".")) {
-      fs.writeFileSync(
-        process.env.APPDATA +
-          "/VALTracker/user_data/riot_games_data/cookies.json",
-        JSON.stringify(access_tokens.headers["set-cookie"])
-      );
+      fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json", JSON.stringify(access_tokens.headers["set-cookie"]));
 
-      fs.writeFileSync(
-        process.env.APPDATA +
-          "/VALTracker/user_data/riot_games_data/token_data.json",
-        JSON.stringify(newTokenData)
-      );
+      fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/token_data.json", JSON.stringify(newTokenData));
     } else {
-      fs.writeFileSync(
-        process.env.APPDATA +
-          "/VALTracker/user_data/riot_games_data/" + puuid.split(".").pop() + "/cookies.json",
-        JSON.stringify(access_tokens.headers["set-cookie"])
-      );
+      fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid.split(".").pop() + "/cookies.json", JSON.stringify(access_tokens.headers["set-cookie"]));
   
-      fs.writeFileSync(
-        process.env.APPDATA +
-          "/VALTracker/user_data/riot_games_data/" + puuid.split(".").pop() + "/token_data.json",
-        JSON.stringify(newTokenData)
-      );
+      fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid.split(".").pop() + "/token_data.json", JSON.stringify(newTokenData));
     }
     return newTokenData;
   } catch (err) {
-    console.log(err);
     return;
   }
 }
@@ -995,37 +984,40 @@ async function reauthAccount(puuid) {
 async function reauthAllAccounts() {
   var puuid_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
   var puuid_parsed = JSON.parse(puuid_raw);
-  var puuid = puuid_parsed.playerUUID;
-
-  var account_puuids = fs.readdirSync(app_data + "/user_data/user_accounts/");
-  var accountsToReauth = [];
-  account_puuids.forEach(uuid => {
-    if (uuid.split(".")[0] == puuid) {
-      accountsToReauth.push("." + uuid.split(".")[0]);
-    } else {
-      accountsToReauth.push(uuid.split(".")[0]);
-    }
-  });
-
-  var expectedLength = accountsToReauth.length;
-
-  var i = 0;
-
-  var data_array = [];
+  if(puuid_parsed.playerUUID) {
+    var puuid = puuid_parsed.playerUUID;
   
-  await new Promise((resolve, reject) => { 
-    accountsToReauth.forEach(async (uuid) => {
-      data = await reauthAccount(uuid);
-      data_array.push(data);
-      i++;
-      console.log(i + " / " + expectedLength)
-      if(i == expectedLength) {
-        resolve(); // also can pass a parameter here to get it via await.
+    var account_puuids = fs.readdirSync(app_data + "/user_data/user_accounts/");
+    var accountsToReauth = [];
+    account_puuids.forEach(uuid => {
+      if (uuid.split(".")[0] == puuid) {
+        accountsToReauth.push("." + uuid.split(".")[0]);
+      } else {
+        accountsToReauth.push(uuid.split(".")[0]);
       }
     });
-  });
   
-  return data_array;
+    var expectedLength = accountsToReauth.length;
+  
+    var i = 0;
+  
+    var data_array = [];
+    
+    await new Promise((resolve, reject) => { 
+      accountsToReauth.forEach(async (uuid) => {
+        data = await reauthAccount(uuid);
+        data_array.push(data);
+        i++;
+        if(i == expectedLength) {
+          resolve();
+        }
+      });
+    });
+    
+    return data_array;
+  } else {
+    return false;
+  }
 }
 
 var updateCheck;
@@ -1051,12 +1043,13 @@ app.on("ready", async function () {
     fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json", dataToWriteDown);
   }
   
-  var newTokenData = await(await reauthAllAccounts());
-  console.log(newTokenData)
-  if (cycleRunning == false) {
-    setInterval(reauthAllAccounts, (newTokenData[0].expiresIn - 300) * 1000);
-    console.log("CYCLE STARTED");
-    cycleRunning = true;
+  var newTokenData = await reauthAllAccounts();
+  if(newTokenData != false) {
+    if (cycleRunning == false) {
+      setInterval(reauthAllAccounts, (newTokenData[0].expiresIn - 300) * 1000);
+      console.log("CYCLE STARTED");
+      cycleRunning = true;
+    }
   }
 });
 
@@ -1396,8 +1389,6 @@ async function reauthCycle() {
     JSON.stringify(access_tokens.headers["set-cookie"])
   );
 
-  console.log(access_tokens.data.response);
-
   var tokensFromUrl = access_tokens.data.response.parameters.uri;
 
   newTokenData = getTokenDataFromURL(tokensFromUrl);
@@ -1448,7 +1439,6 @@ if (
               sessionData = null;
             }
           } catch (e) {
-            console.log(e);
             const currentTime = new Date().getTime();
             if (currentTime - lastRetryMessage > 1000) {
               console.log("Unable to get session data, retrying...");
@@ -1967,7 +1957,6 @@ if (
                     var data = JSON.parse(buff.toString("utf-8"));
 
                     globalPartyState = data["sessionLoopState"];
-                    console.log(data["sessionLoopState"]);
                     var setState =
                       data["partyOwnerMatchScoreAllyTeam"] +
                       " - " +
@@ -2473,7 +2462,6 @@ if (
                   var data = JSON.parse(buff.toString("utf-8"));
 
                   globalPartyState = data["sessionLoopState"];
-                  console.log(data["sessionLoopState"]);
                   if (data["sessionLoopState"] == "INGAME") {
                     console.log(
                       "TEAM_1: " +
