@@ -1111,7 +1111,7 @@ ipc.on("startReauthCycle", async function (event, arg) {
         honorCipherOrder: true,
         minVersion: "TLSv1.2",
       });
-
+      
       const access_tokens = await axios.post(
         "https://auth.riotgames.com/api/v1/authorization",
         {
@@ -1137,7 +1137,7 @@ ipc.on("startReauthCycle", async function (event, arg) {
         fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json", JSON.stringify(access_tokens.headers["set-cookie"]));
 
         event.sender.send("reauthSuccess", access_tokens.data.response.parameters.uri);
-
+        
         newTokenData = getTokenDataFromURL(access_tokens.data.response.parameters.uri);
         return newTokenData;
       }
