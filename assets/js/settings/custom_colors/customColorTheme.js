@@ -1,15 +1,15 @@
-const colorFS2 = require('fs')
+var fs = require('fs')
 
-let rawColorDataPre = colorFS2.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
+let rawColorDataPre = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
 let colorDataPre = JSON.parse(rawColorDataPre);
 
 var colorData2;
 
-if (colorDataPre.isCustomTheme == true) {
-    let rawColorData3 = colorFS2.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataPre.themeName}.json`);
+if(colorDataPre.isCustomTheme == true) {
+    let rawColorData3 = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataPre.themeName}.json`);
     colorData2 = JSON.parse(rawColorData3);
 } else {
-    let rawColorData2 = colorFS2.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/preset_themes/${colorDataPre.themeName}.json`);
+    let rawColorData2 = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/preset_themes/${colorDataPre.themeName}.json`);
     colorData2 = JSON.parse(rawColorData2);
 }
 
@@ -20,10 +20,10 @@ function rgbToHex(red, green, blue) {
 
 function hexToRgb(hex) {
     const normal = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-    if (normal) return normal.slice(1).map(e => parseInt(e, 16));
+    if(normal) return normal.slice(1).map(e => parseInt(e, 16));
 
     const shorthand = hex.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
-    if (shorthand) return shorthand.slice(1).map(e => 0x11 * parseInt(e, 16));
+    if(shorthand) return shorthand.slice(1).map(e => 0x11 * parseInt(e, 16));
 
     return null;
 }
@@ -133,22 +133,22 @@ $(document).ready(() => {
     $('.subcolor-palette-preview-2').css("background-color", "var(--app-color-lightest)")
 
     $("#colortheme-name").keyup(function (event) {
-        if (event.keyCode === 13) {
+        if(event.keyCode === 13) {
             $("#save-colortheme").click();
         }
     });
     const replaceText = (text) => {
         const element = document.getElementById("replace-text");
-        if (element) element.innerText = text
+        if(element) element.innerText = text
     }
     $('#save-colortheme').on("click", function () {
         var searchbar = document.getElementById('colortheme-name')
         var customThemeName = searchbar.value
-        if (customThemeName == "") {
+        if(customThemeName == "") {
             replaceText("Please enter a Name.")
         } else {
             replaceText("")
-            if (!colorFS2.existsSync(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes")) {
+            if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes")) {
 
                 var newLeftGradient = select1.value;
                 var newRightGradient = select2.value;
@@ -165,16 +165,16 @@ $(document).ready(() => {
                 var fixedThemeName = customThemeName.replace(/\s/g, '-')
 
                 var themeAlreadyFound = false;
-                colorFS2.readdirSync(process.env.APPDATA + "/VALTracker/user_data/thtmes/custom_themes", (err, files) => {
+                fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/thtmes/custom_themes", (err, files) => {
                     files.forEach(file => {
-                        if (fixedThemeName + ".json" == file) {
+                        if(fixedThemeName + ".json" == file) {
                             themeAlreadyFound = true;
                             replaceText("You already have a Theme with this Name.")
                         }
                     });
                 });
 
-                if (themeAlreadyFound == false) {
+                if(themeAlreadyFound == false) {
                     var dataToWrite = {
                         "app_color": newBaseColor,
                         "app_subcolor_1": newSubColor1,
@@ -191,14 +191,14 @@ $(document).ready(() => {
                     }
 
                     var dataToWriteDown = JSON.stringify(dataToWrite)
-                    colorFS2.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${fixedThemeName.toLowerCase()}.json`, dataToWriteDown)
+                    fs.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${fixedThemeName.toLowerCase()}.json`, dataToWriteDown)
 
                     var dataToWrite2 = {
                         "isCustomTheme": true,
                         "themeName": fixedThemeName.toLowerCase()
                     }
 
-                    colorFS2.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(dataToWrite2))
+                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(dataToWrite2))
                     window.location.href = "settings.html"
                 }
             } else {
@@ -217,9 +217,9 @@ $(document).ready(() => {
                 var fixedThemeName = customThemeName.replace(/\s/g, '-')
 
                 var themeAlreadyFound = false;
-                colorFS2.readdirSync(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes", (err, files) => {
+                fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/themes/custom_themes", (err, files) => {
                     files.forEach(file => {
-                        if (fixedThemeName + ".json" == file) {
+                        if(fixedThemeName + ".json" == file) {
                             themeAlreadyFound = true;
                             console.log("ERROR")
                             replaceText("You already have a Theme with this Name.")
@@ -227,7 +227,7 @@ $(document).ready(() => {
                     });
                 });
 
-                if (themeAlreadyFound == false) {
+                if(themeAlreadyFound == false) {
                     var dataToWrite = {
                         "app_color": newBaseColor,
                         "app_subcolor_1": newSubColor1,
@@ -244,14 +244,14 @@ $(document).ready(() => {
                     }
 
                     var dataToWriteDown = JSON.stringify(dataToWrite)
-                    colorFS2.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${fixedThemeName.toLowerCase()}.json`, dataToWriteDown)
+                    fs.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${fixedThemeName.toLowerCase()}.json`, dataToWriteDown)
 
                     var dataToWrite2 = {
                         "isCustomTheme": true,
                         "themeName": fixedThemeName.toLowerCase(),
                     }
 
-                    colorFS2.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(dataToWrite2))
+                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(dataToWrite2))
                     window.location.href = "settings.html"
                 }
             }

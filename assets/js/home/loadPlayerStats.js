@@ -7,7 +7,7 @@ $(document).ready(() => {
 
     $('#sec').css("display", "none")
     setTimeout(function () {
-        if (sessionStorage.getItem("afterReload")) {
+        if(sessionStorage.getItem("afterReload")) {
             var pKills_before = 0;
             var pDeaths_before = 0;
             var pAssists_before = 0;
@@ -38,7 +38,7 @@ $(document).ready(() => {
                 url: `https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr-history/${playerRegion}/${playerUUID}`,
                 type: 'get',
                 success: function (data, jqXHR) {
-                    if (data.data == null || data.name == null) {
+                    if(data.data == null || data.name == null) {
                         $('.user-rank-icon').attr("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/largeicon.png`)
                         $('.user-rank-icon').addClass("unranked")
                         $('.user-rankrating').append("0")
@@ -47,7 +47,7 @@ $(document).ready(() => {
 
                         var path = window.location.pathname;
                         var page = path.split("/").pop();
-                        if (page == "decoyIndex.html") {
+                        if(page == "decoyIndex.html") {
                             setTimeout(function () {
                                 $('.loading-div-home').fadeTo(950, 0)
                                 $('.user-rank-icon').fadeTo(950, 1)
@@ -68,7 +68,7 @@ $(document).ready(() => {
                             }, 1000)
                         }
                     } else {
-                        if (data.data[0].ranking_in_tier == undefined) {
+                        if(data.data[0].ranking_in_tier == undefined) {
                             $('.user-rankrating').append("0")
                         } else {
                             $('.user-rankrating').append(data.data[0].ranking_in_tier)
@@ -85,9 +85,10 @@ $(document).ready(() => {
                         var parsed = JSON.parse(raw);
                         parsed.playerRank = `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data[0].currenttier}/largeicon.png`
                         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(parsed));
+                        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + parsed.playerUUID + '.json', JSON.stringify(parsed));
                         var i = 0;
                         for (var count = 0; count < data.data.length; count++) {
-                            if (ispositive(data.data[count].mmr_change_to_last_game) == true) {
+                            if(ispositive(data.data[count].mmr_change_to_last_game) == true) {
                                 $(`#match-rr-id-${count}`).append("+" + data.data[count].mmr_change_to_last_game)
                             } else {
                                 $(`#match-rr-id-${count}`).append(data.data[count].mmr_change_to_last_game)
@@ -98,7 +99,7 @@ $(document).ready(() => {
                         for (var count = 0; count < i; count++) {
                             RR_after = RR_after + data.data[count].mmr_change_to_last_game
                         }
-                        if (ispositive(RR_after) == true) {
+                        if(ispositive(RR_after) == true) {
                             $('.home-avg-rrchange').empty()
                             $('.home-avg-rrchange').append(" +" + RR_after)
                         } else {
@@ -107,7 +108,7 @@ $(document).ready(() => {
                         }
                         var path = window.location.pathname;
                         var page = path.split("/").pop();
-                        if (page == "decoyIndex.html") {
+                        if(page == "decoyIndex.html") {
                             setTimeout(function () {
                                 $('.loading-div-home').fadeTo(950, 0)
                                 $('.user-rank-icon').fadeTo(950, 1)
@@ -132,7 +133,7 @@ $(document).ready(() => {
                 error: function (jqXHR) {
                     var path = window.location.pathname;
                     var page = path.split("/").pop();
-                    if (page == "decoyIndex.html") {
+                    if(page == "decoyIndex.html") {
                         setTimeout(function () {
                             $('.loading-div-home').fadeTo(950, 0)
                             $('#sec').css("opacity", "0")

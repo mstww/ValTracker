@@ -1,5 +1,5 @@
 const ipcRenderer = require('electron').ipcRenderer
-const fs = require('fs')
+var fs= require('fs')
 
 ipcRenderer.on('restartDiscordRP', async function() {
     var path = window.location.href;
@@ -46,7 +46,7 @@ ipcRenderer.on('restartDiscordRP', async function() {
 })
 
 document.onreadystatechange = (event) => {
-    if (document.readyState == "complete") {
+    if(document.readyState == "complete") {
         handleWindowControls();
     }
 };
@@ -78,7 +78,7 @@ async function handleWindowControls() {
     })
 
     function toggleMaxRestoreButtons(isMaximized) {
-        if (isMaximized == true) {
+        if(isMaximized == true) {
             document.body.classList.add('maximized');
         } else {
             document.body.classList.remove('maximized');

@@ -1,8 +1,8 @@
 $(document).ready(function () {
     ipcRenderer.send("changeDiscordRP", `matchview_activity`);
     var matchID = sessionStorage.getItem("matchID");
-    var playerName = sessionStorage.getItem("player_name");
-    var playerTag = sessionStorage.getItem("player_tag");
+    var playerName = sessionStorage.getItem("matchview_player_name");
+    var playerTag = sessionStorage.getItem("matchview_player_tag");
     var lastPage = sessionStorage.getItem("last_matchview_page");
     $('.player-name-rank').append(playerName)
     $('#backToLastPage').on("click", function () {
@@ -97,7 +97,7 @@ $(document).ready(function () {
                         killerArray.push(data.data.rounds[count].player_stats[count2].kill_events[count3].killer_display_name + " " + data.data.rounds[count].player_stats[count2].kill_events[count3].kill_time_in_round)
                         killtimeArray.push(data.data.rounds[count].player_stats[count2].kill_events[count3].kill_time_in_round)
                     }
-                    if (data.data.rounds[count].player_stats[count2].player_display_name == playerName + "#" + playerTag) {
+                    if(data.data.rounds[count].player_stats[count2].player_display_name == playerName + "#" + playerTag) {
                         headshot_before = headshot_before + data.data.rounds[count].player_stats[count2].headshots
                         bodyshot_before = bodyshot_before + data.data.rounds[count].player_stats[count2].bodyshots
                         legshot_before = legshot_before + data.data.rounds[count].player_stats[count2].legshots
@@ -106,9 +106,9 @@ $(document).ready(function () {
                 for (var count2 = 0; count2 < killerArray.length; count2++) {
                     var killerArrayObj = killerArray[count2];
                     var killerArrayTime = killerArrayObj.split(" ").pop();
-                    if (killerArrayTime == Math.min(...killtimeArray)) {
+                    if(killerArrayTime == Math.min(...killtimeArray)) {
                         var firstBloodKiller = killerArrayObj.substring(0, killerArrayObj.lastIndexOf(' '))
-                        if (firstBloodKiller == playerName + "#" + playerTag) {
+                        if(firstBloodKiller == playerName + "#" + playerTag) {
                             totalFBs++;
                         }
                         break;
@@ -117,8 +117,8 @@ $(document).ready(function () {
             }
 
             for (var count = 0; count < data.data.players.all_players.length; count++) {
-                if (data.data.players.all_players[count].name == playerName && data.data.players.all_players[count].tag == playerTag) {
-                    if (data.data.metadata.mode == "Competitive") {
+                if(data.data.players.all_players[count].name == playerName && data.data.players.all_players[count].tag == playerTag) {
+                    if(data.data.metadata.mode == "Competitive") {
                         $('.matchview-playerrank-img').attr("src",  `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[count].currenttier}/largeicon.png`)
                         if(data.data.players.all_players[count].currenttier == 0){
                             $('.matchview-playerrank-img').addClass("unranked")
@@ -126,20 +126,20 @@ $(document).ready(function () {
                     }
                     var dmgperround = Math.round(data.data.players.all_players[count].damage_made / data.data.rounds.length);
                     $(`.insertDmgPerRound`).append(dmgperround);
-                    if (data.data.players.all_players[count].team == "Blue") {
+                    if(data.data.players.all_players[count].team == "Blue") {
                         $('#team1-result').addClass("matchview-blue-standing")
                         $('#team2-result').addClass("matchview-red-standing")
-                        if (data.data.teams.blue.has_won == true) {
+                        if(data.data.teams.blue.has_won == true) {
                             $('.matchview-result-span').append("VICTORY");
                         } else {
                             $('.matchview-result-span').append("LOSS");
                         }
                         $('#team1-result').append(data.data.teams.blue.rounds_won)
                         $('#team2-result').append(data.data.teams.blue.rounds_lost)
-                    } else if (data.data.players.all_players[count].team == "Red") {
+                    } else if(data.data.players.all_players[count].team == "Red") {
                         $('#team1-result').addClass("matchview-red-standing")
                         $('#team2-result').addClass("matchview-blue-standing")
-                        if (data.data.teams.red.has_won == true) {
+                        if(data.data.teams.red.has_won == true) {
                             $('.matchview-result-span').append("VICTORY");
                         } else {
                             $('.matchview-result-span').append("LOSS");
@@ -166,7 +166,7 @@ $(document).ready(function () {
                 success: function (data2, jqXHR) {
                     var agentUUID = sessionStorage.getItem("agentUUID")
                     for (var count = 0; count < data2.data.length; count++) {
-                        if (data2.data[count].uuid == agentUUID) {
+                        if(data2.data[count].uuid == agentUUID) {
                             if(data2.data[count].uuid.displayName == playerAgent) {
                                 $('.agent-image').attr('src', data2.data[count].displayIcon)
                             }
@@ -204,7 +204,7 @@ $(document).ready(function () {
                         var agentUUID = path2.split("/").pop();
 
                         for (var count = 0; count < data2.data.length; count++) {
-                            if (data2.data[count].uuid == agentUUID) {
+                            if(data2.data[count].uuid == agentUUID) {
                                 playerAgent_img.className = "played_agent_img";
                                 playerAgent_img.src = data2.data[count].displayIcon
                             } else {
@@ -227,7 +227,7 @@ $(document).ready(function () {
                         }
 
                         player_name.className = "display_name"
-                        if (data.data.players.all_players[playercount].team == "Red") {
+                        if(data.data.players.all_players[playercount].team == "Red") {
                             player_name.setAttribute("style", "color: #ff0044")
                         } else {
                             player_name.setAttribute("style", "color: #00ffd5")
@@ -260,15 +260,15 @@ $(document).ready(function () {
                         var totalDefuses = 0;
 
                         for (var count = 0; count < data.data.rounds.length; count++) {
-                            if (data.data.rounds[count].bomb_planted == false) {
+                            if(data.data.rounds[count].bomb_planted == false) {
                                 continue;
                             } else {
-                                if (data.data.rounds[count].plant_events.planted_by.display_name == playerName + "#" + playerTag) {
+                                if(data.data.rounds[count].plant_events.planted_by.display_name == playerName + "#" + playerTag) {
                                     totalPlants++;
                                 }
-                                if (data.data.rounds[count].bomb_defused == false) {
+                                if(data.data.rounds[count].bomb_defused == false) {
                                     continue;
-                                } else if (data.data.rounds[count].defuse_events.defuse_location.display_name == playerName + "#" + playerTag) {
+                                } else if(data.data.rounds[count].defuse_events.defuse_location.display_name == playerName + "#" + playerTag) {
                                     totalDefuses++;
                                 }
                             }
@@ -295,9 +295,9 @@ $(document).ready(function () {
                             for (var count2 = 0; count2 < killerArray.length; count2++) {
                                 var killerArrayObj = killerArray[count2];
                                 var killerArrayTime = killerArrayObj.split(" ").pop();
-                                if (killerArrayTime == Math.min(...killtimeArray)) {
+                                if(killerArrayTime == Math.min(...killtimeArray)) {
                                     var firstBloodKiller = killerArrayObj.substring(0, killerArrayObj.lastIndexOf(' '))
-                                    if (firstBloodKiller == playerName + "#" + playerTag) {
+                                    if(firstBloodKiller == playerName + "#" + playerTag) {
                                         totalPlayerFBs++;
                                     }
                                     break;
@@ -331,7 +331,7 @@ $(document).ready(function () {
                         }
                         var highestScore = Math.max(...scoreArray)
                         for (var arrcount = 0; arrcount < scoreArray.length; arrcount++) {
-                            if (scoreArray[arrcount] == highestScore) {
+                            if(scoreArray[arrcount] == highestScore) {
                                 break;
                             }
                         }
@@ -339,7 +339,7 @@ $(document).ready(function () {
                         var rows = table.rows
                         for (var i = 2; i < table.rows.length; i++) {
                             var playerName = rows[i].children[1].textContent
-                            if (playerArray[arrcount] == rows[i].children[1].textContent) {
+                            if(playerArray[arrcount] == rows[i].children[1].textContent) {
                                 rows[i].children[1].classList.add("MatchMVP")
                             }
                         }

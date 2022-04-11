@@ -32,7 +32,7 @@ $(document).ready(() => {
         
         for (var i in folders) {
             var folderPath = path.join(user_accounts_dir, folders[i]);
-            if (fs.statSync(folderPath).isDirectory()) {
+            if(fs.statSync(folderPath).isDirectory()) {
                 fs.rmdirSync(folderPath);
             }
         }

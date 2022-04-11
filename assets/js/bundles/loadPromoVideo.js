@@ -14,14 +14,14 @@ function showPromoVid(event, id, bundleID) {
         $('.largeview-vid').css("background-color", "rgba(0, 0, 0, 0.5)")
     }, 400)
     var chroma = sessionStorage.getItem("chroma");
-    if (chroma == null) {
+    if(chroma == null) {
         chroma = 0;
     }
     $.ajax({
         url: `https://api.valtracker.gg/bundles/${bundleID}`,
         type: 'get',
         success: function (data, jqXHR) {
-            if (data.data.weapons[id].chromas[chroma].video) {
+            if(data.data.weapons[id].chromas[chroma].video) {
                 video.setAttribute("src", data.data.weapons[id].chromas[chroma].video);
             } else {
                 video.setAttribute("src", data.data.weapons[id].levels[data.data.weapons[id].levels.length - 1].video);

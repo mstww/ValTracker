@@ -11,7 +11,7 @@ $(document).ready(() => {
                 function ispositive(n) {
                     return 1 / (n * 0) === 1 / 0
                 }
-                if (data2.data[0] == undefined) {
+                if(data2.data[0] == undefined) {
                     $('.player-rank').attr("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/0/largeicon.png`);
                     $('.player-rank').addClass("unranked");
                     for (var count = 0; count < 5; count++) {
@@ -24,7 +24,7 @@ $(document).ready(() => {
                         $('.player-rank').addClass("unranked");
                     }
                     for (var count = 0; count < 5; count++) {
-                        if (ispositive(data2.data[count].mmr_change_to_last_game) == true) {
+                        if(ispositive(data2.data[count].mmr_change_to_last_game) == true) {
                             $(`#match-rr-id-${count}`).append("+" + data2.data[count].mmr_change_to_last_game)
                         } else {
                             $(`#match-rr-id-${count}`).append(data2.data[count].mmr_change_to_last_game)

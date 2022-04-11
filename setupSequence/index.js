@@ -1,5 +1,6 @@
-const fs = require('fs')
-const { BrowserWindow } = require('@electron/remote')
+var fs= require('fs')
+const { BrowserWindow } = require('@electron/remote');
+const { default: axios } = require('axios');
 const riotIPC = require('electron').ipcRenderer
 
 function loadFade() {
@@ -76,12 +77,12 @@ function backFade2() {
 
 const replaceText = (text) => {
     const element = document.getElementById("search-output");
-    if (element) element.innerText = text
+    if(element) element.innerText = text
 }
 
 const replaceText2 = (text) => {
     const element = document.getElementById("search-output-2");
-    if (element) element.innerText = text
+    if(element) element.innerText = text
 }
 
 //////////////////////////////////////////////
@@ -119,7 +120,7 @@ async function showSignIn() {
         let foundToken = false;
         loginWindow.webContents.on('will-redirect', (event, url) => {
             // Login window redirecting...
-            if (!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
+            if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
                 // Redirecting to url with tokens
                 const tokenData = getTokenDataFromURL(url);
                 foundToken = true;
@@ -134,7 +135,7 @@ async function showSignIn() {
                         riotcookies,
                     });
                     riotcookies.forEach(riotcookie => {
-                        if (riotcookie.name == "ssid") {
+                        if(riotcookie.name == "ssid") {
                             cookieString = riotcookie.value
                         }
                     })
@@ -206,6 +207,9 @@ $(document).ready(() => {
     loadFade();
     $('#openRiotLogin').on("click", async function () {
         const data = await showSignIn();
+
+        // Save this data to user_file
+
         bearer = data.tokenData.accessToken;
         id_token = data.tokenData.id_token;
 
@@ -221,6 +225,7 @@ $(document).ready(() => {
             region = reagiondata.affinities.live
 
             var shopData = await getShopData();
+            
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
 
             Date.prototype.addSeconds = function (seconds) {
@@ -232,7 +237,15 @@ $(document).ready(() => {
                 lastCkeckedDate: new Date().getTime(),
                 willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
             }
+
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+    
+            if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid)) {
+                fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid);
+            }
+    
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
 
             riotIPC.send('startReauthCycle', 'again')
             
@@ -246,8 +259,9 @@ $(document).ready(() => {
                 },
                 "processData": false,
                 "data": "[\"" + puuid + "\"]",
-                success: function (data, xhr) {
+                success: async function (data, xhr) {
                     // data[0].GameName
+                    var data = JSON.parse(data)
                     var searchedPlayerName = data[0].GameName
                     var searchedPlayerTag = data[0].TagLine
                     var searchedRegion = region;
@@ -260,52 +274,64 @@ $(document).ready(() => {
                     var testVar = process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'
                     fs.writeFileSync(testVar, data3);
 
+                    var mmr_data = await axios.get(`https://api.henrikdev.xyz/valorant/v1/mmr/eu/${searchedPlayerName}/${searchedPlayerTag}`)
+                    if(mmr_data.data.data.currenttier) {
+                        var currenttier = mmr_data.data.data.currenttier
+                    } else {
+                        var currenttier = 0
+                    }
+
                     let userData = {
                         playerName: searchedPlayerName,
                         playerTag: searchedPlayerTag,
                         playerRegion: searchedRegion,
                         playerUUID: puuid,
+                        playerRank: `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${currenttier}/largeicon.png`,
                         usesRiotAccount: true
                     };
 
                     let data2 = JSON.stringify(userData);
+
                     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', data2);
+
+                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuid + '.json', data2);
+
                     leaveFade();
                     leaveFade2();
                     riotIPC.send('finishedSetup');
                 },
                 error: function (xhr) {
-                    if (xhr.status == 400) {
+                    if(xhr.status == 400) {
                         replaceText('400, Bad Request');
                     }
-                    if (xhr.status == 401) {
+                    if(xhr.status == 401) {
                         replaceText('401, Unauthorized');
                     }
-                    if (xhr.status == 403) {
+                    if(xhr.status == 403) {
                         replaceText('403, Name/Tag Missing!');
                     }
-                    if (xhr.status == 404) {
+                    if(xhr.status == 404) {
                         replaceText('404, No player found!');
                     }
-                    if (xhr.status == 405) {
+                    if(xhr.status == 405) {
                         replaceText('405, Not allowed!');
                     }
-                    if (xhr.status == 415) {
+                    if(xhr.status == 415) {
                         replaceText('415, unsupported Media Type');
                     }
-                    if (xhr.status == 429) {
+                    if(xhr.status == 429) {
                         replaceText('429, Rate limit exceeded, try again later');
                     }
-                    if (xhr.status == 500) {
+                    if(xhr.status == 500) {
                         replaceText('500, Internal Server Error');
                     }
-                    if (xhr.status == 502) {
+                    if(xhr.status == 502) {
                         replaceText('502, Bad Gateway');
                     }
-                    if (xhr.status == 503) {
+                    if(xhr.status == 503) {
                         replaceText('503, Service unavailable');
                     }
-                    if (xhr.status == 504) {
+                    if(xhr.status == 504) {
                         replaceText('504, Gateway timeout');
                     }
                 },
@@ -323,8 +349,8 @@ $(document).ready(() => {
     });
     $("#playerNameSearch").keyup(function (event) {
         var inputValue = document.getElementById("playerNameSearch").value;
-        if (event.keyCode === 13) {
-            if (inputValue.indexOf('#') > -1) {
+        if(event.keyCode === 13) {
+            if(inputValue.indexOf('#') > -1) {
                 $("#playerNameSearchButton").click();
             } else {
                 replaceText("ERROR!\nRiot ID's require a #:\nRiot#NA1")
@@ -339,11 +365,11 @@ $(document).ready(() => {
         var searchedPlayerName = inputValue.substring(0, inputValue.indexOf("#"));
         var searchedPlayerTag = inputValue.substring(inputValue.indexOf("#") + 1);
 
-        if (inputValue == "") {
+        if(inputValue == "") {
             replaceText2("Search Field empty.")
             $('#playersearch-loading-circle').css("display", "none")
         } else {
-            if (inputValue.indexOf('#') > -1) {
+            if(inputValue.indexOf('#') > -1) {
                 replaceText2("")
                 event.preventDefault();
                 var searchedPlayerName = inputValue.substring(0, inputValue.indexOf("#"));
@@ -404,47 +430,47 @@ $(document).ready(() => {
                     },
                     error: function (xhr) {
                         //get the status code
-                        if (xhr.status == 400) {
+                        if(xhr.status == 400) {
                             replaceText2('400, Bad Request');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 401) {
+                        if(xhr.status == 401) {
                             replaceText2('401, Unauthorized');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 403) {
+                        if(xhr.status == 403) {
                             replaceText2('403, Name/Tag Missing!');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 404) {
+                        if(xhr.status == 404) {
                             replaceText2('404, No player found!');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 405) {
+                        if(xhr.status == 405) {
                             replaceText2('405, Not allowed!');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 415) {
+                        if(xhr.status == 415) {
                             replaceText2('415, unsupported Media Type');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 429) {
+                        if(xhr.status == 429) {
                             replaceText2('429, Rate limit exceeded, try again later');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 500) {
+                        if(xhr.status == 500) {
                             replaceText2('500, Internal Server Error');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 502) {
+                        if(xhr.status == 502) {
                             replaceText2('502, Bad Gateway');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 503) {
+                        if(xhr.status == 503) {
                             replaceText2('503, Service unavailable');
                             $('#playersearch-loading-circle').css("display", "none")
                         }
-                        if (xhr.status == 504) {
+                        if(xhr.status == 504) {
                             replaceText2('504, Gateway timeout');
                             $('#playersearch-loading-circle').css("display", "none")
                         }

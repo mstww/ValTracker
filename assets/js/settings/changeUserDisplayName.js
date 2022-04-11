@@ -1,7 +1,7 @@
 $(document).ready(() => {
     ipc.send('changeDiscordRP', `settings_activity`)
     var usernameSettingsFile = process.env.APPDATA + '/VALTracker/user_data/home_settings/settings.json'
-    if (!fs.existsSync(usernameSettingsFile)) {
+    if(!fs.existsSync(usernameSettingsFile)) {
         let newUserName = {
             displayedUserName: ""
         };

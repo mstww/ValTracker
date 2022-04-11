@@ -21,7 +21,7 @@ $(document).ready(() => {
   var directoryName = path2.split("/").pop();
 
   for (i = 0; i < coll.length; i++) {
-    if (page == "buddys.html" || page == "bundles.html" || page == "weaponskins.html" || directoryName == "CollectablePages" || page == "cardView.html") {
+    if(page == "buddys.html" || page == "bundles.html" || page == "weaponskins.html" || directoryName == "CollectablePages" || page == "cardView.html") {
       var collTest = document.getElementById("collects");
       collTest.classList.toggle("active");
       var content = collTest.nextElementSibling;
@@ -29,7 +29,7 @@ $(document).ready(() => {
       coll[i].addEventListener("click", function () {
         this.classList.toggle("active");
         var content = this.nextElementSibling;
-        if (content.style.maxHeight) {
+        if(content.style.maxHeight) {
           content.style.maxHeight = null;
         } else {
           content.style.maxHeight = content.scrollHeight + "px";
@@ -39,7 +39,7 @@ $(document).ready(() => {
       coll[i].addEventListener("click", function () {
         this.classList.toggle("active");
         var content = this.nextElementSibling;
-        if (content.style.maxHeight) {
+        if(content.style.maxHeight) {
           content.style.maxHeight = null;
         } else {
           content.style.maxHeight = content.scrollHeight + "px";

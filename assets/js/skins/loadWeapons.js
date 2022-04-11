@@ -9,7 +9,7 @@ const ipc = require('electron').ipcRenderer;
 function makeCallAndBuildElements() {
    var path = window.location.pathname;
    var page = path.split("/").pop();
-   if (page == "cardsPage.html") {
+   if(page == "cardsPage.html") {
       $.ajax({
          url: `https://valorant-api.com/v1/playercards`,
          type: 'get',
@@ -30,7 +30,7 @@ function makeCallAndBuildElements() {
                cardName.appendChild(document.createTextNode(data.data[count].displayName))
                skinHandler.appendChild(cardName);
 
-               if (data.data[count].isHiddenIfNotOwned == true || data.data[count].displayName.includes("Beta")) {
+               if(data.data[count].isHiddenIfNotOwned == true || data.data[count].displayName.includes("Beta")) {
                   var isTitleObtainable = document.createElement("span");
                   isTitleObtainable.className = "exclusive-title"
                   isTitleObtainable.appendChild(document.createTextNode("! This Card is exclusive !"))
@@ -47,7 +47,7 @@ function makeCallAndBuildElements() {
             createErrorCard(this.url, jqXHR.status);
          }
       });
-   } else if (page == "spraysPage.html") {
+   } else if(page == "spraysPage.html") {
       $.ajax({
          url: `https://valorant-api.com/v1/sprays`,
          type: 'get',
@@ -58,7 +58,7 @@ function makeCallAndBuildElements() {
 
                var cardImage = document.createElement("img");
                cardImage.className = "wide-card-image";
-               if (data.data[count].fullTransparentIcon) {
+               if(data.data[count].fullTransparentIcon) {
                   cardImage.src = data.data[count].fullTransparentIcon;
                } else {
                   cardImage.src = data.data[count].displayIcon;
@@ -71,7 +71,7 @@ function makeCallAndBuildElements() {
                cardName.appendChild(document.createTextNode(data.data[count].displayName))
                skinHandler.appendChild(cardName);
 
-               if (data.data[count].isHiddenIfNotOwned == true || data.data[count].displayName.includes("Beta")) {
+               if(data.data[count].isHiddenIfNotOwned == true || data.data[count].displayName.includes("Beta")) {
                   var isTitleObtainable = document.createElement("span");
                   isTitleObtainable.className = "exclusive-title"
                   isTitleObtainable.appendChild(document.createTextNode("! This Card is exclusive !"))
@@ -88,13 +88,13 @@ function makeCallAndBuildElements() {
             createErrorCard(this.url, jqXHR.status);
          }
       });
-   } else if (page == "titlesPage.html") {
+   } else if(page == "titlesPage.html") {
       $.ajax({
          url: `https://valorant-api.com/v1/playertitles`,
          type: 'get',
          success: function (data, jqXHR) {
             for (var count = 0; count < data.data.length; count++) {
-               if (data.data[count].titleText == null) {
+               if(data.data[count].titleText == null) {
                   continue;
                }
                var skinHandler = document.createElement("div");
@@ -107,7 +107,7 @@ function makeCallAndBuildElements() {
                titleName.setAttribute("id", "itemName");
                skinHandler.appendChild(titleName);
 
-               if (data.data[count].isHiddenIfNotOwned == true) {
+               if(data.data[count].isHiddenIfNotOwned == true) {
                   var isTitleObtainable = document.createElement("span");
                   isTitleObtainable.className = "exclusive-title"
                   isTitleObtainable.appendChild(document.createTextNode("! This Title is exclusive !"))
@@ -137,12 +137,12 @@ function makeCallAndBuildElements() {
                   for (var count = 0; count < data.data.length; count++) {
                      var PageName = document.getElementById('pageheader').textContent;
                      var weapon = PageName.split(" ")
-                     if (data.data[count].displayName == weapon[1]) {
+                     if(data.data[count].displayName == weapon[1]) {
                         $('.skin-page-default-img').attr("src", data.data[count].displayIcon)
                         $('.single-skin-img').attr("src", data.data[count].displayIcon)
                         $('.pageheader-skincount-nr').append(data.data[count].skins.length)
                         for (var count2 = 0; count2 < data.data[count].skins.length; count2++) {
-                           if (data.data[count].skins[count2].displayName.includes("Standard") || data.data[count].skins[count2].displayName == "Melee" || data.data[count].skins[count2].displayName == "Luxe") {
+                           if(data.data[count].skins[count2].displayName.includes("Standard") || data.data[count].skins[count2].displayName == "Melee" || data.data[count].skins[count2].displayName == "Luxe") {
                               continue;
                            }
 
@@ -152,10 +152,10 @@ function makeCallAndBuildElements() {
 
                            var skinimg = document.createElement("img");
                            skinimg.className = "single-skin-img";
-                           if (data.data[count].skins[count2].displayName == "Luxe Knife") {
+                           if(data.data[count].skins[count2].displayName == "Luxe Knife") {
                               skinimg.setAttribute("src", data.data[count].skins[count2].chromas[0].fullRender);
                            } else {
-                              if (!data.data[count].skins[count2].displayIcon) {
+                              if(!data.data[count].skins[count2].displayIcon) {
                                  skinimg.setAttribute("src", data.data[count].skins[count2].chromas[0].fullRender);
                               } else {
                                  skinimg.setAttribute("src", data.data[count].skins[count2].levels[0].displayIcon);
@@ -174,12 +174,12 @@ function makeCallAndBuildElements() {
                            skinPrice.className = "skin-price";
 
                            for (var count3 = 0; count3 < data2.data.Offers.length; count3++) {
-                              if (data2.data.Offers[count3].Rewards[0].ItemID == data.data[count].skins[count2].levels[0].uuid) {
+                              if(data2.data.Offers[count3].Rewards[0].ItemID == data.data[count].skins[count2].levels[0].uuid) {
                                  skinPrice.appendChild(document.createTextNode(data2.data.Offers[count3].Cost[Object.keys(data2.data.Offers[count3].Cost)[0]]))
                               }
                            }
 
-                           if (skinPrice.textContent !== "") {
+                           if(skinPrice.textContent !== "") {
                               var skinPriceImg = document.createElement("img");
                               skinPriceImg.className = "skin-price-img"
                               skinPriceImg.src = '../assets/img/vp_icon.png'

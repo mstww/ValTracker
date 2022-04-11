@@ -1,5 +1,5 @@
 var { BrowserWindow } = require('@electron/remote')
-var authfs = require('fs')
+var fs = require('fs')
 const riotIPC = require('electron').ipcRenderer
 
 var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
@@ -35,7 +35,7 @@ async function showSignIn() {
         let foundToken = false;
         loginWindow.webContents.on('will-redirect', (event, url) => {
             // Login window redirecting...
-            if (!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
+            if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
                 // Redirecting to url with tokens
                 const tokenData = getTokenDataFromURL(url);
                 foundToken = true;
@@ -50,13 +50,13 @@ async function showSignIn() {
                         riotcookies,
                     });
                     riotcookies.forEach(riotcookie => {
-                        if (riotcookie.name == "ssid") {
+                        if(riotcookie.name == "ssid") {
                             cookieString = riotcookie.value
                         }
                     })
                     
-                    authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
-                    authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
+                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
+                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
                 });
             }
         });
@@ -119,21 +119,21 @@ async function getShopData() {
 }
 
 $(document).ready(() => {
-    const loginCheck = authfs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
+    const loginCheck = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
     const check = JSON.parse(loginCheck);
-    if (check.usesRiotAccount == true || check.usesRiotAccount == undefined) {
+    if(check.usesRiotAccount == true || check.usesRiotAccount == undefined) {
         var tryagain = setInterval(function () {
             clearInterval(tryagain)
-            if (sessionStorage.getItem('afterReload')) {
-                if (!authfs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json')) {
+            if(sessionStorage.getItem('afterReload')) {
+                if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json')) {
                     var emptyShopFile = {
                         "empty": true
                     }
-                    authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(emptyShopFile));
+                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(emptyShopFile));
                 }
 
                 async function checkData() {
-                    var rawOldTokenData = authfs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
+                    var rawOldTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
                     oldTokenData = JSON.parse(rawOldTokenData)
 
                     bearer = oldTokenData.accessToken;
@@ -141,18 +141,18 @@ $(document).ready(() => {
 
                     puuid = await getPlayerUUID();
                     entitlement_token = await getEntitlement();
-                    if (typeof entitlement_token === "string") {
+                    if(typeof entitlement_token === "string") {
                         try {
                             var reagiondata = await getXMPPRegion();
                             region = reagiondata.affinities.live
     
                             var shopData = await getShopData();
-                            authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+                            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
     
                             var pathvar = document.location.pathname;
                             var page = pathvar.split("/").pop();
     
-                            if (page == "index.html" || page == "decoyIndex.html") {
+                            if(page == "index.html" || page == "decoyIndex.html") {
                                 $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                                 $('.featured-bundle-time-left').css("opacity", "0");
                             }
@@ -167,7 +167,7 @@ $(document).ready(() => {
                                 willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
                             }
     
-                            authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+                            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
                         } catch(err) {
                             window.location.href = ""
                         }
@@ -195,12 +195,12 @@ $(document).ready(() => {
                                 region = reagiondata.affinities.live
 
                                 var shopData = await getShopData();
-                                authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+                                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
 
                                 var pathvar = document.location.pathname;
                                 var page = pathvar.split("/").pop();
 
-                                if (page == "index.html" || page == "decoyIndex.html") {
+                                if(page == "index.html" || page == "decoyIndex.html") {
                                     $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                                     $('.featured-bundle-time-left').css("opacity", "0");
                                 }
@@ -215,14 +215,14 @@ $(document).ready(() => {
                                     willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
                                 }
 
-                                authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+                                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
                                 window.location.href = ""
                             });
                         });
 
                         riotIPC.on('reauthSuccess', async function (event, arg) {
                             const tokenData = getTokenDataFromURL(arg)
-                            authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
+                            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
 
                             bearer = tokenData.accessToken;
                             id_token = tokenData.id_token;
@@ -239,12 +239,12 @@ $(document).ready(() => {
                                 region = reagiondata.affinities.live
 
                                 var shopData = await getShopData();
-                                authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+                                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
 
                                 var pathvar = document.location.pathname;
                                 var page = pathvar.split("/").pop();
 
-                                if (page == "index.html" || page == "decoyIndex.html") {
+                                if(page == "index.html" || page == "decoyIndex.html") {
                                     $(".featured-bundle-time-left").append(shopData.FeaturedBundle.BundleRemainingDurationInSeconds)
                                     $('.featured-bundle-time-left').css("opacity", "0");
                                 }
@@ -259,7 +259,7 @@ $(document).ready(() => {
                                     willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
                                 }
 
-                                authfs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+                                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
                             });
                         })
                     }

@@ -20,7 +20,7 @@ function makeCallAndBuildElements() {
             $('.player-account-level').append("Account Level: " + data.data.account_level);
             $('#player-region-span').append("Region: " + playerRegion.toUpperCase());
             var checkForS = data.data.name.slice(-1);
-            if (checkForS.toLowerCase() == "s") {
+            if(checkForS.toLowerCase() == "s") {
                 $('.insert-playername').append(data.data.name + "' Last Matches")
             } else {
                 $('.insert-playername').append(data.data.name + "'s Last Matches")

@@ -368,8 +368,21 @@
         </div>
       </div>
 
-      <!--<div class="settings-other" class="active-wrapper">
-      </div>-->
+      <div class="settings-group">
+        <span class="settings-group-header" style="color: crimson;">DANGER ZONE</span>
+        <div>
+          <div class="settings-group-setting">
+            <div class="settings-group-text">
+              <label for="app-rpc" class="setting-header">Reset VALTracker</label>
+              <span class="settings-group-desc">Delete all of your data stored on your PC and restart VALTracker to re-do the setup process. <br>Only do this if something isnt working properly!</span>
+            </div>
+            <div class="settings-group-input">
+              <button style="margin-left: 1rem;" id="reset-valtracker-button">Reset VALTracker</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -378,10 +391,10 @@
   </script>
   <script>
     window.onload = function () {
-      if (sessionStorage.getItem("Update-downloaded") == true) {
+      if(sessionStorage.getItem("Update-downloaded") == true) {
         $('.update-banner').css("display", "block");
       }
-      if (sessionStorage.getItem("Update-available") == true) {
+      if(sessionStorage.getItem("Update-available") == true) {
         $('.download-banner').css("display", "block");
       }
     }
@@ -428,6 +441,7 @@
   <script type="application/javascript" src="../assets/js/settings/changeTabs.js"></script>
   <script type="application/javascript" src="../assets/js/settings/changeAppBehaviour.js"></script>
   <script type="application/javascript" src="../assets/js/settings/removeAllRiotAccs.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/resetVALTracker.js"></script>
   <script type="application/javascript" src="../assets/js/navslideToggle.js"></script>
   <script type="application/javascript" src="../assets/js/redirects.js"></script>
   <script type="application/javascript" src="../assets/js/errorCardHandler.js"></script>

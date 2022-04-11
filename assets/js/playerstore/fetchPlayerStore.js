@@ -1,4 +1,4 @@
-const fs = require('fs');
+var fs= require('fs');
 const riotIPC = require('electron').ipcRenderer
 
 function bundleTimeToHMS(n) {
@@ -147,12 +147,14 @@ $(document).ready(() => {
         bearer = tokenData.accessToken;
         id_token = tokenData.id_token;
 
-        puuid = await getPlayerUUID(); 
-        entitlement_token = await getEntitlement();
-        if (typeof entitlement_token === "string") {
+        puuid = await getPlayerUUID();
 
-            var reagiondata = await getXMPPRegion();
-            region = reagiondata.affinities.live
+        entitlement_token = await getEntitlement();
+        if(typeof entitlement_token === "string") {
+
+            region = await getXMPPRegion();
+
+            region = region.affinities.live
 
             var shopData = await getShopData();
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
@@ -175,7 +177,7 @@ $(document).ready(() => {
             $('.insert-bundle-price').append(bundlePrice)
 
             var nightMarketSecondsRemaining = false;
-            if (shopData.BonusStore !== undefined) {
+            if(shopData.BonusStore !== undefined) {
                 nightMarketSecondsRemaining = shopData.BonusStore.BonusStoreRemainingDurationInSeconds
                 var nightmarket = shopData.BonusStore.BonusStoreOffers
                 $.ajax({
@@ -187,19 +189,19 @@ $(document).ready(() => {
                             $(`.night-market-offer.${i+1}`).attr('id', nightmarket[i].Offer.OfferID)
                             for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
                                 for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
-                                    if (data2.data[i2].skins[i3].levels[0].uuid == nightmarket[i].Offer.OfferID) {
+                                    if(data2.data[i2].skins[i3].levels[0].uuid == nightmarket[i].Offer.OfferID) {
 
-                                        if (i2 == 17) {
+                                        if(i2 == 17) {
                                             $(`.night-market-offer.${i+1} .nm-weapon`).addClass('melee')
                                         } else {
                                             $(`.night-market-offer.${i+1} .nm-weapon`).addClass('gun')
                                         }
 
-                                        if (nightmarket[i].IsSeen !== true) {
+                                        if(nightmarket[i].IsSeen !== true) {
                                             $(`.night-market-offer.${i+1}`).addClass('notSeenYet');
                                         }
 
-                                        if (data2.data[i2].skins[i3].displayName.length < 23) {
+                                        if(data2.data[i2].skins[i3].displayName.length < 23) {
                                             $(`.night-market-offer.${i+1} .nm-item-name`).append(data2.data[i2].skins[i3].displayName)
                                         } else {
                                             $(`.night-market-offer.${i+1} .nm-item-name`).append(data2.data[i2].skins[i3].displayName.slice(0, 23) + '...')
@@ -224,7 +226,7 @@ $(document).ready(() => {
                 type: 'get',
                 success: function (data, xhr) {
                     for (var i = 0; i < data.data.length; i++) {
-                        if (data.data[i].uuid == bundleID) {
+                        if(data.data[i].uuid == bundleID) {
                             $('.featured-bundle-header').append(data.data[i].displayName)
                             $('.store-bundle-image').attr('src', data.data[i].displayIcon)
                         }
@@ -238,7 +240,7 @@ $(document).ready(() => {
                                 $(`.single-item.${i+1}`).attr('id', dailyShop[i])
                                 for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
                                     for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
-                                        if (data2.data[i2].skins[i3].levels[0].uuid == dailyShop[i]) {
+                                        if(data2.data[i2].skins[i3].levels[0].uuid == dailyShop[i]) {
                                             $(`.single-item.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
                                             $(`.single-item.${i+1} .single-item-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
                                         }
@@ -252,7 +254,7 @@ $(document).ready(() => {
                                 success: function (data3, xhr) {
                                     for (var i = 0; i < dailyShop.length; i++) {
                                         for (var i2 = 0; i2 < data3.data.Offers.length; i2++) {
-                                            if (data3.data.Offers[i2].Rewards[0].ItemID == dailyShop[i]) {
+                                            if(data3.data.Offers[i2].Rewards[0].ItemID == dailyShop[i]) {
                                                 $(`.single-item.${i+1} .single-item-price`).append(data3.data.Offers[i2].Cost[Object.keys(data3.data.Offers[i2].Cost)[0]])
                                             }
                                         }
@@ -280,7 +282,7 @@ $(document).ready(() => {
             bundleSecondsRemaining--;
             singleOfferSecondsRemaining--;
 
-            if (nightMarketSecondsRemaining !== false) {
+            if(nightMarketSecondsRemaining !== false) {
                 nightMarketSecondsRemaining--;
 
                 $('.nightmarket-time-left').empty()
@@ -300,13 +302,13 @@ $(document).ready(() => {
                 $('.single-skins-time-left').empty()
                 $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
 
-                if (nightMarketSecondsRemaining !== false) {
+                if(nightMarketSecondsRemaining !== false) {
                     nightMarketSecondsRemaining--;
 
                     $('.nightmarket-time-left').empty()
                     $('.nightmarket-time-left').append(nightMarketTimeToDHMS(nightMarketSecondsRemaining));
                 }
-                if (singleOfferSecondsRemaining <= 0 || bundleSecondsRemaining <= 0) {
+                if(singleOfferSecondsRemaining <= 0 || bundleSecondsRemaining <= 0) {
                     window.location.href = "";
                 }
             }, 1000)
@@ -318,8 +320,14 @@ $(document).ready(() => {
             reauth();
 
             ipcRenderer.on('reauthSuccess', async function (event, arg) {
+
+                var user_creds_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_creds.json");
+                var user_creds = JSON.parse(user_creds_raw);
+        
+                puuid = user_creds.playerUUID;
+                
                 const tokenData = getTokenDataFromURL(arg)
-                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
+                //fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
 
                 bearer = tokenData.accessToken;
                 id_token = tokenData.id_token;
@@ -336,7 +344,7 @@ $(document).ready(() => {
                     region = reagiondata.affinities.live
 
                     var shopData = await getShopData();
-                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+                    //fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
 
                     var walletData = await getWallet();
                     var VP = walletData.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
@@ -349,7 +357,7 @@ $(document).ready(() => {
                     var dailyShop = shopData.SkinsPanelLayout.SingleItemOffers
 
                     var nightMarketSecondsRemaining = false;
-                    if (shopData.BonusStore !== undefined) {
+                    if(shopData.BonusStore !== undefined) {
                         nightMarketSecondsRemaining = shopData.BonusStore.BonusStoreRemainingDurationInSeconds
                         var nightmarket = shopData.BonusStore.BonusStoreOffers
                         $.ajax({
@@ -361,15 +369,15 @@ $(document).ready(() => {
                                     $(`.night-market-offer.${i+1}`).attr('id', nightmarket[i].Offer.OfferID)
                                     for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
                                         for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
-                                            if (data2.data[i2].skins[i3].levels[0].uuid == nightmarket[i].Offer.OfferID) {
+                                            if(data2.data[i2].skins[i3].levels[0].uuid == nightmarket[i].Offer.OfferID) {
 
-                                                if (i2 == 17) {
+                                                if(i2 == 17) {
                                                     $(`.night-market-offer.${i+1} .nm-weapon`).addClass('melee')
                                                 } else {
                                                     $(`.night-market-offer.${i+1} .nm-weapon`).addClass('gun')
                                                 }
 
-                                                if (nightmarket[i].IsSeen !== true) {
+                                                if(nightmarket[i].IsSeen !== true) {
                                                     $(`.night-market-offer.${i+1}`).addClass('notSeenYet');
                                                 }
 
@@ -394,7 +402,7 @@ $(document).ready(() => {
                         type: 'get',
                         success: function (data, xhr) {
                             for (var i = 0; i < data.data.length; i++) {
-                                if (data.data[i].uuid == bundleID) {
+                                if(data.data[i].uuid == bundleID) {
                                     $('.featured-bundle-header').append(data.data[i].displayName)
                                     $('.store-bundle-image').attr('src', data.data[i].displayIcon)
                                 }
@@ -408,7 +416,7 @@ $(document).ready(() => {
                                         $(`.single-item.${i+1}`).attr('id', dailyShop[i])
                                         for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
                                             for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
-                                                if (data2.data[i2].skins[i3].levels[0].uuid == dailyShop[i]) {
+                                                if(data2.data[i2].skins[i3].levels[0].uuid == dailyShop[i]) {
                                                     $(`.single-item.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
                                                     $(`.single-item.${i+1} .single-item-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
                                                 }
@@ -422,7 +430,7 @@ $(document).ready(() => {
                                         success: function (data3, xhr) {
                                             for (var i = 0; i < dailyShop.length; i++) {
                                                 for (var i2 = 0; i2 < data3.data.Offers.length; i2++) {
-                                                    if (data3.data.Offers[i2].Rewards[0].ItemID == dailyShop[i]) {
+                                                    if(data3.data.Offers[i2].Rewards[0].ItemID == dailyShop[i]) {
                                                         $(`.single-item.${i+1} .single-item-price`).append(data3.data.Offers[i2].Cost[Object.keys(data3.data.Offers[i2].Cost)[0]])
                                                     }
                                                 }
@@ -450,7 +458,7 @@ $(document).ready(() => {
                     bundleSecondsRemaining--;
                     singleOfferSecondsRemaining--;
 
-                    if (nightMarketSecondsRemaining !== false) {
+                    if(nightMarketSecondsRemaining !== false) {
                         nightMarketSecondsRemaining--;
 
                         $('.nightmarket-time-left').empty()
@@ -470,13 +478,13 @@ $(document).ready(() => {
                         $('.single-skins-time-left').empty()
                         $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
 
-                        if (nightMarketSecondsRemaining !== false) {
+                        if(nightMarketSecondsRemaining !== false) {
                             nightMarketSecondsRemaining--;
 
                             $('.nightmarket-time-left').empty()
                             $('.nightmarket-time-left').append(nightMarketTimeToDHMS(nightMarketSecondsRemaining));
                         }
-                        if (singleOfferSecondsRemaining <= 0 || bundleSecondsRemaining <= 0) {
+                        if(singleOfferSecondsRemaining <= 0 || bundleSecondsRemaining <= 0) {
                             window.location.href = "";
                         }
                     }, 1000)
@@ -498,18 +506,18 @@ $(document).ready(() => {
         }
 
         for (var i = 0; i < inventoryData.EntitlementsByTypes.length; i++) {
-            if (inventoryData.EntitlementsByTypes[i].ItemTypeID == "e7c63390-eda7-46e0-bb7a-a6abdacd2433") {
+            if(inventoryData.EntitlementsByTypes[i].ItemTypeID == "e7c63390-eda7-46e0-bb7a-a6abdacd2433") {
                 for (var i2 = 0; i2 < inventoryData.EntitlementsByTypes[i].Entitlements.length; i2++) {
-                    if (storeIDs.includes(inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID)) {
+                    if(storeIDs.includes(inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID)) {
                         for (let item of storeOffers) {
-                            if (item.id == inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID) {
+                            if(item.id == inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID) {
                                 item.classList.add('sold');
                             }
                         }
                     }
-                    if (nightmarketIDs.includes(inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID)) {
+                    if(nightmarketIDs.includes(inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID)) {
                         for (let item of nightmarketOffers) {
-                            if (item.id == inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID) {
+                            if(item.id == inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID) {
                                 item.classList.add('sold');
                             }
                         }

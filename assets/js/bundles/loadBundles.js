@@ -8,11 +8,11 @@ function makeCallAndBuildElements() {
       type: 'get',
       success: function (data, jqXHR) {
          for (var count = (data.data.length-1); count > -1; count--) {
-            if (data.data[count].displayIcon2 == "https://media.valorant-api.com/bundles/fc723fef-444a-4013-a741-3e85a97382f2/displayicon2.png" || data.data[count].displayIcon2 == "https://media.valorant-api.com/bundles/338cabdb-473f-1f37-fa35-47a3d994517f/displayicon2.png") {
+            if(data.data[count].displayIcon2 == "https://media.valorant-api.com/bundles/fc723fef-444a-4013-a741-3e85a97382f2/displayicon2.png" || data.data[count].displayIcon2 == "https://media.valorant-api.com/bundles/338cabdb-473f-1f37-fa35-47a3d994517f/displayicon2.png") {
                ApiCall_BundleTitle = data.data[count].name + " 2.0"
                ApiCall_ImageSource = data.data[count].displayIcon2
                ApiCall_ExtraDesc = data.data[count].description
-            } else if (data.data[count].name == "Give Back" || data.data[count].name == "Run It Back") {
+            } else if(data.data[count].name == "Give Back" || data.data[count].name == "Run It Back") {
                continue;
             } else {
                ApiCall_BundleTitle = data.data[count].name
@@ -80,44 +80,44 @@ function makeCallAndBuildElements() {
 
             //----------------------------------------------------------------------------------------------------------------
 
-            if (count == null) {
+            if(count == null) {
                break;
             }
          }
       },
       error: function (jqXHR) {
          createErrorCard(this.url, jqXHR.status);
-         if (jqXHR.status == 400) {
+         if(jqXHR.status == 400) {
             replaceText('400, Bad Request');
          }
-         if (jqXHR.status == 401) {
+         if(jqXHR.status == 401) {
             replaceText('401, Unauthorized');
          }
-         if (jqXHR.status == 403) {
+         if(jqXHR.status == 403) {
             replaceText('403, Name/Tag Missing!');
          }
-         if (jqXHR.status == 404) {
+         if(jqXHR.status == 404) {
             replaceText('404, No player found!');
          }
-         if (jqXHR.status == 405) {
+         if(jqXHR.status == 405) {
             replaceText('405, Not allowed!');
          }
-         if (jqXHR.status == 415) {
+         if(jqXHR.status == 415) {
             replaceText('415, unsupported Media Type');
          }
-         if (jqXHR.status == 429) {
+         if(jqXHR.status == 429) {
             replaceText('429, Rate limit exceeded, try again later');
          }
-         if (jqXHR.status == 500) {
+         if(jqXHR.status == 500) {
             replaceText('500, Internal Server Error');
          }
-         if (jqXHR.status == 502) {
+         if(jqXHR.status == 502) {
             replaceText('502, Bad Gateway');
          }
-         if (jqXHR.status == 503) {
+         if(jqXHR.status == 503) {
             replaceText('503, Service unavailable');
          }
-         if (jqXHR.status == 504) {
+         if(jqXHR.status == 504) {
             replaceText('504, Gateway timeout');
          }
       },

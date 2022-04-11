@@ -33,7 +33,7 @@ function loadRemovePromt(matchID, matchToRemove, matchAgentImg, matchKDA, matchR
         let dataToRead = JSON.parse(rawdata);
 
         for (var count = 0; count < dataToRead.favourites.length; count++) {
-            if (dataToRead.favourites[count].MatchID == matchID) {
+            if(dataToRead.favourites[count].MatchID == matchID) {
                 delete dataToRead.favourites[count]
             }
         }
@@ -43,7 +43,7 @@ function loadRemovePromt(matchID, matchToRemove, matchAgentImg, matchKDA, matchR
             }]
         };
         for (var count = 0; count < dataToRead.favourites.length; count++) {
-            if (dataToRead.favourites[count] == null) {
+            if(dataToRead.favourites[count] == null) {
                 continue;
             } else {
                 newArrToPush.favourites.push(dataToRead.favourites[count])

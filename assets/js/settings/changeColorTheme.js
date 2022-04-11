@@ -1,11 +1,11 @@
 var ipc = require('electron').ipcRenderer;
 const path = require('path')
 var select = document.getElementById('selected-color-theme');
-const fs = require('fs')
+var fs= require('fs')
 const chokidar = require('chokidar')
 
 //JSON check + colors writen
-if (!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json')) {
+if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json')) {
     var dataToWrite = {
         "isCustomTheme": false,
         "themeName": "normal"
@@ -274,9 +274,9 @@ $(document).ready(() => {
     });
 
     setTimeout(function () {
-        if (colorData.isCustomTheme == true) {
+        if(colorData.isCustomTheme == true) {
             for (var count = 0; count < i; count++) {
-                if (document.getElementsByClassName('customThemeOption').item(count).textContent == colorData.themeName) {
+                if(document.getElementsByClassName('customThemeOption').item(count).textContent == colorData.themeName) {
                     document.getElementsByClassName('customThemeOption')[count].value = "custom-theme-used"
                     $(select).val("custom-theme-used")
                 }
@@ -286,7 +286,7 @@ $(document).ready(() => {
             $('#custom-theme-req').css("display", "flex");
         } else {
             let word = colorData.themeName;
-            if (word == "normal") {
+            if(word == "normal") {
                 word = "default"
             }
             let titleCase = word[0].toUpperCase() + word.substr(1);

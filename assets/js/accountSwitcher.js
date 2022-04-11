@@ -1,6 +1,7 @@
 var accIpc = require('electron').ipcRenderer;
-var accFs = require('fs');
+var fs = require('fs');
 var { BrowserWindow } = require('@electron/remote');
+var acc_axios = require('axios')
 
 var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
 
@@ -9,7 +10,18 @@ var id_token;
 var requiredCookie;
 var entitlement_token;
 
-var acc_axios = require('axios')
+function switcher_getTokenDataFromURL(url) {
+    try {
+        const searchParams = new URLSearchParams((new URL(url)).hash.slice(1));
+        return {
+            accessToken: searchParams.get('access_token'),
+            expiresIn: searchParams.get('expires_in'),
+            id_token: searchParams.get('id_token'),
+        };
+    } catch (err) {
+        throw new Error(`Bad url: "${url}"`);
+    }
+}
 
 function openSwitcherLoginWindow() {
     return new Promise((resolve, reject) => {
@@ -22,9 +34,9 @@ function openSwitcherLoginWindow() {
         let foundToken = false;
         loginWindow.webContents.on('will-redirect', (event, url) => {
             // Login window redirecting...
-            if (!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
+            if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
                 // Redirecting to url with tokens
-                const tokenData = getTokenDataFromURL(url);
+                const tokenData = switcher_getTokenDataFromURL(url);
                 foundToken = true;
 
                 loginWindow.webContents.session.cookies.get({
@@ -37,7 +49,7 @@ function openSwitcherLoginWindow() {
                         riotcookies,
                     });
                     riotcookies.forEach(riotcookie => {
-                        if (riotcookie.name == "ssid") {
+                        if(riotcookie.name == "ssid") {
                             cookieString = riotcookie.value
                         }
                     });
@@ -102,6 +114,64 @@ async function switcher_getShopData() {
     })).json());
 }
 
+async function switchAccount(element) {
+    var currentPuuid = $('.switch-acc-account-tile.active-acc')[0].lastChild.textContent
+    var currentUserCreds = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + currentPuuid + '.json', currentUserCreds) // works
+
+    var currentUserTokens = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/token_data.json', currentUserTokens) // works
+
+    var currentUserCookies = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json');
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/cookies.json', currentUserCookies) // works
+
+    var puuidToBeSwitchedTo = element.lastChild.textContent;
+    var newUserCreds = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeSwitchedTo + '.json');
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', newUserCreds); // works
+
+    var newTokenData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/token_data.json');
+    var newTokenData = JSON.parse(newTokenData_raw);
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', newTokenData_raw); // works
+
+    var newCookieData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/cookies.json');
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', newCookieData_raw); // works
+
+    bearer = newTokenData.accessToken;
+    id_token = newTokenData.id_token;
+
+    accIpc.send('setCookies', 'reauth')
+    accIpc.on('reauthTdid', async function (event, arg) {
+        try {
+            requiredCookie = "tdid=" + arg
+
+            puuid = await switcher_getPlayerUUID();
+
+            entitlement_token = await switcher_getEntitlement();
+
+            var reagiondata = await switcher_getXMPPRegion();
+            region = reagiondata.affinities.live
+
+            var shopData = await switcher_getShopData();
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+
+            Date.prototype.addSeconds = function (seconds) {
+                var copiedDate = new Date(this.getTime());
+                return new Date(copiedDate.getTime() + seconds * 1000);
+            }
+
+            var dateData = {
+                lastCkeckedDate: new Date().getTime(),
+                willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
+            }
+
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+            window.location.href = ""
+        } catch(err) {
+            window.location.href = ""
+        }
+    });
+}
+
 $(document).ready(() => {
     $('#acc-switcher').on("click", function () {
         toggle();
@@ -122,16 +192,16 @@ $(document).ready(() => {
             $('.switch-acc-wrapper').css("display", "none");
         }, 150)
     });
-    var user_creds_raw = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
     var user_creds = JSON.parse(user_creds_raw);
 
-    var accounts = accFs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
+    var accounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
 
     var acc_array = [];
 
     var i = 0;
     accounts.forEach(accountFile => {
-        var account_data_raw = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + accountFile);
+        var account_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + accountFile);
         var account_data = JSON.parse(account_data_raw);
 
         var accountTile = document.createElement('div');
@@ -208,7 +278,7 @@ $(document).ready(() => {
     }
 
     $('.add-acc-button').on("click", async function () {
-        var accounts = accFs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
+        var accounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
         var id = this.id
         if(accounts.length <= 5) {
             const data = await openSwitcherLoginWindow();
@@ -243,17 +313,15 @@ $(document).ready(() => {
                     playerUUID: puuid,
                     playerRank: `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${currenttier}/largeicon.png`,
                 }
-
-                accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(accObj));
         
-                accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuid + '.json', JSON.stringify(accObj));
+                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuid + '.json', JSON.stringify(accObj));
         
-                if(!accFs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid)) {
-                    accFs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid);
+                if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid)) {
+                    fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid);
                 }
         
-                accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
-                accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
+                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
+                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
 
                 if(id == "reload-page") {
                     window.location.href = "./settings.html?tab=riot";
@@ -261,6 +329,8 @@ $(document).ready(() => {
         
                 var accountTile = document.createElement('div');
                 accountTile.className = 'switch-acc-account-tile';
+
+                accountTile.setAttribute("onclick", "switchAccount(this)");
         
                 var accRankWrapper = document.createElement('div');
                 accRankWrapper.className = 'add-account-account-rank';
@@ -321,67 +391,13 @@ $(document).ready(() => {
         var targetType = e.target.tagName.toLowerCase();
 
         if(targetType != "i") {
-            var currentPuuid = $('.switch-acc-account-tile.active-acc')[0].lastChild.textContent
-            var currentUserCreds = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + currentPuuid + '.json', currentUserCreds)
-    
-            var currentUserTokens = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/token_data.json', currentUserTokens)
-    
-            var currentUserCookies = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json');
-            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/cookies.json', currentUserCookies)
-    
-            var puuidToBeSwitchedTo = this.lastChild.textContent;
-            var newUserCreds = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeSwitchedTo + '.json');
-            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', newUserCreds);
-    
-            var newTokenData_raw = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/token_data.json');
-            var newTokenData = JSON.parse(newTokenData_raw);
-            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', newTokenData_raw);
-    
-            var newCookieData_raw = accFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/cookies.json');
-            accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', newCookieData_raw);
-    
-            bearer = newTokenData.accessToken;
-            id_token = newTokenData.id_token;
-    
-            accIpc.send('setCookies', 'reauth')
-            accIpc.on('reauthTdid', async function (event, arg) {
-                try {
-                    requiredCookie = "tdid=" + arg
-        
-                    puuid = await switcher_getPlayerUUID();
-        
-                    entitlement_token = await switcher_getEntitlement();
-        
-                    var reagiondata = await switcher_getXMPPRegion();
-                    region = reagiondata.affinities.live
-        
-                    var shopData = await switcher_getShopData();
-                    accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-        
-                    Date.prototype.addSeconds = function (seconds) {
-                        var copiedDate = new Date(this.getTime());
-                        return new Date(copiedDate.getTime() + seconds * 1000);
-                    }
-        
-                    var dateData = {
-                        lastCkeckedDate: new Date().getTime(),
-                        willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
-                    }
-        
-                    accFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
-                    window.location.href = ""
-                } catch(err) {
-                    window.location.href = ""
-                }
-            });
+            switchAccount(this);
         } else {
             var puuidToBeDeleted = this.lastChild.textContent;
-            accFs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeDeleted + '.json');
-            accFs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted + '/token_data.json');
-            accFs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted + '/cookies.json');
-            accFs.rmdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted);
+            fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeDeleted + '.json');
+            fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted + '/token_data.json');
+            fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted + '/cookies.json');
+            fs.rmdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeDeleted);
             this.remove();
 
             $('.switch-acc-account-tile.delete-active').removeClass('delete-active');

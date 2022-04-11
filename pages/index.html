@@ -248,10 +248,10 @@
   </script>
   <script>
     window.onload = function () {
-      if (sessionStorage.getItem("Update-downloaded") == true) {
+      if(sessionStorage.getItem("Update-downloaded") == true) {
         $('.update-banner').css("display", "block");
       }
-      if (sessionStorage.getItem("Update-available") == true) {
+      if(sessionStorage.getItem("Update-available") == true) {
         $('.download-banner').css("display", "block");
       }
     }
