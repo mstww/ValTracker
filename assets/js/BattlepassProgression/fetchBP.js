@@ -1,4 +1,4 @@
-const fs = require('fs');
+var fs= require('fs');
 
 var bearer;
 var requiredCookie;
@@ -129,11 +129,11 @@ $(document).ready(() => {
     var hideFreeItems = false;
     // Check for bp_settings folder and create if non-existent
 
-    if (!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings')) {
+    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings')) {
         fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings');
     }
     // Check for BP Settings file and create if non-existent, but proceed if it does exist
-    if (!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings/settings.json')) {
+    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings/settings.json')) {
         const dataToWrite = {
             showFreeItems: false,
         }
@@ -142,9 +142,9 @@ $(document).ready(() => {
     } else {
         const dataToParse = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings/settings.json');
         const bpSettings = JSON.parse(dataToParse)
-        if (bpSettings.showFreeItems == true) {
+        if(bpSettings.showFreeItems == true) {
             $('input[type="checkbox"]').click();
-        } else if (bpSettings.showFreeItems == false) {
+        } else if(bpSettings.showFreeItems == false) {
             hideFreeItems = true;
         }
     }
@@ -159,7 +159,7 @@ $(document).ready(() => {
         puuid = await getPlayerUUID();
         entitlement_token = await getEntitlement();
         // Simple check to see if the response is valid
-        if (typeof entitlement_token === "string") {
+        if(typeof entitlement_token === "string") {
             var reagiondata = await getXMPPRegion();
             region = reagiondata.affinities.live
 
@@ -172,7 +172,7 @@ $(document).ready(() => {
             const getProgressionLevel = await getContractProgression();
             // For-loop to get the current progression level
             for (var i = 0; i < getProgressionLevel.Contracts.length; i++) {
-                if (getProgressionLevel.Contracts[i].ContractDefinitionID == currentContract) {
+                if(getProgressionLevel.Contracts[i].ContractDefinitionID == currentContract) {
                     var bp_progression = getProgressionLevel.Contracts[i].ProgressionLevelReached;
                 }
             }
@@ -215,33 +215,33 @@ $(document).ready(() => {
                     tier_name_span.appendChild(document.createTextNode("Something"));
                     tier_name.appendChild(tier_name_span);
 
-                    if (contractData.data.content.chapters[i].levels[i2].reward.type == "Currency") {
+                    if(contractData.data.content.chapters[i].levels[i2].reward.type == "Currency") {
                         tier_img.src = "../assets/img/radianite_icon.png";
                         tier_img.className = "tier-img-currency";
                         tier_name.textContent = "Radianite"
-                    } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "EquippableSkinLevel") {
+                    } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "EquippableSkinLevel") {
                         weaponUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                         tier_img.id = `skin-${levelcount}`;
                         tier_img.className = "tier-img-weapon";
-                    } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "EquippableCharmLevel") {
+                    } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "EquippableCharmLevel") {
                         charmUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                         tier_img.id = `charm-${levelcount}`;
                         tier_img.className = "tier-img-charm";
-                    } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "PlayerCard") {
+                    } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "PlayerCard") {
                         cardUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                         tier_img.id = `card-${levelcount}`;
                         tier_img.className = "tier-img-card";
-                    } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "Spray") {
+                    } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "Spray") {
                         sprayUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                         tier_img.id = `spray-${levelcount}`;
                         tier_img.className = "tier-img-spray";
-                    } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "Title") {
+                    } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "Title") {
                         titleUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                         tier_img.id = `title-${levelcount}`;
                         tier_img.className = "tier-img-title";
                     }
 
-                    if (contractData.data.content.chapters[i].isEpilogue == true) {
+                    if(contractData.data.content.chapters[i].isEpilogue == true) {
                         $(tier_header).empty();
                         $(tier_header).append("EPILOGUE");
                         tier_header.classList.add("epilogue");
@@ -259,7 +259,7 @@ $(document).ready(() => {
                 }
 
                 // Check if the chapter does not have free rewards, indicating the epilogue
-                if (contractData.data.content.chapters[i].freeRewards !== null) {
+                if(contractData.data.content.chapters[i].freeRewards !== null) {
                     var extra_tier_count = 0;
                     for (var i2 = 0; i2 < contractData.data.content.chapters[i].freeRewards.length; i2++) { // All Frees
                         // Create HTML Element
@@ -287,31 +287,31 @@ $(document).ready(() => {
                         tier_name_span.appendChild(document.createTextNode("Something"));
                         tier_name.appendChild(tier_name_span);
 
-                        if (contractData.data.content.chapters[i].freeRewards[i2].type == "Currency") {
+                        if(contractData.data.content.chapters[i].freeRewards[i2].type == "Currency") {
                             tier_img.src = "../assets/img/radianite_icon.png";
                             tier_img.className = "tier-img-currency";
                             tier_name.textContent = "Radianite"
-                        } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "EquippableSkinLevel") {
+                        } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "EquippableSkinLevel") {
                             weaponUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                             tier_img.id = `skin-${levelcount}-${extra_tier_count}`;
                             extra_tier_count++;
                             tier_img.className = "tier-img-weapon";
-                        } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "EquippableCharmLevel") {
+                        } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "EquippableCharmLevel") {
                             charmUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                             tier_img.id = `charm-${levelcount}-${extra_tier_count}`;
                             extra_tier_count++;
                             tier_img.className = "tier-img-charm";
-                        } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "PlayerCard") {
+                        } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "PlayerCard") {
                             cardUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                             tier_img.id = `card-${levelcount}-${extra_tier_count}`;
                             extra_tier_count++;
                             tier_img.className = "tier-img-card";
-                        } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "Spray") {
+                        } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "Spray") {
                             sprayUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                             tier_img.id = `spray-${levelcount}-${extra_tier_count}`;
                             extra_tier_count++;
                             tier_img.className = "tier-img-spray";
-                        } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "Title") {
+                        } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "Title") {
                             titleUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                             tier_img.id = `title-${levelcount}-${extra_tier_count}`;
                             extra_tier_count++;
@@ -335,8 +335,8 @@ $(document).ready(() => {
             for (var i = 0; i < weaponUUIDarray.length; i++) {
                 for (var i2 = 0; i2 < allWeapons.data.length; i2++) {
                     for (var i3 = 0; i3 < allWeapons.data[i2].skins.length; i3++) {
-                        if (allWeapons.data[i2].skins[i3].levels[0].uuid == weaponUUIDarray[i].split(";")[0]) {
-                            if (weaponUUIDarray[i].split(";")[2]) {
+                        if(allWeapons.data[i2].skins[i3].levels[0].uuid == weaponUUIDarray[i].split(";")[0]) {
+                            if(weaponUUIDarray[i].split(";")[2]) {
                                 $(`#skin-${weaponUUIDarray[i].split(";")[1]}-${weaponUUIDarray[i].split(";")[2]}`).attr("src", allWeapons.data[i2].skins[i3].levels[0].displayIcon)
                                 document.getElementById(`skin-${weaponUUIDarray[i].split(";")[1]}-${weaponUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.textContent = allWeapons.data[i2].skins[i3].levels[0].displayName
                             } else {
@@ -352,8 +352,8 @@ $(document).ready(() => {
             const allCharms = await getAllCharms();
             for (var i = 0; i < charmUUIDarray.length; i++) {
                 for (var i2 = 0; i2 < allCharms.data.length; i2++) {
-                    if (allCharms.data[i2].levels[0].uuid == charmUUIDarray[i].split(";")[0]) {
-                        if (charmUUIDarray[i].split(";")[2]) {
+                    if(allCharms.data[i2].levels[0].uuid == charmUUIDarray[i].split(";")[0]) {
+                        if(charmUUIDarray[i].split(";")[2]) {
                             $(`#charm-${charmUUIDarray[i].split(";")[1]}-${charmUUIDarray[i].split(";")[2]}`).attr("src", allCharms.data[i2].displayIcon)
                             document.getElementById(`charm-${charmUUIDarray[i].split(";")[1]}-${charmUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.firstChild.textContent = allCharms.data[i2].displayName
                         } else {
@@ -368,8 +368,8 @@ $(document).ready(() => {
             const allCards = await getAllCards();
             for (var i = 0; i < cardUUIDarray.length; i++) {
                 for (var i2 = 0; i2 < allCards.data.length; i2++) {
-                    if (allCards.data[i2].uuid == cardUUIDarray[i].split(";")[0]) {
-                        if (cardUUIDarray[i].split(";")[2]) {
+                    if(allCards.data[i2].uuid == cardUUIDarray[i].split(";")[0]) {
+                        if(cardUUIDarray[i].split(";")[2]) {
                             $(`#card-${cardUUIDarray[i].split(";")[1]}-${cardUUIDarray[i].split(";")[2]}`).attr("src", allCards.data[i2].displayIcon)
                             document.getElementById(`card-${cardUUIDarray[i].split(";")[1]}-${cardUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.firstChild.textContent = allCards.data[i2].displayName
                         } else {
@@ -384,8 +384,8 @@ $(document).ready(() => {
             const allSprays = await getAllSprays();
             for (var i = 0; i < sprayUUIDarray.length; i++) {
                 for (var i2 = 0; i2 < allSprays.data.length; i2++) {
-                    if (allSprays.data[i2].uuid == sprayUUIDarray[i].split(";")[0]) {
-                        if (sprayUUIDarray[i].split(";")[2]) {
+                    if(allSprays.data[i2].uuid == sprayUUIDarray[i].split(";")[0]) {
+                        if(sprayUUIDarray[i].split(";")[2]) {
                             $(`#spray-${sprayUUIDarray[i].split(";")[1]}-${sprayUUIDarray[i].split(";")[2]}`).attr("src", allSprays.data[i2].displayIcon)
                             document.getElementById(`spray-${sprayUUIDarray[i].split(";")[1]}-${sprayUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.firstChild.textContent = allSprays.data[i2].displayName
                         } else {
@@ -400,8 +400,8 @@ $(document).ready(() => {
             const allTitles = await getAllTitles();
             for (var i = 0; i < titleUUIDarray.length; i++) {
                 for (var i2 = 0; i2 < allTitles.data.length; i2++) {
-                    if (allTitles.data[i2].uuid == titleUUIDarray[i].split(";")[0]) {
-                        if (titleUUIDarray[i].split(";")[2]) {
+                    if(allTitles.data[i2].uuid == titleUUIDarray[i].split(";")[0]) {
+                        if(titleUUIDarray[i].split(";")[2]) {
                             $(`#title-${titleUUIDarray[i].split(";")[1]}-${titleUUIDarray[i].split(";")[2]}`).attr("src", allTitles.data[i2].displayIcon)
                             document.getElementById(`title-${titleUUIDarray[i].split(";")[1]}-${titleUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.firstChild.textContent = allTitles.data[i2].displayName
                             document.getElementById(`title-${titleUUIDarray[i].split(";")[1]}-${titleUUIDarray[i].split(";")[2]}`).parentElement.lastChild.textContent = allTitles.data[i2].displayName.split(" Title")[0]
@@ -453,7 +453,7 @@ $(document).ready(() => {
                     const getProgressionLevel = await getContractProgression();
                     // For-loop to get the current progression level
                     for (var i = 0; i < getProgressionLevel.Contracts.length; i++) {
-                        if (getProgressionLevel.Contracts[i].ContractDefinitionID == currentContract) {
+                        if(getProgressionLevel.Contracts[i].ContractDefinitionID == currentContract) {
                             var bp_progression = getProgressionLevel.Contracts[i].ProgressionLevelReached;
                         }
                     }
@@ -496,33 +496,33 @@ $(document).ready(() => {
                             tier_name_span.appendChild(document.createTextNode("Something"));
                             tier_name.appendChild(tier_name_span);
         
-                            if (contractData.data.content.chapters[i].levels[i2].reward.type == "Currency") {
+                            if(contractData.data.content.chapters[i].levels[i2].reward.type == "Currency") {
                                 tier_img.src = "../assets/img/radianite_icon.png";
                                 tier_img.className = "tier-img-currency";
                                 tier_name.textContent = "Radianite"
-                            } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "EquippableSkinLevel") {
+                            } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "EquippableSkinLevel") {
                                 weaponUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                                 tier_img.id = `skin-${levelcount}`;
                                 tier_img.className = "tier-img-weapon";
-                            } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "EquippableCharmLevel") {
+                            } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "EquippableCharmLevel") {
                                 charmUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                                 tier_img.id = `charm-${levelcount}`;
                                 tier_img.className = "tier-img-charm";
-                            } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "PlayerCard") {
+                            } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "PlayerCard") {
                                 cardUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                                 tier_img.id = `card-${levelcount}`;
                                 tier_img.className = "tier-img-card";
-                            } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "Spray") {
+                            } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "Spray") {
                                 sprayUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                                 tier_img.id = `spray-${levelcount}`;
                                 tier_img.className = "tier-img-spray";
-                            } else if (contractData.data.content.chapters[i].levels[i2].reward.type == "Title") {
+                            } else if(contractData.data.content.chapters[i].levels[i2].reward.type == "Title") {
                                 titleUUIDarray.push(contractData.data.content.chapters[i].levels[i2].reward.uuid + ";" + levelcount)
                                 tier_img.id = `title-${levelcount}`;
                                 tier_img.className = "tier-img-title";
                             }
         
-                            if (contractData.data.content.chapters[i].isEpilogue == true) {
+                            if(contractData.data.content.chapters[i].isEpilogue == true) {
                                 $(tier_header).empty();
                                 $(tier_header).append("EPILOGUE");
                                 tier_header.classList.add("epilogue");
@@ -540,7 +540,7 @@ $(document).ready(() => {
                         }
         
                         // Check if the chapter does not have free rewards, indicating the epilogue
-                        if (contractData.data.content.chapters[i].freeRewards !== null) {
+                        if(contractData.data.content.chapters[i].freeRewards !== null) {
                             var extra_tier_count = 0;
                             for (var i2 = 0; i2 < contractData.data.content.chapters[i].freeRewards.length; i2++) { // All Frees
                                 // Create HTML Element
@@ -568,31 +568,31 @@ $(document).ready(() => {
                                 tier_name_span.appendChild(document.createTextNode("Something"));
                                 tier_name.appendChild(tier_name_span);
         
-                                if (contractData.data.content.chapters[i].freeRewards[i2].type == "Currency") {
+                                if(contractData.data.content.chapters[i].freeRewards[i2].type == "Currency") {
                                     tier_img.src = "../assets/img/radianite_icon.png";
                                     tier_img.className = "tier-img-currency";
                                     tier_name.textContent = "Radianite"
-                                } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "EquippableSkinLevel") {
+                                } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "EquippableSkinLevel") {
                                     weaponUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                                     tier_img.id = `skin-${levelcount}-${extra_tier_count}`;
                                     extra_tier_count++;
                                     tier_img.className = "tier-img-weapon";
-                                } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "EquippableCharmLevel") {
+                                } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "EquippableCharmLevel") {
                                     charmUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                                     tier_img.id = `charm-${levelcount}-${extra_tier_count}`;
                                     extra_tier_count++;
                                     tier_img.className = "tier-img-charm";
-                                } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "PlayerCard") {
+                                } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "PlayerCard") {
                                     cardUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                                     tier_img.id = `card-${levelcount}-${extra_tier_count}`;
                                     extra_tier_count++;
                                     tier_img.className = "tier-img-card";
-                                } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "Spray") {
+                                } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "Spray") {
                                     sprayUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                                     tier_img.id = `spray-${levelcount}-${extra_tier_count}`;
                                     extra_tier_count++;
                                     tier_img.className = "tier-img-spray";
-                                } else if (contractData.data.content.chapters[i].freeRewards[i2].type == "Title") {
+                                } else if(contractData.data.content.chapters[i].freeRewards[i2].type == "Title") {
                                     titleUUIDarray.push(contractData.data.content.chapters[i].freeRewards[i2].uuid + ";" + levelcount + ";" + extra_tier_count)
                                     tier_img.id = `title-${levelcount}-${extra_tier_count}`;
                                     extra_tier_count++;
@@ -616,8 +616,8 @@ $(document).ready(() => {
                     for (var i = 0; i < weaponUUIDarray.length; i++) {
                         for (var i2 = 0; i2 < allWeapons.data.length; i2++) {
                             for (var i3 = 0; i3 < allWeapons.data[i2].skins.length; i3++) {
-                                if (allWeapons.data[i2].skins[i3].levels[0].uuid == weaponUUIDarray[i].split(";")[0]) {
-                                    if (weaponUUIDarray[i].split(";")[2]) {
+                                if(allWeapons.data[i2].skins[i3].levels[0].uuid == weaponUUIDarray[i].split(";")[0]) {
+                                    if(weaponUUIDarray[i].split(";")[2]) {
                                         $(`#skin-${weaponUUIDarray[i].split(";")[1]}-${weaponUUIDarray[i].split(";")[2]}`).attr("src", allWeapons.data[i2].skins[i3].levels[0].displayIcon)
                                         document.getElementById(`skin-${weaponUUIDarray[i].split(";")[1]}-${weaponUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.textContent = allWeapons.data[i2].skins[i3].levels[0].displayName
                                     } else {
@@ -633,8 +633,8 @@ $(document).ready(() => {
                     const allCharms = await getAllCharms();
                     for (var i = 0; i < charmUUIDarray.length; i++) {
                         for (var i2 = 0; i2 < allCharms.data.length; i2++) {
-                            if (allCharms.data[i2].levels[0].uuid == charmUUIDarray[i].split(";")[0]) {
-                                if (charmUUIDarray[i].split(";")[2]) {
+                            if(allCharms.data[i2].levels[0].uuid == charmUUIDarray[i].split(";")[0]) {
+                                if(charmUUIDarray[i].split(";")[2]) {
                                     $(`#charm-${charmUUIDarray[i].split(";")[1]}-${charmUUIDarray[i].split(";")[2]}`).attr("src", allCharms.data[i2].displayIcon)
                                     document.getElementById(`charm-${charmUUIDarray[i].split(";")[1]}-${charmUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.firstChild.textContent = allCharms.data[i2].displayName
                                 } else {
@@ -649,8 +649,8 @@ $(document).ready(() => {
                     const allCards = await getAllCards();
                     for (var i = 0; i < cardUUIDarray.length; i++) {
                         for (var i2 = 0; i2 < allCards.data.length; i2++) {
-                            if (allCards.data[i2].uuid == cardUUIDarray[i].split(";")[0]) {
-                                if (cardUUIDarray[i].split(";")[2]) {
+                            if(allCards.data[i2].uuid == cardUUIDarray[i].split(";")[0]) {
+                                if(cardUUIDarray[i].split(";")[2]) {
                                     $(`#card-${cardUUIDarray[i].split(";")[1]}-${cardUUIDarray[i].split(";")[2]}`).attr("src", allCards.data[i2].displayIcon)
                                     document.getElementById(`card-${cardUUIDarray[i].split(";")[1]}-${cardUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.firstChild.textContent = allCards.data[i2].displayName
                                 } else {
@@ -665,8 +665,8 @@ $(document).ready(() => {
                     const allSprays = await getAllSprays();
                     for (var i = 0; i < sprayUUIDarray.length; i++) {
                         for (var i2 = 0; i2 < allSprays.data.length; i2++) {
-                            if (allSprays.data[i2].uuid == sprayUUIDarray[i].split(";")[0]) {
-                                if (sprayUUIDarray[i].split(";")[2]) {
+                            if(allSprays.data[i2].uuid == sprayUUIDarray[i].split(";")[0]) {
+                                if(sprayUUIDarray[i].split(";")[2]) {
                                     $(`#spray-${sprayUUIDarray[i].split(";")[1]}-${sprayUUIDarray[i].split(";")[2]}`).attr("src", allSprays.data[i2].displayIcon)
                                     document.getElementById(`spray-${sprayUUIDarray[i].split(";")[1]}-${sprayUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.firstChild.textContent = allSprays.data[i2].displayName
                                 } else {
@@ -681,8 +681,8 @@ $(document).ready(() => {
                     const allTitles = await getAllTitles();
                     for (var i = 0; i < titleUUIDarray.length; i++) {
                         for (var i2 = 0; i2 < allTitles.data.length; i2++) {
-                            if (allTitles.data[i2].uuid == titleUUIDarray[i].split(";")[0]) {
-                                if (titleUUIDarray[i].split(";")[2]) {
+                            if(allTitles.data[i2].uuid == titleUUIDarray[i].split(";")[0]) {
+                                if(titleUUIDarray[i].split(";")[2]) {
                                     $(`#title-${titleUUIDarray[i].split(";")[1]}-${titleUUIDarray[i].split(";")[2]}`).attr("src", allTitles.data[i2].displayIcon)
                                     document.getElementById(`title-${titleUUIDarray[i].split(";")[1]}-${titleUUIDarray[i].split(";")[2]}`).parentElement.parentElement.lastChild.firstChild.textContent = allTitles.data[i2].displayName
                                     document.getElementById(`title-${titleUUIDarray[i].split(";")[1]}-${titleUUIDarray[i].split(";")[2]}`).parentElement.lastChild.textContent = allTitles.data[i2].displayName.split(" Title")[0]
@@ -706,7 +706,7 @@ $(document).ready(() => {
     // Function to call the BP Fetch and the hide free items if needed, also scroll to current tier
     async function checkBoxes() {
         await fetchBP();
-        if (hideFreeItems == true) {
+        if(hideFreeItems == true) {
             $('.tier-header.free').parent().css("display", "none");
         }
         $('#bp-cards-wrapper').animate({
@@ -718,11 +718,11 @@ $(document).ready(() => {
     $('input[type="checkbox"]').click(function () {
         const dataToParse = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings/settings.json');
         const bpSettings = JSON.parse(dataToParse)
-        if ($(this).prop("checked") == true && $(this).attr("id") == "showFreeTier") {
+        if($(this).prop("checked") == true && $(this).attr("id") == "showFreeTier") {
             $('.tier-header.free').parent().css("display", "block")
             bpSettings.showFreeItems = true;
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings/settings.json', JSON.stringify(bpSettings));
-        } else if ($(this).prop("checked") == false && $(this).attr("id") == "showFreeTier") {
+        } else if($(this).prop("checked") == false && $(this).attr("id") == "showFreeTier") {
             $('.tier-header.free').parent().css("display", "none")
             bpSettings.showFreeItems = false;
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/bp_settings/settings.json', JSON.stringify(bpSettings));

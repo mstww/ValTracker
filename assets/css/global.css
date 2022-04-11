@@ -412,7 +412,6 @@ button {
   border: none;
   background-color: var(--button-color);
   color: var(--button-color-var);
-  cursor: pointer;
   padding: 15px 40px;
   border-radius: 8px;
   display: inline-block;
@@ -598,8 +597,12 @@ input[type="checkbox"]:disabled {
   position: fixed;
   width: 30px;
   height: 30px;
-  cursor: pointer;
   z-index: 10000;
+}
+
+#toggle:hover::before, #toggle:hover::after {
+  box-shadow: var(--box-shadow);
+  transition: 0.2s ease;
 }
 
 #toggle::before {
@@ -609,7 +612,6 @@ input[type="checkbox"]:disabled {
   width: 100%;
   height: 2px;
   background: #ffffff;
-  box-shadow: var(--box-shadow);
 }
 
 #toggle::after {
@@ -619,7 +621,6 @@ input[type="checkbox"]:disabled {
   width: 100%;
   height: 2px;
   background: #ffffff;
-  box-shadow: var(--box-shadow);
 }
 
 .header-relative-div {
@@ -643,7 +644,7 @@ input[type="checkbox"]:disabled {
   background-color: var(--app-color-light);
   filter: drop-shadow(0px 0px 0px #000000);
   -webkit-filter: drop-shadow(0px 0px 0px #000000);
-  z-index: 999 !important;
+  z-index: 9999 !important;
   -webkit-transition: 0.4s ease;
   -o-transition: 0.4s ease;
   transition: 0.4s ease;
@@ -656,7 +657,7 @@ input[type="checkbox"]:disabled {
   margin-left: 0.5rem;
   font-weight: 400;
   font-size: 1.4em;
-  cursor: pointer;
+  cursor: initial;
 }
 
 .header-relative-div.active + #toggle {
@@ -689,7 +690,6 @@ input[type="checkbox"]:disabled {
   -webkit-transform: translate(-50%, -50%) rotate(45deg);
   -ms-transform: translate(-50%, -50%) rotate(45deg);
   transform: translate(-50%, -50%) rotate(45deg);
-  box-shadow: var(--box-shadow);
 }
 
 .header-relative-div.active #toggle::after {
@@ -698,7 +698,6 @@ input[type="checkbox"]:disabled {
   -webkit-transform: translate(-50%, -50%) rotate(-45deg);
   -ms-transform: translate(-50%, -50%) rotate(-45deg);
   transform: translate(-50%, -50%) rotate(-45deg);
-  box-shadow: var(--box-shadow);
 }
 
 .navslide-li {
@@ -853,7 +852,6 @@ input[type="checkbox"]:disabled {
 }
 
 .swatch {
-  cursor: pointer;
   width: 4rem;
   margin-right: 2rem;
   filter: drop-shadow(0px 0px 5px #000000);
@@ -968,7 +966,6 @@ video:focus {
   -webkit-transform: translate(-50%, -50%) rotate(-45deg);
   -ms-transform: translate(-50%, -50%) rotate(-45deg);
   transform: translate(-50%, -50%) rotate(-45deg);
-  box-shadow: var(--box-shadow);
 }
 
 .header-relative-div-video #toggle::before {
@@ -978,7 +975,6 @@ video:focus {
   -webkit-transform: translate(-50%, -50%) rotate(45deg);
   -ms-transform: translate(-50%, -50%) rotate(45deg);
   transform: translate(-50%, -50%) rotate(45deg);
-  box-shadow: var(--box-shadow);
 }
 
 #largeview-bundleweapon-preview-link-hidden {
@@ -1037,7 +1033,6 @@ video:focus {
   -webkit-transform: translate(-50%, -50%) rotate(-45deg);
   -ms-transform: translate(-50%, -50%) rotate(-45deg);
   transform: translate(-50%, -50%) rotate(-45deg);
-  box-shadow: var(--box-shadow);
 }
 
 .header-relative-div-largeview #toggle::before {
@@ -1046,7 +1041,6 @@ video:focus {
   -webkit-transform: translate(-50%, -50%) rotate(45deg);
   -ms-transform: translate(-50%, -50%) rotate(45deg);
   transform: translate(-50%, -50%) rotate(45deg);
-  box-shadow: var(--box-shadow);
 }
 
 .match-wrapper {
@@ -1216,8 +1210,9 @@ select {
   font-size: 16px;
   border-radius: 3px;
   outline: none;
-  cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
+  top: 2px;
 }
 
 select:hover {
@@ -1325,14 +1320,30 @@ select:focus::-ms-value {
 
 .user-rank-icon {
   width: 4rem;
-  z-index: 900;
+  z-index: 90;
   align-self: center;
   opacity: 0;
+}
+
+.user-rank-icon.unranked {
+  width: 4rem;
+  z-index: 90;
+  align-self: center;
+  opacity: 0;
+  position: relative;
+  top: 5px;
 }
 
 .match-rr-img {
   width: 2.5rem;
   filter: drop-shadow(0px 0px 2px #000000);
+}
+
+.match-rr-img.unranked {
+  width: 2.5rem;
+  filter: drop-shadow(0px 0px 2px #000000);
+  position: relative;
+  top: 5px;
 }
 
 .match-rr-wrapper {
@@ -1375,6 +1386,12 @@ select:focus::-ms-value {
   position: relative;
   top: 2px;
   width: 4rem;
+  filter: drop-shadow(0px 0px 2px #000000);
+}
+
+.match-rr-img-pp.unranked {
+  position: relative;
+  top: 5px;
   filter: drop-shadow(0px 0px 2px #000000);
 }
 
@@ -1446,14 +1463,21 @@ select:focus::-ms-value {
   position: absolute;
   bottom: 7rem;
   left: 1rem;
-  cursor: pointer;
+  cursor: initial;
+}
+
+#acc-switcher {
+  position: absolute;
+  bottom: 10rem;
+  left: 1rem;
+  cursor: initial;
 }
 
 #settings {
   position: absolute;
   bottom: 4rem;
   left: 1rem;
-  cursor: pointer;
+  cursor: initial;
 }
 
 #socials {
@@ -1505,6 +1529,16 @@ select:focus::-ms-value {
   text-shadow: 0 0 5px rgba(167, 167, 167, 0.8),
     0 0 20px rgba(167, 167, 167, 0.8), 0 0 60px rgba(167, 167, 167, 0.8);
 }
+
+.fas.fa-hand-holding-usd {
+  transition: all 0.2s ease;
+}
+
+.fas.fa-hand-holding-usd:hover {
+  color: var(--gradient-left);
+  text-shadow: var(--text-shadow);
+}
+
 .error-code-mention-wrapper {
   position: absolute;
   top: 0;
@@ -1564,8 +1598,6 @@ select:focus::-ms-value {
   -webkit-transform: translate(-50%, -50%) rotate(-45deg);
   -ms-transform: translate(-50%, -50%) rotate(-45deg);
   transform: translate(-50%, -50%) rotate(-45deg);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
-    0 0 20px rgba(192, 192, 192, 0.7), 0 0 50px rgba(112, 112, 112, 0.7);
 }
 
 .error-card-relative-div-largeview #toggle::before {
@@ -1574,8 +1606,6 @@ select:focus::-ms-value {
   -webkit-transform: translate(-50%, -50%) rotate(45deg);
   -ms-transform: translate(-50%, -50%) rotate(45deg);
   transform: translate(-50%, -50%) rotate(45deg);
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.7),
-    0 0 20px rgba(192, 192, 192, 0.7), 0 0 50px rgba(112, 112, 112, 0.7);
 }
 
 .closeCardWrapper {
@@ -1656,7 +1686,6 @@ select:focus::-ms-value {
   -webkit-transform: translate(-50%, -50%) rotate(-45deg);
   -ms-transform: translate(-50%, -50%) rotate(-45deg);
   transform: translate(-50%, -50%) rotate(-45deg);
-  box-shadow: var(--box-shadow)
 }
 
 .close-card #toggle::before {
@@ -1665,7 +1694,6 @@ select:focus::-ms-value {
   -webkit-transform: translate(-50%, -50%) rotate(45deg);
   -ms-transform: translate(-50%, -50%) rotate(45deg);
   transform: translate(-50%, -50%) rotate(45deg);
-  box-shadow: var(--box-shadow)
 }
 
 .message-card-header {
@@ -1684,4 +1712,161 @@ select:focus::-ms-value {
 .message a:hover {
   text-decoration: underline;
   color: var(--gradient-right);
+}
+
+.switch-acc-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  display: none;
+}
+
+.switch-acc-card {
+  width: 30rem;
+  padding: 1rem;
+  background-color: var(--app-color);
+  min-height: 55%;
+  border-radius: 4px;
+  position: relative;
+  border: 1px solid rgba(47, 53, 77, 0.9);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.7),
+    0 0 50px rgba(0, 0, 0, 0.7);
+  transition: all 0.3s ease;
+  transform: scale(0.8);
+  display: none;
+}
+
+#switch-acc-content-header-hr {
+  height: 1px;
+  background: linear-gradient(to right, #00ffaa, #00ff15);
+  border: none;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 2.5px rgba(0, 255, 170, 0.7), 0 0 10px rgba(0, 255, 170, 0.7),
+    0 0 30px rgba(0, 255, 170, 0.7);
+}
+
+#switch-acc-fixes-header-hr {
+  height: 1px;
+  background: linear-gradient(to right, #ff0080, #ff004c);
+  border: none;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 0 2.5px rgba(255, 0, 128, 0.7), 0 0 10px rgba(255, 0, 128, 0.7),
+    0 0 30px rgba(255, 0, 128, 0.7);
+}
+
+.acc-relative-div-largeview {
+  position: absolute;
+  left: 29rem;
+  width: 100%;
+  -webkit-transition: 0.4s ease;
+  -o-transition: 0.4s ease;
+  transition: 0.4s ease;
+}
+
+.acc-relative-div-largeview #toggle::after {
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) rotate(-45deg);
+  -ms-transform: translate(-50%, -50%) rotate(-45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.acc-relative-div-largeview #toggle::before {
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%) rotate(45deg);
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.switch-acc-account-tile {
+  background-color: var(--app-color-light);
+  border: 2px solid rgba(47, 53, 77, 0.9);
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+
+.switch-acc-account-tile.active-acc {
+  background-color: var(--app-color-light) !important;
+  border: 2px solid var(--gradient-left);
+  cursor: initial !important;
+}
+
+.switch-acc-account-tile.active-acc:hover {
+  background-color: var(--app-color-light);
+}
+
+.switch-acc-account-tile:hover {
+  background-color: var(--app-color-lightest);
+}
+
+.switch-acc-account-tile > .fas.fa-check-circle {
+  display: none;
+}
+
+.switch-acc-account-tile.active-acc > .fas.fa-check-circle {
+  display: block;
+}
+
+.account-tile-name {
+  font-size: 1.3em;
+}
+
+.account-tile-region {
+  font-size: 1.3em;
+  margin-left: 2rem;
+  font-weight: 500;
+}
+
+.switch-acc-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+}
+
+.add-acc-button {
+  margin-right: 0.5rem;
+}
+
+.switch-acc-account-tile.delete-active > .fas.fa-check-circle {
+  display: none;
+}
+
+.switch-acc-account-tile.delete-active {
+  pointer-events: none;
+}
+
+.switch-acc-account-tile.delete-active > .fas.fa-minus-circle {
+  pointer-events: auto;
+}
+
+.fas.fa-minus-circle:hover {
+  color: var(--gradient-left);
+}
+
+.switch-acc-buttons button {
+  width: 13.5rem;
+}
+
+.user-rank-img.unranked {
+  position: relative;
+  top: 5px;
 }

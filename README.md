@@ -33,7 +33,6 @@
       <details>
         <summary>Screenshots:</summary>
         <img src="https://media.codedotspirit.dev/assets/valtracker/github/player-store.png" align="center">
-        <br>
         <img src="https://media.codedotspirit.dev/assets/valtracker/github/night-market.png" align="center">
       </details>
 
@@ -62,7 +61,6 @@
       <details>
         <summary>Screenshots:</summary>
         <img src="https://media.codedotspirit.dev/assets/valtracker/github/bundles.png" align="center">
-        <br>
         <img src="https://media.codedotspirit.dev/assets/valtracker/github/single-skins.png" align="center">
       </details>
 
@@ -83,7 +81,6 @@
       <details>
         <summary>Screenshots:</summary>
         <img src="https://media.codedotspirit.dev/assets/valtracker/github/color-theme-creator.png" align="center">
-        <br>
         <img src="https://media.codedotspirit.dev/assets/valtracker/github/color-theme-creator-2.png" align="center">
       </details>
 

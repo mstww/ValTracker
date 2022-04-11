@@ -5,18 +5,17 @@ $(document).ready(() => {
     let rawLoadData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     let loadData = JSON.parse(rawLoadData);
 
-    if (loadData.hasReadLatestPatchnotes == undefined) {
+    if(loadData.hasReadLatestPatchnotes == undefined) {
         loadData.hasReadLatestPatchnotes = false;
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(loadData))
     }
-    if (loadData.hasReadLatestPatchnotes == false) {
+    if(loadData.hasReadLatestPatchnotes == false) {
         var pjson = require('../package.json');
         $('#version-num').append(pjson.version);
         $.ajax({
             url: `https://api.valtracker.gg/patchnotes/v${pjson.version}`,
             type: 'get',
             success: function (data, xhr) {
-                console.log(data)
                 var html1 = converter.makeHtml(data.data.whats_new.additions);
                 var html2 = converter.makeHtml(data.data.whats_new.fixes);
                 $('.whats-new-content').append(html1)

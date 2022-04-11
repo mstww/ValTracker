@@ -9,7 +9,7 @@ $(document).ready(async () => {
     var playerTag = userdataToRead.playerTag
     let favrawdata = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/matches.json');
     var buffer = Buffer.from(favrawdata)
-    if (buffer.length == 0) {
+    if(buffer.length == 0) {
         var newArrToPush = {
             "favourites": [{
 
@@ -26,7 +26,7 @@ $(document).ready(async () => {
     for (var count = 0; count < dataToRead.favourites.length; count++) {
         var matchID = dataToRead.favourites[count].MatchID
         matchIDarray.push(matchID)
-        if (dataToRead.favourites[count] == undefined) { //No saved matches found at all
+        if(dataToRead.favourites[count] == undefined) { //No saved matches found at all
             $('.loading-icon').fadeTo(150, 0)
             setTimeout(function () {
                 $('.loading-icon').css("display", "none");
@@ -36,7 +36,7 @@ $(document).ready(async () => {
                 $('.loading-layer-fallback').fadeTo(150, 1)
             }, 200)
         } else { //saved match found
-            if (dataToRead.favourites[count].MatchID == undefined) {
+            if(dataToRead.favourites[count].MatchID == undefined) {
                 $('.loading-icon').fadeTo(150, 0)
                 setTimeout(function () {
                     $('.loading-icon').css("display", "none");
@@ -48,9 +48,9 @@ $(document).ready(async () => {
                 continue;
             }
             var checkedFolder = process.env.APPDATA + `/VALTracker/user_data/favourite_matches/matches`
-            if (fs.existsSync(checkedFolder)) { //Check for folder of saved match data
+            if(fs.existsSync(checkedFolder)) { //Check for folder of saved match data
                 var checkedPath = process.env.APPDATA + `/VALTracker/user_data/favourite_matches/matches/${matchID}.json`
-                if (fs.existsSync(checkedPath)) { //check for downloaded match data of current match
+                if(fs.existsSync(checkedPath)) { //check for downloaded match data of current match
                     let rawmatchdata = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/favourite_matches/matches/${matchID}.json`);
                     const data = JSON.parse(rawmatchdata);
 
@@ -69,7 +69,7 @@ $(document).ready(async () => {
                     var matchmodeIcon = document.createElement("img");
                     matchmodeIcon.className = "match-mode-icon";
                     var matchmode = data.data.metadata.mode
-                    if (matchmode == "Unrated" || matchmode == "Competitive" || matchmode == "Custom Game") {
+                    if(matchmode == "Unrated" || matchmode == "Competitive" || matchmode == "Custom Game") {
                         matchmodeIcon.setAttribute("src", "../assets/img/standard.png")
                     } else {
                         matchmodeIcon.setAttribute("src", `../assets/img/${matchmode.toLowerCase()}.png`)
@@ -93,15 +93,19 @@ $(document).ready(async () => {
                     playedAgent.className = "match-played-agent";
 
                     for (var playerCount = 0; playerCount < data.data.players.all_players.length; playerCount++) {
-                        if (data.data.players.all_players[playerCount].name == playerName && data.data.players.all_players[playerCount].tag == playerTag) {
+                        if(data.data.players.all_players[playerCount].name == playerName && data.data.players.all_players[playerCount].tag == playerTag) {
 
-                            if (matchmode == "Competitive") {
+                            if(matchmode == "Competitive") {
                                 var matchRRwrapper = document.createElement("div");
                                 matchRRwrapper.className = "match-rr-wrapper";
 
                                 var matchRRimg = document.createElement("img");
                                 matchRRimg.className = "match-rr-img-pp";
                                 matchRRimg.setAttribute("src", `https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${data.data.players.all_players[playerCount].currenttier}/largeicon.png`)
+                                
+                                if(data.data.players.all_players[playerCount].currenttier == 0) {
+                                    matchRRimg.classList.add('unranked');
+                                }
 
                                 matchRRwrapper.appendChild(matchRRimg)
 
@@ -121,21 +125,21 @@ $(document).ready(async () => {
                             }
                             var highestScore = Math.max(...scoreArray)
                             for (var arrcount = 0; arrcount < scoreArray.length; arrcount++) {
-                                if (scoreArray[arrcount] == highestScore) {
+                                if(scoreArray[arrcount] == highestScore) {
                                     break;
                                 }
                             }
-                            if (playerArray[arrcount] == playerName + "#" + playerTag) {
+                            if(playerArray[arrcount] == playerName + "#" + playerTag) {
                                 matchKDA.classList.add("MatchMVP")
                             } else {
                                 for (var psearch = 0; psearch < data.data.players.all_players.length; psearch++) {
-                                    if (data.data.players.all_players[psearch].name + "#" + data.data.players.all_players[psearch].tag == playerName + "#" + playerTag) {
+                                    if(data.data.players.all_players[psearch].name + "#" + data.data.players.all_players[psearch].tag == playerName + "#" + playerTag) {
                                         break;
                                     }
                                 }
                                 var teamScoreArray = [];
                                 var teamPlayerArray = [];
-                                if (data.data.players.all_players[psearch].team == "Blue") {
+                                if(data.data.players.all_players[psearch].team == "Blue") {
                                     for (var pcount = 0; pcount < data.data.players.red.length; pcount++) {
                                         teamScoreArray.push(data.data.players.red[pcount].stats.score)
                                         teamPlayerArray.push(data.data.players.red[pcount].name + "#" + data.data.players.red[pcount].tag)
@@ -148,11 +152,11 @@ $(document).ready(async () => {
                                 }
                                 var highestScore = Math.max(...teamScoreArray)
                                 for (var arrcount = 0; arrcount < teamScoreArray.length; arrcount++) {
-                                    if (teamScoreArray[arrcount] == highestScore) {
+                                    if(teamScoreArray[arrcount] == highestScore) {
                                         break;
                                     }
                                 }
-                                if (teamPlayerArray[arrcount] == playerName + "#" + playerTag) {
+                                if(teamPlayerArray[arrcount] == playerName + "#" + playerTag) {
                                     matchKDA.classList.add("TeamMVP")
                                 }
                             }
@@ -162,8 +166,8 @@ $(document).ready(async () => {
                             result.className = "result-header"
                             result.appendChild(document.createTextNode("RESULT"))
                             matchStanding.appendChild(result)
-                            if (data.data.teams.red.has_won == null) {
-                                if (data.data.players.all_players[playerCount].stats.kills == 40) {
+                            if(data.data.teams.red.has_won == null) {
+                                if(data.data.players.all_players[playerCount].stats.kills == 40) {
                                     matchStanding.className = "match-result-won";
                                     matchStanding.appendChild(document.createTextNode("WIN"));
                                 } else {
@@ -171,42 +175,42 @@ $(document).ready(async () => {
                                     matchStanding.appendChild(document.createTextNode("LOSE"));
                                 }
                             } else {
-                                if (data.data.rounds[data.data.rounds.length - 1].end_type == "SRNDRed") {
-                                    if (data.data.players.all_players[playerCount].team == data.data.rounds[data.data.rounds.length - 1].winning_team) {
+                                if(data.data.rounds[data.data.rounds.length - 1].end_type == "SRNDRed") {
+                                    if(data.data.players.all_players[playerCount].team == data.data.rounds[data.data.rounds.length - 1].winning_team) {
                                         matchStanding.className = "match-result-won-favmatch";
-                                        if (matchmode == "Competitive") {
+                                        if(matchmode == "Competitive") {
                                             matchRRspan.className = `match-rr-pp-win`;
                                             matchRRspan.setAttribute("id", "match-rr-id-" + count);
                                         }
                                         matchStanding.appendChild(document.createTextNode("SRNDR"));
                                     } else {
                                         matchStanding.className = "match-result-lost-favmatch";
-                                        if (matchmode == "Competitive") {
+                                        if(matchmode == "Competitive") {
                                             matchRRspan.className = `match-rr-pp-lose`;
                                             matchRRspan.setAttribute("id", "match-rr-id-" + count);
                                         }
                                         matchStanding.appendChild(document.createTextNode("SRNDR"));
                                     }
                                 } else {
-                                    if (data.data.players.all_players[playerCount].team == "Blue") {
-                                        if (data.data.teams.blue.rounds_won == data.data.teams.blue.rounds_lost) {
+                                    if(data.data.players.all_players[playerCount].team == "Blue") {
+                                        if(data.data.teams.blue.rounds_won == data.data.teams.blue.rounds_lost) {
                                             matchStanding.className = "match-result-draw-favmatch";
-                                            if (matchmode == "Competitive") {
+                                            if(matchmode == "Competitive") {
                                                 matchRRspan.className = `match-rr-pp-draw`;
                                                 matchRRspan.setAttribute("id", "match-rr-id-" + count);
                                             }
                                             matchStanding.appendChild(document.createTextNode(data.data.teams.blue.rounds_won + " : " + data.data.teams.blue.rounds_lost));
                                         } else {
-                                            if (data.data.teams.blue.has_won == false) {
+                                            if(data.data.teams.blue.has_won == false) {
                                                 matchStanding.className = "match-result-lost-favmatch";
-                                                if (matchmode == "Competitive") {
+                                                if(matchmode == "Competitive") {
                                                     matchRRspan.className = `match-rr-pp-lose`;
                                                     matchRRspan.setAttribute("id", "match-rr-id-" + count);
                                                 }
                                                 matchStanding.appendChild(document.createTextNode(data.data.teams.blue.rounds_won + " : " + data.data.teams.blue.rounds_lost));
                                             } else {
                                                 matchStanding.className = "match-result-won-favmatch";
-                                                if (matchmode == "Competitive") {
+                                                if(matchmode == "Competitive") {
                                                     matchRRspan.className = `match-rr-pp-win`;
                                                     matchRRspan.setAttribute("id", "match-rr-id-" + count);
                                                 }
@@ -214,24 +218,24 @@ $(document).ready(async () => {
                                             }
                                         }
                                     } else {
-                                        if (data.data.teams.blue.rounds_won == data.data.teams.blue.rounds_lost) {
+                                        if(data.data.teams.blue.rounds_won == data.data.teams.blue.rounds_lost) {
                                             matchStanding.className = "match-result-draw-favmatch";
-                                            if (matchmode == "Competitive") {
+                                            if(matchmode == "Competitive") {
                                                 matchRRspan.className = `match-rr-pp-draw`;
                                                 matchRRspan.setAttribute("id", "match-rr-id-" + count);
                                             }
                                             matchStanding.appendChild(document.createTextNode(data.data.teams.blue.rounds_won + " : " + data.data.teams.blue.rounds_lost));
                                         } else {
-                                            if (data.data.teams.red.has_won == false) {
+                                            if(data.data.teams.red.has_won == false) {
                                                 matchStanding.className = "match-result-lost-favmatch";
-                                                if (matchmode == "Competitive") {
+                                                if(matchmode == "Competitive") {
                                                     matchRRspan.className = `match-rr-pp-lose`;
                                                     matchRRspan.setAttribute("id", "match-rr-id-" + count);
                                                 }
                                                 matchStanding.appendChild(document.createTextNode(data.data.teams.red.rounds_won + " : " + data.data.teams.red.rounds_lost));
                                             } else {
                                                 matchStanding.className = "match-result-won-favmatch";
-                                                if (matchmode == "Competitive") {
+                                                if(matchmode == "Competitive") {
                                                     matchRRspan.className = `match-rr-pp-win`;
                                                     matchRRspan.setAttribute("id", "match-rr-id-" + count);
                                                 }
@@ -259,7 +263,7 @@ $(document).ready(async () => {
                     Matchcontainer.appendChild(matchKDA);
                     Matchcontainer.appendChild(matchStanding);
                     Matchcontainer.appendChild(startedOn);
-                    if (matchmode == "Competitive") {
+                    if(matchmode == "Competitive") {
                         matchRRwrapper.appendChild(matchRRspan)
                         Matchcontainer.appendChild(matchRRwrapper);
                     }
@@ -290,7 +294,7 @@ $(document).ready(async () => {
                         type: 'get',
                         async: false,
                         success: function (APIdata, xhr) {
-                            console.log("DOWNLOADED MATCH NOT FOUND, DOWNLOADING DATA")
+                            // DOWNLOADED MATCH NOT FOUND, DOWNLOADING DATA
                             fs.writeFileSync(checkedPath, JSON.stringify(APIdata));
                             window.location.href = ""
                         },
@@ -301,24 +305,24 @@ $(document).ready(async () => {
                 }
             } else { //No folder found
                 fs.mkdirSync(checkedFolder)
-                console.log("NO FOLDER FOUND, CREATING FOLDER AND DOWNLOADING DATA")
+                // NO FOLDER FOUND, CREATING FOLDER AND DOWNLOADING DATA
                 window.location.href = ""
             }
         }
     }
     fs.readdir(process.env.APPDATA + `/VALTracker/user_data/favourite_matches/matches`, (err, files) => {
-        if (err) {
+        if(err) {
             console.log(err);
             fs.mkdirSync(checkedFolder)
-            console.log("NO FOLDER FOUND, CREATING FOLDER")
+            // NO FOLDER FOUND, CREATING FOLDER
             fs.writeFileSync(checkedPath, JSON.stringify(APIdata));
             window.location.href = ""
         } else {
             files.forEach(file => {
-                if (!matchIDarray.includes(path.parse(file).name)) {
+                if(!matchIDarray.includes(path.parse(file).name)) {
                     const deleteFile = process.env.APPDATA + `/VALTracker/user_data/favourite_matches/matches/` + file
                     fs.unlink(deleteFile, (err) => {
-                        if (err) {
+                        if(err) {
                             console.log(err);
                         }
                     })

@@ -1,5 +1,5 @@
 const axios = require('axios')
-const msgFs = require('fs')
+var fs = require('fs')
 const dayjs = require('dayjs')
 const parser = require('showdown');
 
@@ -7,8 +7,8 @@ var md_conv = new parser.Converter();
 
 var lastDate;
 
-if(msgFs.existsSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json')) {
-    var raw = msgFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json')
+if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json')) {
+    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json')
     var parsed = JSON.parse(raw);
     lastDate = parsed.date;
 } else {
@@ -17,13 +17,13 @@ if(msgFs.existsSync(process.env.APPDATA + '/VALTracker/user_data/message_data/la
 
 function closeMessage(message, date) {
     $(message).remove();
-    var raw = msgFs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json')
+    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json')
     var parsed = JSON.parse(raw);
     if(parsed.date < date) {
         var obj = {
             "date": parseInt(date)
         }
-        msgFs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json', JSON.stringify(obj))
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json', JSON.stringify(obj))
     }
 }
 

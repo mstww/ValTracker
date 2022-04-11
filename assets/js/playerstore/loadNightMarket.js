@@ -23,7 +23,9 @@ $('.reveal-item-button').on("click", function () {
         $(censorbanner).fadeTo(100, 0);
         $(censorbanner).removeClass('revealing')
         setTimeout(function () {
-            $(censorbanner).css("display", "none")
+            $(censorbanner).css("display", "none");
+            var itemWrapper = censorbanner.parentElement;
+            $(itemWrapper).removeClass('notSeenYet');
         }, 700)
     }, 700);
 })

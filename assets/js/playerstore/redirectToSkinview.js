@@ -5,7 +5,7 @@ $(".single-item").on("click", function () {
 });
 
 $(".night-market-offer").on("click", function (e) {
-    if (this.className.includes("notSeenYet")) {
+    if(this.className.includes("notSeenYet")) {
         e.preventDefault();
     } else {
         sessionStorage.setItem("skinID", this.id)

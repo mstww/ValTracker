@@ -1,3 +1,25 @@
+:root {
+  --app-color: #12171d;
+  --app-color-light: #1b222b;
+  --app-color-lightest: #242e3a;
+
+  /*DEFAULT COLORS*/
+  --gradient-left: #c80043;
+  --gradient-right: #6f00ff;
+
+  --button-color-var: #ffffff;
+
+  --box-shadow: 0 0 2.5px rgba(255, 0, 67, 0.7), 0 0 10px rgba(255, 0, 67, 0.7),
+    0 0 30px rgba(255, 0, 67, 0.7);
+
+  --text-shadow: 0 0 5px rgba(255, 0, 67, 0.6), 0 0 20px rgba(255, 0, 67, 0.6),
+    0 0 60px rgba(255, 0, 67, 0.6);
+
+  --button-color: #c80043;
+  --button-hover-color: #ff0055;
+  --global-textcolor: #fff;
+}
+
 .wallet-balance-wrapper {
   border: 1px solid grey;
   padding: 1rem;

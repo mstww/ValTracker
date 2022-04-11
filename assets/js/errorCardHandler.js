@@ -1,7 +1,4 @@
-var {
-    shell
-} = require('electron');
-var moment = require('moment-timezone')
+var { shell } = require('electron');
 
 function createErrorCard(called_api, error_code) {
 
@@ -137,7 +134,7 @@ function createErrorCard(called_api, error_code) {
     textSpan.appendChild(discordHrefSpan);
     textSpan.appendChild(document.createTextNode(", copy the info below and paste it into the #support channel for help."))
 
-    if (rateLimitError == true) {
+    if(rateLimitError == true) {
         $(textSpan).empty();
         $(textSpan).text("Rate Limit exceeded. Please try again in 2 minutes.");
     }

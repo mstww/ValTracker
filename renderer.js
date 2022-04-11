@@ -1,13 +1,11 @@
 const ipcRenderer = require('electron').ipcRenderer
-const fs = require('fs')
+var fs= require('fs')
 
 ipcRenderer.on('restartDiscordRP', async function() {
-    console.log("GOT A MESSAGE")
     var path = window.location.href;
     var page = path.split('/').pop();
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var parsed = JSON.parse(raw);
-    console.log(page)
     if(parsed.hasDiscordRPenabled == true) {
         switch(page) {
             case 'index.html':
@@ -43,16 +41,12 @@ ipcRenderer.on('restartDiscordRP', async function() {
             case 'playerStore.html':
                 ipcRenderer.send('changeDiscordRP', `shop_activity`);
                 break;
-            default:
-                ipcRenderer.send('changeDiscordRP', `anonymous_activity`);
         }
-    } else if(parsed.hasDiscordRPenabled == 'anonymous') {
-        ipcRenderer.send('changeDiscordRP', `anonymous_activity`);
     }
 })
 
 document.onreadystatechange = (event) => {
-    if (document.readyState == "complete") {
+    if(document.readyState == "complete") {
         handleWindowControls();
     }
 };
@@ -84,7 +78,7 @@ async function handleWindowControls() {
     })
 
     function toggleMaxRestoreButtons(isMaximized) {
-        if (isMaximized == true) {
+        if(isMaximized == true) {
             document.body.classList.add('maximized');
         } else {
             document.body.classList.remove('maximized');

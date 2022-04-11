@@ -1,26 +1,26 @@
-const colorFS = require('fs');
+var fs = require('fs');
 
-if (!colorFS.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json')) {
+if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json')) {
     var dataToWrite = {
         "isCustomTheme": false,
         "themeName": "normal"
     }
 
-    colorFS.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(dataToWrite))
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(dataToWrite))
 }
 
-let rawColorData = colorFS.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
+let rawColorData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
 let colorData = JSON.parse(rawColorData);
 
 let root = document.documentElement;
 
-if (colorData.isCustomTheme == true) {
+if(colorData.isCustomTheme == true) {
     let newColorData;
-    if (colorFS.existsSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorData.themeName}.json`)) {
-        let newRawColorData = colorFS.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorData.themeName}.json`);
+    if(fs.existsSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorData.themeName}.json`)) {
+        let newRawColorData = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorData.themeName}.json`);
         newColorData = JSON.parse(newRawColorData);
     } else {
-        let newRawColorData = colorFS.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/preset_themes/normal.json`);
+        let newRawColorData = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/preset_themes/normal.json`);
         newColorData = JSON.parse(newRawColorData);
     }
     root.style.setProperty('--app-color', newColorData.app_color);
@@ -45,17 +45,17 @@ if (colorData.isCustomTheme == true) {
     var directoryName = path2.split("/").pop();
 
     var page = pathvar.split("/").pop();
-    if (page == "decoyIndex.html") {
+    if(page == "decoyIndex.html") {
         $('.home-loading-img').attr("src", "../iconss/VALTracker_Logo_default.png")
     }
 
-    if (directoryName == "CollectablePages") {
+    if(directoryName == "CollectablePages") {
         logo_top.setAttribute("src", `../iconss/VALTracker_Logo_default.ico`);
     } else {
         logo_top.setAttribute("src", `../iconss/VALTracker_Logo_default.ico`);
     }
 } else {
-    let newRawColorData = colorFS.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/preset_themes/${colorData.themeName}.json`);
+    let newRawColorData = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/preset_themes/${colorData.themeName}.json`);
     let newColorData = JSON.parse(newRawColorData);
     root.style.setProperty('--app-color', newColorData.app_color);
     root.style.setProperty('--app-color-light', newColorData.app_subcolor_1);
@@ -79,8 +79,8 @@ if (colorData.isCustomTheme == true) {
     var directoryName = path2.split("/").pop();
 
     var page = pathvar.split("/").pop();
-    if (page == "decoyIndex.html") {
-        if (newColorData.logo_style == "default" || newColorData.logo_style == undefined) {
+    if(page == "decoyIndex.html") {
+        if(newColorData.logo_style == "default" || newColorData.logo_style == undefined) {
             $('.home-loading-img').attr("src", "../iconss/VALTracker_Logo_default.png")
         } else {
             $('.home-loading-img').attr("id", "custom-img")
@@ -88,7 +88,7 @@ if (colorData.isCustomTheme == true) {
         }
     }
 
-    if (directoryName == "CollectablePages") {
+    if(directoryName == "CollectablePages") {
         logo_top.setAttribute("src", `../iconss/VALTracker_Logo_${newColorData.logo_style}.ico`);
     } else {
         logo_top.setAttribute("src", `../iconss/VALTracker_Logo_${newColorData.logo_style}.ico`);

@@ -41,14 +41,14 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
    var string = imageid;
    var newstring = string.replace(/displayicon2.png/, 'verticalpromoimage.png');
    var request;
-   if (window.XMLHttpRequest)
+   if(window.XMLHttpRequest)
       request = new XMLHttpRequest();
    else
       request = new ActiveXObject("Microsoft.XMLHTTP");
    request.open('GET', newstring, false);
    request.send(); // there will be a 'pause' here until the response to come.
    // the object request will be actually modified
-   if (request.status === 404) {
+   if(request.status === 404) {
       var newstring = string.replace(/displayicon2.png/, 'displayicon.png');
    }
 
@@ -70,7 +70,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
    var bundleInfoLi2 = document.createElement("li");
    var bundleInfoLi2Span = document.createElement("span");
    bundleInfoLi2Span.className = "extra-bundle-desc";
-   if (bundledescmonke == "null") {
+   if(bundledescmonke == "null") {
       bundleInfoLi2Span.appendChild(document.createTextNode("Description: -"))
    } else {
       bundleInfoLi2Span.appendChild(document.createTextNode("Description: " + bundledescmonke))
@@ -97,7 +97,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
 
    var data = await getBundles();
 
-   if (data.data.price !== undefined) {
+   if(data.data.price !== undefined) {
       bundleInfoLi1Span.appendChild(document.createTextNode(data.data.price))
    } else {
       bundleInfoLi1Span.appendChild(document.createTextNode("Bundle not being sold."))
@@ -127,7 +127,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
          flexLi1H2.className = "bundle-weapon-info-gunname";
          flexLi1H2.appendChild(document.createTextNode(data.data.weapons[i2].name));
 
-         if (data.data.weapons[i2].levels[data.data.weapons[i2].levels.length - 1].video) {
+         if(data.data.weapons[i2].levels[data.data.weapons[i2].levels.length - 1].video) {
             var flexLi2 = document.createElement("li");
             var flexLi2Button = document.createElement("button");
             flexLi2Button.className = "largeview-bundleweapon-preview";
@@ -146,7 +146,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
 
          var flexLi3 = document.createElement("li");
          var flexLi3Span = document.createElement("span");
-         if (data.data.weapons[i2].price !== undefined) {
+         if(data.data.weapons[i2].price !== undefined) {
             flexLi3Span.className = "single-weapon-price";
             flexLi3Span.appendChild(document.createTextNode("Cost: " + data.data.weapons[i2].price))
          } else {
@@ -157,7 +157,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
 
          var bundlePromoVid;
 
-         if (data.data.weapons[i2].chromas[count3].video == !null) {
+         if(data.data.weapons[i2].chromas[count3].video == !null) {
             bundlePromoVid = data.data.weapons[i2].chromas[count3].video;
          } else {
             var manualCount = data.data.weapons[i2].levels.length;
@@ -198,7 +198,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
       }
       var bundledesc;
 
-      if (bundledescmonke == "null") {
+      if(bundledescmonke == "null") {
          bundledesc = "-";
       } else {
          bundledesc = bundledescmonke;
@@ -220,7 +220,7 @@ async function shiftBundleView(event, imageid, bundledescmonke) {
    }
 
    for (var count3 = 0; count3 < data.data.weapons[0].chromas.length; count3++) {
-      if (data.data.weapons[0].chromas[count3].swatch) {
+      if(data.data.weapons[0].chromas[count3].swatch) {
 
          swatchImage = document.createElement("img");
          swatchImage.className = "swatch";

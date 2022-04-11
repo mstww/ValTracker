@@ -88,15 +88,38 @@
         <li id="leads" class="navslide-li"><span class="" id="projects-nav">Leaderboards</span></li>
         <li id="lft" class="navslide-li"><span class="" id="contact-nav">LFT</span></li>-->
     </ul>
+    <li id="acc-switcher" class="navslide-li" style="list-style-type: none;"><span>Switch Account</span></li>
     <li id="patchnotes" class="navslide-li" style="list-style-type: none;"><span>Patchnotes</span></li>
     <li id="settings" class="navslide-li" style="list-style-type: none;"><span><i class="fas fa-user-cog"></i>
         Settings</span></li>
     <hr
       style="position: absolute; bottom: 2.9rem; left: 1rem; width: 10rem; background: linear-gradient(to right, var(--gradient-left),  var(--gradient-right)); height: 2px; border: none; box-shadow: var(--box-shadow);">
-    <li id="socials" class="navslide-li" style="list-style-type: none;"><span id="socials-span"><i
-          class="fab fa-discord" id="socials-i" style="margin-right: 1rem;"></i><i class="fab fa-twitter" id="socials-i"
-          style="margin-right: 1rem;"></i><i class="fab fa-github" id="socials-i" style="margin-right: 1rem;"></i><i
-          class="fas fa-globe"></i></a></li>
+    <li id="socials" class="navslide-li" style="list-style-type: none;">
+      <span id="socials-span">
+        <i class="fab fa-discord" id="socials-i" style="margin-right: 1rem;"></i>
+        <i class="fab fa-twitter" id="socials-i" style="margin-right: 1rem;"></i>
+        <i class="fab fa-github" id="socials-i" style="margin-right: 1rem;"></i>
+        <i class="fas fa-globe" style="margin-right: 1rem;"></i>
+        <i class="fas fa-hand-holding-usd"></i>
+      </span>
+    </li>
+  </div>
+  <div class="switch-acc-wrapper">
+    <div class="switch-acc-card" id="switch-acc-card">
+      <div class="acc-relative-div-largeview" id="closeAccountsWindow">
+        <div id="toggle"></div>
+      </div>
+      <div class="switch-acc-card-header" style="margin-bottom: 1rem;">
+        <span style="margin-bottom: 1rem; font-weight: bold; font-size: 1.6em;">Switch Riot Account</span>
+      </div>
+      <div class="switch-acc-accounts-wrapper" id="switch-acc-accounts-wrapper">
+        <hr style="display: none;" id="lastAccountElement">
+      </div>
+      <div class="switch-acc-buttons">
+        <button class="add-acc-button">Add an Account</button>
+        <button id="delete-acc-button">Remove an Account</button>
+      </div>
+    </div>
   </div>
   <div class="error-code-mention-wrapper" id="insertErrorCodes">
     <hr id="lastErrorElement" style="display: none;">
@@ -147,10 +170,10 @@
   </script>
   <script>
     window.onload = function () {
-      if (sessionStorage.getItem("Update-downloaded") == true) {
+      if(sessionStorage.getItem("Update-downloaded") == true) {
         $('.update-banner').css("display", "block");
       }
-      if (sessionStorage.getItem("Update-available") == true) {
+      if(sessionStorage.getItem("Update-available") == true) {
         $('.download-banner').css("display", "block");
       }
     }
@@ -201,6 +224,7 @@
   <script type="application/javascript" src="../assets/js/errorCardHandler.js"></script>
   <script type="application/javascript" src="../assets/js/loadColorThemes.js"></script>
   <script type="application/javascript" src="../assets/js/fetchMessages.js"></script>
+  <script type="application/javascript" src="../assets/js/accountSwitcher.js"></script>
 </body>
 
 </html>

@@ -1,3 +1,25 @@
+:root {
+  --app-color: #12171d;
+  --app-color-light: #1b222b;
+  --app-color-lightest: #242e3a;
+
+  /*DEFAULT COLORS*/
+  --gradient-left: #c80043;
+  --gradient-right: #6f00ff;
+
+  --button-color-var: #ffffff;
+
+  --box-shadow: 0 0 2.5px rgba(255, 0, 67, 0.7), 0 0 10px rgba(255, 0, 67, 0.7),
+    0 0 30px rgba(255, 0, 67, 0.7);
+
+  --text-shadow: 0 0 5px rgba(255, 0, 67, 0.6), 0 0 20px rgba(255, 0, 67, 0.6),
+    0 0 60px rgba(255, 0, 67, 0.6);
+
+  --button-color: #c80043;
+  --button-hover-color: #ff0055;
+  --global-textcolor: #fff;
+}
+
 .player-profile-wrapper {
   margin: 5% 5% 0% 5%;
   font-size: 1.3em;
@@ -41,6 +63,14 @@
   filter: drop-shadow(0px 0px 10px #000000);
 }
 
+.player-rank.unranked {
+  margin-right: 2rem;
+  height: 7rem;
+  filter: drop-shadow(0px 0px 10px #000000);
+  position: relative;
+  top: 5px;
+}
+
 .rotated-sep {
   transform: rotate(90deg);
   width: 20rem;
@@ -69,7 +99,6 @@
   z-index: 2 !important;
   margin-right: none;
   overflow: hidden;
-  cursor: pointer;
 }
 
 .match-played-agent {

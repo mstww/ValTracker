@@ -1,17 +1,17 @@
-const colorFS2 = require('fs')
+var fs = require('fs')
 
-let rawColorDataPre = colorFS2.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
+let rawColorDataPre = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
 let colorDataPre = JSON.parse(rawColorDataPre);
 
 $('#colortheme-name').val(colorDataPre.themeName)
 
 var colorData2;
 
-if (colorDataPre.isCustomTheme == true) {
-    let rawColorData3 = colorFS2.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataPre.themeName}.json`);
+if(colorDataPre.isCustomTheme == true) {
+    let rawColorData3 = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataPre.themeName}.json`);
     colorData2 = JSON.parse(rawColorData3);
 } else {
-    let rawColorData2 = colorFS2.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/${colorDataPre.themeName}.json`);
+    let rawColorData2 = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/${colorDataPre.themeName}.json`);
     colorData2 = JSON.parse(rawColorData2);
 }
 
@@ -22,10 +22,10 @@ function rgbToHex(red, green, blue) {
 
 function hexToRgb(hex) {
     const normal = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-    if (normal) return normal.slice(1).map(e => parseInt(e, 16));
+    if(normal) return normal.slice(1).map(e => parseInt(e, 16));
 
     const shorthand = hex.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
-    if (shorthand) return shorthand.slice(1).map(e => 0x11 * parseInt(e, 16));
+    if(shorthand) return shorthand.slice(1).map(e => 0x11 * parseInt(e, 16));
 
     return null;
 }
@@ -140,13 +140,13 @@ $(document).ready(() => {
     $('.subcolor-palette-preview-2').css("background-color", "var(--app-color-lightest)")
 
     $("#colortheme-name").keyup(function (event) {
-        if (event.keyCode === 13) {
+        if(event.keyCode === 13) {
             $("#save-colortheme").click();
         }
     });
     const replaceText = (text) => {
         const element = document.getElementById("replace-text");
-        if (element) element.innerText = text
+        if(element) element.innerText = text
     }
     $('#save-colortheme').on("click", function () {
         var theme_name = document.getElementById('colortheme-name').value
@@ -163,7 +163,7 @@ $(document).ready(() => {
         var newSubColor2 = select9.value;
         var newFontColor = select10.value;
 
-        let colorDataToRead = colorFS2.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
+        let colorDataToRead = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
         let colorDataToEdit = JSON.parse(colorDataToRead);
 
         var dataToWrite = {
@@ -182,11 +182,11 @@ $(document).ready(() => {
         }
 
         var dataToWriteDown = JSON.stringify(dataToWrite)
-        colorFS2.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${theme_name}.json`, dataToWriteDown)
+        fs.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${theme_name}.json`, dataToWriteDown)
 
         if(theme_name != colorDataToEdit.themeName) {
-            colorFS2.unlinkSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataToEdit.themeName}.json`, (err) => {
-              if (err) console.log(err);
+            fs.unlinkSync(process.env.APPDATA + `/VALTracker/user_data/themes/custom_themes/${colorDataToEdit.themeName}.json`, (err) => {
+              if(err) console.log(err);
             });
         }
 
@@ -194,9 +194,7 @@ $(document).ready(() => {
             "isCustomTheme": true,
             "themeName": theme_name
         }
-        colorFS2.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data))
-
-        console.log(colorDataToEdit.themeName)
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data))
 
         window.location.href = "settings.html"
     })

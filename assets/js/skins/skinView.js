@@ -17,15 +17,15 @@ $.ajax({
     type: 'get',
     success: function (data, jqXHR) {
         for (var wcount = 0; wcount < data.data.length; wcount++) {
-            if (data.data[wcount].uuid == sessionStorage.getItem("skinID") || data.data[wcount].levels[0].uuid == sessionStorage.getItem("skinID") || data.data[wcount].chromas[0].uuid == sessionStorage.getItem("skinID")) {
+            if(data.data[wcount].uuid == sessionStorage.getItem("skinID") || data.data[wcount].levels[0].uuid == sessionStorage.getItem("skinID") || data.data[wcount].chromas[0].uuid == sessionStorage.getItem("skinID")) {
                 $('#pageheader').append(data.data[wcount].displayName);
                 var dataLevels = data.data[wcount].levels
                 var dataChromas = data.data[wcount].chromas
 
-                if (data.data[wcount].displayName == "Luxe Knife") {
+                if(data.data[wcount].displayName == "Luxe Knife") {
                     $('.weapon-image').attr("src", data.data[wcount].chromas[0].fullRender);
                 } else {
-                    if (!data.data[wcount].levels[0].displayIcon) {
+                    if(!data.data[wcount].levels[0].displayIcon) {
                         $('.weapon-image').attr("src", data.data[wcount].chromas[0].fullRender);
                     } else {
                         $('.weapon-image').attr("src", data.data[wcount].levels[0].displayIcon);
@@ -36,7 +36,7 @@ $.ajax({
                 for (var count = data.data[wcount].levels.length; count > 0; count--) {
                     total_radianite++;
                     var li_handler = document.createElement('li')
-                    if (count == 1) {
+                    if(count == 1) {
                         li_handler.classList.add('level-options-li', 'active-option')
                     } else {
                         li_handler.className = "level-options-li"
@@ -48,7 +48,7 @@ $.ajax({
                     var lastelement = document.getElementById('last-element')
                     wrapper.insertBefore(li_handler, lastelement)
                 }
-                if (total_radianite == 0) {
+                if(total_radianite == 0) {
                     $('#skin-radprice').append("0")
                 } else {
                     $('#skin-radprice').append(total_radianite + "0")
@@ -58,7 +58,7 @@ $.ajax({
                     var swatch_img = document.createElement('img')
                     swatch_img.className = "singleview-swatch"
                     swatch_img.id = `swatch-${count}`
-                    if (data.data[wcount].chromas[count].swatch == null) {
+                    if(data.data[wcount].chromas[count].swatch == null) {
                         $('.singleview-colors').css("display", "none")
                         continue;
                     }
@@ -74,17 +74,17 @@ $.ajax({
                     type: 'get',
                     success: function (data2, jqXHR) {
                         for (var count = 0; count < data2.data.Offers.length; count++) {
-                            if (data2.data.Offers[count].Rewards[0].ItemID == sessionStorage.getItem("skinID")) {
+                            if(data2.data.Offers[count].Rewards[0].ItemID == sessionStorage.getItem("skinID")) {
                                 $('#skin-vpprice').append(data2.data.Offers[count].Cost[Object.keys(data2.data.Offers[count].Cost)[0]])
                             }
                         }
 
-                        if ($('#skin-vpprice').text() == "") {
+                        if($('#skin-vpprice').text() == "") {
                             $('#skin-vpprice').append("-")
                             $('#skin-vpprice').addClass("disabled")
                         }
 
-                        if (dataLevels[0].streamedVideo !== null) {
+                        if(dataLevels[0].streamedVideo !== null) {
                             $('#largeview-vid-element').attr('src', dataLevels[0].streamedVideo);
                             $('.show-skinvid').css('display', 'block');
                         } else {
@@ -94,9 +94,9 @@ $.ajax({
                         $('.level-options-li').on("click", function () {
                             $('.active-option').removeClass("active-option")
                             $(this).addClass("active-option")
-                            if (this.id < dataLevels.length - 1) {
+                            if(this.id < dataLevels.length - 1) {
                                 $('.swatch-active').removeClass("swatch-active")
-                            } else if (this.id == dataLevels.length - 1) {
+                            } else if(this.id == dataLevels.length - 1) {
                                 $('#swatch-0').addClass("swatch-active")
                             }
                             var i = this.id
@@ -104,7 +104,7 @@ $.ajax({
                                 i--;
                             }
                             $('.weapon-image').attr("src", dataLevels[i].displayIcon);
-                            if (dataLevels[i].streamedVideo !== null) {
+                            if(dataLevels[i].streamedVideo !== null) {
                                 $('#largeview-vid-element').attr('src', dataLevels[i].streamedVideo);
                                 $('.show-skinvid').css('display', 'block');
                             } else {
@@ -113,7 +113,7 @@ $.ajax({
                         })
 
                         $('.singleview-swatch').on("click", function () {
-                            if ($('.active-option').attr("id") !== dataLevels.length - 1) {
+                            if($('.active-option').attr("id") !== dataLevels.length - 1) {
                                 $('.active-option').removeClass("active-option")
                                 $(`#${dataLevels.length-1}`).addClass("active-option")
                             }
@@ -121,17 +121,17 @@ $.ajax({
                             $(this).addClass("swatch-active")
                             var str = this.id
                             var newStr = str.split('-').pop()
-                            if (dataChromas[newStr].displayIcon == null) {
+                            if(dataChromas[newStr].displayIcon == null) {
                                 $('.weapon-image').attr("src", dataChromas[newStr].fullRender);
                             } else {
                                 $('.weapon-image').attr("src", dataChromas[newStr].displayIcon);
                             }
-                            if (newStr == 0) {
+                            if(newStr == 0) {
                                 $('#largeview-vid-element').attr('src', dataLevels[dataLevels.length - 1].streamedVideo);
                                 $('.show-skinvid').css('display', 'block');
                             } else {
-                                if (dataChromas[newStr].streamedVideo !== null) {
-                                    if (newStr == 0) {
+                                if(dataChromas[newStr].streamedVideo !== null) {
+                                    if(newStr == 0) {
                                         $('#largeview-vid-element').attr('src', dataLevels[dataLevels.length - 1].streamedVideo);
                                     } else {
                                         $('#largeview-vid-element').attr('src', dataChromas[newStr].streamedVideo);

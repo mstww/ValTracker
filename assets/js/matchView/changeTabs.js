@@ -1,3 +1,23 @@
+var fs = require('fs')
+function redirectToPlayerProfile(p_uuid, playerNameTag) {
+    var p_name = playerNameTag.split("#")[0];
+    var p_tag = playerNameTag.split("#")[1];
+
+    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+    var parsed = JSON.parse(raw);
+    var region = parsed.playerRegion;
+    
+    var page = window.location.href;
+    sessionStorage.setItem("last_page", page);
+
+    sessionStorage.setItem("puuid", p_uuid);
+    sessionStorage.setItem("player_name", p_name);
+    sessionStorage.setItem("player_tag", p_tag);
+    sessionStorage.setItem("player_region", region);
+    
+    window.location.href = "playerProfile.html";
+}
+
 function sortTableWithFBs() {
     var table, rows, switching, i, x, y, shouldSwitch;
     table = document.getElementById("scoreboard-table");
@@ -9,12 +29,12 @@ function sortTableWithFBs() {
             shouldSwitch = false;
             x = rows[i].getElementsByTagName("TD")[4];
             y = rows[i + 1].getElementsByTagName("TD")[4];
-            if (x.textContent.toLowerCase() < y.textContent.toLowerCase()) {
+            if(x.textContent.toLowerCase() < y.textContent.toLowerCase()) {
                 shouldSwitch = true;
                 break;
             }
         }
-        if (shouldSwitch) {
+        if(shouldSwitch) {
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
             switching = true;
         }
@@ -34,12 +54,12 @@ function sortTableWithKD() {
             y1 = rows[i + 1].getElementsByTagName("TD")[2];
             x = x1.textContent.split("/")[0] - x1.textContent.split("/")[1]
             y = y1.textContent.split("/")[0] - y1.textContent.split("/")[1]
-            if (x < y) {
+            if(x < y) {
                 shouldSwitch = true;
                 break;
             }
         }
-        if (shouldSwitch) {
+        if(shouldSwitch) {
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
             switching = true;
         }
@@ -59,12 +79,12 @@ function sortTableWithPlntsDefs() {
             y1 = rows[i + 1].getElementsByTagName("TD")[3];
             x = x1.textContent.split("/")[0] + x1.textContent.split("/")[1]
             y = y1.textContent.split("/")[0] + y1.textContent.split("/")[1]
-            if (x < y) {
+            if(x < y) {
                 shouldSwitch = true;
                 break;
             }
         }
-        if (shouldSwitch) {
+        if(shouldSwitch) {
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
             switching = true;
         }
@@ -82,12 +102,12 @@ function sortTableWithDmg() {
             shouldSwitch = false;
             x = rows[i].getElementsByTagName("TD")[5];
             y = rows[i + 1].getElementsByTagName("TD")[5];
-            if (parseInt(x.textContent) < parseInt(y.textContent)) {
+            if(parseInt(x.textContent) < parseInt(y.textContent)) {
                 shouldSwitch = true;
                 break;
             }
         }
-        if (shouldSwitch) {
+        if(shouldSwitch) {
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
             switching = true;
         }
@@ -99,7 +119,7 @@ $(document).ready(() => {
         $('.matchview-wrapper-1').fadeTo(400, 0);
         $('#player-overview').toggleClass("active");
         $('#match-scoreboard').toggleClass("active");
-        if (firstLoad == true) {
+        if(firstLoad == true) {
             sortTableWithKD();
             firstLoad = false;
         }

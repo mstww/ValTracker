@@ -88,15 +88,38 @@
         <li id="leads" class="navslide-li"><span class="" id="projects-nav">Leaderboards</span></li>
         <li id="lft" class="navslide-li"><span class="" id="contact-nav">LFT</span></li>-->
     </ul>
+    <li id="acc-switcher" class="navslide-li" style="list-style-type: none;"><span>Switch Account</span></li>
     <li id="patchnotes" class="navslide-li" style="list-style-type: none;"><span>Patchnotes</span></li>
     <li id="settings" class="navslide-li color" style="list-style-type: none;"><span><i class="fas fa-user-cog"></i>
         Settings</span></li>
     <hr
       style="position: absolute; bottom: 2.9rem; left: 1rem; width: 10rem; background: linear-gradient(to right, var(--gradient-left),  var(--gradient-right)); height: 2px; border: none; box-shadow: var(--box-shadow);">
-    <li id="socials" class="navslide-li" style="list-style-type: none;"><span id="socials-span"><i
-          class="fab fa-discord" id="socials-i" style="margin-right: 1rem;"></i><i class="fab fa-twitter" id="socials-i"
-          style="margin-right: 1rem;"></i><i class="fab fa-github" id="socials-i" style="margin-right: 1rem;"></i><i
-          class="fas fa-globe"></i></a></li>
+    <li id="socials" class="navslide-li" style="list-style-type: none;">
+      <span id="socials-span">
+        <i class="fab fa-discord" id="socials-i" style="margin-right: 1rem;"></i>
+        <i class="fab fa-twitter" id="socials-i" style="margin-right: 1rem;"></i>
+        <i class="fab fa-github" id="socials-i" style="margin-right: 1rem;"></i>
+        <i class="fas fa-globe" style="margin-right: 1rem;"></i>
+        <i class="fas fa-hand-holding-usd"></i>
+      </span>
+    </li>
+  </div>
+  <div class="switch-acc-wrapper">
+    <div class="switch-acc-card" id="switch-acc-card">
+      <div class="acc-relative-div-largeview" id="closeAccountsWindow">
+        <div id="toggle"></div>
+      </div>
+      <div class="switch-acc-card-header" style="margin-bottom: 1rem;">
+        <span style="margin-bottom: 1rem; font-weight: bold; font-size: 1.6em;">Switch Riot Account</span>
+      </div>
+      <div class="switch-acc-accounts-wrapper" id="switch-acc-accounts-wrapper">
+        <hr style="display: none;" id="lastAccountElement">
+      </div>
+      <div class="switch-acc-buttons">
+        <button class="add-acc-button">Add an Account</button>
+        <button id="delete-acc-button">Remove an Account</button>
+      </div>
+    </div>
   </div>
   <div class="error-code-mention-wrapper" id="insertErrorCodes">
     <hr id="lastErrorElement" style="display: none;">
@@ -104,109 +127,262 @@
   <div class="messages-layer" id="messages-handler">
     <hr id="lastMessageElement" style="display: none;">
   </div>
-  <div class="app" id="main-collection">
-    <div class="pageheader-div">
-      <h1 class="pageheader" id="pageheader">Settings</h1>
+  <div class="app" id="main-collection" style="margin-top: 2.5rem; margin-left: 4.5rem; margin-right: 4.5rem;">
+
+    <div class="settings-navbar">
+      <span id="settings-valtracker" class="active" style="margin-left: 2rem;">App</span>
+      <span id="settings-themes">Themes</span>
+      <span id="settings-rpc">Discord Rich Presence</span>
+      <span id="settings-riot">Riot Accounts</span>
+      <span id="settings-other" style="margin-right: 2rem;">Other</span>
     </div>
-    <div class="settings-wrapper">
-      <div class="home-username-settings">
-        <h2>Displayed Username</h2>
-        <p style="width: 40%; color: rgba(255, 255, 255, 0.4);">If you want the app to greet you with a different Name,
-          you can type it in here. If this is empty, it will default to your VALORANT Username. This data is only stored
-          on your PC.</p>
-      </div>
-      <input type="text" class="settings-home-username-input" id="settings-home-username-input">
-      <button style="margin-left: 1rem;" id="change-home-username-button">Change</button>
-      <button style="margin-left: 1rem;" id="reset-home-username-button">Reset</button>
-      <br>
-      <span id="replace-textspan-2"></span>
 
-      <div class="home-username-settings">
-        <h2>Color Theme</h2>
-        <p style="width: 40%; color: rgba(255, 255, 255, 0.4);">If you want to change the App's color Gradiant and
-          Sublementary colors to another preset, you can do that here! The app will reload after changing a Theme.</p>
-      </div>
-      <select id="selected-color-theme" name="color-theme">
-        <option value="Default" selected>Default</option>
-        <!--<option value="" disabled>-- AGENTS --</option>-->
-        <optgroup label="-- Agents --">
-          <option value="Brimstone">Brimstone</option>
-          <option value="Phoenix">Phoenix</option>
-          <option value="Sage">Sage</option>
-          <option value="Sova">Sova</option>
-          <option value="Viper">Viper</option>
-          <option value="Cypher">Cypher</option>
-          <option value="Reyna">Reyna</option>
-          <option value="Killjoy">Killjoy</option>
-          <option value="Breach">Breach</option>
-          <option value="Omen">Omen</option>
-          <option value="Jett">Jett</option>
-          <option value="Raze">Raze</option>
-          <option value="Skye">Skye</option>
-          <option value="Yoru">Yoru</option>
-          <option value="Astra">Astra</option>
-          <option value="Kayo">Kay/O</option>
-          <option value="Chamber">Chamber</option>
-          <option value="Neon">Neon</option>
-        </optgroup>
-        <optgroup id="custom-color-themes" label="-- Custom Themes --">
-          <option style="display: none;" id="themes-bottom"></option>
-        </optgroup>
-      </select>
-      <button style="margin-left: 1rem;" id="reset-colortheme-button">Reset</button>
-      <a href="editCustomTheme.html"><button id="edit-custom-theme-button"
-          style="margin-left: 1rem; display: none;">Edit this custom theme</button></a>
-      <button id="delete-custom-theme-button" style="margin-left: 1rem; display: none;">Delete this custom theme</button>
-      <br>
-      <span id="replace-textspan-3"></span>
-      <br>
+    <div class="settings-wrapper-handler">
+      <div class="settings-wrapper valtracker" id="active-wrapper">
+        <h1 style="margin-left: 1rem;">App Settings</h1>
 
-      <div class="home-username-settings">
-        <h2>Custom Color Theme</h2>
-        <p style="width: 40%; color: rgba(255, 255, 255, 0.4);">You dont like the preset themes? Make your own theme
-          here!</p>
-      </div>
-      <a href="customThemePage.html"><button id="make-custom-theme-button">Make a custom Theme</button></a>
-      <button id="open-custom-theme-folder-button" style="margin-left: 1rem;">Open Save File folder</button>
-      <br>
-      <span id="replace-textspan-4"></span>
-      <br>
+        <div class="settings-group">
+          <span class="settings-group-header">APP BEHAVIOR</span>
+          <div>
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label for="open-valtracker" class="setting-header">Open VALTracker</label>
+                <span class="settings-group-desc">Open VALTracker automatially right when your PC starts!</span>
+              </div>
+              <div class="settings-group-input">
+                <label class="switch" id="valtracker-startup-behavior-switch">
+                  <input type="checkbox" id="open-valtracker" name="open-valtracker">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <div class="discord-rp-settings">
-        <h2>Discord Rich Presence</h2>
-        <p style="width: 40%; color: rgba(255, 255, 255, 0.4);">Share your activity with all users on
-          Discord!<br>"Anonymous" means that users will be able to see that you are browsing VALTracker, but no further
-          info.</p>
+        <div class="settings-group">
+          <span class="settings-group-header">CLOSE BUTTON</span>
+          <div> 
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label for="tray-valtracker" class="setting-header">Minimize to Tray</label>
+                <span class="settings-group-desc">Closing the app window will only minimize it to your system Tray.</span>
+              </div>
+              <div class="settings-group-input">
+                <label class="switch" id="valtracker-closing-behavior-switch">
+                  <input type="checkbox" id="tray-valtracker" name="tray-valtracker">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
       </div>
-      <select id="discord-rp-option" name="discord-rp-select">
-        <option value="true" selected>On</option>
-        <option value="anonymous">Anonymous</option>
-        <option value="false">Off</option>
-      </select>
-      <span id="replace-textspan-5" style="display: block; margin-bottom: 1rem; margin-top: 0.5rem;"></span>
-      <br>
 
-      <div class="discord-rp-settings">
-        <h2>VALORANT Game Presence</h2>
-        <p style="width: 40%; color: rgba(255, 255, 255, 0.4);">Share your VALORANT Match with all users on
-          Discord!</p>
-      </div>
-      <select id="valorant-rp-option" name="valorant-rp-select">
-        <option value="true" selected>On</option>
-        <option value="false">Off</option>
-      </select>
-      <span id="replace-textspan-7" style="display: block; margin-bottom: 1rem; margin-top: 0.5rem;"></span>
-      <br>
+      <div class="settings-wrapper themes">
+        <h1 style="margin-left: 1rem;">Theme Settings</h1>
+        <div class="settings-group">
+          <span class="settings-group-header">THEMES</span>
+          <div>
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label class="setting-header">Select a Theme</label>
+                <span class="settings-group-desc">Select a Theme you like!</span>
+              </div>
+              <div class="settings-group-input">
+                <select id="selected-color-theme" name="color-theme">
+                  <option value="Default" selected>Default</option>
+                  <optgroup label="-- Agents --">
+                    <option value="Brimstone">Brimstone</option>
+                    <option value="Phoenix">Phoenix</option>
+                    <option value="Sage">Sage</option>
+                    <option value="Sova">Sova</option>
+                    <option value="Viper">Viper</option>
+                    <option value="Cypher">Cypher</option>
+                    <option value="Reyna">Reyna</option>
+                    <option value="Killjoy">Killjoy</option>
+                    <option value="Breach">Breach</option>
+                    <option value="Omen">Omen</option>
+                    <option value="Jett">Jett</option>
+                    <option value="Raze">Raze</option>
+                    <option value="Skye">Skye</option>
+                    <option value="Yoru">Yoru</option>
+                    <option value="Astra">Astra</option>
+                    <option value="Kayo">Kay/O</option>
+                    <option value="Chamber">Chamber</option>
+                    <option value="Neon">Neon</option>
+                  </optgroup>
+                  <optgroup id="custom-color-themes" label="-- Custom Themes --">
+                    <option style="display: none;" id="themes-bottom"></option>
+                  </optgroup>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <div class="riot-acc-settings">
-        <h2>Riot Account Settings</h2>
-        <p style="width: 40%; color: rgba(255, 255, 255, 0.4);">Log out of your account here, disable log-ins all
-          together or log in again.</p>
+        <div class="settings-group">
+          <span class="settings-group-header">CUSTOM THEMES</span>
+          <div>
+            <div class="settings-group-setting" id="custom-theme-req">
+              <div class="settings-group-text">
+                <label class="setting-header">Manage current Custom Theme</label>
+                <span class="settings-group-desc">Edit or delete the Custom Theme that you are currently using.</span>
+              </div>
+              <div class="settings-group-input">
+                <a href="editCustomTheme.html">
+                  <button id="edit-custom-theme-button" style="margin-left: 1rem; display: none;">Edit</button>
+                </a>
+                <button id="delete-custom-theme-button" style="margin-left: 1rem; display: none;">Delete</button>
+              </div>
+            </div>
+
+            <hr class="settings-group-seperator">
+
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label class="setting-header">Create a Custom Theme</label>
+                <span class="settings-group-desc">Create a custom Theme using the in-app Theme Creator!</span>
+              </div>
+              <div class="settings-group-input">
+                <a href="customThemePage.html"><button id="make-custom-theme-button">Make a custom Theme</button></a>
+              </div>
+            </div>
+
+            <hr class="settings-group-seperator">
+            
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label class="setting-header">Import a Custom Theme</label>
+                <span class="settings-group-desc">
+                  Import a Theme for VALTracker that you've downloaded! 
+                  <br>
+                  Open the Themes Folder with the Button on the right and put the Theme File in there.
+                </span>
+              </div>
+              <div class="settings-group-input">
+                <button id="open-custom-theme-folder-button" style="margin-left: 1rem;">Open Save File folder</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
       </div>
-      <button id="log-out-button">Log out</button>
-      <button id="log-in-button">Log in</button>
-      <span id="replace-textspan-6" style="display: block; margin-bottom: 1rem; margin-top: 0.5rem;"></span>
-      <br>
+
+      <div class="settings-wrapper rpc">
+        <h1 style="margin-left: 1rem;">Rich Presence Settings</h1>
+
+        <div class="settings-group"> 
+          <span class="settings-group-header">RICH PRESENCES</span>
+          <div>
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label for="app-rpc" class="setting-header">VALTracker Rich Presence</label>
+                <span class="settings-group-desc">Show your friends that you're using VALTracker by Activating this setting!</span>
+              </div>
+              <div class="settings-group-input">
+                <label class="switch" id="app-rp-switch">
+                  <input type="checkbox" id="app-rpc" name="app-rpc">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+
+            <hr class="settings-group-seperator">
+
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label for="minim-valtracker" class="setting-header">VALORANT Rich Presence</label>
+                <span class="settings-group-desc">Let Discord show a more detailed Rich Presence about your current VALORANT Match!<br> (This includes the Map, the current Score, the Agent you're playing, Time elapsed since and the Mode you're playing.)</span>
+              </div>
+              <div class="settings-group-input">
+                <label class="switch" id="val-rp-switch">
+                  <input type="checkbox" id="minim-valtracker" name="minim-valtracker">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-wrapper riot">
+        <h1 style="margin-left: 1rem;">Riot Account Settings</h1>
+
+        <div class="settings-group">
+          <span class="settings-group-header">ACCOUNT MANAGEMENT</span>
+          <div>
+            <div class="settings-group-setting" id="riot-acc-req">
+              <div class="settings-group-text">
+                <label for="app-rpc" class="setting-header">Add an Account</label>
+                <span class="settings-group-desc">Open a login window to add an account!</span>
+              </div>
+              <div class="settings-group-input">
+                <button class="add-acc-button" id="reload-page">Add an Account</button>
+              </div>
+            </div>
+
+            <hr class="settings-group-seperator" id="no-riot-acc-req">
+
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label for="minim-valtracker" class="setting-header">Log out</label>
+                <span class="settings-group-desc">Log out from all your Accounts. If you want to just remove one account, open the "Switch Account" window from the Navslide.</span>
+              </div>
+              <div class="settings-group-input">
+                <button id="remove-all-riot-accs">Log out from all Accounts</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-wrapper other">
+        <h1 style="margin-left: 1rem;">Other Settings</h1>
+
+        <div class="settings-group">
+          <span class="settings-group-header">HUB DISPLAY NAME</span>
+          <div>
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label for="app-rpc" class="setting-header">Hub Username</label>
+                <span class="settings-group-desc">Change the Username that is displayed at the top of your Hub!</span>
+              </div>
+              <div class="settings-group-input">
+                <input type="text" class="username-input" id="username-input">
+                <button style="margin-left: 1rem;" id="change-home-username-button">Change</button>
+              </div>
+            </div>
+
+            <hr class="settings-group-seperator">
+
+            <div class="settings-group-setting">
+              <div class="settings-group-text">
+                <label for="minim-valtracker" class="setting-header">Reset Hub Username</label>
+                <span class="settings-group-desc">Change your Hub Username back to your Playername.</span>
+              </div>
+              <div class="settings-group-input">
+                <button style="margin-left: 1rem;" id="reset-home-username-button">Reset</button>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <span class="settings-group-header" style="color: crimson;">DANGER ZONE</span>
+        <div>
+          <div class="settings-group-setting">
+            <div class="settings-group-text">
+              <label for="app-rpc" class="setting-header">Reset VALTracker</label>
+              <span class="settings-group-desc">Delete all of your data stored on your PC and restart VALTracker to re-do the setup process. <br>Only do this if something isnt working properly!</span>
+            </div>
+            <div class="settings-group-input">
+              <button style="margin-left: 1rem;" id="reset-valtracker-button">Reset VALTracker</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -215,10 +391,10 @@
   </script>
   <script>
     window.onload = function () {
-      if (sessionStorage.getItem("Update-downloaded") == true) {
+      if(sessionStorage.getItem("Update-downloaded") == true) {
         $('.update-banner').css("display", "block");
       }
-      if (sessionStorage.getItem("Update-available") == true) {
+      if(sessionStorage.getItem("Update-available") == true) {
         $('.download-banner').css("display", "block");
       }
     }
@@ -258,16 +434,20 @@
     })
   </script>
 
-  <script type="application/javascript" src="../assets/js/settings_scripts/changeUserDisplayName.js"></script>
-  <script type="application/javascript" src="../assets/js/settings_scripts/riotAccManagement.js"></script>
-  <script type="application/javascript" src="../assets/js/settings_scripts/changeColorTheme.js"></script>
-  <script type="application/javascript" src="../assets/js/settings_scripts/changeDRP.js"></script>
-  <script type="application/javascript" src="../assets/js/settings_scripts/changeVALPresence.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/changeUserDisplayName.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/changeColorTheme.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/changeDRP.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/changeVALPresence.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/changeTabs.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/changeAppBehaviour.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/removeAllRiotAccs.js"></script>
+  <script type="application/javascript" src="../assets/js/settings/resetVALTracker.js"></script>
   <script type="application/javascript" src="../assets/js/navslideToggle.js"></script>
   <script type="application/javascript" src="../assets/js/redirects.js"></script>
   <script type="application/javascript" src="../assets/js/errorCardHandler.js"></script>
   <script type="application/javascript" src="../assets/js/loadColorThemes.js"></script>
   <script type="application/javascript" src="../assets/js/fetchMessages.js"></script>
+  <script type="application/javascript" src="../assets/js/accountSwitcher.js"></script>
 </body>
 
 </html>

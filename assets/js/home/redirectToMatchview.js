@@ -4,14 +4,14 @@ function loadMatchView(matchID, page) {
     var playerName = dataToRead.playerName
     var playerTag = dataToRead.playerTag
     sessionStorage.setItem("matchID", matchID)
-    sessionStorage.setItem("player_name", playerName);
-    sessionStorage.setItem("player_tag", playerTag);
+    sessionStorage.setItem("matchview_player_name", playerName);
+    sessionStorage.setItem("matchview_player_tag", playerTag);
     var path = page.split("/").pop();
-    if (path == "decoyIndex.html") {
+    if(path == "decoyIndex.html") {
         var redirectPath = "index.html"
     } else {
         var redirectPath = page
     }
-    sessionStorage.setItem("last_page", redirectPath);
+    sessionStorage.setItem("last_matchview_page", redirectPath);
     window.location.href = "./matchView.html"
 }
