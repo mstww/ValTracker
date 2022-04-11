@@ -1,7 +1,4 @@
-var {
-    shell
-} = require('electron');
-var moment = require('moment-timezone')
+var { shell } = require('electron');
 
 function createErrorCard(called_api, error_code) {
 

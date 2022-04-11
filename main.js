@@ -971,13 +971,13 @@ autoUpdater.on("checking-for-update", () => {
   sendStatusToWindow("Checking for update...");
 });
 
-autoUpdater.on("update-available", (info) => {
+autoUpdater.on("update-available", () => {
   sendStatusToWindow("Update available.");
   mainWindow.webContents.send("update-available");
   clearInterval(updateCheck);
 });
 
-autoUpdater.on("update-not-available", (info) => {
+autoUpdater.on("update-not-available", () => {
   sendStatusToWindow("Update not available.");
 });
 
