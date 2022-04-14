@@ -1,7 +1,6 @@
-var fs= require('fs')
-const { BrowserWindow } = require('@electron/remote');
+var fs = require('fs')
 const { default: axios } = require('axios');
-const riotIPC = require('electron').ipcRenderer
+var ipcRenderer = require('electron').ipcRenderer
 
 function loadFade() {
     $('.setup-wrapper').fadeTo(950, 1);
@@ -87,8 +86,6 @@ const replaceText2 = (text) => {
 
 //////////////////////////////////////////////
 
-var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
-
 var bearer;
 var puuid;
 var entitlement_token;
@@ -96,64 +93,8 @@ var id_token;
 var requiredCookie;
 var region;
 
-function getTokenDataFromURL(url) {
-    try {
-        const searchParams = new URLSearchParams((new URL(url)).hash.slice(1));
-        return {
-            accessToken: searchParams.get('access_token'),
-            expiresIn: searchParams.get('expires_in'),
-            id_token: searchParams.get('id_token'),
-        };
-    } catch (err) {
-        throw new Error(`Bad url: "${url}"`);
-    }
-}
-
 async function showSignIn() {
-    return new Promise((resolve, reject) => {
-        const loginWindow = new BrowserWindow({
-            show: false,
-            width: 470,
-            height: 880,
-            autoHideMenuBar: true,
-        });
-        let foundToken = false;
-        loginWindow.webContents.on('will-redirect', (event, url) => {
-            // Login window redirecting...
-            if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
-                // Redirecting to url with tokens
-                const tokenData = getTokenDataFromURL(url);
-                foundToken = true;
-
-                loginWindow.webContents.session.cookies.get({
-                    domain: 'auth.riotgames.com'
-                }).then(async riotcookies => {
-                    await Promise.all(riotcookies.map(cookie => loginWindow.webContents.session.cookies.remove(`https://${cookie.domain}${cookie.path}`, cookie.name)));
-                    loginWindow.destroy();
-                    resolve({
-                        tokenData,
-                        riotcookies,
-                    });
-                    riotcookies.forEach(riotcookie => {
-                        if(riotcookie.name == "ssid") {
-                            cookieString = riotcookie.value
-                        }
-                    })
-                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
-                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
-                });
-            }
-        });
-        loginWindow.once('ready-to-show', () => {
-            loginWindow.show();
-        });
-        loginWindow.on('close', () => {
-            // Login window was closed
-            reject('window closed');
-        });
-        window.loginWindow = loginWindow;
-        loginWindow.loadURL(signInUrl);
-    });
+    return await ipcRenderer.invoke('loginWindow', true);
 }
 
 async function getPlayerUUID() {
@@ -203,7 +144,7 @@ async function getShopData() {
 }
 
 $(document).ready(() => {
-    riotIPC.send('isInSetup');
+    ipcRenderer.send('isInSetup');
     loadFade();
     $('#openRiotLogin').on("click", async function () {
         const data = await showSignIn();
@@ -213,8 +154,8 @@ $(document).ready(() => {
         bearer = data.tokenData.accessToken;
         id_token = data.tokenData.id_token;
 
-        riotIPC.send('setCookies', 'please')
-        riotIPC.on('tdid', async function (event, arg) {
+        ipcRenderer.send('setCookies', 'please')
+        ipcRenderer.on('tdid', async function (event, arg) {
             requiredCookie = "tdid=" + arg
 
             puuid = await getPlayerUUID();
@@ -247,7 +188,7 @@ $(document).ready(() => {
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
 
-            riotIPC.send('startReauthCycle', 'again')
+            ipcRenderer.send('startReauthCycle', 'again')
             
             $.ajax({
                 "async": true,
@@ -298,7 +239,7 @@ $(document).ready(() => {
 
                     leaveFade();
                     leaveFade2();
-                    riotIPC.send('finishedSetup');
+                    ipcRenderer.send('finishedSetup');
                 },
                 error: function (xhr) {
                     if(xhr.status == 400) {
@@ -401,7 +342,7 @@ $(document).ready(() => {
 
                         $('.setup-button-next').on("click", function () {
                             leaveFade6();
-                            riotIPC.send('finishedSetup');
+                            ipcRenderer.send('finishedSetup');
 
                             var searchedPlayerName = data.data.name
                             var searchedPlayerTag = data.data.tag

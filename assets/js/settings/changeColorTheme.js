@@ -1,7 +1,7 @@
-var ipc = require('electron').ipcRenderer;
+var { ipcRenderer } = require('electron');;
 const path = require('path')
 var select = document.getElementById('selected-color-theme');
-var fs= require('fs')
+var fs = require('fs')
 const chokidar = require('chokidar')
 
 //JSON check + colors writen

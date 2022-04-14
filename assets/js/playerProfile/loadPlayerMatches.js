@@ -1,4 +1,4 @@
-const ipc = require('electron').ipcRenderer;
+var { ipcRenderer } = require('electron');;
 $(document).ready(async () => {
     let rawdata2 = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_profile_settings/settings.json');
     let dataToRead2 = JSON.parse(rawdata2);
@@ -195,7 +195,7 @@ $(document).ready(async () => {
                             $('.loading-layer').css("opacity", "0");
                             $('.loading-layer').css("display", "block");
                             $('.loading-layer').fadeTo(150, 1)
-                            ipc.send('changeDiscordRP', `pprofile_acitivity`)
+                            ipcRenderer.send('changeDiscordRP', `pprofile_acitivity`)
                         }, 200)
                     }
 
@@ -205,7 +205,7 @@ $(document).ready(async () => {
                         $('.loading-layer').css("opacity", "0");
                         $('.loading-layer').css("display", "block");
                         $('.loading-layer').fadeTo(150, 1)
-                        ipc.send('changeDiscordRP', `pprofile_acitivity`)
+                        ipcRenderer.send('changeDiscordRP', `pprofile_acitivity`)
                     }, 200)
                 },
                 error: function (jqXHR) {
@@ -398,7 +398,7 @@ $(document).ready(async () => {
                             $('.loading-layer').css("opacity", "0");
                             $('.loading-layer').css("display", "block");
                             $('.loading-layer').fadeTo(150, 1)
-                            ipc.send('changeDiscordRP', `pprofile_acitivity`)
+                            ipcRenderer.send('changeDiscordRP', `pprofile_acitivity`)
                         }, 200)
                     }
 
@@ -408,7 +408,7 @@ $(document).ready(async () => {
                         $('.loading-layer').css("opacity", "0");
                         $('.loading-layer').css("display", "block");
                         $('.loading-layer').fadeTo(150, 1)
-                        ipc.send('changeDiscordRP', `pprofile_acitivity`)
+                        ipcRenderer.send('changeDiscordRP', `pprofile_acitivity`)
                     }, 200)
                 },
                 error: function (jqXHR) {

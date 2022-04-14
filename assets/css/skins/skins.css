@@ -282,7 +282,7 @@
   transition: all 0.2s ease;
   cursor: pointer;
   border: 2px solid rgba(47, 53, 77, 0.9);
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 #weapon-tile span {
@@ -318,13 +318,13 @@
 #card-tile {
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 4px;
+  border-radius: 0px;
   height: 100%;
   width: 96%;
 }
 
 #card-tile img {
-  border-radius: 4px;
+  border-radius: 0px;
   border: 2px solid rgb(100, 100, 100);
   filter: drop-shadow(0px 0px 2px #000000);
 }
@@ -357,7 +357,7 @@
   padding: 0.7rem;
   margin-bottom: 0.5rem;
   border: 1px solid rgba(47, 53, 77, 0.9);
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 .skin-color-options {
@@ -412,7 +412,7 @@
   padding: 0.7rem;
   margin-bottom: 0.5rem;
   border: 1px solid rgba(47, 53, 77, 0.9);
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 .exclusive-title {
@@ -426,7 +426,7 @@
   padding: 0.7rem;
   margin-bottom: 0.5rem;
   border: 1px solid rgba(47, 53, 77, 0.9);
-  border-radius: 4px;
+  border-radius: 0px;
   align-items: center;
   font-size: 1.3em;
   cursor: pointer;
@@ -438,7 +438,7 @@
 
 .wide-card-image {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 0px;
   margin-right: 1rem;
   filter: drop-shadow(0px 0px 10px #000000);
   transition: all 0.2s ease;
@@ -450,7 +450,7 @@
   padding: 0.7rem;
   margin-bottom: 0.5rem;
   border: 1px solid rgba(47, 53, 77, 0.9);
-  border-radius: 4px;
+  border-radius: 0px;
   align-items: center;
   font-size: 1.3em;
 }
@@ -488,7 +488,7 @@
   min-width: 25rem;
   max-width: 25rem;
   width: 25rem;
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 .level-options {
@@ -509,7 +509,7 @@
   margin-bottom: 0.5rem;
   color: var(--global-textcolor);
   background-color: var(--app-color-light);
-  border-radius: 4px;
+  border-radius: 0px;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -522,7 +522,7 @@
   margin-bottom: 0.5rem;
   color: var(--button-color-var);
   background-color: var(--button-hover-color);
-  border-radius: 4px;
+  border-radius: 0px;
 }
 
 .level-options-li.active-option {
@@ -541,7 +541,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  border-radius: 4px;
+  border-radius: 0px;
   margin-top: 1rem;
 }
 

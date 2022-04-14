@@ -53,7 +53,7 @@
   user-select: none;
   pointer-events: auto !important;
   z-index: 2;
-  border-radius: 4px;
+  border-radius: 0px;
   border: 1px solid rgba(47, 53, 77, 0.9);
 }
 
@@ -83,7 +83,7 @@
 .bundle-image {
   width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: 0px;
   filter: drop-shadow(0px 0px 2px var(--app-color-lightest));
   -webkit-filter: drop-shadow(0px 0px 2px var(--app-color-lightest));
   -webkit-transition: all 0.4s ease;
@@ -205,7 +205,7 @@
 .largeview-bundleimage {
   width: 18rem;
   height: auto;
-  border-radius: 4px;
+  border-radius: 0px;
   filter: drop-shadow(0px 0px 5px #000000);
   -webkit-filter: drop-shadow(0px 0px 5px #000000);
   margin-top: 1rem;

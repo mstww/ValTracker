@@ -1,5 +1,5 @@
-const ipcRenderer = require('electron').ipcRenderer
-var fs= require('fs')
+var { ipcRenderer } = require('electron')
+var fs = require('fs')
 
 ipcRenderer.on('restartDiscordRP', async function() {
     var path = window.location.href;

@@ -24,7 +24,7 @@ function showSlides(n) {
     slides[slideIndex - 1].style.display = "block";
 }
 
-var fs= require("fs")
+var fs = require("fs")
 
 var usernameSettingsFile = process.env.APPDATA + '/VALTracker/user_data/home_settings/settings.json'
 if(fs.existsSync(usernameSettingsFile)) {

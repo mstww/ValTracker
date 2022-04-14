@@ -1,9 +1,9 @@
 const showdown = require('showdown');
 const converter = new showdown.Converter();
-const ipc = require('electron').ipcRenderer;
+var { ipcRenderer } = require('electron');
 
 $(document).ready(() => {
-    ipc.send('changeDiscordRP', `patchnotes_activity`)
+    ipcRenderer.send('changeDiscordRP', `patchnotes_activity`)
 
     var pjson = require('../package.json');
     $('#patchnotes-pageheader').append("Patchnotes for " + pjson.version)

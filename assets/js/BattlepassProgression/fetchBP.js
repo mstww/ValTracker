@@ -1,4 +1,4 @@
-var fs= require('fs');
+var fs = require('fs');
 
 var bearer;
 var requiredCookie;
@@ -421,7 +421,7 @@ $(document).ready(() => {
         } else {
             // Fallback for if user has to reauth
             function reauth() {
-                riotIPC.send('startReauthCycle', 'now');
+                ipcRenderer.send('startReauthCycle', 'now');
             }
 
             reauth();
@@ -433,8 +433,8 @@ $(document).ready(() => {
                 bearer = tokenData.accessToken;
                 id_token = tokenData.id_token;
 
-                riotIPC.send('setCookies', 'please')
-                riotIPC.on('tdid', async function (event, arg) {
+                ipcRenderer.send('setCookies', 'please')
+                ipcRenderer.on('tdid', async function (event, arg) {
                     requiredCookie = "tdid=" + arg
 
                     puuid = await getPlayerUUID();

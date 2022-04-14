@@ -9,29 +9,12 @@
     window.$ = window.jQuery = require('jquery');
   </script>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css"
-    type="text/css">
+  
   <link rel="stylesheet" type="text/css" href="../assets/css/global.css">
   <link rel="stylesheet" type="text/css" href="../assets/css/settings/settings.css">
 
   <script src="https://kit.fontawesome.com/0fb7a47199.js" crossorigin="anonymous"></script>
 </head>
-<div class="update-banner" style="display: none;">
-  <span style="margin-top: 1rem;">An Update has been downloaded. Close the App to install. Dont forget to give
-    permission afterwards!</span>
-  <button class="close-app" id="noti-close-button">Close App</button>
-  <div class="update-relative-div" id="update-sec">
-    <div id="toggle"></div>
-  </div>
-</div>
-<div class="download-banner" style="display: none;">
-  <span style="margin-top: 1rem;">An Update is being downloaded. Please don't close this Window. You can continue using
-    the app.</span>
-  <progress class="download-bar" id="download-bar" max="100" value="0"></progress>
-  <div class="download-relative-div" id="download-sec">
-    <div id="toggle"></div>
-  </div>
-</div>
 
 <body>
   <header id="titlebar">
@@ -88,6 +71,31 @@
   </div>
   <div class="messages-layer" id="messages-handler">
     <hr id="lastMessageElement" style="display: none;">
+  </div>
+  <div class="update-layer">
+    <div class="update-noti" id="update-found">
+      <div style="margin-bottom: 0;">
+        <h2 style="margin-bottom: 0;">AN UPDATE IS AVAILABLE</h2>
+        <p style="color: grey; margin: 0;" id="update-info"></p>
+        <p style="margin-top: 1rem;" id="update-desc"></p>
+      </div>
+      <div class="update-buttons" style="margin-bottom: 1rem;">
+        <button id="download-update">Download update</button>
+        <button class="text-button" id="cancel-update">Not now</button>
+      </div>
+    </div>
+  </div>
+  <div class="update-download-layer">
+    <div class="download-finished-noti">
+      <div>
+        <span style="margin-bottom: 1rem; font-weight: bold; font-size: 1.2em;">UPDATE DOWNLOADED</span>
+        <p style="color: grey;">Click to quit, install and then restart.</p>
+      </div>
+      <div class="progress-bar-wrapper">
+        <button id="update-restart-app">Restart App</button>
+        <button class="text-button" id="close-finish-noti">Not now</button>
+      </div>
+    </div>
   </div>
 
   <div class="header-relative-div" id="sec" onclick="toggle()">
@@ -208,7 +216,7 @@
       }
     }
     // Listen for messages
-    const {
+    var {
       ipcRenderer
     } = require('electron');
     ipcRenderer.on('message', function (event, text) {
@@ -248,8 +256,9 @@
   <script type="application/javascript" src="../assets/js/redirects.js"></script>
   <script type="application/javascript" src="../assets/js/errorCardHandler.js"></script>
   <script type="application/javascript" src="../assets/js/loadColorThemes.js"></script>
-  <script type="application/javascript" src="../assets/js/fetchMessages.js"></script>
-  <script type="application/javascript" src="../assets/js/accountSwitcher.js"></script>
+  <script type="application/javascript" src="../assets/js/fetchMessages.js" defer></script>
+  <script type="application/javascript" src="../assets/js/accountSwitcher.js" defer></script>
+  <script type="application/javascript" src="../assets/js/checkForUpdate.js" defer></script>
 </body>
 
 </html>

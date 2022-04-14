@@ -1,4 +1,4 @@
-var fs= require('fs');
+var fs = require('fs');
 $(document).ready(() => {
     setTimeout(async function () {
         let rawuserdata = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
