@@ -1,4 +1,5 @@
 var { ipcRenderer } = require('electron');
+var fs = require('fs');
 
 $(document).ready(async () => {
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
@@ -14,6 +15,12 @@ $(document).ready(async () => {
     
     if(data.minimizeOnClose == true) {
         $('#valtracker-closing-behavior-switch input[type="checkbox"]').prop('checked', true);
+    }
+
+    if(data.enableHardwareAcceleration == true || data.enableHardwareAcceleration == undefined) {
+        $('#valtracker-ha-behavior-switch input[type="checkbox"]').prop('checked', true);
+    } else {
+        $('#valtracker-ha-behavior-switch input[type="checkbox"]').prop('checked', false);
     }
 
     $('#valtracker-startup-behavior-switch').on('change', function () {
@@ -46,6 +53,20 @@ $(document).ready(async () => {
             var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
             var data = JSON.parse(raw);
             data.minimizeOnClose = false;
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+        }
+    });
+
+    $('#valtracker-ha-behavior-switch').on('change', function () {
+        if($(`#valtracker-ha-behavior-switch input[type="checkbox"]`).is( ":checked" )) {
+            var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
+            var data = JSON.parse(raw);
+            data.enableHardwareAcceleration = true;
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+        } else {
+            var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
+            var data = JSON.parse(raw);
+            data.enableHardwareAcceleration = false;
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
         }
     });

@@ -507,7 +507,7 @@ $(document).ready(() => {
                 }, 1000)
             } else {
                 function reauth() {
-                    ipcRenderer.send('startReauthCycle', 'now');
+                    ipcRenderer.send('reauthCurrentAccount', 'now');
                 }
 
                 reauth();

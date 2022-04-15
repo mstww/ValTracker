@@ -421,7 +421,7 @@ $(document).ready(() => {
         } else {
             // Fallback for if user has to reauth
             function reauth() {
-                ipcRenderer.send('startReauthCycle', 'now');
+                ipcRenderer.send('reauthCurrentAccount', 'now');
             }
 
             reauth();

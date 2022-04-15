@@ -164,50 +164,6 @@
   <script>
     require('../renderer.js')
   </script>
-  <script>
-    window.onload = function () {
-      if(sessionStorage.getItem("Update-downloaded") == true) {
-        $('.update-banner').css("display", "block");
-      }
-      if(sessionStorage.getItem("Update-available") == true) {
-        $('.download-banner').css("display", "block");
-      }
-    }
-    // Listen for messages
-    var {
-      ipcRenderer
-    } = require('electron');
-    ipcRenderer.on('message', function (event, text) {
-      console.log(text);
-    })
-    //Update downloaded
-    ipcRenderer.on('showUpdateWindow', function (event) {
-      sessionStorage.setItem("Update-downloaded", true);
-      $('.download-banner').css("display", "none");
-      $('.update-banner').css("display", "block");
-    })
-    //Update Found, about to download
-    ipcRenderer.on('update-available', function (event, value) {
-      sessionStorage.setItem("Update-available", true);
-      $('.update-banner').css("display", "none");
-      $('.download-banner').css("display", "block");
-    })
-    //Update downloading
-    $('.download-bar').css("display", "block");
-    ipcRenderer.on('download-percent', function (event, value) {
-      $('.download-banner').css("display", "block");
-      document.getElementById("download-bar").value = value
-    })
-    $('.update-relative-div').on("click", function () {
-      $('.update-banner').css("display", "none");
-    })
-    $('#noti-close-button').on("click", function () {
-      window.close()
-    })
-    $('.download-relative-div').on("click", function () {
-      $('.download-banner').css("display", "none");
-    })
-  </script>
 
   <script type="application/javascript" src="../assets/js/skins/cardView.js"></script>
   <script type="application/javascript" src="../assets/js/navslideToggle.js"></script>

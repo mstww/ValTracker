@@ -188,7 +188,7 @@ $(document).ready(() => {
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
 
-            ipcRenderer.send('startReauthCycle', 'again')
+            ipcRenderer.send('reauthCurrentAccount', 'again')
             
             $.ajax({
                 "async": true,
