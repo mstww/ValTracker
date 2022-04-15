@@ -11,6 +11,10 @@
     "publish": "electron-builder --win -p always"
   },
   "build": {
+    "files": [
+      "!README.md",
+      "!.gitingore"
+    ],
     "appId": "VALTracker",
     "win": {
       "target": [
