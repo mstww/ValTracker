@@ -1,7 +1,7 @@
 const path = require('path');
-const ipc = require('electron').ipcRenderer;
+var { ipcRenderer } = require('electron');
 $(document).ready(async () => {
-    ipc.send('changeDiscordRP', `favmatches_activity`)
+    ipcRenderer.send('changeDiscordRP', `favmatches_activity`)
     let rawuserdata = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
     let userdataToRead = JSON.parse(rawuserdata);
 

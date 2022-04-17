@@ -1,5 +1,5 @@
-const ipc = require('electron').ipcRenderer;
-var fs= require('fs')
+const { ipc } = require('electron');
+var fs = require('fs')
 
 if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json')) {
 }
@@ -42,7 +42,7 @@ $(document).ready(() => {
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/player_search/last_searched_players.json', JSON.stringify(blankLastSearches))
   }
 
-  ipc.send('changeDiscordRP', `playersearch_acitivity`)
+  ipcRenderer.send('changeDiscordRP', `playersearch_acitivity`)
 
   const replaceText = (text) => {
     const element = document.getElementById("search-output");

@@ -4,7 +4,7 @@ function redirectToSkinView(uuid) {
    window.location.href = "../pages/skinView.html"
 }
 
-const ipc = require('electron').ipcRenderer;
+var { ipcRenderer } = require('electron');;
 
 function makeCallAndBuildElements() {
    var path = window.location.pathname;
@@ -228,7 +228,7 @@ function makeCallAndBuildElements() {
 }
 
 $(document).ready(() => {
-   ipc.send('changeDiscordRP', `skins_activity`)
+   ipcRenderer.send('changeDiscordRP', `skins_activity`)
    makeCallAndBuildElements();
    $('#backToLastPage').on("click", function () {
       window.location.href = sessionStorage.getItem("last_page");

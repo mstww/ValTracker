@@ -1,6 +1,7 @@
 var ApiCall_BundleTitle;
 var ApiCall_ImageSource;
-const ipc = require('electron').ipcRenderer;
+var { ipcRenderer } = require('electron');
+var fs = require('fs');
 
 function makeCallAndBuildElements() {
    $.ajax({
@@ -35,7 +36,11 @@ function makeCallAndBuildElements() {
 
             var bundlecardImage = document.createElement("img");
             bundlecardImage.className = "bundle-image";
-            bundlecardImage.src = ApiCall_ImageSource;
+            if(fs.existsSync(`${process.env.APPDATA}/VALTracker/user_data/images/bundles/${ApiCall_ImageSource.split("/")[4]}.png`)) {
+               bundlecardImage.src = `${process.env.APPDATA}/VALTracker/user_data/images/bundles/${ApiCall_ImageSource.split("/")[4]}.png`;
+            } else {
+               bundlecardImage.src = ApiCall_ImageSource;
+            }
             bundlecardImage.setAttribute("id", `card-image-${count + 1}`);
 
             var bundlecardHoverDiv = document.createElement("div");
@@ -128,5 +133,5 @@ $(document).ready(() => {
    $(".app").css("transform", "scale(1)")
    sessionStorage.removeItem("chroma")
    makeCallAndBuildElements();
-   ipc.send('changeDiscordRP', `bundle_acitivity`)
+   ipcRenderer.send('changeDiscordRP', `bundle_acitivity`)
 });

@@ -1,71 +1,14 @@
-var accIpc = require('electron').ipcRenderer;
+var { ipcRenderer } = require('electron');
 var fs = require('fs');
-var { BrowserWindow } = require('@electron/remote');
-var acc_axios = require('axios')
-
-var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
+var axios = require('axios')
 
 var bearer;
 var id_token;
 var requiredCookie;
 var entitlement_token;
 
-function switcher_getTokenDataFromURL(url) {
-    try {
-        const searchParams = new URLSearchParams((new URL(url)).hash.slice(1));
-        return {
-            accessToken: searchParams.get('access_token'),
-            expiresIn: searchParams.get('expires_in'),
-            id_token: searchParams.get('id_token'),
-        };
-    } catch (err) {
-        throw new Error(`Bad url: "${url}"`);
-    }
-}
-
-function openSwitcherLoginWindow() {
-    return new Promise((resolve, reject) => {
-        const loginWindow = new BrowserWindow({
-            show: false,
-            width: 470,
-            height: 880,
-            autoHideMenuBar: true,
-        });
-        let foundToken = false;
-        loginWindow.webContents.on('will-redirect', (event, url) => {
-            // Login window redirecting...
-            if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
-                // Redirecting to url with tokens
-                const tokenData = switcher_getTokenDataFromURL(url);
-                foundToken = true;
-
-                loginWindow.webContents.session.cookies.get({
-                    domain: 'auth.riotgames.com'
-                }).then(async riotcookies => {
-                    await Promise.all(riotcookies.map(cookie => loginWindow.webContents.session.cookies.remove(`https://${cookie.domain}${cookie.path}`, cookie.name)));
-                    loginWindow.destroy();
-                    resolve({
-                        tokenData,
-                        riotcookies,
-                    });
-                    riotcookies.forEach(riotcookie => {
-                        if(riotcookie.name == "ssid") {
-                            cookieString = riotcookie.value
-                        }
-                    });
-                });
-            }
-        });
-        loginWindow.once('ready-to-show', () => {
-            loginWindow.show();
-        });
-        loginWindow.on('close', () => {
-            // Login window was closed
-            reject('window closed');
-        });
-        window.loginWindow = loginWindow;
-        loginWindow.loadURL(signInUrl);
-    });
+async function openSwitcherLoginWindow() {
+    return await ipcRenderer.invoke('loginWindow', false);
 }
 
 async function switcher_getPlayerUUID() {
@@ -139,8 +82,8 @@ async function switchAccount(element) {
     bearer = newTokenData.accessToken;
     id_token = newTokenData.id_token;
 
-    accIpc.send('setCookies', 'reauth')
-    accIpc.on('reauthTdid', async function (event, arg) {
+    ipcRenderer.send('setCookies', 'reauth')
+    ipcRenderer.on('reauthTdid', async function (event, arg) {
         try {
             requiredCookie = "tdid=" + arg
 
@@ -285,9 +228,9 @@ $(document).ready(() => {
             bearer = data.tokenData.accessToken;
             id_token = data.tokenData.id_token;
     
-            accIpc.send('setCookies', 'addedNewAccount')
+            ipcRenderer.send('setCookies', 'addedNewAccount')
     
-            accIpc.on('newAccountTdid', async function (event, arg) {
+            ipcRenderer.on('newAccountTdid', async function (event, arg) {
                 requiredCookie = "tdid=" + arg
         
                 puuid = await switcher_getPlayerUUID();
@@ -297,9 +240,9 @@ $(document).ready(() => {
                 var reagiondata = await switcher_getXMPPRegion();
                 var region = reagiondata.affinities.live
         
-                var new_account_data = await acc_axios.put("https://pd." + region + ".a.pvp.net/name-service/v2/players", "[\"" + puuid + "\"]");
+                var new_account_data = await axios.put("https://pd." + region + ".a.pvp.net/name-service/v2/players", "[\"" + puuid + "\"]");
 
-                var account_rank_data = await acc_axios.get(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${region}/${puuid}`)
+                var account_rank_data = await axios.get(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${region}/${puuid}`)
 
                 var currenttier = 0;
                 if(account_rank_data.data.data.currenttier != undefined) {

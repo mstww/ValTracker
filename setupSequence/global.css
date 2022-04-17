@@ -48,7 +48,7 @@
   }
   
   .player-card-img-setup {
-    border-radius: 4px;
+    border-radius: 0px;
     border: 2px solid rgb(156, 156, 156);
     padding: 0.5rem;
     filter: drop-shadow(0px 0px 10px #000000);

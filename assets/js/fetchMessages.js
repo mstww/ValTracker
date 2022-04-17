@@ -1,6 +1,6 @@
-const axios = require('axios')
-var fs = require('fs')
-const dayjs = require('dayjs')
+var axios = require('axios');
+var fs = require('fs');
+var moment = require('moment');
 const parser = require('showdown');
 
 var md_conv = new parser.Converter();
@@ -49,7 +49,7 @@ $(document).ready(async () => {
             var date_span = document.createElement("span");
             date_span.style.color = "rgb(62, 70, 102)";
 
-            var date = dayjs(message.date).format("MMMM DD, YYYY");
+            var date = moment(message.date).format('MMMM DD, YYYY');
 
             date_span.textContent = date;
 

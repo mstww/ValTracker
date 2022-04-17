@@ -277,9 +277,9 @@ $(document).ready(() => {
                         $('.home-avg-bodyshots').empty()
                         $('.home-avg-legshots').empty()
                         $('#home-stats-header').empty()
-                        $('.home-avg-headshots').append(" " + Math.floor((headshots_after / totalShotsHit) * 100) + "%")
-                        $('.home-avg-bodyshots').append(" " + Math.floor((bodyshots_after / totalShotsHit) * 100) + "%")
-                        $('.home-avg-legshots').append(" " + Math.floor((legshots_after / totalShotsHit) * 100) + "%")
+                        $('.home-avg-headshots').append("Head: " + Math.floor((headshots_after / totalShotsHit) * 100) + "%")
+                        $('.home-avg-bodyshots').append("Body: " + Math.floor((bodyshots_after / totalShotsHit) * 100) + "%")
+                        $('.home-avg-legshots').append("Legs: " + Math.floor((legshots_after / totalShotsHit) * 100) + "%")
                         $('#home-stats-header').append(`Stats of your last 5 Matches`)
 
                         var pKills_before = 0;
@@ -631,9 +631,9 @@ $(document).ready(() => {
                         $('.home-avg-bodyshots').empty()
                         $('.home-avg-legshots').empty()
                         $('#home-stats-header').empty()
-                        $('.home-avg-headshots').append(" " + Math.floor((headshots_after / totalShotsHit) * 100) + "%")
-                        $('.home-avg-bodyshots').append(" " + Math.floor((bodyshots_after / totalShotsHit) * 100) + "%")
-                        $('.home-avg-legshots').append(" " + Math.floor((legshots_after / totalShotsHit) * 100) + "%")
+                        $('.home-avg-headshots').append("Head: " + Math.floor((headshots_after / totalShotsHit) * 100) + "%")
+                        $('.home-avg-bodyshots').append("Body: " + Math.floor((bodyshots_after / totalShotsHit) * 100) + "%")
+                        $('.home-avg-legshots').append("Legs: " + Math.floor((legshots_after / totalShotsHit) * 100) + "%")
                         let titleCase = filterType[0].toUpperCase() + filterType.substr(1);
                         $('#home-stats-header').append(`Stats of your last 5 ${titleCase} Matches`)
 
