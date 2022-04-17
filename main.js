@@ -1007,6 +1007,14 @@ app.on("window-all-closed", function () {
   }
 });
 
+ipcMain.on('update-download', function() {
+  console.log("DOWNLOADING UPDATE");
+  var isDev = require('electron-is-dev');
+  if(!isDev) {
+    autoUpdater.checkForUpdates();
+  }
+});
+
 app.on("activate", function () {
   if(mainWindow === null) {
     createWindow();
