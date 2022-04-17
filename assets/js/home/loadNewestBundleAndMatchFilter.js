@@ -18,14 +18,8 @@ $(document).ready(() => {
                         for (var count = 0; count < data2.data.length; count++) {
                             if(data2.data[count].uuid == bUUID) {
                                 $('.featured-bundle-title').append(data2.data[count].displayName);
-                                let rawdata2 = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-                                let dataToRead2 = JSON.parse(rawdata2);
                                 setTimeout(function () {
-                                    if(dataToRead2.usesRiotAccount == true || dataToRead2.usesRiotAccount == undefined) {
-                                        var secondsRemaining = $(".featured-bundle-time-left").text();
-                                    } else {
-                                        var secondsRemaining = data.data.FeaturedBundle.Bundle.DurationRemainingInSeconds;
-                                    }
+                                    var secondsRemaining = data.data.FeaturedBundle.BundleRemainingDurationInSeconds;
 
                                     function secondsToHms(n) {
                                         n = Number(n);

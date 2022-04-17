@@ -1,5 +1,4 @@
 var fs = require('fs')
-
 var { shell } = require('electron')
 
 function loadFade() {

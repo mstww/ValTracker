@@ -9,29 +9,12 @@
     window.$ = window.jQuery = require('jquery');
   </script>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css"
-    type="text/css">
+  
   <link rel="stylesheet" type="text/css" href="../assets/css/global.css">
   <link rel="stylesheet" type="text/css" href="./global.css">
 
   <script src="https://kit.fontawesome.com/0fb7a47199.js" crossorigin="anonymous"></script>
 </head>
-<div class="update-banner" style="display: none;">
-  <span style="margin-top: 1rem;">An Update has been downloaded. Close the App to install. Dont forget to give
-    permission afterwards!</span>
-  <button class="close-app" id="noti-close-button">Close App</button>
-  <div class="update-relative-div" id="update-sec">
-    <div id="toggle"></div>
-  </div>
-</div>
-<div class="download-banner" style="display: none;">
-  <span style="margin-top: 1rem;">An Update is being downloaded. Please don't close this Window. You can continue using
-    the app.</span>
-  <progress class="download-bar" id="download-bar" max="100" value="0"></progress>
-  <div class="download-relative-div" id="download-sec">
-    <div id="toggle"></div>
-  </div>
-</div>
 
 <body>
   <header id="titlebar">
@@ -146,51 +129,6 @@
 
   <script>
     require('../renderer.js')
-  </script>
-  <script>
-    window.onload = function () {
-      if(sessionStorage.getItem("Update-downloaded") == true) {
-        $('.update-banner').css("display", "block");
-      }
-      if(sessionStorage.getItem("Update-available") == true) {
-        $('.download-banner').css("display", "block");
-      }
-    }
-    // Listen for messages
-    const {
-      ipcRenderer
-    } = require('electron');
-    ipcRenderer.on('message', function (event, text) {
-      console.log(text);
-    })
-    //Update downloaded
-    ipcRenderer.on('showUpdateWindow', function (event) {
-      sessionStorage.setItem("Update-downloaded", true);
-      $('.download-banner').css("display", "none");
-      $('.update-banner').css("display", "block");
-    })
-    //Update Found, about to download
-    ipcRenderer.on('update-available', function (event, value) {
-      sessionStorage.setItem("Update-available", true);
-      $('.update-banner').css("display", "none");
-      $('.download-banner').css("display", "block");
-    })
-    //Update downloading
-    $('.download-bar').css("display", "block");
-    ipcRenderer.on('download-percent', function (event, value) {
-
-      $('.download-banner').css("display", "block");
-      document.getElementById("download-bar").value = value
-    })
-    $('.update-relative-div').on("click", function () {
-      $('.update-banner').css("display", "none");
-    })
-    $('#noti-close-button').on("click", function () {
-      window.close()
-    })
-    $('.download-relative-div').on("click", function () {
-      $('.download-banner').css("display", "none");
-    })
   </script>
 
   <script type="application/javascript" src="index.js"></script>

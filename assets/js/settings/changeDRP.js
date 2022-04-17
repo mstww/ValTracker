@@ -1,4 +1,4 @@
-var ipc = require('electron').ipcRenderer
+var { ipcRenderer } = require('electron');
 $(document).ready(() => {
     var loadFile = process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'
     let rawdata = fs.readFileSync(loadFile);
@@ -7,11 +7,11 @@ $(document).ready(() => {
     if(dataToRead.hasDiscordRPenabled == true || dataToRead.hasDiscordRPenabled == undefined ) {
         $('#app-rp-switch input[type="checkbox"]').prop('checked', true);
 
-        ipc.send('changeDiscordRP', `settings_activity`)
+        ipcRenderer.send('changeDiscordRP', `settings_activity`)
     } else {
         $('#app-rp-switch input[type="checkbox"]').prop('checked', false);
 
-        ipc.send('changeDiscordRP', `clear`)
+        ipcRenderer.send('changeDiscordRP', `clear`)
     }
 
     $('#app-rp-switch').on('change', function () {
@@ -21,14 +21,14 @@ $(document).ready(() => {
             let dataToWrite = JSON.stringify(dataToRead);
             fs.writeFileSync(loadFile, dataToWrite);
 
-            ipc.send('changeDiscordRP', `settings_activity`)
+            ipcRenderer.send('changeDiscordRP', `settings_activity`)
         } else {
             dataToRead.hasDiscordRPenabled = false;
 
             let dataToWrite = JSON.stringify(dataToRead);
             fs.writeFileSync(loadFile, dataToWrite);
 
-            ipc.send('changeDiscordRP', "clear")
+            ipcRenderer.send('changeDiscordRP', "clear")
         }
     });
 });

@@ -86,7 +86,7 @@
   width: 30%;
   height: fit-content;
   padding: 1rem;
-  border-radius: 4px;
+  border-radius: 0px;
   transition: all 0.3s ease;
 }
 

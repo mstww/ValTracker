@@ -1,4 +1,4 @@
-const ipc = require('electron').ipcRenderer;
+var { ipcRenderer } = require('electron');
 $(document).ready(() => {
     setTimeout(function () {
         let rawdata = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
@@ -261,9 +261,9 @@ $(document).ready(() => {
                     var bodyshots_after = bodyshots_mid / 5;
                     var legshots_after = legshots_mid / 5;
                     var totalShotsHit = headshots_after + bodyshots_after + legshots_after;
-                    $('.home-avg-headshots').append(" " + Math.floor((headshots_after / totalShotsHit) * 100) + "%")
-                    $('.home-avg-bodyshots').append(" " + Math.floor((bodyshots_after / totalShotsHit) * 100) + "%")
-                    $('.home-avg-legshots').append(" " + Math.floor((legshots_after / totalShotsHit) * 100) + "%")
+                    $('.home-avg-headshots').append("Head: " + Math.floor((headshots_after / totalShotsHit) * 100) + "%")
+                    $('.home-avg-bodyshots').append("Body: " + Math.floor((bodyshots_after / totalShotsHit) * 100) + "%")
+                    $('.home-avg-legshots').append("Legs: " + Math.floor((legshots_after / totalShotsHit) * 100) + "%")
 
                     var checkedPath1 = process.env.APPDATA + '/VALTracker/user_data/favourite_matches/matches.json'
                     if(fs.existsSync(checkedPath1)) {
@@ -296,7 +296,7 @@ $(document).ready(() => {
                         $('.loading-layer').css("display", "block");
                         $('.loading-layer').fadeTo(150, 1)
                         if(sessionStorage.getItem(`afterReload`)) {
-                            ipc.send('changeDiscordRP', `hub_activity`)
+                            ipcRenderer.send('changeDiscordRP', `hub_activity`)
                         }
                     }, 200)
                 },
@@ -558,9 +558,9 @@ $(document).ready(() => {
                     var bodyshots_after = bodyshots_mid / 5;
                     var legshots_after = legshots_mid / 5;
                     var totalShotsHit = headshots_after + bodyshots_after + legshots_after;
-                    $('.home-avg-headshots').append(" " + Math.floor((headshots_after / totalShotsHit) * 100) + "%")
-                    $('.home-avg-bodyshots').append(" " + Math.floor((bodyshots_after / totalShotsHit) * 100) + "%")
-                    $('.home-avg-legshots').append(" " + Math.floor((legshots_after / totalShotsHit) * 100) + "%")
+                    $('.home-avg-headshots').append("Head: " + Math.floor((headshots_after / totalShotsHit) * 100) + "%")
+                    $('.home-avg-bodyshots').append("Body: " + Math.floor((bodyshots_after / totalShotsHit) * 100) + "%")
+                    $('.home-avg-legshots').append("Legs: " + Math.floor((legshots_after / totalShotsHit) * 100) + "%")
 
                     var checkedPath1 = process.env.APPDATA + '/VALTracker/user_data/favourite_matches/matches.json'
                     if(fs.existsSync(checkedPath1)) {
@@ -593,7 +593,7 @@ $(document).ready(() => {
                         $('.loading-layer').css("display", "block");
                         $('.loading-layer').fadeTo(150, 1)
                         if(sessionStorage.getItem(`afterReload`)) {
-                            ipc.send('changeDiscordRP', `hub_activity`)
+                            ipcRenderer.send('changeDiscordRP', `hub_activity`)
                         }
                     }, 200)
                 },

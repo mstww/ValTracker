@@ -1,45 +1,38 @@
 // Import required modules
-const { app, BrowserWindow, ipcMain, Menu, Tray } = require("electron");
-const ipc = require("electron").ipcMain;
-const path = require("path");
-const { autoUpdater } = require("electron-updater");
-const log = require("electron-log");
-var fs= require("fs");
-const fs_extra = require("fs-extra");
-const RPC = require("discord-rpc");
-const { session } = require("electron");
-const { Agent } = require("https");
-const https = require('https')
+const { app, BrowserWindow, ipcMain, Menu, Tray, session } = require("electron");
+const fs = require("fs");
+const https = require('https');
 const axios = require("axios").default;
-const isDev = require("electron-is-dev");
-const find = require("find-process");
+const path = require("path");
 
-app.disableHardwareAcceleration();
+let onLoadData2 = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
+let loadData2 = JSON.parse(onLoadData2);
 
-// Import Discord RP settings
-const discord_rps = require("./assets/js/modules/discord_rps.js");
+if(loadData2.enableHardwareAcceleration == false) {
+  app.disableHardwareAcceleration();
+}
 
 // Initialize new RPC client
+const RPC = require("discord-rpc");
 const discordClient = new RPC.Client({
   transport: "ipc",
 });
 
 //Login with Discord client
-discordClient.login({
-  clientId: "933753504558903406",
-});
+if(loadData2.hasDiscordRPenabled == true) {
+  discordClient.login({
+    clientId: "933753504558903406",
+  });
+}
 
 // Set activity after client is finished loading
+const discord_rps = require("./modules/discord_rps.js");
 discordClient.on("ready", () => {
   if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
-    let onLoadData2 = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-    let loadData2 = JSON.parse(onLoadData2);
-    if(loadData2.hasDiscordRPenabled == true) {
-      discordClient.request("SET_ACTIVITY", {
-        pid: process.pid,
-        activity: discord_rps.starting_activity,
-      });
-    }
+    discordClient.request("SET_ACTIVITY", {
+      pid: process.pid,
+      activity: discord_rps.starting_activity,
+    });
   }
 });
 
@@ -49,92 +42,11 @@ const discordVALPresence = new RPC.Client({
 });
 
 //Login with Discord client
-discordVALPresence.login({
-  clientId: "957041886093267005",
-});
-
-// Set activity after client is finished loading
-discordVALPresence.on("ready", () => {
-  console.log("VALPresence is Ready!");
-});
-
-// Change Discord RP if App requests it
-var RPState = null;
-ipc.on("changeDiscordRP", function (event, arg) {
-  if(RPState == null || RPState == "APP") {
-    let onLoadData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-    let loadData = JSON.parse(onLoadData);
-    if(loadData.hasDiscordRPenabled == true) {
-      console.log(arg)
-      switch (arg) {
-        case "hub_activity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.hub_activity,
-          });
-          break;
-        case "skins_activity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.skins_activity,
-          });
-          break;
-        case "bundle_acitivity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.bundles_activity,
-          });
-          break;
-        case "pprofile_acitivity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.pprofile_acitivity,
-          });
-          break;
-        case "favmatches_activity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.favmatches_acitivity,
-          });
-          break;
-        case "playersearch_acitivity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.playersearch_acitivity,
-          });
-          break;
-        case "settings_activity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.settings_acitivity,
-          });
-          break;
-        case "patchnotes_activity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.patchnotes_acitivity,
-          });
-          break;
-        case "matchview_activity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.matchview_activity,
-          });
-          break;
-        case "shop_activity":
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.shop_activity,
-          });
-          break;
-        case "clear":
-          break;
-      }
-    } else {
-      discordClient.clearActivity(process.pid);
-    }
-  }
-});
+if(loadData2.hasValRPenabled == true) {
+  discordVALPresence.login({
+    clientId: "957041886093267005",
+  });
+}
 
 // Set custom Protocol to start App
 if(process.defaultApp) {
@@ -241,7 +153,7 @@ function createThemes() {
     fs.mkdirSync(app_data + "/user_data/themes/preset_themes");
   }
 
-  const themes = require("./assets/js/modules/preset_themes");
+  const themes = require("./modules/preset_themes");
 
   for (var i = 0; i < Object.keys(themes).length; i++) {
     fs.writeFileSync(app_data + `/user_data/themes/preset_themes/${Object.keys(themes)[i]}.json`, JSON.stringify(themes[Object.keys(themes)[i]]));
@@ -262,6 +174,16 @@ function createMessageData() {
   };
 
   fs.writeFileSync(app_data + "/user_data/message_data/last_checked_date.json", JSON.stringify(dateData));
+}
+
+function createRiotGamesData() {
+  fs.mkdirSync(app_data + "/user_data/riot_games_data");
+
+  var cookiesData = [];
+  var tokenData = {};
+
+  fs.writeFileSync(app_data + "/user_data/riot_games_data/cookies.json", JSON.stringify(cookiesData));
+  fs.writeFileSync(app_data + "/user_data/riot_games_data/token_data.json", JSON.stringify(tokenData));
 }
 
 async function checkUserData() {
@@ -327,8 +249,8 @@ function noFilesFound() {
   // Create /riot_games_data dir
   fs.mkdirSync(app_data + "/user_data/riot_games_data");
 
-  // Create /shop_data dir
-  fs.mkdirSync(app_data + "/user_data/shop_data");
+  // Create /shop_data dir and all files in it
+  createRiotGamesData()
 
   // Create /themes dir and all files in it
   createThemes();
@@ -341,265 +263,18 @@ function noFilesFound() {
   mainWindow.loadFile("./setupSequence/index.html");
 }
 
-function moveOldFiles() {
-  if(fs.existsSync(app_data + "/user_data/customThemes")) {
-    if(!fs.existsSync(app_data + "/user_data/themes")) {
-      fs.mkdirSync(app_data + "/user_data/themes");
-    }
-
-    fs.renameSync(app_data + "/user_data/customThemes", app_data + "/user_data/custom_themes");
-
-    if(fs.existsSync(app_data + "/user_data/customThemes")) {
-      fs.unlinkSync(app_data + `/user_data/customThemes`, (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    if(fs.existsSync(app_data + "/user_data/themes/custom_themes")) {
-      fs.unlinkSync(app_data + `/user_data/themes/custom_themes`, (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs_extra.moveSync(app_data + "/user_data/custom_themes",app_data + "/user_data/themes/custom_themes", (err) => {
-      if(err) return console.error(err);
-    });
-
-    fs.mkdirSync(app_data + "/user_data/themes/preset_themes");
-
-    const themes = require("./assets/js/modules/preset_themes");
-
-    for (var i = 0; i < Object.keys(themes).length; i++) {
-      fs.writeFileSync(app_data + `/user_data/themes/preset_themes/${Object.keys(themes)[i]}.json`, themes[Object.keys(themes)[i]]);
-    }
-  }
-
-  if(fs.existsSync(app_data + "/user_data/favouriteMatches")) {
-    if(!fs.existsSync(app_data + "/user_data/favourite_matches")) {
-      fs.mkdirSync(app_data + "/user_data/favourite_matches");
-    }
-
-    if(fs.existsSync(app_data + "/user_data/favourite_matches/favouriteMatches")) {
-      fs.unlinkSync(app_data + "/user_data/favourite_matches/favouriteMatches", (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs_extra.moveSync(app_data + "/user_data/favouriteMatches", app_data + "/user_data/favourite_matches/favouriteMatches", (err) => {
-      if(err) console.error(err);
-    });
-
-    fs.renameSync(app_data + "/user_data/favourite_matches/favouriteMatches", app_data + "/user_data/favourite_matches/matches");
-  }
-
-  if(fs.existsSync(app_data + "/user_data/home")) {
-    fs.renameSync(app_data + "/user_data/home", app_data + "/user_data/home_settings");
-    fs.readdir(app_data + "/user_data/home_settings", (err, files) => {
-      if(err) {
-        console.log(err);
-      } else {
-        let newData = {};
-
-        files.forEach((file) => {
-          let rawfile = fs.readFileSync(app_data + `/user_data/home_settings/${file}`);
-          let filedata = JSON.parse(rawfile);
-
-          newData[Object.keys(filedata)[0]] = filedata[Object.keys(filedata)[0]];
-          fs.unlinkSync(app_data + `/user_data/home_settings/${file}`, (err) => {
-            if(err) console.log(err);
-          });
-        });
-
-        if(newData.displayedUserName == undefined) {
-          newData.displayedUserName = "";
-        }
-
-        fs.writeFileSync(app_data + "/user_data/home_settings/settings.json", JSON.stringify(newData));
-      }
-    });
-  }
-
-  if(fs.existsSync(app_data + "/user_data/colorTheme.json")) {
-    let jsondata = fs.readFileSync(app_data + "/user_data/colorTheme.json");
-    let olddata = JSON.parse(jsondata);
-
-    if(olddata.loadCustomTheme == true) {
-      createThemes();
-
-      let themesPointerFile = {
-        isCustomTheme: true,
-        themeName: olddata.customThemeName,
-      };
-
-      fs.writeFileSync(app_data + "/user_data/themes/color_theme.json", JSON.stringify(themesPointerFile));
-    } else {
-      createThemes();
-
-      let newName = olddata.logo_style.toLowerCase();
-
-      if(newName == "default") newName = "normal";
-
-      let themesPointerFile = {
-        isCustomTheme: false,
-        themeName: newName,
-      };
-
-      fs.writeFileSync(app_data + "/user_data/themes/color_theme.json", JSON.stringify(themesPointerFile));
-    }
-
-    if(fs.existsSync(app_data + "/user_data/customThemes")) {
-      fs.readdirSync(app_data + "/user_data/customThemes", (err, files) => {
-        if(err) {
-          console.log(err);
-        } else {
-          files.forEach((file) => {
-            if(fs.existsSync(app_data + `/user_data/themes/custom_themes/${file}`)) {
-              fs.unlinkSync(app_data + `/user_data/themes/custom_themes/${file}`, (err) => {
-                if(err) console.log(err);
-              });
-            }
-
-            fs_extra.moveSync(app_data + `/user_data/customThemes/${file}`, app_data + `/user_data/themes/custom_themes`, (err) => {
-              if(err) return console.error(err);
-            });
-          });
-        }
-      });
-
-      fs.unlinkSync(app_data + `/user_data/customThemes`, (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs.unlinkSync(app_data + `/user_data/colorTheme.json`, (err) => {
-      if(err) console.log(err);
-    });
-  }
-
-  if(fs.existsSync(app_data + "/user_data/cookies.json")) {
-    if(!fs.existsSync(app_data + "/user_data/riot_games_data")) {
-      fs.mkdirSync(app_data + "/user_data/riot_games_data");
-    }
-
-    if(fs.existsSync(app_data + "/user_data/riot_games_data/cookies.json")) {
-      fs.unlinkSync(app_data + "/user_data/riot_games_data/cookies.json", (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs_extra.moveSync(app_data + "/user_data/cookies.json", app_data + "/user_data/riot_games_data/cookies.json", (err) => {
-      if(err) return console.error(err);
-    });
-  }
-
-  if(fs.existsSync(app_data + "/user_data/tokenData.json")) {
-    if(!fs.existsSync(app_data + "/user_data/riot_games_data")) {
-      fs.mkdirSync(app_data + "/user_data/riot_games_data");
-    }
-
-    fs.renameSync(app_data + "/user_data/tokenData.json", app_data + "/user_data/token_data.json");
-    if(fs.existsSync(app_data + "/user_data/riot_games_data/token_data.json")) {
-      fs.unlinkSync(app_data + "/user_data/riot_games_data/token_data.json", (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs_extra.moveSync(app_data + "/user_data/token_data.json", app_data + "/user_data/riot_games_data/token_data.json", (err) => {
-      if(err) return console.error(err);
-    });
-  }
-
-  if(fs.existsSync(app_data + "/user_data/current_shop.json")) {
-    if(!fs.existsSync(app_data + "/user_data/shop_data")) {
-      fs.mkdirSync(app_data + "/user_data/shop_data");
-    }
-
-    if(fs.existsSync(app_data + "/user_data/shop_data/current_shop.json")) {
-      fs.unlinkSync(app_data + "/user_data/shop_data/current_shop.json", (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs_extra.moveSync(app_data + "/user_data/current_shop.json", app_data + "/user_data/shop_data/current_shop.json", (err) => {
-      if(err) return console.error(err);
-    });
-  }
-
-  if(fs.existsSync(app_data + "/user_data/last_checked_date.json")) {
-    if(!fs.existsSync(app_data + "/user_data/shop_data")) {
-      fs.mkdirSync(app_data + "/user_data/shop_data");
-    }
-
-    if(fs.existsSync(app_data + "/user_data/shop_data/last_checked_date.json")) {
-      fs.unlinkSync(app_data + "/user_data/shop_data/last_checked_date.json", (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs_extra.moveSync(app_data + "/user_data/last_checked_date.json", app_data + "/user_data/shop_data/last_checked_date.json", (err) => {
-      if(err) return console.error(err);
-    });
-  }
-
-  if(fs.existsSync(app_data + "/user_data/favourites.json")) {
-    if(!fs.existsSync(app_data + "/user_data/favourite_matches")) {
-      fs.mkdirSync(app_data + "/user_data/favourite_matches");
-    }
-
-    fs.renameSync(app_data + "/user_data/favourites.json", app_data + "/user_data/matches.json");
-
-    if(fs.existsSync(app_data + "/user_data/favourite_matches/matches.json")) {
-      fs.unlinkSync(app_data + "/user_data/favourite_matches/matches.json", (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs_extra.moveSync(app_data + "/user_data/matches.json", app_data + "/user_data/favourite_matches/matches.json", (err) => {
-      if(err) return console.error(err);
-    });
-  }
-
-  if(fs.existsSync(app_data + "/user_data/onLoad.json")) {
-    if(!fs.existsSync(app_data + "/user_data/load_files")) {
-      fs.mkdirSync(app_data + "/user_data/load_files");
-    }
-
-    fs.renameSync(app_data + "/user_data/onLoad.json", app_data + "/user_data/on_load.json");
-
-    if(fs.existsSync(app_data + "/user_data/load_files/on_load.json")) {
-      fs.unlinkSync(app_data + "/user_data/load_files/on_load.json", (err) => {
-        if(err) console.log(err);
-      });
-    }
-
-    fs_extra.moveSync(app_data + "/user_data/on_load.json", app_data + "/user_data/load_files/on_load.json", (err) => {
-      if(err) return console.error(err);
-    });
-  }
-
-  if(fs.existsSync(app_data + "/user_data/userData.json")) {
-    fs.renameSync(app_data + "/user_data/userData.json", app_data + "/user_data/user_creds.json");
-  }
-}
-
-
-ipcMain.handle('is-dev', async(event, args) => {
-  var status = isDev;
-  return status
-})
-
 const download_image = (url, image_path) =>
   axios({
     url,
     responseType: 'stream',
   })
   .then(response =>
-      new Promise((resolve, reject) => {
-        response.data
-          .pipe(fs.createWriteStream(image_path))
-          .on('finish', () => resolve())
-          .on('error', e => reject(e));
-      }),
+    new Promise((resolve, reject) => {
+      response.data
+        .pipe(fs.createWriteStream(image_path))
+        .on('finish', () => resolve())
+        .on('error', e => reject(e));
+    }),
   );
 
 // Set global mainWindow variable
@@ -609,7 +284,7 @@ let mainWindow;
 async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
-    height: 800,
+    height: 840,
     minWidth: 1400,
     minHeight: 840,
     frame: false,
@@ -621,10 +296,7 @@ async function createWindow() {
     },
   });
 
-  require("@electron/remote/main").initialize();
-  require("@electron/remote/main").enable(mainWindow.webContents);
-
-  if(!fs.existsSync(app_data + "/user_data")) {
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
     var isInSetup = false;
     
     ipcMain.on("isInSetup", function () {
@@ -637,10 +309,18 @@ async function createWindow() {
 
     app.on("before-quit", () => {
       if(isInSetup == true) {
-        fs.rmSync(app_data + "/user_data", { recursive: true, force: true });
+        fs.rmSync(process.env.APPDATA + "/VALTracker/user_data", { recursive: true, force: true });
       }
     });
   }
+
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
+    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
+  }
+
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
+    await download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+  };
 
   mainWindow.onbeforeunload = (event) => {
     win.removeAllListeners();
@@ -653,6 +333,7 @@ async function createWindow() {
   ipcMain.handle("checkWindowState", () => {
     return mainWindow.isMaximized();
   });
+  
   ipcMain.on("min-window", async function (event, args) {
     mainWindow.minimize();
   });
@@ -674,18 +355,13 @@ async function createWindow() {
     if(json.minimizeOnClose == false || json.minimizeOnClose == undefined) {
       mainWindow.close();
     } else {
-      event.preventDefault();
       mainWindow.hide();
 
       if(!fs.existsSync(app_data + "/user_data/icons")) {
         fs.mkdirSync(app_data + "/user_data/icons");
       };
 
-      if(!fs.existsSync(app_data + "/user_data/icons/tray_icon.ico")) {
-        await download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', app_data + "/user_data/icons/tray_icon.ico");
-      };
-
-      var appIcon = new Tray(app_data + "/user_data/icons/tray_icon.ico");
+      var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
       var contextMenu = Menu.buildFromTemplate([
         {
           label: "Show",
@@ -714,8 +390,6 @@ async function createWindow() {
     fs.renameSync(app_data + "/settings", app_data + "/user_data");
   }
 
-  moveOldFiles();
-
   if(!fs.existsSync(app_data + "/user_data")) {
     noFilesFound();
   } else {
@@ -736,13 +410,7 @@ async function createWindow() {
     }
 
     if(!fs.existsSync(app_data + "/user_data/riot_games_data")) {
-      fs.mkdirSync(app_data + "/user_data/riot_games_data");
-
-      var cookiesData = [];
-      var tokenData = {};
-
-      fs.writeFileSync(app_data + "/user_data/riot_games_data/cookies.json", JSON.stringify(cookiesData));
-      fs.writeFileSync(app_data + "/user_data/riot_games_data/token_data.json", JSON.stringify(tokenData));
+      createRiotGamesData();
     }
 
     if(!fs.existsSync(app_data + "/user_data/riot_games_data/cookies.json")) {
@@ -840,7 +508,7 @@ async function reauthAccount(puuid) {
       "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
     ];
 
-    const agent = new Agent({
+    const agent = new https.Agent({
       ciphers: ciphers.join(":"),
       honorCipherOrder: true,
       minVersion: "TLSv1.2",
@@ -891,7 +559,7 @@ async function reauthAllAccounts() {
   if(puuid_parsed.playerUUID) {
     var puuid = puuid_parsed.playerUUID;
   
-    var account_puuids = fs.readdirSync(app_data + "/user_data/user_accounts/");
+    var account_puuids = fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/user_accounts/");
     var accountsToReauth = [];
 
     account_puuids.forEach(uuid => {
@@ -927,22 +595,10 @@ async function reauthAllAccounts() {
   }
 }
 
-var updateCheck;
-
 app.on("ready", async function () {
   createWindow();
 
-  if(!isDev) {
-    autoUpdater.checkForUpdates();
-    updateCheck = setInterval(function () {
-      autoUpdater.checkForUpdates();
-    }, 300000);
-  }
-
-  let onLoadData = fs.readFileSync(
-    process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json"
-  );
-
+  let onLoadData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
   let loadData = JSON.parse(onLoadData);
 
   if(loadData.hasDiscordRPenabled == undefined) {
@@ -953,6 +609,8 @@ app.on("ready", async function () {
   
   var newTokenData = await reauthAllAccounts();
 
+  var cycleRunning = false;
+
   if(newTokenData != false) {
     if(cycleRunning == false) {
       setInterval(reauthAllAccounts, (newTokenData[0].expiresIn - 300) * 1000);
@@ -962,27 +620,28 @@ app.on("ready", async function () {
   }
 });
 
-function sendStatusToWindow(text) {
-  log.info(text);
-  mainWindow.webContents.send("message", text);
-}
-
-autoUpdater.on("checking-for-update", () => {
-  sendStatusToWindow("Checking for update...");
+app.on("window-all-closed", function() {
+  app.quit();
 });
 
+app.on("activate", function() {
+  if(mainWindow === null) {
+    createWindow();
+  }
+});
+
+const { autoUpdater } = require("electron-updater");
+
 autoUpdater.on("update-available", () => {
-  sendStatusToWindow("Update available.");
-  mainWindow.webContents.send("update-available");
-  clearInterval(updateCheck);
+  mainWindow.webContents.send("update-found");
 });
 
 autoUpdater.on("update-not-available", () => {
-  sendStatusToWindow("Update not available.");
+  mainWindow.webContents.send("no-update-found");
 });
 
 autoUpdater.on("error", (err) => {
-  sendStatusToWindow("Error in auto-updater. " + err);
+  mainWindow.webContents.send("update-error", err);
 });
 
 autoUpdater.on("download-progress", (progressObj) => {
@@ -992,19 +651,12 @@ autoUpdater.on("download-progress", (progressObj) => {
 
   log_message = log_message + " (" + progressObj.transferred + "/" + progressObj.total + ")";
 
-  sendStatusToWindow(log_message);
-  mainWindow.webContents.send("download-percent", progressObj.percent);
+  mainWindow.webContents.send("update-download-percent", progressObj.percent);
+  mainWindow.webContents.send("update-download-status", log_message);
 });
 
-autoUpdater.on("update-downloaded", (info) => {
-  sendStatusToWindow("Update downloaded");
-  mainWindow.webContents.send("showUpdateWindow");
-});
-
-app.on("window-all-closed", function () {
-  if(process.platform !== "darwin") {
-    app.quit();
-  }
+autoUpdater.on("update-downloaded", () => {
+  mainWindow.webContents.send("update-download-finished");
 });
 
 ipcMain.on('update-download', function() {
@@ -1021,8 +673,11 @@ app.on("activate", function () {
   }
 });
 
-ipc.on("setCookies", function (event, arg) {
-  log.info(arg);
+ipcMain.on('quit-app-and-install', function() {
+  autoUpdater.quitAndInstall(true, true);
+});
+
+ipcMain.on("setCookies", function (event, arg) {
   session.defaultSession.cookies
     .get({})
     .then((cookies) => {
@@ -1043,7 +698,7 @@ ipc.on("setCookies", function (event, arg) {
     });
 });
 
-ipc.on("getSSIDCookie", async function (event, arg) {
+ipcMain.on("getSSIDCookie", async function (event, arg) {
   var rawData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json");
   var data = JSON.parse(rawData);
 
@@ -1056,8 +711,152 @@ ipc.on("getSSIDCookie", async function (event, arg) {
   }
 });
 
+// Change Discord RP if App requests it
+var RPState = null;
+ipcMain.on("changeDiscordRP", function (event, arg) {
+  if(RPState == null || RPState == "APP") {
+    let onLoadData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
+    let loadData = JSON.parse(onLoadData);
+    if(loadData.hasDiscordRPenabled == true) {
+      switch (arg) {
+        case "hub_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.hub_activity,
+          });
+          break;
+        case "skins_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.skins_activity,
+          });
+          break;
+        case "bundle_acitivity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.bundles_activity,
+          });
+          break;
+        case "pprofile_acitivity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.pprofile_acitivity,
+          });
+          break;
+        case "favmatches_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.favmatches_acitivity,
+          });
+          break;
+        case "playersearch_acitivity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.playersearch_acitivity,
+          });
+          break;
+        case "settings_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.settings_acitivity,
+          });
+          break;
+        case "patchnotes_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.patchnotes_acitivity,
+          });
+          break;
+        case "matchview_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.matchview_activity,
+          });
+          break;
+        case "shop_activity":
+          discordClient.request("SET_ACTIVITY", {
+            pid: process.pid,
+            activity: discord_rps.shop_activity,
+          });
+          break;
+        case "clear":
+          break;
+      }
+    } else {
+      discordClient.clearActivity(process.pid);
+    }
+  }
+});
+
+var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
+
+function getTokenDataFromURL(url) {
+  try {
+      const searchParams = new URLSearchParams((new URL(url)).hash.slice(1));
+      return {
+          accessToken: searchParams.get('access_token'),
+          expiresIn: searchParams.get('expires_in'),
+          id_token: searchParams.get('id_token'),
+      };
+  } catch (err) {
+      throw new Error(`Bad url: "${url}"`);
+  }
+}
+
+
+async function showSignIn(writeToFile) {
+  return new Promise((resolve, reject) => {
+    const loginWindow = new BrowserWindow({
+      show: false,
+      width: 470,
+      height: 880,
+      autoHideMenuBar: true,
+    });
+    let foundToken = false;
+    loginWindow.webContents.on('will-redirect', (event, url) => {
+      // Login window redirecting...
+      if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
+        // Redirecting to url with tokens
+        const tokenData = getTokenDataFromURL(url);
+        foundToken = true;
+
+        loginWindow.webContents.session.cookies.get({
+          domain: 'auth.riotgames.com'
+        }).then(async riotcookies => {
+          await Promise.all(riotcookies.map(cookie => loginWindow.webContents.session.cookies.remove(`https://${cookie.domain}${cookie.path}`, cookie.name)));
+          loginWindow.destroy();
+          resolve({
+            tokenData,
+            riotcookies,
+          });
+          riotcookies.forEach(riotcookie => {
+            if(riotcookie.name == "ssid") {
+              cookieString = riotcookie.value
+            }
+          })
+          if(writeToFile == true) {
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(riotcookies))
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
+          }
+        });
+      }
+    });
+    loginWindow.once('ready-to-show', () => {
+      loginWindow.show();
+    });
+    loginWindow.on('close', () => {
+      // Login window was closed
+      reject('window closed');
+    });
+    loginWindow.loadURL(signInUrl);
+  });
+}
+
+ipcMain.handle('loginWindow', async (event, args) => {
+  return await showSignIn(args);
+});
+
 var newTokenData;
-var cycleRunning = false;
 
 function getTokenDataFromURL(url) {
   try {
@@ -1072,7 +871,7 @@ function getTokenDataFromURL(url) {
   }
 }
 
-ipc.on("startReauthCycle", async function (event, arg) {
+ipcMain.on("reauthCurrentAccount", async function (event, arg) {
   async function reauthCycle() {
     try {
       if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json")) {
@@ -1114,7 +913,7 @@ ipc.on("startReauthCycle", async function (event, arg) {
         "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
       ];
 
-      const agent = new Agent({
+      const agent = new https.Agent({
         ciphers: ciphers.join(":"),
         honorCipherOrder: true,
         minVersion: "TLSv1.2",
@@ -1157,1084 +956,23 @@ ipc.on("startReauthCycle", async function (event, arg) {
   reauthCycle();
 });
 
-const WebSocket = require("ws");
+ipcMain.on('openAppOnLogin', function(event, arg) {
+  app.setLoginItemSettings({
+    openAtLogin: arg,
+  })
+})
 
-const localAgent = new https.Agent({
-  rejectUnauthorized: false,
+ipcMain.on('relaunchApp', function() {
+  app.relaunch();
+  app.exit(0);
+})
+
+//Login with Discord client
+discordVALPresence.login({
+  clientId: "957041886093267005",
 });
 
-async function asyncTimeout(delay) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-}
-
-async function getLockfileData() {
-  const lockfilePath = path.join(process.env["LOCALAPPDATA"], "Riot Games\\Riot Client\\Config\\lockfile");
-  const contents = await fs.promises.readFile(lockfilePath, "utf8");
-
-  let d = {};
-
-  [d.name, d.pid, d.port, d.password, d.protocol] = contents.split(":");
-  return d;
-}
-
-async function getSession(port, password) {
-  return (
-    await axios.get(`https://127.0.0.1:${port}/chat/v1/session`, {
-      headers: {
-        Authorization: "Basic " + Buffer.from(`riot:${password}`).toString("base64"),
-      },
-      httpsAgent: localAgent,
-    })
-  ).data;
-}
-
-async function getHelp(port, password) {
-  return (
-    await axios.get(`https://127.0.0.1:${port}/help`, {
-      headers: {
-        Authorization: "Basic " + Buffer.from(`riot:${password}`).toString("base64"),
-      },
-      httpsAgent: localAgent,
-    })
-  ).data;
-}
-
-async function waitForLockfile() {
-  return new Promise(async (resolve, reject) => {
-    const watcher = fs.watch(
-      path.join(process.env["LOCALAPPDATA"], "Riot Games\\Riot Client\\Config\\"),
-      (eventType, fileName) => {
-        if(eventType === "rename" && fileName === "lockfile") {
-          watcher.close();
-          resolve();
-        }
-      }
-    );
-  });
-}
-
-if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
-  var load_data_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-  var load_data = JSON.parse(load_data_raw);
-
-  if(load_data.hasValorantRPenabled == "true" || load_data.hasValorantRPenabled == undefined || load_data.hasValorantRPenabled == true) {
-    setTimeout(async function () {
-      (async () => {
-        let lockData = null;
-        do {
-          try {
-            lockData = await getLockfileData();
-          } catch (e) {
-            console.log("Waiting for lockfile...");
-            await waitForLockfile();
-          }
-        } while (lockData === null);
-
-        console.log("Got lock data...");
-
-        let sessionData = null;
-        let lastRetryMessage = 0;
-
-        do {
-          try {
-            sessionData = await getSession(lockData.port, lockData.password);
-            if(sessionData.loaded === false) {
-              await asyncTimeout(1500);
-              sessionData = null;
-            }
-          } catch (e) {
-            const currentTime = new Date().getTime();
-
-            if(currentTime - lastRetryMessage > 1000) {
-              console.log("Unable to get session data, retrying...");
-              lastRetryMessage = currentTime;
-            }
-          }
-        } while (sessionData === null);
-
-        let helpData = null;
-        do {
-          helpData = await getHelp(lockData.port, lockData.password);
-          if(!helpData.events.hasOwnProperty("OnJsonApiEvent_chat_v4_presences")) {
-            console.log("Retrying help data events...");
-            helpData = null;
-            await asyncTimeout(1500);
-          }
-        } while (helpData === null);
-
-        console.log("Got PUUID...");
-
-        const ws = new WebSocket(`wss://riot:${lockData.password}@localhost:${lockData.port}`, {
-          rejectUnauthorized: false,
-        });
-
-        const { Agent } = require("https");
-
-        const ciphers = [
-          "TLS_CHACHA20_POLY1305_SHA256",
-          "TLS_AES_128_GCM_SHA256",
-          "TLS_AES_256_GCM_SHA384",
-          "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
-        ];
-
-        const agent = new Agent({
-          ciphers: ciphers.join(":"),
-          honorCipherOrder: true,
-          minVersion: "TLSv1.2",
-        });
-
-        var presencePID = null;
-
-        var rawTokenData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/token_data.json");
-        var tokenData = JSON.parse(rawTokenData);
-
-        var rawUserData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_creds.json");
-        var userData = JSON.parse(rawUserData);
-
-        var user_region = userData.playerRegion;
-        var user_puuid = userData.playerUUID;
-
-        // Assign Global VARs
-        var map = null;
-        var mapText = null;
-        var matchType = null;
-        var matchTypeText = null;
-
-        var agentName = null;
-        var agentText = null;
-
-        var preGameStatus = null;
-        var activeGameStatus = null;
-
-        var entitlement_token = null;
-
-        var discordRPObj = null;
-
-        var matchHadPreGame = false;
-
-        var isPractice = false;
-
-        var gameTimeout = false;
-
-        var globalPartyState = String;
-
-        var globalRPCstart = null;
-
-        ws.on("open", async () => {
-          await find("name", "VALORANT-Win64-Shipping.exe", true)
-          .then(function (list) {
-            if(list.length > 0) {
-              console.log("VALORANT IS RUNNING");
-              presencePID = list[0].pid;
-            }
-          });
-
-          Object.entries(helpData.events).forEach(([name, desc]) => {
-            if(name === "OnJsonApiEvent") return;
-            ws.send(JSON.stringify([5, name]));
-          });
-
-          console.log("Connected to websocket!");
-          console.log("Checking for Match...")
-
-          var tokens_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/token_data.json");
-          var tokens = JSON.parse(tokens_raw);
-
-          entitlement_token = await axios.post("https://entitlements.auth.riotgames.com/api/token/v1", {},
-            {
-              headers: {
-                Authorization: `Bearer ${tokens.accessToken}`,
-              },
-            })
-            .catch((error) => {
-              console.log(error);
-            }
-          );
-
-          entitlement_token = entitlement_token.data.entitlements_token;
-
-          rawTokenData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/token_data.json");
-          tokenData = JSON.parse(rawTokenData);
-
-          var isInPreGame = false;
-
-          await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/pregame/v1/players/${user_puuid}`, {
-              headers: {
-                "X-Riot-Entitlements-JWT": entitlement_token,
-                Authorization: "Bearer " + tokenData.accessToken,
-              },
-              httpAgent: agent,
-            })
-            .then(async (response) => {
-              RPState = "GAME";
-              isInPreGame = true;
-              console.log("USER IN PRE-GAME.");
-              var matchID = response.data.MatchID;
-
-              var gameStatus = await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/pregame/v1/matches/${matchID}`, {
-                    headers: {
-                      "X-Riot-Entitlements-JWT": entitlement_token,
-                      Authorization: "Bearer " + tokenData.accessToken,
-                    },
-                    httpAgent: agent,
-                  }
-                )
-                .catch((error) => {
-                  console.log(error);
-                });
-
-              // Map
-              map = gameStatus.data.MapID;
-
-              var allMaps = await (
-                await axios.get("https://valorant-api.com/v1/maps").catch((error) => {
-                  console.log(error);
-                })
-              ).data;
-
-              for (var i = 0; i < allMaps.data.length; i++) {
-                if(map == allMaps.data[i].mapUrl) {
-                  mapText = allMaps.data[i].displayName;
-                  map = allMaps.data[i].displayName.toLowerCase();
-                }
-              }
-
-              // Mode
-              matchType = gameStatus.data.Mode;
-
-              // Make a switch statement to get the correct mode
-              switch (matchType) {
-                case "/Game/GameModes/Bomb/BombGameMode.BombGameMode_C":
-                  if(gameStatus.data.isRanked == true) {
-                    matchType = "competitive";
-                    matchTypeText = "Competitive";
-                  } else {
-                    matchType = "unrated";
-
-                    if(gameStatus.data.ProvisioningFlowID == "CustomGame" || gameStatus.data.ProvisioningFlow == "CustomGame") {
-                      matchTypeText = "Unrated (Custom)";
-                    } else {
-                      matchTypeText = "Unrated";
-                    }
-                  }
-                  break;
-
-                case "/Game/GameModes/QuickBomb/QuickBombGameMode.QuickBombGameMode_C":
-                  matchType = "spike_rush";
-
-                  if(gameStatus.data.ProvisioningFlowID == "CustomGame" || gameStatus.data.ProvisioningFlow == "CustomGame") {
-                    matchTypeText = "Spike Rush (Custom)";
-                  } else {
-                    matchTypeText = "Spike Rush";
-                  }
-                  break;
-
-                case "/Game/GameModes/OneForAll/OneForAll_GameMode.OneForAll_GameMode_C":
-                  matchType = "replication";
-
-                  if(gameStatus.data.ProvisioningFlowID == "CustomGame" || gameStatus.data.ProvisioningFlow == "CustomGame") {
-                    matchTypeText = "Replication (Custom)";
-                  } else {
-                    matchTypeText = "Replication";
-                  }
-                  break;
-
-                case "/Game/GameModes/Deathmatch/DeathmatchGameMode.DeathmatchGameMode_C":
-                  // Map
-                  map = gameStatus.data.MapID;
-
-                  var allMaps = await (
-                    await axios.get("https://valorant-api.com/v1/maps")
-                    .catch((error) => {
-                      console.log(error);
-                    })
-                  ).data;
-
-                  for (var i = 0; i < allMaps.data.length; i++) {
-                    if(map == allMaps.data[i].mapUrl) {
-                      mapText = allMaps.data[i].displayName;
-                      map = allMaps.data[i].displayName.toLowerCase();
-                    }
-                  }
-
-                  matchType = "ffa";
-
-                  // Mode
-                  if(gameStatus.data.ProvisioningFlow == "CustomGame") {
-                    matchTypeText = "Deathmatch (Custom)";
-                  } else {
-                    matchTypeText = "Deathmatch";
-                  }
-                  break;
-
-                case "/Game/GameModes/GunGame/GunGameTeamsGameMode.GunGameTeamsGameMode_C":
-                  // Map
-                  map = gameStatus.data.MapID;
-
-                  var allMaps = await (await axios.get("https://valorant-api.com/v1/maps")
-                    .catch((error) => {
-                      console.log(error);
-                    })
-                  ).data;
-
-                  for (var i = 0; i < allMaps.data.length; i++) {
-                    if(map == allMaps.data[i].mapUrl) {
-                      mapText = allMaps.data[i].displayName;
-                      map = allMaps.data[i].displayName.toLowerCase();
-                    }
-                  }
-
-                  matchType = "escalation";
-
-                  // Mode
-                  if(gameStatus.data.ProvisioningFlow == "CustomGame") {
-                    matchTypeText = "Escalation (Custom)";
-                  } else {
-                    matchTypeText = "Escalation";
-                  }
-                  break;
-
-                case "/Game/GameModes/ShootingRange/ShootingRangeGameMode.ShootingRangeGameMode_C":
-                  isPractice = true;
-                  break;
-              }
-
-              if(globalRPCstart == null) {
-                globalRPCstart = Date.now();
-              }
-
-              discordRPObj = {
-                details: matchTypeText + " - Agent Select",
-                assets: {
-                  large_image: map, // Map
-                  large_text: mapText, // Playing a VALORANT Match
-                  small_image: matchType, // Mode
-                  small_text: matchTypeText, // Mode
-                },
-                buttons: [
-                  {
-                    label: "Download VALTracker",
-                    url: "https://valtracker.gg",
-                  },
-                ],
-                timestamps: {
-                  start: globalRPCstart,
-                },
-                instance: true,
-              };
-
-              discordClient.clearActivity(process.pid);
-              discordVALPresence.request("SET_ACTIVITY", {
-                pid: parseInt(presencePID),
-                activity: discordRPObj,
-              });
-            })
-            .catch((error) => {
-              isInPreGame = false;
-              console.log("USER NOT IN PRE-GAME.");
-            });
-
-          if(isInPreGame == false) {
-            await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/core-game/v1/players/${user_puuid}`,
-                {
-                  headers: {
-                    "X-Riot-Entitlements-JWT": entitlement_token,
-                    Authorization: "Bearer " + tokenData.accessToken,
-                  },
-                  httpAgent: agent,
-                }
-              )
-              .then(async (response) => {
-                RPState = "GAME";
-                console.log("USER IN MATCH.");
-                var matchID = response.data.MatchID;
-
-                var gameStatus = await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/core-game/v1/matches/${matchID}`,
-                  {
-                    headers: {
-                      "X-Riot-Entitlements-JWT": entitlement_token,
-                      Authorization: "Bearer " + tokenData.accessToken,
-                    },
-                    httpAgent: agent,
-                  }
-                )
-                .catch((error) => {
-                  console.log(error);
-                });
-
-                for (var i = 0; i < gameStatus.data.Players.length; i++) {
-                  if(gameStatus.data.Players[i].Subject == user_puuid) {
-                    var playerAgent = await axios.get(`https://valorant-api.com/v1/agents/${gameStatus.data.Players[i].CharacterID}`);
-
-                    agentText = playerAgent.data.data.displayName;
-                    agentName = agentText.toLowerCase();
-                  }
-                }
-
-                // Map
-                map = gameStatus.data.MapID;
-
-                var allMaps = await (
-                  await axios.get("https://valorant-api.com/v1/maps")
-                  .catch((error) => {
-                    console.log(error);
-                  })
-                ).data;
-
-                for (var i = 0; i < allMaps.data.length; i++) {
-                  if(map == allMaps.data[i].mapUrl) {
-                    mapText = allMaps.data[i].displayName;
-                    map = allMaps.data[i].displayName.toLowerCase();
-                  }
-                }
-
-                // Mode
-                matchType = gameStatus.data.ModeID;
-
-                // Make a switch statement to get the correct mode
-                switch (matchType) {
-                  case "/Game/GameModes/Bomb/BombGameMode.BombGameMode_C":
-                    if(gameStatus.data.isRanked == true) {
-                      matchType = "competitive";
-                      matchTypeText = "Competitive";
-                    } else {
-                      matchType = "unrated";
-
-                      if(gameStatus.data.ProvisioningFlowID == "CustomGame" || gameStatus.data.ProvisioningFlow == "CustomGame") {
-                        matchTypeText = "Unrated (Custom)";
-                      } else {
-                        matchTypeText = "Unrated";
-                      }
-                    }
-                    break;
-
-                  case "/Game/GameModes/QuickBomb/QuickBombGameMode.QuickBombGameMode_C":
-                    matchType = "spike_rush";
-
-                    if(gameStatus.data.ProvisioningFlowID == "CustomGame" || gameStatus.data.ProvisioningFlow == "CustomGame") {
-                      matchTypeText = "Spike Rush (Custom)";
-                    } else {
-                      matchTypeText = "Spike Rush";
-                    }
-                    break;
-
-                  case "/Game/GameModes/OneForAll/OneForAll_GameMode.OneForAll_GameMode_C":
-                    matchType = "replication";
-
-                    if(
-                      gameStatus.data.ProvisioningFlowID == "CustomGame" ||
-                      gameStatus.data.ProvisioningFlow == "CustomGame"
-                    ) {
-                      matchTypeText = "Replication (Custom)";
-                    } else {
-                      matchTypeText = "Replication";
-                    }
-                    break;
-
-                  case "/Game/GameModes/Deathmatch/DeathmatchGameMode.DeathmatchGameMode_C":
-                    // Map
-                    map = gameStatus.data.MapID;
-
-                    var allMaps = await (
-                      await axios.get("https://valorant-api.com/v1/maps")
-                        .catch((error) => {
-                          console.log(error);
-                        })
-                    ).data;
-
-                    for (var i = 0; i < allMaps.data.length; i++) {
-                      if(map == allMaps.data[i].mapUrl) {
-                        mapText = allMaps.data[i].displayName;
-                        map = allMaps.data[i].displayName.toLowerCase();
-                      }
-                    }
-
-                    matchType = "ffa";
-
-                    // Mode
-                    if(gameStatus.data.ProvisioningFlow == "CustomGame") {
-                      matchTypeText = "Deathmatch (Custom)";
-                    } else {
-                      matchTypeText = "Deathmatch";
-                    }
-                    break;
-                  case "/Game/GameModes/GunGame/GunGameTeamsGameMode.GunGameTeamsGameMode_C":
-                    // Map
-                    map = gameStatus.data.MapID;
-
-                    var allMaps = await (
-                      await axios.get("https://valorant-api.com/v1/maps")
-                        .catch((error) => {
-                          console.log(error);
-                        })
-                    ).data;
-
-                    for (var i = 0; i < allMaps.data.length; i++) {
-                      if(map == allMaps.data[i].mapUrl) {
-                        mapText = allMaps.data[i].displayName;
-                        map = allMaps.data[i].displayName.toLowerCase();
-                      }
-                    }
-
-                    matchType = "escalation";
-
-                    // Mode
-                    if(gameStatus.data.ProvisioningFlow == "CustomGame") {
-                      matchTypeText = "Escalation (Custom)";
-                    } else {
-                      matchTypeText = "Escalation";
-                    }
-                    break;
-                  case "/Game/GameModes/ShootingRange/ShootingRangeGameMode.ShootingRangeGameMode_C":
-                    isPractice = true;
-                    break;
-                }
-
-                var options = {
-                  method: "GET",
-                  url: "https://127.0.0.1:" + lockData.port + "/chat/v4/presences",
-                  headers: { Authorization: "Bearer " + lockData.password },
-                  httpsAgent: localAgent,
-                };
-
-                var matchStanding = await axios.request(options)
-                .catch(function (error) {
-                  console.error(error);
-                });
-
-                var presences = matchStanding.data.presences;
-
-                for (var i = 0; i < presences.length; i++) {
-                  if(presences[i].puuid == user_puuid) {
-                    var buff = Buffer.from(presences[i].private.toString(), "base64");
-                    var data = JSON.parse(buff.toString("utf-8"));
-
-                    globalPartyState = data["sessionLoopState"];
-
-                    var setState = data["partyOwnerMatchScoreAllyTeam"] + " - " + data["partyOwnerMatchScoreEnemyTeam"];
-                  }
-                }
-
-                if(globalRPCstart == null) {
-                  globalRPCstart = Date.now();
-                }
-
-                if(isPractice == false) {
-                  discordRPObj = {
-                    details: matchTypeText + " - In Match",
-                    state: setState,
-                    assets: {
-                      large_image: map, // Map
-                      large_text: mapText, // Playing a VALORANT Match
-                      small_image: agentName, // Mode
-                      small_text: agentText, // Mode
-                    },
-                    buttons: [
-                      {
-                        label: "Download VALTracker",
-                        url: "https://valtracker.gg",
-                      },
-                    ],
-                    timestamps: {
-                      start: globalRPCstart,
-                    },
-                    instance: true,
-                  };
-                } else {
-                  discordRPObj = {
-                    details: "In the Range",
-                    assets: {
-                      large_image: "practice",
-                      large_text: "The Range",
-                    },
-                    buttons: [
-                      {
-                        label: "Download VALTracker",
-                        url: "https://valtracker.gg",
-                      },
-                    ],
-                    timestamps: {
-                      start: globalRPCstart,
-                    },
-                    instance: true,
-                  };
-                  isPractice = false;
-                }
-
-                discordClient.clearActivity(process.pid);
-                discordVALPresence.request("SET_ACTIVITY", {
-                  pid: parseInt(presencePID),
-                  activity: discordRPObj,
-                });
-              })
-              .catch((error) => {
-                console.log("USER NOT IN MATCH.");
-              });
-          }
-        });
-
-        ws.on("message", async (data) => {
-          // Get new entitlement token for every match in case it refreshed
-          if(entitlement_token == null) {
-            entitlement_token = true;
-            var tokens_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/token_data.json");
-            var tokens = JSON.parse(tokens_raw)
-
-            entitlement_token = await axios.post("https://entitlements.auth.riotgames.com/api/token/v1", {},
-              {
-                headers: {
-                  Authorization: `Bearer ${tokens.accessToken}`,
-                },
-              }
-            )
-            .catch((error) => {
-              console.log(error);
-            });
-
-            entitlement_token = entitlement_token.data.entitlements_token;
-
-            rawTokenData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/token_data.json");
-            tokenData = JSON.parse(rawTokenData);
-          }
-
-          var stringData = data.toString();
-
-          // Check if buffer was empty
-          if(stringData != "") {
-            var matchData = JSON.parse(stringData);
-
-            // Pregame Event
-            if(matchData[1] == "OnJsonApiEvent_riot-messaging-service_v1_message" && matchData[2].uri.split("/").slice(0, -1).join("/") == "/riot-messaging-service/v1/message/ares-pregame/pregame/v1/matches") {
-              RPState = "GAME";
-              // Match ID
-              var matchID = matchData[2].data.resource.split("/").pop();
-
-              // Get Token Data from File
-              var rawTokenData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/token_data.json");
-              tokenData = JSON.parse(rawTokenData);
-
-              // Use Tokens to fetch current game
-              if(preGameStatus == null) {
-                preGameStatus = true;
-
-                var gameStatus = await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/pregame/v1/matches/${matchID}`,
-                  {
-                    headers: {
-                      "X-Riot-Entitlements-JWT": entitlement_token,
-                      Authorization: "Bearer " + tokenData.accessToken,
-                    },
-                    httpAgent: agent,
-                  }
-                )
-                .catch((error) => {
-                  console.log(error);
-                });
-
-                gameStatus = gameStatus.data;
-
-                // Map
-                map = gameStatus.MapID;
-
-                var allMaps = await (
-                  await axios.get("https://valorant-api.com/v1/maps")
-                  .catch((error) => {
-                    console.log(error);
-                  })
-                ).data;
-
-                for (var i = 0; i < allMaps.data.length; i++) {
-                  if(map == allMaps.data[i].mapUrl) {
-                    mapText = allMaps.data[i].displayName;
-                    map = allMaps.data[i].displayName.toLowerCase();
-                  }
-                }
-
-                // Mode
-                matchType = gameStatus.Mode;
-
-                // Make a switch statement to get the correct mode
-                switch (matchType) {
-                  case "/Game/GameModes/Bomb/BombGameMode.BombGameMode_C":
-                    if(gameStatus.isRanked == true) {
-                      matchType = "competitive";
-                      matchTypeText = "Competitive";
-                    } else {
-                      matchType = "unrated";
-
-                      if(gameStatus.ProvisioningFlowID == "CustomGame") {
-                        matchTypeText = "Unrated (Custom)";
-                      } else {
-                        matchTypeText = "Unrated";
-                      }
-                    }
-                    break;
-
-                  case "/Game/GameModes/QuickBomb/QuickBombGameMode.QuickBombGameMode_C":
-                    matchType = "spike_rush";
-
-                    if(gameStatus.ProvisioningFlowID == "CustomGame") {
-                      matchTypeText = "Spike Rush (Custom)";
-                    } else {
-                      matchTypeText = "Spike Rush";
-                    }
-                    break;
-
-                  case "/Game/GameModes/OneForAll/OneForAll_GameMode.OneForAll_GameMode_C":
-                    matchType = "replication";
-
-                    if(gameStatus.ProvisioningFlowID == "CustomGame") {
-                      matchTypeText = "Replication (Custom)";
-                    } else {
-                      matchTypeText = "Replication";
-                    }
-                    break;
-                }
-
-                if(globalRPCstart == null) {
-                  globalRPCstart = Date.now();
-                }
-
-                discordRPObj = {
-                  details: matchTypeText + " - Agent Select",
-                  assets: {
-                    large_image: map, // Map
-                    large_text: mapText, // Playing a VALORANT Match
-                    small_image: matchType, // Mode
-                    small_text: matchTypeText, // Mode
-                  },
-                  buttons: [
-                    {
-                      label: "Download VALTracker",
-                      url: "https://valtracker.gg",
-                    },
-                  ],
-                  timestamps: {
-                    start: globalRPCstart,
-                  },
-                  instance: true,
-                };
-
-                discordClient.clearActivity(process.pid);
-                discordVALPresence.request("SET_ACTIVITY", {
-                  pid: parseInt(presencePID),
-                  activity: discordRPObj,
-                });
-                matchHadPreGame = true;
-              }
-            }
-
-            // Get Match ID (Emitted when match is starting, so switch RP)
-            if(matchData[1] == "OnJsonApiEvent_riot-messaging-service_v1_message" && matchData[2].uri.split("/").slice(0, -1).join("/") == "/riot-messaging-service/v1/message/ares-core-game/core-game/v1/matches") {
-              RPState = "GAME";
-              if(gameTimeout == false) {
-                var matchID = matchData[2].data.resource.split("/").pop();
-
-                var gameStatus = await axios.get(`https://glz-${user_region}-1.${user_region}.a.pvp.net/core-game/v1/matches/${matchID}`,
-                  {
-                    headers: {
-                      "X-Riot-Entitlements-JWT": entitlement_token,
-                      Authorization: "Bearer " + tokenData.accessToken,
-                    },
-                    httpAgent: agent,
-                  }
-                )
-                .catch((error) => {
-                  console.log(error);
-                });
-
-                for (var i = 0; i < gameStatus.data.Players.length; i++) {
-                  if(gameStatus.data.Players[i].Subject == user_puuid) {
-                    var playerAgent = await axios.get(`https://valorant-api.com/v1/agents/${gameStatus.data.Players[i].CharacterID}`);
-
-                    agentText = playerAgent.data.data.displayName;
-                    agentName = agentText.toLowerCase();
-                  }
-                }
-
-                if(activeGameStatus == null && gameStatus.data.State == "IN_PROGRESS") {
-                  if(matchHadPreGame == false) {
-                    // Deachmatch / Escalation Match
-
-                    gameStatus = gameStatus.data;
-
-                    if(gameStatus.ModeID == "/Game/GameModes/Deathmatch/DeathmatchGameMode.DeathmatchGameMode_C") {
-                      // FFA
-                      // Map
-                      map = gameStatus.MapID;
-
-                      var allMaps = await (
-                        await axios.get("https://valorant-api.com/v1/maps")
-                        .catch((error) => {
-                          console.log(error);
-                        })
-                      ).data;
-
-                      for (var i = 0; i < allMaps.data.length; i++) {
-                        if(map == allMaps.data[i].mapUrl) {
-                          mapText = allMaps.data[i].displayName;
-                          map = allMaps.data[i].displayName.toLowerCase();
-                        }
-                      }
-
-                      matchType = "ffa";
-
-                      // Mode
-                      if(gameStatus.ProvisioningFlowID == "CustomGame") {
-                        matchTypeText = "Deathmatch (Custom)";
-                      } else {
-                        matchTypeText = "Deathmatch";
-                      }
-                    } else if(gameStatus.ModeID == "/Game/GameModes/GunGame/GunGameTeamsGameMode.GunGameTeamsGameMode_C") {
-                      // Map
-                      map = gameStatus.MapID;
-
-                      var allMaps = await (
-                        await axios.get("https://valorant-api.com/v1/maps")
-                        .catch((error) => {
-                          console.log(error);
-                        })
-                      ).data;
-
-                      for (var i = 0; i < allMaps.data.length; i++) {
-                        if(map == allMaps.data[i].mapUrl) {
-                          mapText = allMaps.data[i].displayName;
-                          map = allMaps.data[i].displayName.toLowerCase();
-                        }
-                      }
-
-                      matchType = "escalation";
-
-                      // Mode
-                      if(gameStatus.ProvisioningFlowID == "CustomGame") {
-                        matchTypeText = "Escalation (Custom)";
-                      } else {
-                        matchTypeText = "Escalation";
-                      }
-                    } else if(gameStatus.ModeID == "/Game/GameModes/ShootingRange/ShootingRangeGameMode.ShootingRangeGameMode_C") {
-                      isPractice = true;
-                    }
-                  }
-
-                  if(globalRPCstart == null) {
-                    globalRPCstart = Date.now();
-                  }
-
-                  if(isPractice == false) {
-                    discordRPObj = {
-                      details: matchTypeText + " - In Match",
-                      state: "0 - 0",
-                      assets: {
-                        large_image: map, // Map
-                        large_text: mapText, // Playing a VALORANT Match
-                        small_image: agentName, // Mode
-                        small_text: agentText, // Mode
-                      },
-                      buttons: [
-                        {
-                          label: "Download VALTracker",
-                          url: "https://valtracker.gg",
-                        },
-                      ],
-                      timestamps: {
-                        start: globalRPCstart,
-                      },
-                      instance: true,
-                    };
-                  } else {
-                    discordRPObj = {
-                      details: "In the Range",
-                      assets: {
-                        large_image: "practice", // Map
-                        large_text: "The Range", // Playing a VALORANT Match
-                      },
-                      buttons: [
-                        {
-                          label: "Download VALTracker",
-                          url: "https://valtracker.gg",
-                        },
-                      ],
-                      timestamps: {
-                        start: globalRPCstart,
-                      },
-                      instance: true,
-                    };
-                    isPractice = true;
-                  }
-
-                  discordClient.clearActivity(process.pid);
-                  discordVALPresence.request("SET_ACTIVITY", {
-                    pid: parseInt(presencePID),
-                    activity: discordRPObj,
-                  });
-                  activeGameStatus = true;
-                }
-              }
-            }
-
-            if(matchData[1] == "OnJsonApiEvent_chat_v5_participants" && matchData[2].eventType == "Delete") {
-              RPState = "APP";
-              if(activeGameStatus == true && matchData[2].uri != "/chat/v5/participants" && matchData[2].uri != "/chat/v5/participants/ares-pregame") {
-                console.log("Game ended.");
-                // End Rich presence and clear variables
-                map = null;
-                mapText = null;
-                agentName = null;
-                agentText = null;
-                matchType = null;
-                matchTypeText = null;
-
-                preGameStatus = null;
-                activeGameStatus = null;
-
-                entitlement_token = null;
-
-                discordRPObj = null;
-
-                pregameCalcFinished = false;
-
-                matchHadPreGame = false;
-
-                globalPartyState = "null";
-
-                if(isPractice == true) {
-                  isPractice = false;
-                }
-
-                gameTimeout = true;
-
-                async function timeout() {
-                  setTimeout(function () {
-                    gameTimeout = false;
-                  }, 7500);
-                }
-
-                timeout();
-
-                mainWindow.webContents.send("restartDiscordRP");
-
-                discordVALPresence.clearActivity(presencePID);
-              }
-
-              if(activeGameStatus == null && matchData[2].uri == "/chat/v5/participants/ares-pregame") {
-                console.log("May have quit!");
-                setTimeout(function () {
-                  if(globalPartyState != "INGAME") {
-                    console.log("User quit!");
-
-                    RPState = "APP";
-                    map = null;
-                    mapText = null;
-                    agentName = null;
-                    agentText = null;
-                    matchType = null;
-                    matchTypeText = null;
-
-                    preGameStatus = null;
-                    activeGameStatus = null;
-
-                    entitlement_token = null;
-
-                    discordRPObj = null;
-
-                    pregameCalcFinished = false;
-
-                    matchHadPreGame = false;
-
-                    globalPartyState = "null";
-
-                    isPractice = false;
-
-                    globalRPCstart = null;
-
-                    mainWindow.webContents.send("restartDiscordRP");
-
-                    discordVALPresence.clearActivity(presencePID);
-                  }
-                }, 2500);
-              }
-            }
-
-            if(matchData[1] == "OnJsonApiEvent_chat_v4_presences" && matchData[2]) {
-              for (var i = 0; i < matchData[2].data.presences.length; i++) {
-                if(matchData[2].data.presences[i].puuid == user_puuid) {
-                  var buff = Buffer.from(matchData[2].data.presences[i].private.toString(), "base64");
-                  var data = JSON.parse(buff.toString("utf-8"));
-
-                  globalPartyState = data["sessionLoopState"];
-
-                  if(data["sessionLoopState"] == "INGAME") {
-                    console.log("TEAM_1: " + data["partyOwnerMatchScoreAllyTeam"] + "\n" + "TEAM_2: " + data["partyOwnerMatchScoreEnemyTeam"]);
-                    // data.partyOwnerMatchScoreAllyTeam is the score of your own team, data.partyOwnerMatchScoreEnemyTeam is the enemy team
-                    // UPDATE SCORE PRESENCE HERE, EVERY TIME.
-
-                    if(globalRPCstart == null) {
-                      globalRPCstart = Date.now();
-                    }
-
-                    discordRPObj = {
-                      details: matchTypeText + " - In Match",
-                      state: data["partyOwnerMatchScoreAllyTeam"] + " - " + data["partyOwnerMatchScoreEnemyTeam"],
-                      assets: {
-                        large_image: map, // Map
-                        large_text: mapText, // Playing a VALORANT Match
-                        small_image: agentName, // Mode
-                        small_text: agentText, // Mode
-                      },
-                      buttons: [
-                        {
-                          label: "Download VALTracker",
-                          url: "https://valtracker.gg",
-                        },
-                      ],
-                      timestamps: {
-                        start: globalRPCstart,
-                      },
-                      instance: true,
-                    };
-                    discordVALPresence.request("SET_ACTIVITY", {
-                      pid: parseInt(presencePID),
-                      activity: discordRPObj,
-                    });
-                  }
-                }
-              }
-            }
-          }
-        });
-
-        ws.on("close", () => {
-          RPState = "APP";
-          map = null;
-          mapText = null;
-          agentName = null;
-          agentText = null;
-          matchType = null;
-          matchTypeText = null;
-
-          preGameStatus = null;
-          activeGameStatus = null;
-
-          entitlement_token = null;
-
-          discordRPObj = null;
-
-          pregameCalcFinished = false;
-
-          matchHadPreGame = false;
-
-          globalPartyState = "null";
-
-          isPractice = false;
-
-          globalRPCstart = null;
-
-          mainWindow.webContents.send("restartDiscordRP");
-          discordVALPresence.clearActivity(presencePID);
-          console.log("Websocket closed!");
-        });
-      })();
-    }, 5000);
-  }
-}
+setTimeout(() => {
+  const runValorantPresence = require("./modules/valorant_presence");
+  runValorantPresence(discordClient, discordVALPresence, mainWindow);
+}, 3000);

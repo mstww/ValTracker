@@ -23,7 +23,6 @@ $(document).ready(() => {
                 $('.header-relative-div #toggle').css("cursor", "not-allowed");
                 $('.header-relative-div #toggle').css("pointer-events", "none");
                 $('.header-relative-div').css("z-index", "49");
-                $('.user-rank-icon').css("z-index", "49");
                 $('.whats-new-card').css("display", "block")
                 $('.whats-new-card').css("transform", "scale(1)")
             },
@@ -45,7 +44,6 @@ $(document).ready(() => {
             $('.header-relative-div #toggle').css("cursor", "pointer");
             $('.header-relative-div #toggle').css("pointer-events", "auto");
             $('.header-relative-div').css("z-index", "100000000000");
-            $('.user-rank-icon').css("z-index", "90001");
         }, 150)
     })
 });

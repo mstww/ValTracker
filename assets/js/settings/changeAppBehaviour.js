@@ -1,8 +1,5 @@
-var app = require('@electron/remote').app
-var ipc = require('electron').ipcRenderer
-
-const appFolder = path.dirname(process.execPath)
-const exeName = path.basename(process.execPath)
+var { ipcRenderer } = require('electron');
+var fs = require('fs');
 
 $(document).ready(async () => {
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
@@ -11,49 +8,31 @@ $(document).ready(async () => {
     if(data.startOnBoot == true) {
         $('#valtracker-startup-behavior-switch input[type="checkbox"]').prop('checked', true);
 
-        ipc.invoke('is-dev').then((isDev) => {
-            if(!isDev) {
-                app.setLoginItemSettings({
-                  openAtLogin: true
-                })
-            }
-        });
+        ipcRenderer.send('openAppOnLogin', true)
     } else {
-        ipc.invoke('is-dev').then((isDev) => {
-            if(!isDev) { 
-                app.setLoginItemSettings({
-                  openAtLogin: false
-                })
-            }
-        });
+        ipcRenderer.send('openAppOnLogin', false)
     }
     
     if(data.minimizeOnClose == true) {
         $('#valtracker-closing-behavior-switch input[type="checkbox"]').prop('checked', true);
     }
 
+    if(data.enableHardwareAcceleration == true || data.enableHardwareAcceleration == undefined) {
+        $('#valtracker-ha-behavior-switch input[type="checkbox"]').prop('checked', true);
+    } else {
+        $('#valtracker-ha-behavior-switch input[type="checkbox"]').prop('checked', false);
+    }
+
     $('#valtracker-startup-behavior-switch').on('change', function () {
         if($(`#valtracker-startup-behavior-switch input[type="checkbox"]`).is( ":checked" )) {
-            ipc.invoke('is-dev').then((isDev) => {
-                if(!isDev) {
-                    app.setLoginItemSettings({
-                      openAtLogin: true
-                    })
-                }
-            });
+            ipcRenderer.send('openAppOnLogin', true)
 
             var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
             var data = JSON.parse(raw);
             data.startOnBoot = true;
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
         } else {
-            ipc.invoke('is-dev').then((isDev) => {
-                if(!isDev) {
-                    app.setLoginItemSettings({
-                      openAtLogin: false
-                    })
-                }
-            });
+            ipcRenderer.send('openAppOnLogin', false)
 
             var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
             var data = JSON.parse(raw);
@@ -74,6 +53,20 @@ $(document).ready(async () => {
             var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
             var data = JSON.parse(raw);
             data.minimizeOnClose = false;
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+        }
+    });
+
+    $('#valtracker-ha-behavior-switch').on('change', function () {
+        if($(`#valtracker-ha-behavior-switch input[type="checkbox"]`).is( ":checked" )) {
+            var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
+            var data = JSON.parse(raw);
+            data.enableHardwareAcceleration = true;
+            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+        } else {
+            var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
+            var data = JSON.parse(raw);
+            data.enableHardwareAcceleration = false;
             fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
         }
     });
