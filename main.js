@@ -5,6 +5,12 @@ const https = require('https');
 const axios = require("axios").default;
 const path = require("path");
 
+// Initialize new RPC client
+const RPC = require("discord-rpc");
+const discordClient = new RPC.Client({
+  transport: "ipc",
+});
+
 if(fs.existsSync(process.env.APPDATA + "/user_data/load_files/on_load.json")) {
   let onLoadData2 = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
   let loadData2 = JSON.parse(onLoadData2);
@@ -12,19 +18,13 @@ if(fs.existsSync(process.env.APPDATA + "/user_data/load_files/on_load.json")) {
   if(loadData2.enableHardwareAcceleration == false) {
     app.disableHardwareAcceleration();
   }
-}
-
-// Initialize new RPC client
-const RPC = require("discord-rpc");
-const discordClient = new RPC.Client({
-  transport: "ipc",
-});
-
-//Login with Discord client
-if(loadData2.hasDiscordRPenabled == true) {
-  discordClient.login({
-    clientId: "933753504558903406",
-  });
+  
+  //Login with Discord client
+  if(loadData2.hasDiscordRPenabled == true) {
+    discordClient.login({
+      clientId: "933753504558903406",
+    });
+  }
 }
 
 // Set activity after client is finished loading
@@ -43,11 +43,13 @@ const discordVALPresence = new RPC.Client({
   transport: "ipc",
 });
 
-//Login with Discord client
-if(loadData2.hasValRPenabled == true) {
-  discordVALPresence.login({
-    clientId: "957041886093267005",
-  });
+if(fs.existsSync(process.env.APPDATA + "/user_data/load_files/on_load.json")) {
+  //Login with Discord client
+  if(loadData2.hasValRPenabled == true) {
+    discordVALPresence.login({
+      clientId: "957041886093267005",
+    });
+  }
 }
 
 // Set custom Protocol to start App
