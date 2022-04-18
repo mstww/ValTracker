@@ -2,6 +2,7 @@ var compareVersions = require('compare-versions');
 var moment = require('moment');
 var axios = require('axios');
 var { ipcRenderer } = require('electron');
+var fs = require('fs');
 
 function delay(time) {
   return new Promise(resolve => setTimeout(resolve, time));
@@ -73,6 +74,12 @@ $(document).ready(async () => {
   });
 
   $('#update-restart-app').on("click", async function() {
+    let rawLoadData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
+    let loadData = JSON.parse(rawLoadData);
+
+    loadData.hasReadLatestPatchnotes = false;
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(loadData))
+
     ipcRenderer.send('quit-app-and-install');
   })
 
