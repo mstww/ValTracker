@@ -5,11 +5,13 @@ const https = require('https');
 const axios = require("axios").default;
 const path = require("path");
 
-let onLoadData2 = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-let loadData2 = JSON.parse(onLoadData2);
-
-if(loadData2.enableHardwareAcceleration == false) {
-  app.disableHardwareAcceleration();
+if(fs.existsSync(process.env.APPDATA + "/user_data/load_files/on_load.json")) {
+  let onLoadData2 = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
+  let loadData2 = JSON.parse(onLoadData2);
+  
+  if(loadData2.enableHardwareAcceleration == false) {
+    app.disableHardwareAcceleration();
+  }
 }
 
 // Initialize new RPC client
