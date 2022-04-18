@@ -245,10 +245,10 @@ function noFilesFound() {
   createPlayerProfileSettings();
 
   // Create /riot_games_data dir
-  fs.mkdirSync(app_data + "/user_data/riot_games_data");
+  createRiotGamesData()
 
   // Create /shop_data dir and all files in it
-  createRiotGamesData()
+  fs.mkdirSync(app_data + "/user_data/shop_data");
 
   // Create /themes dir and all files in it
   createThemes();
@@ -311,14 +311,6 @@ async function createWindow() {
       }
     });
   }
-
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
-    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
-  }
-
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
-    await download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
-  };
 
   mainWindow.onbeforeunload = (event) => {
     win.removeAllListeners();
@@ -459,6 +451,14 @@ async function createWindow() {
         fs.writeFileSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID + "/cookies.json", raw);
       }
     }
+
+    if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
+      fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
+    }
+  
+    if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
+      await download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+    };
 
     mainWindow.loadFile("./pages/decoyIndex.html");
   }
