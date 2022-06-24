@@ -4,7 +4,7 @@ function redirectToSkinView(uuid) {
    window.location.href = "../pages/skinView.html"
 }
 
-var { ipcRenderer } = require('electron');;
+var { ipcRenderer } = require('electron');
 
 function makeCallAndBuildElements() {
    var path = window.location.pathname;

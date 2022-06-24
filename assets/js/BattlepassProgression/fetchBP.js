@@ -11,7 +11,7 @@ async function getPlayerUUID() {
     return (await (await this.fetch('https://auth.riotgames.com/userinfo', {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer ' + bearer,
+            'authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
@@ -23,7 +23,7 @@ async function getEntitlement() {
     return (await (await this.fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
         method: 'POST',
         headers: {
-            'Authorization': 'Bearer ' + bearer,
+            'authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
@@ -37,7 +37,7 @@ async function getXMPPRegion() {
         "headers": {
             "cookie": requiredCookie,
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + bearer
+            "authorization": "Bearer " + bearer
         },
         "body": `{\"id_token\":\"${id_token}\"}`
     })).json());
@@ -64,7 +64,7 @@ async function getContractProgression() {
         headers: {
             'X-Riot-Entitlements-JWT': entitlement_token,
             'X-Riot-ClientVersion': current_version,
-            'Authorization': 'Bearer ' + bearer,
+            'authorization': 'Bearer ' + bearer,
         },
     })).json());
 }

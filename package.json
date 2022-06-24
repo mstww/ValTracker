@@ -1,7 +1,7 @@
 {
   "name": "valtracker",
   "productName": "VALTracker",
-  "version": "0.10.2-alpha",
+  "version": "0.10.3-alpha",
   "description": "VALTracker is a tool for checking your Matches and Personal Store for the game VALORANT.",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,8 @@
   "build": {
     "files": [
       "!README.md",
-      "!.gitingore"
+      "!.gitingore",
+      "!./.github"
     ],
     "appId": "VALTracker",
     "win": {
@@ -61,6 +62,7 @@
     "moment": "^2.29.2",
     "node-fetch": "^3.2.3",
     "showdown": "^2.0.3",
+    "slick-carousel": "^1.8.1",
     "ws": "^8.5.0"
   }
 }

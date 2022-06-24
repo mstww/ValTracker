@@ -284,3 +284,28 @@ input:checked + .slider:before {
 #active-wrapper {
   display: block;
 }
+
+.settings-confirm-wrapper {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-confirm-card {
+  min-height: 10rem;
+  width: 30rem;
+  padding: 1rem;
+  background-color: var(--app-color);
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+}
+
+.settings-confirm-header {
+  margin-top: 0;
+}

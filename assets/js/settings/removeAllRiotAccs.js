@@ -1,3 +1,4 @@
+var fs = require('fs')
 $(document).ready(() => {
     var accounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
 

@@ -15,7 +15,7 @@ async function switcher_getPlayerUUID() {
     return (await (await this.fetch('https://auth.riotgames.com/userinfo', {
         method: 'GET',
         headers: {
-            'Authorization': 'Bearer ' + bearer,
+            'authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
@@ -26,7 +26,7 @@ async function switcher_getEntitlement() {
     return (await (await this.fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
         method: 'POST',
         headers: {
-            'Authorization': 'Bearer ' + bearer,
+            'authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
@@ -39,7 +39,7 @@ async function switcher_getXMPPRegion() {
         "headers": {
             "cookie": requiredCookie,
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + bearer
+            "authorization": "Bearer " + bearer
         },
         "body": `{\"id_token\":\"${id_token}\"}`
     })).json());
@@ -50,7 +50,7 @@ async function switcher_getShopData() {
         method: 'GET',
         headers: {
             'X-Riot-Entitlements-JWT': entitlement_token,
-            'Authorization': 'Bearer ' + bearer,
+            'authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
