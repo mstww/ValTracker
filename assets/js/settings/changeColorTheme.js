@@ -1,4 +1,4 @@
-var { ipcRenderer } = require('electron');
+var { ipcRenderer } = require('electron');;
 const path = require('path')
 var select = document.getElementById('selected-color-theme');
 var fs = require('fs')

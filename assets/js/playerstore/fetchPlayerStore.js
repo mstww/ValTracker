@@ -50,7 +50,7 @@ async function getPlayerUUID() {
     return (await (await this.fetch('https://auth.riotgames.com/userinfo', {
         method: 'GET',
         headers: {
-            'authorization': 'Bearer ' + bearer,
+            'Authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
@@ -61,7 +61,7 @@ async function getEntitlement() {
     return (await (await this.fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
         method: 'POST',
         headers: {
-            'authorization': 'Bearer ' + bearer,
+            'Authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
@@ -74,7 +74,7 @@ async function getXMPPRegion() {
         "headers": {
             "cookie": requiredCookie,
             "Content-Type": "application/json",
-            "authorization": "Bearer " + bearer
+            "Authorization": "Bearer " + bearer
         },
         "body": `{\"id_token\":\"${id_token}\"}`
     })).json());
@@ -87,7 +87,7 @@ async function getShopData() {
                 method: 'GET',
                 headers: {
                     'X-Riot-Entitlements-JWT': entitlement_token,
-                    'authorization': 'Bearer ' + bearer,
+                    'Authorization': 'Bearer ' + bearer,
                     'Content-Type': 'application/json',
                     'User-Agent': ''
                 },
@@ -101,7 +101,7 @@ async function getWallet() {
         method: 'GET',
         headers: {
             'X-Riot-Entitlements-JWT': entitlement_token,
-            'authorization': 'Bearer ' + bearer,
+            'Authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
@@ -113,7 +113,7 @@ async function getInventory() {
         method: 'GET',
         headers: {
             'X-Riot-Entitlements-JWT': entitlement_token,
-            'authorization': 'Bearer ' + bearer,
+            'Authorization': 'Bearer ' + bearer,
             'Content-Type': 'application/json',
             'User-Agent': ''
         },
@@ -138,218 +138,31 @@ function getTokenDataFromURL(url) {
     }
 }
 
-async function getShop() {
-    const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json')
-    const tokenData = JSON.parse(rawTokenData)
+$(document).ready(() => {
+    ipcRenderer.send('changeDiscordRP', `shop_activity`)
+    async function getShop() {
+        const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json')
+        const tokenData = JSON.parse(rawTokenData)
 
-    bearer = tokenData.accessToken;
-    id_token = tokenData.id_token;
+        bearer = tokenData.accessToken;
+        id_token = tokenData.id_token;
 
-    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
-    var user_creds = JSON.parse(user_creds_raw)
+        var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
+        var user_creds = JSON.parse(user_creds_raw)
 
-    puuid = user_creds.playerUUID
-    region = user_creds.playerRegion
+        puuid = user_creds.playerUUID
+        region = user_creds.playerRegion
 
-    var lastShop = false;
+        var lastShop = false;
 
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json')) {
-        var rawLastShop = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json')
-        lastShop = JSON.parse(rawLastShop)
-    }
-    
-    if(lastShop != false && Date.now() < lastShop.singleSkinsExpireIn && Date.now() < lastShop.bundleExpiresIn && Date.now() < lastShop.nightMarketExpiresIn) {
-        // Fetch data from file
-        entitlement_token = await getEntitlement();
-        var walletData = await getWallet();
-        var VP = walletData.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
-        var RP = walletData.Balances['e59aa87c-4cbf-517a-5983-6e81511be9b7'];
-
-        $('.wallet-vp').append(VP)
-        $('.wallet-rp').append(RP)
-
-        var bundleID = lastShop.FeaturedBundle.Bundle.DataAssetID
-        var dailyShop = lastShop.SkinsPanelLayout.SingleItemOffers
-
-        // Calculate Bundle Price
-        var bundlePrice = 0;
-        for(var i = 0; i < lastShop.FeaturedBundle.Bundles[0].Items.length; i++) {
-            bundlePrice = bundlePrice + parseInt(lastShop.FeaturedBundle.Bundles[0].Items[i].DiscountedPrice)
+        if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json')) {
+            var rawLastShop = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json')
+            lastShop = JSON.parse(rawLastShop)
         }
-        $('.insert-bundle-price').append(bundlePrice)
-
-        var moment = require('moment');
-        var nightMarketSecondsRemaining = false;
-        if(lastShop.BonusStore !== undefined) {
-            nightMarketSecondsRemaining = Math.abs(moment().diff(lastShop.nightMarketExpiresIn, 'seconds'));
-            var nightmarket = lastShop.BonusStore.BonusStoreOffers
-            $.ajax({
-                dataType: "json",
-                url: `https://valorant-api.com/v1/weapons`,
-                type: 'get',
-                success: function (data2, xhr) {
-                    for (var i = 0; i < nightmarket.length; i++) { //Array
-                        $(`.night-market-offer.${i+1}`).attr('id', nightmarket[i].Offer.OfferID)
-                        for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
-                            for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
-                                if(data2.data[i2].skins[i3].levels[0].uuid == nightmarket[i].Offer.OfferID) {
-
-                                    if(i2 == 17) {
-                                        $(`.night-market-offer.${i+1} .nm-weapon`).addClass('melee')
-                                    } else {
-                                        $(`.night-market-offer.${i+1} .nm-weapon`).addClass('gun')
-                                    }
-
-                                    if(nightmarket[i].IsSeen !== true) {
-                                        $(`.night-market-offer.${i+1}`).addClass('notSeenYet');
-                                    }
-
-                                    if(data2.data[i2].skins[i3].displayName.length < 23) {
-                                        $(`.night-market-offer.${i+1} .nm-item-name`).append(data2.data[i2].skins[i3].displayName)
-                                    } else {
-                                        $(`.night-market-offer.${i+1} .nm-item-name`).append(data2.data[i2].skins[i3].displayName.slice(0, 23) + '...')
-                                    }
-
-                                    $(`.night-market-offer.${i+1} .nm-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
-
-                                    $(`.night-market-offer.${i+1} .nm-price`).append(nightmarket[i].DiscountCosts[Object.keys(nightmarket[i].DiscountCosts)[0]])
-                                }
-                            }
-                        }
-                    }
-                }
-            })
-        } else {
-            $('.night-market-wrapper').css("display", "none");
-        }
-
-        $.ajax({
-            dataType: "json",
-            url: `https://valorant-api.com/v1/bundles`,
-            type: 'get',
-            success: function (data, xhr) {
-                for (var i = 0; i < data.data.length; i++) {
-                    if(data.data[i].uuid == bundleID) {
-                        $('.featured-bundle-header').append(data.data[i].displayName)
-                        $('.store-bundle-image').attr('src', data.data[i].displayIcon)
-                    }
-                }
-                $.ajax({
-                    dataType: "json",
-                    url: `https://valorant-api.com/v1/weapons`,
-                    type: 'get',
-                    success: function (data2, xhr) {
-                        for (var i = 0; i < dailyShop.length; i++) { //Array
-                            $(`.single-item.${i+1}`).attr('id', dailyShop[i])
-                            for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
-                                for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
-                                    if(data2.data[i2].skins[i3].levels[0].uuid == dailyShop[i]) {
-                                        $(`.single-item.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
-                                        $(`.single-item.${i+1} .single-item-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
-                                    }
-                                }
-                            }
-                        }
-                        $.ajax({
-                            dataType: "json",
-                            url: `https://api.henrikdev.xyz/valorant/v1/store-offers`,
-                            type: 'get',
-                            success: function (data3, xhr) {
-                                for (var i = 0; i < dailyShop.length; i++) {
-                                    for (var i2 = 0; i2 < data3.data.Offers.length; i2++) {
-                                        if(data3.data.Offers[i2].Rewards[0].ItemID == dailyShop[i]) {
-                                            $(`.single-item.${i+1} .single-item-price`).append(data3.data.Offers[i2].Cost[Object.keys(data3.data.Offers[i2].Cost)[0]])
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                    }
-                })
-            }
-        })
-
-        var bundleSecondsRemaining = Math.abs(moment().diff(lastShop.bundleExpiresIn, 'seconds'));
-        var singleOfferSecondsRemaining = Math.abs(moment().diff(lastShop.singleSkinsExpireIn, 'seconds'));
-
-        Date.prototype.addSeconds = function (seconds) {
-            var copiedDate = new Date(this.getTime());
-            return new Date(copiedDate.getTime() + seconds * 1000);
-        }
-        var dateData = {
-            lastCkeckedDate: new Date().getTime(),
-            willLastFor: new Date().addSeconds(singleOfferSecondsRemaining)
-        }
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
-
-        bundleSecondsRemaining--;
-        singleOfferSecondsRemaining--;
-
-        if(nightMarketSecondsRemaining !== false) {
-            nightMarketSecondsRemaining--;
-
-            $('.nightmarket-time-left').empty()
-            $('.nightmarket-time-left').append(nightMarketTimeToDHMS(nightMarketSecondsRemaining));
-        }
-
-        $('.featured-bundle-time-left').empty();
-        $('.featured-bundle-time-left').append(bundleTimeToHMS(bundleSecondsRemaining) + " remaining");
-
-        $('.single-skins-time-left').empty()
-        $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
-        setInterval(function () {
-            bundleSecondsRemaining--;
-            singleOfferSecondsRemaining--;
-            $('.featured-bundle-time-left').empty()
-            $('.featured-bundle-time-left').append(bundleTimeToHMS(bundleSecondsRemaining) + " remaining");
-            $('.single-skins-time-left').empty()
-            $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
-
-            if(nightMarketSecondsRemaining !== false) {
-                nightMarketSecondsRemaining--;
-
-                $('.nightmarket-time-left').empty()
-                $('.nightmarket-time-left').append(nightMarketTimeToDHMS(nightMarketSecondsRemaining));
-            }
-            if(singleOfferSecondsRemaining <= 0 || bundleSecondsRemaining <= 0) {
-                window.location.href = "";
-            }
-        }, 1000)
-    } else {
-        // Refetch shop
-
-        entitlement_token = await getEntitlement();
-        if(typeof entitlement_token === "string") {
-
-            region = await getXMPPRegion();
-
-            region = region.affinities.live
-
-            var shopData = await getShopData();
-            
-            var singleSkinsTime = shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds * 1000 + 10;
-            var singleSkinsExpirationDate = Date.now() + singleSkinsTime
-
-            var bundleTime = shopData.FeaturedBundle.BundleRemainingDurationInSeconds * 1000 + 10;
-            var bundleExpirationDate = Date.now() + bundleTime
-
-            if(shopData.BonusStore !== undefined) {
-                var nightMarketTime = shopData.BonusStore.BonusStoreRemainingDurationInSeconds * 1000 + 10
-                var nightMarketExpirationDate = Date.now() + nightMarketTime
-
-                shopData.nightMarketExpiresIn = nightMarketExpirationDate
-            }
-
-            shopData.singleSkinsExpireIn = singleSkinsExpirationDate
-            shopData.bundleExpiresIn = bundleExpirationDate
-
-            if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid)) {
-                fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid)
-            }
-
-            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json', JSON.stringify(shopData))
-
+        
+        if(lastShop != false && Date.now() < lastShop.singleSkinsExpireIn && Date.now() < lastShop.bundleExpiresIn && Date.now() < lastShop.nightMarketExpiresIn) {
+            // Fetch data from file
+            entitlement_token = await getEntitlement();
             var walletData = await getWallet();
             var VP = walletData.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
             var RP = walletData.Balances['e59aa87c-4cbf-517a-5983-6e81511be9b7'];
@@ -357,20 +170,21 @@ async function getShop() {
             $('.wallet-vp').append(VP)
             $('.wallet-rp').append(RP)
 
-            var bundleID = shopData.FeaturedBundle.Bundle.DataAssetID
-            var dailyShop = shopData.SkinsPanelLayout.SingleItemOffers
+            var bundleID = lastShop.FeaturedBundle.Bundle.DataAssetID
+            var dailyShop = lastShop.SkinsPanelLayout.SingleItemOffers
 
             // Calculate Bundle Price
             var bundlePrice = 0;
-            for(var i = 0; i < shopData.FeaturedBundle.Bundles[0].Items.length; i++) {
-                bundlePrice = bundlePrice + parseInt(shopData.FeaturedBundle.Bundles[0].Items[i].DiscountedPrice)
+            for(var i = 0; i < lastShop.FeaturedBundle.Bundles[0].Items.length; i++) {
+                bundlePrice = bundlePrice + parseInt(lastShop.FeaturedBundle.Bundles[0].Items[i].DiscountedPrice)
             }
             $('.insert-bundle-price').append(bundlePrice)
 
+            var moment = require('moment');
             var nightMarketSecondsRemaining = false;
-            if(shopData.BonusStore !== undefined) {
-                nightMarketSecondsRemaining = shopData.BonusStore.BonusStoreRemainingDurationInSeconds
-                var nightmarket = shopData.BonusStore.BonusStoreOffers
+            if(lastShop.BonusStore !== undefined) {
+                nightMarketSecondsRemaining = Math.abs(moment().diff(lastShop.nightMarketExpiresIn, 'seconds'));
+                var nightmarket = lastShop.BonusStore.BonusStoreOffers
                 $.ajax({
                     dataType: "json",
                     url: `https://valorant-api.com/v1/weapons`,
@@ -457,8 +271,8 @@ async function getShop() {
                 }
             })
 
-            var bundleSecondsRemaining = shopData.FeaturedBundle.BundleRemainingDurationInSeconds
-            var singleOfferSecondsRemaining = shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds
+            var bundleSecondsRemaining = Math.abs(moment().diff(lastShop.bundleExpiresIn, 'seconds'));
+            var singleOfferSecondsRemaining = Math.abs(moment().diff(lastShop.singleSkinsExpireIn, 'seconds'));
 
             Date.prototype.addSeconds = function (seconds) {
                 var copiedDate = new Date(this.getTime());
@@ -504,150 +318,182 @@ async function getShop() {
                 }
             }, 1000)
         } else {
-            function reauth() {
-                ipcRenderer.send('reauthCurrentAccount', 'now');
-            }
+            // Refetch shop
 
-            reauth();
+            entitlement_token = await getEntitlement();
+            if(typeof entitlement_token === "string") {
 
-            ipcRenderer.on('reauthSuccess', async function (event, arg) {
+                region = await getXMPPRegion();
 
-                var user_creds_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_creds.json");
-                var user_creds = JSON.parse(user_creds_raw);
-        
-                puuid = user_creds.playerUUID;
+                region = region.affinities.live
+
+                var shopData = await getShopData();
                 
-                const tokenData = getTokenDataFromURL(arg)
-                //fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
+                var singleSkinsTime = shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds * 1000 + 10;
+                var singleSkinsExpirationDate = Date.now() + singleSkinsTime
 
-                bearer = tokenData.accessToken;
-                id_token = tokenData.id_token;
+                var bundleTime = shopData.FeaturedBundle.BundleRemainingDurationInSeconds * 1000 + 10;
+                var bundleExpirationDate = Date.now() + bundleTime
 
-                ipcRenderer.send('setCookies', 'please')
-                ipcRenderer.on('tdid', async function (event, arg) {
-                    requiredCookie = "tdid=" + arg
+                if(shopData.BonusStore !== undefined) {
+                    var nightMarketTime = shopData.BonusStore.BonusStoreRemainingDurationInSeconds * 1000 + 10
+                    var nightMarketExpirationDate = Date.now() + nightMarketTime
 
-                    puuid = await getPlayerUUID();
+                    shopData.nightMarketExpiresIn = nightMarketExpirationDate
+                }
 
-                    entitlement_token = await getEntitlement();
+                shopData.singleSkinsExpireIn = singleSkinsExpirationDate
+                shopData.bundleExpiresIn = bundleExpirationDate
 
-                    var reagiondata = await getXMPPRegion();
-                    region = reagiondata.affinities.live
+                if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid)) {
+                    fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid)
+                }
 
-                    var shopData = await getShopData();
-                    //fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json', JSON.stringify(shopData))
 
-                    var walletData = await getWallet();
-                    var VP = walletData.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
-                    var RP = walletData.Balances['e59aa87c-4cbf-517a-5983-6e81511be9b7'];
+                var walletData = await getWallet();
+                var VP = walletData.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
+                var RP = walletData.Balances['e59aa87c-4cbf-517a-5983-6e81511be9b7'];
 
-                    $('.wallet-vp').append(VP)
-                    $('.wallet-rp').append(RP)
+                $('.wallet-vp').append(VP)
+                $('.wallet-rp').append(RP)
 
-                    var bundleID = shopData.FeaturedBundle.Bundle.DataAssetID
-                    var dailyShop = shopData.SkinsPanelLayout.SingleItemOffers
+                var bundleID = shopData.FeaturedBundle.Bundle.DataAssetID
+                var dailyShop = shopData.SkinsPanelLayout.SingleItemOffers
 
-                    var nightMarketSecondsRemaining = false;
-                    if(shopData.BonusStore !== undefined) {
-                        nightMarketSecondsRemaining = shopData.BonusStore.BonusStoreRemainingDurationInSeconds
-                        var nightmarket = shopData.BonusStore.BonusStoreOffers
+                // Calculate Bundle Price
+                var bundlePrice = 0;
+                for(var i = 0; i < shopData.FeaturedBundle.Bundles[0].Items.length; i++) {
+                    bundlePrice = bundlePrice + parseInt(shopData.FeaturedBundle.Bundles[0].Items[i].DiscountedPrice)
+                }
+                $('.insert-bundle-price').append(bundlePrice)
+
+                var nightMarketSecondsRemaining = false;
+                if(shopData.BonusStore !== undefined) {
+                    nightMarketSecondsRemaining = shopData.BonusStore.BonusStoreRemainingDurationInSeconds
+                    var nightmarket = shopData.BonusStore.BonusStoreOffers
+                    $.ajax({
+                        dataType: "json",
+                        url: `https://valorant-api.com/v1/weapons`,
+                        type: 'get',
+                        success: function (data2, xhr) {
+                            for (var i = 0; i < nightmarket.length; i++) { //Array
+                                $(`.night-market-offer.${i+1}`).attr('id', nightmarket[i].Offer.OfferID)
+                                for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
+                                    for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
+                                        if(data2.data[i2].skins[i3].levels[0].uuid == nightmarket[i].Offer.OfferID) {
+
+                                            if(i2 == 17) {
+                                                $(`.night-market-offer.${i+1} .nm-weapon`).addClass('melee')
+                                            } else {
+                                                $(`.night-market-offer.${i+1} .nm-weapon`).addClass('gun')
+                                            }
+
+                                            if(nightmarket[i].IsSeen !== true) {
+                                                $(`.night-market-offer.${i+1}`).addClass('notSeenYet');
+                                            }
+
+                                            if(data2.data[i2].skins[i3].displayName.length < 23) {
+                                                $(`.night-market-offer.${i+1} .nm-item-name`).append(data2.data[i2].skins[i3].displayName)
+                                            } else {
+                                                $(`.night-market-offer.${i+1} .nm-item-name`).append(data2.data[i2].skins[i3].displayName.slice(0, 23) + '...')
+                                            }
+
+                                            $(`.night-market-offer.${i+1} .nm-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
+
+                                            $(`.night-market-offer.${i+1} .nm-price`).append(nightmarket[i].DiscountCosts[Object.keys(nightmarket[i].DiscountCosts)[0]])
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    })
+                } else {
+                    $('.night-market-wrapper').css("display", "none");
+                }
+
+                $.ajax({
+                    dataType: "json",
+                    url: `https://valorant-api.com/v1/bundles`,
+                    type: 'get',
+                    success: function (data, xhr) {
+                        for (var i = 0; i < data.data.length; i++) {
+                            if(data.data[i].uuid == bundleID) {
+                                $('.featured-bundle-header').append(data.data[i].displayName)
+                                $('.store-bundle-image').attr('src', data.data[i].displayIcon)
+                            }
+                        }
                         $.ajax({
                             dataType: "json",
                             url: `https://valorant-api.com/v1/weapons`,
                             type: 'get',
                             success: function (data2, xhr) {
-                                for (var i = 0; i < nightmarket.length; i++) { //Array
-                                    $(`.night-market-offer.${i+1}`).attr('id', nightmarket[i].Offer.OfferID)
+                                for (var i = 0; i < dailyShop.length; i++) { //Array
+                                    $(`.single-item.${i+1}`).attr('id', dailyShop[i])
                                     for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
                                         for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
-                                            if(data2.data[i2].skins[i3].levels[0].uuid == nightmarket[i].Offer.OfferID) {
-
-                                                if(i2 == 17) {
-                                                    $(`.night-market-offer.${i+1} .nm-weapon`).addClass('melee')
-                                                } else {
-                                                    $(`.night-market-offer.${i+1} .nm-weapon`).addClass('gun')
-                                                }
-
-                                                if(nightmarket[i].IsSeen !== true) {
-                                                    $(`.night-market-offer.${i+1}`).addClass('notSeenYet');
-                                                }
-
-                                                $(`.night-market-offer.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
-
-                                                $(`.night-market-offer.${i+1} .nm-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
-
-                                                $(`.night-market-offer.${i+1} .nm-price`).append(nightmarket[i].DiscountCosts[Object.keys(nightmarket[i].DiscountCosts)[0]])
+                                            if(data2.data[i2].skins[i3].levels[0].uuid == dailyShop[i]) {
+                                                $(`.single-item.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
+                                                $(`.single-item.${i+1} .single-item-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
                                             }
                                         }
                                     }
                                 }
+                                $.ajax({
+                                    dataType: "json",
+                                    url: `https://api.henrikdev.xyz/valorant/v1/store-offers`,
+                                    type: 'get',
+                                    success: function (data3, xhr) {
+                                        for (var i = 0; i < dailyShop.length; i++) {
+                                            for (var i2 = 0; i2 < data3.data.Offers.length; i2++) {
+                                                if(data3.data.Offers[i2].Rewards[0].ItemID == dailyShop[i]) {
+                                                    $(`.single-item.${i+1} .single-item-price`).append(data3.data.Offers[i2].Cost[Object.keys(data3.data.Offers[i2].Cost)[0]])
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
                             }
                         })
-                    } else {
-                        $('.night-market-wrapper').css("display", "none");
                     }
+                })
 
-                    $.ajax({
-                        dataType: "json",
-                        url: `https://valorant-api.com/v1/bundles`,
-                        type: 'get',
-                        success: function (data, xhr) {
-                            for (var i = 0; i < data.data.length; i++) {
-                                if(data.data[i].uuid == bundleID) {
-                                    $('.featured-bundle-header').append(data.data[i].displayName)
-                                    $('.store-bundle-image').attr('src', data.data[i].displayIcon)
-                                }
-                            }
-                            $.ajax({
-                                dataType: "json",
-                                url: `https://valorant-api.com/v1/weapons`,
-                                type: 'get',
-                                success: function (data2, xhr) {
-                                    for (var i = 0; i < dailyShop.length; i++) { //Array
-                                        $(`.single-item.${i+1}`).attr('id', dailyShop[i])
-                                        for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
-                                            for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
-                                                if(data2.data[i2].skins[i3].levels[0].uuid == dailyShop[i]) {
-                                                    $(`.single-item.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
-                                                    $(`.single-item.${i+1} .single-item-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    $.ajax({
-                                        dataType: "json",
-                                        url: `https://api.henrikdev.xyz/valorant/v1/store-offers`,
-                                        type: 'get',
-                                        success: function (data3, xhr) {
-                                            for (var i = 0; i < dailyShop.length; i++) {
-                                                for (var i2 = 0; i2 < data3.data.Offers.length; i2++) {
-                                                    if(data3.data.Offers[i2].Rewards[0].ItemID == dailyShop[i]) {
-                                                        $(`.single-item.${i+1} .single-item-price`).append(data3.data.Offers[i2].Cost[Object.keys(data3.data.Offers[i2].Cost)[0]])
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                    })
+                var bundleSecondsRemaining = shopData.FeaturedBundle.BundleRemainingDurationInSeconds
+                var singleOfferSecondsRemaining = shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds
 
-                    var bundleSecondsRemaining = shopData.FeaturedBundle.BundleRemainingDurationInSeconds
-                    var singleOfferSecondsRemaining = shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds
+                Date.prototype.addSeconds = function (seconds) {
+                    var copiedDate = new Date(this.getTime());
+                    return new Date(copiedDate.getTime() + seconds * 1000);
+                }
+                var dateData = {
+                    lastCkeckedDate: new Date().getTime(),
+                    willLastFor: new Date().addSeconds(singleOfferSecondsRemaining)
+                }
+                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
 
-                    Date.prototype.addSeconds = function (seconds) {
-                        var copiedDate = new Date(this.getTime());
-                        return new Date(copiedDate.getTime() + seconds * 1000);
-                    }
-                    var dateData = {
-                        lastCkeckedDate: new Date().getTime(),
-                        willLastFor: new Date().addSeconds(singleOfferSecondsRemaining)
-                    }
-                    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+                bundleSecondsRemaining--;
+                singleOfferSecondsRemaining--;
 
+                if(nightMarketSecondsRemaining !== false) {
+                    nightMarketSecondsRemaining--;
+
+                    $('.nightmarket-time-left').empty()
+                    $('.nightmarket-time-left').append(nightMarketTimeToDHMS(nightMarketSecondsRemaining));
+                }
+
+                $('.featured-bundle-time-left').empty();
+                $('.featured-bundle-time-left').append(bundleTimeToHMS(bundleSecondsRemaining) + " remaining");
+
+                $('.single-skins-time-left').empty()
+                $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
+                setInterval(function () {
                     bundleSecondsRemaining--;
                     singleOfferSecondsRemaining--;
+                    $('.featured-bundle-time-left').empty()
+                    $('.featured-bundle-time-left').append(bundleTimeToHMS(bundleSecondsRemaining) + " remaining");
+                    $('.single-skins-time-left').empty()
+                    $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
 
                     if(nightMarketSecondsRemaining !== false) {
                         nightMarketSecondsRemaining--;
@@ -655,19 +501,155 @@ async function getShop() {
                         $('.nightmarket-time-left').empty()
                         $('.nightmarket-time-left').append(nightMarketTimeToDHMS(nightMarketSecondsRemaining));
                     }
+                    if(singleOfferSecondsRemaining <= 0 || bundleSecondsRemaining <= 0) {
+                        window.location.href = "";
+                    }
+                }, 1000)
+            } else {
+                function reauth() {
+                    ipcRenderer.send('reauthCurrentAccount', 'now');
+                }
 
-                    $('.featured-bundle-time-left').empty();
-                    $('.featured-bundle-time-left').append(bundleTimeToHMS(bundleSecondsRemaining) + " remaining");
+                reauth();
 
-                    $('.single-skins-time-left').empty()
-                    $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
-                    setInterval(function () {
+                ipcRenderer.on('reauthSuccess', async function (event, arg) {
+
+                    var user_creds_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_creds.json");
+                    var user_creds = JSON.parse(user_creds_raw);
+            
+                    puuid = user_creds.playerUUID;
+                    
+                    const tokenData = getTokenDataFromURL(arg)
+                    //fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
+
+                    bearer = tokenData.accessToken;
+                    id_token = tokenData.id_token;
+
+                    ipcRenderer.send('setCookies', 'please')
+                    ipcRenderer.on('tdid', async function (event, arg) {
+                        requiredCookie = "tdid=" + arg
+
+                        puuid = await getPlayerUUID();
+
+                        entitlement_token = await getEntitlement();
+
+                        var reagiondata = await getXMPPRegion();
+                        region = reagiondata.affinities.live
+
+                        var shopData = await getShopData();
+                        //fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
+
+                        var walletData = await getWallet();
+                        var VP = walletData.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
+                        var RP = walletData.Balances['e59aa87c-4cbf-517a-5983-6e81511be9b7'];
+
+                        $('.wallet-vp').append(VP)
+                        $('.wallet-rp').append(RP)
+
+                        var bundleID = shopData.FeaturedBundle.Bundle.DataAssetID
+                        var dailyShop = shopData.SkinsPanelLayout.SingleItemOffers
+
+                        var nightMarketSecondsRemaining = false;
+                        if(shopData.BonusStore !== undefined) {
+                            nightMarketSecondsRemaining = shopData.BonusStore.BonusStoreRemainingDurationInSeconds
+                            var nightmarket = shopData.BonusStore.BonusStoreOffers
+                            $.ajax({
+                                dataType: "json",
+                                url: `https://valorant-api.com/v1/weapons`,
+                                type: 'get',
+                                success: function (data2, xhr) {
+                                    for (var i = 0; i < nightmarket.length; i++) { //Array
+                                        $(`.night-market-offer.${i+1}`).attr('id', nightmarket[i].Offer.OfferID)
+                                        for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
+                                            for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
+                                                if(data2.data[i2].skins[i3].levels[0].uuid == nightmarket[i].Offer.OfferID) {
+
+                                                    if(i2 == 17) {
+                                                        $(`.night-market-offer.${i+1} .nm-weapon`).addClass('melee')
+                                                    } else {
+                                                        $(`.night-market-offer.${i+1} .nm-weapon`).addClass('gun')
+                                                    }
+
+                                                    if(nightmarket[i].IsSeen !== true) {
+                                                        $(`.night-market-offer.${i+1}`).addClass('notSeenYet');
+                                                    }
+
+                                                    $(`.night-market-offer.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
+
+                                                    $(`.night-market-offer.${i+1} .nm-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
+
+                                                    $(`.night-market-offer.${i+1} .nm-price`).append(nightmarket[i].DiscountCosts[Object.keys(nightmarket[i].DiscountCosts)[0]])
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            })
+                        } else {
+                            $('.night-market-wrapper').css("display", "none");
+                        }
+
+                        $.ajax({
+                            dataType: "json",
+                            url: `https://valorant-api.com/v1/bundles`,
+                            type: 'get',
+                            success: function (data, xhr) {
+                                for (var i = 0; i < data.data.length; i++) {
+                                    if(data.data[i].uuid == bundleID) {
+                                        $('.featured-bundle-header').append(data.data[i].displayName)
+                                        $('.store-bundle-image').attr('src', data.data[i].displayIcon)
+                                    }
+                                }
+                                $.ajax({
+                                    dataType: "json",
+                                    url: `https://valorant-api.com/v1/weapons`,
+                                    type: 'get',
+                                    success: function (data2, xhr) {
+                                        for (var i = 0; i < dailyShop.length; i++) { //Array
+                                            $(`.single-item.${i+1}`).attr('id', dailyShop[i])
+                                            for (var i2 = 0; i2 < data2.data.length; i2++) { //Weapon Type
+                                                for (var i3 = 0; i3 < data2.data[i2].skins.length; i3++) { //Weapon Skins
+                                                    if(data2.data[i2].skins[i3].levels[0].uuid == dailyShop[i]) {
+                                                        $(`.single-item.${i+1} .single-item-name`).append(data2.data[i2].skins[i3].displayName)
+                                                        $(`.single-item.${i+1} .single-item-weapon`).attr('src', data2.data[i2].skins[i3].levels[0].displayIcon)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        $.ajax({
+                                            dataType: "json",
+                                            url: `https://api.henrikdev.xyz/valorant/v1/store-offers`,
+                                            type: 'get',
+                                            success: function (data3, xhr) {
+                                                for (var i = 0; i < dailyShop.length; i++) {
+                                                    for (var i2 = 0; i2 < data3.data.Offers.length; i2++) {
+                                                        if(data3.data.Offers[i2].Rewards[0].ItemID == dailyShop[i]) {
+                                                            $(`.single-item.${i+1} .single-item-price`).append(data3.data.Offers[i2].Cost[Object.keys(data3.data.Offers[i2].Cost)[0]])
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
+
+                        var bundleSecondsRemaining = shopData.FeaturedBundle.BundleRemainingDurationInSeconds
+                        var singleOfferSecondsRemaining = shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds
+
+                        Date.prototype.addSeconds = function (seconds) {
+                            var copiedDate = new Date(this.getTime());
+                            return new Date(copiedDate.getTime() + seconds * 1000);
+                        }
+                        var dateData = {
+                            lastCkeckedDate: new Date().getTime(),
+                            willLastFor: new Date().addSeconds(singleOfferSecondsRemaining)
+                        }
+                        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
+
                         bundleSecondsRemaining--;
                         singleOfferSecondsRemaining--;
-                        $('.featured-bundle-time-left').empty()
-                        $('.featured-bundle-time-left').append(bundleTimeToHMS(bundleSecondsRemaining) + " remaining");
-                        $('.single-skins-time-left').empty()
-                        $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
 
                         if(nightMarketSecondsRemaining !== false) {
                             nightMarketSecondsRemaining--;
@@ -675,47 +657,68 @@ async function getShop() {
                             $('.nightmarket-time-left').empty()
                             $('.nightmarket-time-left').append(nightMarketTimeToDHMS(nightMarketSecondsRemaining));
                         }
-                        if(singleOfferSecondsRemaining <= 0 || bundleSecondsRemaining <= 0) {
-                            window.location.href = "";
-                        }
-                    }, 1000)
-                });
-            })
+
+                        $('.featured-bundle-time-left').empty();
+                        $('.featured-bundle-time-left').append(bundleTimeToHMS(bundleSecondsRemaining) + " remaining");
+
+                        $('.single-skins-time-left').empty()
+                        $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
+                        setInterval(function () {
+                            bundleSecondsRemaining--;
+                            singleOfferSecondsRemaining--;
+                            $('.featured-bundle-time-left').empty()
+                            $('.featured-bundle-time-left').append(bundleTimeToHMS(bundleSecondsRemaining) + " remaining");
+                            $('.single-skins-time-left').empty()
+                            $('.single-skins-time-left').append(singleSkinsToHMS(singleOfferSecondsRemaining) + " remaining");
+
+                            if(nightMarketSecondsRemaining !== false) {
+                                nightMarketSecondsRemaining--;
+
+                                $('.nightmarket-time-left').empty()
+                                $('.nightmarket-time-left').append(nightMarketTimeToDHMS(nightMarketSecondsRemaining));
+                            }
+                            if(singleOfferSecondsRemaining <= 0 || bundleSecondsRemaining <= 0) {
+                                window.location.href = "";
+                            }
+                        }, 1000)
+                    });
+                })
+            }
         }
-    }
-    const inventoryData = await checkForBoughtSkins();
-    var storeIDs = [];
-    var nightmarketIDs = [];
-    var storeOffers = document.getElementsByClassName("single-item");
-    var nightmarketOffers = document.getElementsByClassName("night-market-offer");
+        const inventoryData = await checkForBoughtSkins();
+        var storeIDs = [];
+        var nightmarketIDs = [];
+        var storeOffers = document.getElementsByClassName("single-item");
+        var nightmarketOffers = document.getElementsByClassName("night-market-offer");
 
-    for (let item of storeOffers) {
-        storeIDs.push(item.id);
-    }
+        for (let item of storeOffers) {
+            storeIDs.push(item.id);
+        }
 
-    for (let item of nightmarketOffers) {
-        nightmarketIDs.push(item.id);
-    }
+        for (let item of nightmarketOffers) {
+            nightmarketIDs.push(item.id);
+        }
 
-    for (var i = 0; i < inventoryData.EntitlementsByTypes.length; i++) {
-        if(inventoryData.EntitlementsByTypes[i].ItemTypeID == "e7c63390-eda7-46e0-bb7a-a6abdacd2433") {
-            for (var i2 = 0; i2 < inventoryData.EntitlementsByTypes[i].Entitlements.length; i2++) {
-                if(storeIDs.includes(inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID)) {
-                    for (let item of storeOffers) {
-                        if(item.id == inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID) {
-                            item.classList.add('sold');
+        for (var i = 0; i < inventoryData.EntitlementsByTypes.length; i++) {
+            if(inventoryData.EntitlementsByTypes[i].ItemTypeID == "e7c63390-eda7-46e0-bb7a-a6abdacd2433") {
+                for (var i2 = 0; i2 < inventoryData.EntitlementsByTypes[i].Entitlements.length; i2++) {
+                    if(storeIDs.includes(inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID)) {
+                        for (let item of storeOffers) {
+                            if(item.id == inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID) {
+                                item.classList.add('sold');
+                            }
                         }
                     }
-                }
-                if(nightmarketIDs.includes(inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID)) {
-                    for (let item of nightmarketOffers) {
-                        if(item.id == inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID) {
-                            item.classList.add('sold');
+                    if(nightmarketIDs.includes(inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID)) {
+                        for (let item of nightmarketOffers) {
+                            if(item.id == inventoryData.EntitlementsByTypes[i].Entitlements[i2].ItemID) {
+                                item.classList.add('sold');
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
-export default getShop
+    getShop();
+})

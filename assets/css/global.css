@@ -1240,6 +1240,7 @@ select:focus::-ms-value {
 }
 
 #main-home {
+  overflow-y: auto;
   margin-top: 2.5rem;
   margin-left: 5%;
 }

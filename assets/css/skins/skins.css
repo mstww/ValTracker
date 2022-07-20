@@ -200,6 +200,9 @@
 
 .Card {
   grid-area: Card;
+  position: relative;
+  text-align: center;
+  text-justify: baseline;
 }
 
 .Spray {
@@ -233,7 +236,7 @@
 
 .weapon-img {
   width: 80%;
-  height: 100%;
+  height: auto;
   transition: all 0.2s ease;
   -webkit-user-drag: none;
 }
@@ -290,7 +293,7 @@
 
 #weapon-tile img {
   position: relative;
-  top: -10px;
+  top: -10%;
 }
 
 #weapon-tile::before {
@@ -307,7 +310,8 @@
   transform: skewX(20deg) translateX(0);
 }
 
-#weapon-tile:hover:not(.type-header) > *:not(.type-header):not(.card-header):not(.gunname) {
+#weapon-tile:hover:not(.type-header)
+  > *:not(.type-header):not(.card-header):not(.gunname) {
   transform: scale(1.1);
 }
 
@@ -629,8 +633,4 @@
 
 .maximized #sec-skins {
   top: 13% !important;
-}
-
-.Melee img {
-  width: 51%;
 }
