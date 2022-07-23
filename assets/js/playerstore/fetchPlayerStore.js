@@ -525,7 +525,7 @@ $(document).ready(() => {
                     bearer = tokenData.accessToken;
                     id_token = tokenData.id_token;
 
-                    ipcRenderer.send('setCookies', 'please')
+                    ipcRenderer.send('getTdidCookie', 'please')
                     ipcRenderer.on('tdid', async function (event, arg) {
                         requiredCookie = "tdid=" + arg
 

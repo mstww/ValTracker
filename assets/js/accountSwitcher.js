@@ -82,7 +82,7 @@ async function switchAccount(element) {
     bearer = newTokenData.accessToken;
     id_token = newTokenData.id_token;
 
-    ipcRenderer.send('setCookies', 'reauth')
+    ipcRenderer.send('getTdidCookie', 'reauth')
     ipcRenderer.on('reauthTdid', async function (event, arg) {
         try {
             requiredCookie = "tdid=" + arg
@@ -228,7 +228,7 @@ $(document).ready(() => {
             bearer = data.tokenData.accessToken;
             id_token = data.tokenData.id_token;
     
-            ipcRenderer.send('setCookies', 'addedNewAccount')
+            ipcRenderer.send('getTdidCookie', 'addedNewAccount')
     
             ipcRenderer.on('newAccountTdid', async function (event, arg) {
                 requiredCookie = "tdid=" + arg

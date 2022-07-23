@@ -675,7 +675,7 @@ ipcMain.on('quit-app-and-install', function() {
   autoUpdater.quitAndInstall(true, true);
 });
 
-ipcMain.on("setCookies", function (event, arg) {
+ipcMain.on("getTdidCookie", function (event, arg) {
   session.defaultSession.cookies
     .get({})
     .then((cookies) => {
