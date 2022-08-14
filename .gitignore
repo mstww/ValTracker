@@ -1,5 +1,5 @@
-/node_modules
-/dist
-/settings
-request_verification.json
-save.txt
+node_modules
+*.log
+.next
+app
+dist

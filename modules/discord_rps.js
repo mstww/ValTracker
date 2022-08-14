@@ -3,8 +3,6 @@ const starting_activity = {
     assets: {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
-        //small_image: "",
-        //small_text: "",
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -26,8 +24,8 @@ const hub_activity = {
     assets: {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
-        small_image: "user-home",
-        small_text: "User Hub",
+        small_image: "home",
+        small_text: "Hub",
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -45,35 +43,12 @@ const hub_activity = {
 }
 
 const skins_activity = {
-    details: "Browsing Skins",
+    details: "Changing Skins",
     assets: {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
-        small_image: "gun",
+        small_image: "user-square",
         small_text: "Browsing Skins",
-    },
-    buttons: [{
-            "label": "Download VALTracker",
-            "url": "https://valtracker.gg"
-        },
-        {
-            "label": "Join the Discord",
-            "url": "https://discord.gg/aJfQ4yHysG"
-        }
-    ],
-    timestamps: {
-        start: Date.now()
-    },
-    instance: true
-}
-
-const bundles_activity = {
-    details: "Browsing Bundles",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "gun",
-        small_text: "Browsing Bundles",
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -95,7 +70,7 @@ const pprofile_acitivity = {
     assets: {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
-        small_image: "user-profile",
+        small_image: "search",
         small_text: "Browsing a player's profile",
     },
     buttons: [{
@@ -113,36 +88,13 @@ const pprofile_acitivity = {
     instance: true
 }
 
-const favmatches_acitivity = {
+const favmatches_activity = {
     details: "Browsing favourite matches",
     assets: {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
-        small_image: "user-home",
+        small_image: "star",
         small_text: "Browsing favourite matches",
-    },
-    buttons: [{
-            "label": "Download VALTracker",
-            "url": "https://valtracker.gg"
-        },
-        {
-            "label": "Join the Discord",
-            "url": "https://discord.gg/aJfQ4yHysG"
-        }
-    ],
-    timestamps: {
-        start: Date.now()
-    },
-    instance: true
-}
-
-const playersearch_acitivity = {
-    details: "Searching for a player",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "search",
-        small_text: "Searching for a player",
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -182,35 +134,12 @@ const settings_acitivity = {
     instance: true
 }
 
-const patchnotes_acitivity = {
-    details: "Browsing the patchnotes",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "patchnotes",
-        small_text: "Browsing the patchnotes",
-    },
-    buttons: [{
-            "label": "Download VALTracker",
-            "url": "https://valtracker.gg"
-        },
-        {
-            "label": "Join the Discord",
-            "url": "https://discord.gg/aJfQ4yHysG"
-        }
-    ],
-    timestamps: {
-        start: Date.now()
-    },
-    instance: true
-}
-
 const matchview_activity = {
     details: "Looking at a Match",
     assets: {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
-        small_image: "search",
+        small_image: "clipboard",
         small_text: "Looking at a Match",
     },
     buttons: [{
@@ -233,7 +162,7 @@ const shop_activity = {
     assets: {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
-        small_image: "shop",
+        small_image: "store",
         small_text: "Checking the Store",
     },
     buttons: [{
@@ -251,16 +180,13 @@ const shop_activity = {
     instance: true
 }
 
-module.exports = {
+export {
     starting_activity,
     hub_activity,
     skins_activity,
-    bundles_activity,
     pprofile_acitivity,
-    favmatches_acitivity,
-    playersearch_acitivity,
+    favmatches_activity,
     settings_acitivity,
-    patchnotes_acitivity,
     matchview_activity,
     shop_activity
 }
