@@ -58,5 +58,6 @@
   - Get a notification whenever one of your wishlisted skins is in your shop
       <details>
         <summary>Screenshots:</summary>
-        <img src="https://media.codedotspirit.dev/valtracker/github-readme/favorites.png" align="center">
+        <img src="https://media.codedotspirit.dev/valtracker/github-readme/wishlist_1.png" align="center">
+        <img src="https://media.codedotspirit.dev/valtracker/github-readme/wishlist_2.png" align="center">
       </details>
