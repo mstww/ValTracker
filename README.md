@@ -1,4 +1,4 @@
-<p align="center"><img width="230px" src="iconss/VALTracker_Logo_default.png"></p>
+<p align="center"><img width="230px" src="renderer/public/icons/VALTracker_Logo_default.png"></p>
 
 <h3 align="center">A completely free Stats Tracker/Gameinfo Client for VALORANT.</h3>
 <h5 align="center">VALTracker was created under Riot Games' "Legal Jibber Jabber" policy using assets that are owned by Riot Games.</h5>
