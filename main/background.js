@@ -1025,11 +1025,6 @@ var reauth_interval;
           console.log(exitCode);
         });
       }
-    
-      var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-      if(on_load.skinWishlistNotifications === undefined || on_load.skinWishlistNotifications === true) {
-        checkStoreForWishlistItems();
-      }
     }
   
     var startedHidden = process.argv.find(arg => arg === '--start-hidden');
@@ -1293,6 +1288,11 @@ var reauth_interval;
             const port = process.argv[2];
             await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}`);
           } 
+        }
+    
+        var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+        if(on_load.skinWishlistNotifications === undefined || on_load.skinWishlistNotifications === true) {
+          checkStoreForWishlistItems();
         }
       }
     }

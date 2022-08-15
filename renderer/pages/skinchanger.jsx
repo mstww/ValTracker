@@ -315,7 +315,6 @@ function Skinchanger() {
         setActiveSkinChromas(ingameChromas);
       
         for(var i = 0; i < skinPrices.length; i++) {
-          console.log(shownSkin);
           if(skinPrices[i].Rewards[0].ItemID === ingameLevels[0].uuid) {
             var price = skinPrices[i].Cost['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
           }
@@ -340,7 +339,6 @@ function Skinchanger() {
         setActiveSkinChromas(skin_data.chromas);
       
         for(var i = 0; i < skinPrices.length; i++) {
-          console.log(shownSkin);
           if(skinPrices[i].Rewards[0].ItemID === skin_data.levels[0].uuid) {
             var price = skinPrices[i].Cost['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];
           }

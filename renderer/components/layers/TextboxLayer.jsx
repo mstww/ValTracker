@@ -26,6 +26,7 @@ function Textboxes() {
       setTextboxes(current => [...current, args ]);
       setTimeout(function() {
         var newArray = removeItemOnce(textboxes, args);
+        var newArray = newArray.filter(value => Object.keys(value).length !== 0);
         setTextboxes(newArray);
       }, 5000);
     });
@@ -35,22 +36,22 @@ function Textboxes() {
     <>
       {
         textboxes.map(textbox => {
-          var isTextboxShown = true;
-
           return (
             <motion.div 
-              className='w-1/4 mb-4 textbox-card mx-auto bg-button-color shadow-2xl p-2 rounded-sm flex flex-row relative'
-              key={textboxKeys + textbox + (Math.random())}
+              className='w-1/4 mb-4 textbox-card mx-auto bg-button-color shadow-2xl p-2 rounded-sm flex flex-row relative z-50'
+              key={textboxKeys + textbox + (Math.random()) + Math.random()}
               variants={update_card_variants}
               initial="hidden"
-              animate={isTextboxShown ? "enter" : 'exit'}
+              animate={"enter"}
               transition={{ type: 'ease-in', duration: 0.3 }}
             >
               <span className='mr-9 h-full flex items-center'>{textbox}</span>
               <div 
                 className='absolute pointer-events-auto z-30 top-2 right-2 ml-auto hover:bg-maincolor-lightest rounded-sm cursor-pointer transition-all duration-100 ease-linear w-8 h-8 flex items-center justify-center'
                 onClick={() => {
-                  setTextboxes(removeItemOnce(textboxes, textbox));
+                  var newArray = removeItemOnce(textboxes, textbox);
+                  var newArray = newArray.filter(value => Object.keys(value).length !== 0);
+                  setTextboxes(newArray);
                 }}
               >
                 <img src='/images/close.svg' className='w-8 p-1 shadow-img' />
@@ -65,8 +66,8 @@ function Textboxes() {
 
 export default function TextboxLayer() {
   return(
-    <div className="absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-end items-end z-20 pointer-events-none">
-      <Textboxes key="messages" />
+    <div className="absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-end items-end z-50 pointer-events-none">
+      <Textboxes key="textboxes" />
     </div>
   )  
 }

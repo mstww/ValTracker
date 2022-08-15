@@ -162,7 +162,7 @@ export default function Navbar({ page }) {
 
   var activeClasses = 'bg-button-color hover:bg-button-color-hover';
   var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer';
-  var disabledClasses = 'bg-black bg-opacity-80 cursor-default';
+  var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded-sm transition-all duration-100 ease-linear';
 
   if(page == "home") var isHome = true;
   if(page == "shop") var isShop = true;
@@ -213,7 +213,7 @@ export default function Navbar({ page }) {
         </Link>
 
         <div id='shop-nav' 
-          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2') : disabledClasses}
+          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ') : disabledClasses}
           data-isactive={isShop}
           onClick={() => { isShopShown ? router.push("/shop") : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
         >
@@ -222,7 +222,7 @@ export default function Navbar({ page }) {
         </div>
 
         <div id='inv-nav' 
-          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2') : disabledClasses}
+          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ') : disabledClasses}
           data-isactive={isInv}
           onClick={() => { isInvShown ? router.push("/inventory") : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
         >
@@ -231,7 +231,7 @@ export default function Navbar({ page }) {
         </div>
 
         <div id='fav-nav' 
-          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2') : disabledClasses}
+          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ') : disabledClasses}
           data-isactive={isFav}
           onClick={() => { isFavsShown ? router.push("/favorites") : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
         >
@@ -240,7 +240,7 @@ export default function Navbar({ page }) {
         </div>
 
         <div id='fav-nav' 
-          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2') : disabledClasses}
+          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ') : disabledClasses}
           data-isactive={isWish}
           onClick={() => { isWishlistShown ? router.push("/wishlist") : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
         >
