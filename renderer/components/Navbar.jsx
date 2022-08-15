@@ -163,6 +163,7 @@ export default function Navbar({ page }) {
   var activeClasses = 'bg-button-color hover:bg-button-color-hover';
   var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer';
   var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded-sm transition-all duration-100 ease-linear';
+  var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 placeholder:text-white h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-default transition-all ease-in duration-100 outline-none';
 
   if(page == "home") var isHome = true;
   if(page == "shop") var isShop = true;
@@ -191,11 +192,12 @@ export default function Navbar({ page }) {
           <input 
             id='skin-search'
             type='text'
-            className={'bg-button-color text-sm font-light pl-9 placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none ' + (isSearchShown ? '' : disabledClasses)}
+            className={(isSearchShown ? 'bg-button-color focus:outline-none text-sm font-light pl-9 placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none' : searchDisabledClasses)}
             placeholder='Search for a player'
             onKeyDown={handlePlayerSearch}
             autoCorrect='off'
             spellCheck='false'
+            disabled={!isSearchShown}
             ref={playerSearchRef}
             onClick={() => { isSearchShown ? null : ipcRenderer.send('relayTextbox', searchHiddenDesc) }}
           />
