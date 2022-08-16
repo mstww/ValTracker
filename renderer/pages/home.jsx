@@ -46,6 +46,19 @@ const playerRanks = {
   '27': 'Radiant',
 }
 
+const gamemodes = {
+  "newmap": "Unrated",
+  "competitive": "Competitive",
+  "unrated": "Unrated",
+  "spikerush": "Spike Rush",
+  "deathmatch": "Deathmatch",
+  "ggteam": "Escalation",
+  "onefa": "Replication",
+  "snowball": "Snowball Fight", 
+  "custom": "Custom",
+  "": "Custom"
+}
+
 async function getEntitlement(bearer) {
   return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
     method: 'POST',
@@ -1629,8 +1642,15 @@ function Home() {
   }, [])
 
   React.useEffect(() => {
-    ipcRenderer.on("hub_smartLoadNewMatches", async function() {
-      await fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false, true);
+    ipcRenderer.on("hub_smartLoadNewMatches", async function(event, args) {
+      if(args !== 'newmap' || args !== 'snowball') {
+        if(args === activeQueueTab) {
+          await fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false, true);
+        } else {
+          setActiveQueueTab(args);
+          await fetchMatchesAndCalculateStats(true, 0, 15, args, false, false, false);
+        }
+      }
     });
   }, []);
 

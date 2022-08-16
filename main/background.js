@@ -432,6 +432,7 @@ var pregameTimestamp = null;
 var ingameTimestamp = null;
 var menusTimestamp = null;
 var lastState = null;
+var lastGameMode = null;
 
 // -------------------- END RICH PRESENCE STATES --------------------
 
@@ -710,6 +711,19 @@ async function checkForMatch() {
   return;
 }
 
+const gamemodes = {
+  "newmap": "Unrated",
+  "competitive": "Competitive",
+  "unrated": "Unrated",
+  "spikerush": "Spike Rush",
+  "deathmatch": "Deathmatch",
+  "ggteam": "Escalation",
+  "onefa": "Replication",
+  "snowball": "Snowball Fight",
+  "custom": "Custom",
+  "": "Custom"
+}
+
 async function decideRichPresenceData(data) {
   switch(data.playerState) {
     case("INGAME"): {
@@ -773,6 +787,7 @@ async function decideRichPresenceData(data) {
         setRichPresence(details, scores, map, agent, ingameTimestamp);
       }
       lastState = "INGAME";
+      lastGameMode = data.gameMode;
       break;
     }
     case("PREGAME"): {
@@ -787,11 +802,12 @@ async function decideRichPresenceData(data) {
 
       setRichPresence(details, null, map, mode, pregameTimestamp);
       lastState = "PREGAME";
+      lastGameMode = mode;
       break;
     }
     case("MENUS"): {
       if(lastState === "INGAME") {
-        sendMessageToWindow("hub_smartLoadNewMatches");
+        sendMessageToWindow("hub_smartLoadNewMatches", lastGameMode);
       }
       pregameTimestamp = null;
       ingameTimestamp = null;
@@ -805,6 +821,7 @@ async function decideRichPresenceData(data) {
 
       setRichPresence(details, null, image, null, menusTimestamp);
       lastState = "MENUS";
+      lastGameMode = null;
       break;
     }
   }
@@ -828,19 +845,6 @@ function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
     pid: 69,
     activity: obj,
   });
-}
-
-const gamemodes = {
-  "newmap": "Unrated",
-  "competitive": "Competitive",
-  "unrated": "Unrated",
-  "spikerush": "Spike Rush",
-  "deathmatch": "Deathmatch",
-  "ggteam": "Escalation",
-  "onefa": "Replication",
-  "snowball": "Snowball Fight",
-  "custom": "Custom",
-  "": "Custom"
 }
 
 async function checkStoreForWishlistItems() {
