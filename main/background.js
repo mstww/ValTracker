@@ -1039,16 +1039,21 @@ var reauth_interval;
     } else {
       app.setAsDefaultProtocolClient("x-valtracker-client");
     }
+
+    var isLegacyTheme = false;
   
     if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/')) {
       var theme_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json");
       var theme = JSON.parse(theme_raw);
       if(theme.themeName == "legacy") {
         var bg = '#222222';
+        isLegacyTheme = true;
       } else {
         var bg = '#1b222b';
       }
     }
+
+    console.log(isLegacyTheme);
   
     mainWindow = createWindow('main', {
       width: 1400,
@@ -1276,17 +1281,17 @@ var reauth_interval;
           }
   
           if (isProd) {
-            await mainWindow.loadURL('app://./home.html');
+            await mainWindow.loadURL('app://./home.html?isLegacyTheme=' + isLegacyTheme);
           } else {
             const port = process.argv[2];
-            await mainWindow.loadURL(`http://localhost:${port}/home`);
+            await mainWindow.loadURL(`http://localhost:${port}/home?isLegacyTheme=` + isLegacyTheme);
           } 
         } else {
           if (isProd) {
-            await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}`);
+            await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=` + isLegacyTheme);
           } else {
             const port = process.argv[2];
-            await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}`);
+            await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=` + isLegacyTheme);
           } 
         }
     

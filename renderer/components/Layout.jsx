@@ -24,22 +24,34 @@ export default function Layout({ children, classNames, setup }) {
   const firstRender = useFirstRender();
   const [ legacyTheme, setLegacyTheme ] = React.useState(false);
 
+  var legacy = false;
+
   var path = router.pathname.split("/").pop()
   if(path == "") {
     path = "home"
   }
   
   React.useEffect(() => {
+    if(router.query.isLegacyTheme === true) {
+      setLegacyTheme(true);
+    }
+  }, []);
+  
+  React.useEffect(() => {
+    if(router.query.isLegacyTheme === true) {
+      setLegacyTheme(true);
+      document.body.classList.add('legacy');
+    }
     var theme_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json");
     var theme = JSON.parse(theme_raw);
     var theme_name = theme.themeName;
     if(theme_name == "legacy") {
       setLegacyTheme(true);
+      document.body.classList.add('legacy');
     }
   }, []);
 
   if(firstRender) {
-    var legacy = false;
     var theme_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json");
     var theme = JSON.parse(theme_raw);
     var theme_name = theme.themeName;
@@ -47,14 +59,21 @@ export default function Layout({ children, classNames, setup }) {
       legacy = true;
     }
   }
+
+  if(router.query.isLegacyTheme === true) {
+    legacy = true;
+    document.body.classList.add('legacy');
+  }
+
   React.useEffect(() => {
     ipcRenderer.on('useLegacyTheme', function(event, args) {
       setLegacyTheme(args);
+      legacy = args;
     });
   }, [])
   
   return( 
-    <div className={"flex flex-row bg-maincolor-light " + (legacyTheme ? 'legacy ' : ' ') + (legacy ? 'legacy' : '') }>
+    <div className={"flex flex-row bg-maincolor-light " + (legacy ? 'legacy' : '')}>
       <WindowControls />
       {setup ? '' : <MessageLayer />}
       {setup ? '' : <UpdatingLayer />}

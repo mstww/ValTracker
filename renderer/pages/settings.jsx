@@ -110,8 +110,8 @@ function Settings() {
   const [ hardwareAcceleration, setHardwareAcceleration ] = React.useState(false);
   const [ legacyThemeToggle, setLegacyThemeToggle ] = React.useState(false);
 
-  const [appRP, setAppRP] = React.useState(false);
-  const [gameRP, setGameRP] = React.useState(false);
+  const [ appRP, setAppRP ] = React.useState(false);
+  const [ gameRP, setGameRP ] = React.useState(false);
 
   const overlayWrapper = React.useRef(null);
   const [ popupBackgroundShown, setPopupBackgroundShown ] = React.useState(false);
@@ -226,15 +226,20 @@ function Settings() {
         themeName: 'legacy'
       }
       fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
+      document.body.classList.add('legacy');
     } else {
       var data = {
         themeName: 'default'
       }
       fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
-      document.body.classList.remove('legacy');
+
+      var legacyClasses = document.getElementsByClassName('legacy ');
+      for(var i = 0; i < legacyClasses.length; i++) {
+        legacyClasses[i].classList.remove('legacy');
+      }
     }
 
-    ipcRenderer.send('relayUseLegacyTheme', legacyThemeToggle)
+    ipcRenderer.send('relayUseLegacyTheme', legacyThemeToggle);
 
     setLegacyThemeToggle(!legacyThemeToggle);
   }
