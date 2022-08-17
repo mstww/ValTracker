@@ -937,6 +937,10 @@ async function checkStoreForWishlistItems() {
           }
         }
       }
+      
+      setTimeout(() => {
+        checkStoreForWishlistItems();
+      }, (singleSkinsExpirationDate+5) - Date.now());
     }
   });
 }
