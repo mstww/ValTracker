@@ -1,6 +1,6 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, shell } from 'electron';
 import SettingsTile from '../components/settings/SettingsTile';
 import SettingsWrapper from '../components/settings/SettingsWrapper';
 import SettingsGroup from '../components/settings/SettingsGroup';
@@ -86,7 +86,15 @@ function Patchnotes() {
     <div className='patchnotes prose'>
       <h1>Patchnotes for { version }</h1>
       <p className='text-gray-500'>Released {releaseDate}</p>
-      <div className='ml-4 mt-4 w-5/6' dangerouslySetInnerHTML={{ __html: patchnotes }} />
+      <div 
+        className='ml-4 mt-4 w-5/6' 
+        onClick={(e) => {
+          if(e.target.tagName === 'a' || e.target.tagName === 'A') {
+            shell.openExternal(e.target.href);
+          }
+        }} 
+        dangerouslySetInnerHTML={{ __html: patchnotes }} 
+      />
     </div>
   );
 }
