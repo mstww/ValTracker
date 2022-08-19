@@ -1250,11 +1250,9 @@ function Home() {
 
     /* PLAYER STATS */
     for(var i = 0; i < match.players.length; i++) {
-      var playerNameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
       var homePlayerNameTag = `${user_creds.playerName}#${user_creds.playerTag}`;
-      var homePlayerNameTag_LowerCase = `${user_creds.playerName.toLowerCase()}#${user_creds.playerTag.toLowerCase()}`;
       
-      if(playerNameTag == homePlayerNameTag_LowerCase) {
+      if(match.players[i].subject == user_creds.playerUUID) {
         var playerInfo = match.players[i];
         var playerCurrentTier = match.players[i].competitiveTier;
         var playerRankFixed = playerRanks[playerCurrentTier];
