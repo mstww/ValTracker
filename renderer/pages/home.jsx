@@ -1645,10 +1645,10 @@ function Home() {
     ipcRenderer.on("hub_smartLoadNewMatches", async function(event, args) {
       if(args !== 'newmap' || args !== 'snowball') {
         if(args === activeQueueTab) {
-          await fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false, true);
+          await fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
         } else {
           setActiveQueueTab(args);
-          await fetchMatchesAndCalculateStats(true, 0, 15, args, false, false, false);
+          await fetchMatchesAndCalculateStats(true, 0, 15, args, false);
         }
       }
     });
