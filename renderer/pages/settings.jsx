@@ -51,7 +51,7 @@ async function getXMPPRegion(requiredCookie, bearer, id_token) {
 
 const fetchPatchnotes = async () => {
   try {
-    const response = await fetch(`https://api.valtracker.gg/patchnotes-beta/v${pjson.version}`, { keepalive: true });
+    const response = await fetch(`https://api.valtracker.gg/patchnotes/v${pjson.version}`, { keepalive: true });
     const json = await response.json();
 
     const patchnotes = md_conv.makeHtml(json.data.patchnotes);

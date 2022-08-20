@@ -30,7 +30,7 @@ const fetchPatchnotes = async () => {
 
   if(!updateDenied) {
     try {
-      const response = await fetch(`https://api.valtracker.gg/patchnotes-beta`);
+      const response = await fetch(`https://api.valtracker.gg/patchnotes`);
       const json = await response.json();
 
       var newest_version = json.data.version;
