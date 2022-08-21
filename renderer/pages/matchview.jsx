@@ -159,11 +159,16 @@ function Matchview() {
           allPlayerAwardStats[playerData[i].subject].money_spent = 0;
   
           var playerDamage = 0;
-          for(var j = 0; j < playerData[i].roundDamage.length; j++) {
-            playerDamage += playerData[i].roundDamage[j].damage;
+          console.log(playerData);
+          if(playerData[i].roundDamage !== null) {
+            for(var j = 0; j < playerData[i].roundDamage.length; j++) {
+              playerDamage += playerData[i].roundDamage[j].damage;
+            }
+    
+            allPlayerAwardStats[playerData[i].subject].total_dmg = playerDamage;
+          } else {
+            allPlayerAwardStats[playerData[i].subject].total_dmg = 0;
           }
-  
-          allPlayerAwardStats[playerData[i].subject].total_dmg = playerDamage;
         }
   
         for(var i = 0; i < roundData.length; i++) {
