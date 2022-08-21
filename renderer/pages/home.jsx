@@ -524,26 +524,44 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
       tierCount++;
 
       if(tierCount == agentContractProgressionLevel) {
-        var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
-        agentContractProgression.next_level.reward = next_level_data;
-        agentContractProgression.next_level.levelNum = tierCount + 1;
-        
-        if(atEnd === true) {
-          agentContractProgression.totalXPneeded = 1;
-          agentContractProgression.currentXPowned = 1;
-        } else {
-          agentContractProgression.totalXPneeded = next_level.xp;
-          agentContractProgression.currentXPowned = agentContractXpRemaining;
-        }
-
         if(current_level) {
+          if(atEnd === true) {
+            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+  
+            agentContractProgression.current_level.reward = current_level_data;
+            agentContractProgression.current_level.levelNum = tierCount -1;
+          } else {
+            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+  
+            agentContractProgression.current_level.reward = current_level_data;
+            agentContractProgression.current_level.levelNum = tierCount;
+          }
           var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+          console.log(current_level_data);
 
           agentContractProgression.current_level.reward = current_level_data;
           agentContractProgression.current_level.levelNum = tierCount;
         } else {
           agentContractProgression.current_level.reward = null;
           agentContractProgression.current_level.levelNum = 0;
+        }
+        
+        if(atEnd === true) {
+          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+
+          agentContractProgression.next_level.reward = next_level_data;
+          agentContractProgression.next_level.levelNum = tierCount;
+
+          agentContractProgression.totalXPneeded = 1;
+          agentContractProgression.currentXPowned = 1;
+        } else {
+          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+
+          agentContractProgression.next_level.reward = next_level_data;
+          agentContractProgression.next_level.levelNum = tierCount + 1;
+
+          agentContractProgression.totalXPneeded = next_level.xp;
+          agentContractProgression.currentXPowned = agentContractXpRemaining;
         }
       }
     }
@@ -596,30 +614,39 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
       tierCount++;
 
       if(tierCount == battlePassProgressionLevel) {
-        var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+        if(current_level) {
+          if(atEnd === true) {
+            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+  
+            battlePassProgression.current_level.reward = current_level_data;
+            battlePassProgression.current_level.levelNum = tierCount -1;
+          } else {
+            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+  
+            battlePassProgression.current_level.reward = current_level_data;
+            battlePassProgression.current_level.levelNum = tierCount;
+          }
+        } else {
+          battlePassProgression.current_level.reward = null;
+          battlePassProgression.current_level.levelNum = 0;
+        }
 
         if(atEnd === true) {
+          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+
           battlePassProgression.totalXPneeded = 1;
           battlePassProgression.currentXPowned = 1;
 
-          battlePassProgression.next_level.reward = next_level_data - 1;
+          battlePassProgression.next_level.reward = next_level_data;
           battlePassProgression.next_level.levelNum = tierCount;
         } else {
+          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+
           battlePassProgression.totalXPneeded = next_level.xp;
           battlePassProgression.currentXPowned = battlePassXpRemaining;
 
           battlePassProgression.next_level.reward = next_level_data;
           battlePassProgression.next_level.levelNum = tierCount + 1;
-        }
-
-        if(current_level) {
-          var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
-
-          battlePassProgression.current_level.reward = current_level_data;
-          battlePassProgression.current_level.levelNum = tierCount;
-        } else {
-          battlePassProgression.current_level.reward = null;
-          battlePassProgression.current_level.levelNum = 0;
         }
       }
     }
