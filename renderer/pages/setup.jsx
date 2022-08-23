@@ -66,6 +66,20 @@ async function requestUserCreds(region, puuid) {
   })).json());
 }
 
+async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
+    method: 'PUT',
+    headers: {
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      'Authorization': 'Bearer ' + bearer,
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    body: "[\"" + puuid + "\"]",
+    keepalive: true
+  })).json());
+}
+
 function Setup() {
   const router = useRouter();
   const login = async () => {
@@ -116,10 +130,9 @@ function Setup() {
       var playerUUID = userInfo[0].Subject;
       var playerRegion = region;
   
-      const playerMmrRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/mmr/${playerRegion}/${playerName}/${playerTag}`, { keepalive: true });
-      const playerMmr = await playerMmrRaw.json();
-      if(playerMmr.data.currenttier) {
-        var currenttier = playerMmr.data.currenttier;
+      const playerMmrRaw = await getPlayerMMR(playerRegion, playerUUID, entitlement_token, bearer);
+      if(playerMmr.LatestCompetitiveUpdate.TierAfterUpdate) {
+        var currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
       } else {
         var currenttier = 0;
       }
