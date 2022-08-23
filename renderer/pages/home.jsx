@@ -428,12 +428,14 @@ const getLevelRewardData = async (uuid, rewardType) => {
       return {
         isText: false,
         image: 'https://media.valorant-api.com/weaponskinlevels/' + uuid + '/displayicon.png',
+        uuid: uuid,
         text: null
       }
     case "EquippableCharmLevel":
       return {
         isText: false, 
         image: 'https://media.valorant-api.com/buddylevels/' + uuid + '/displayicon.png',
+        uuid: uuid,
         text: null
       }
     case "Currency":
@@ -446,12 +448,14 @@ const getLevelRewardData = async (uuid, rewardType) => {
       return { 
         isText: false, 
         image: 'https://media.valorant-api.com/playercards/' + uuid + '/smallart.png' ,
+        uuid: uuid,
         text: null
       }
     case "Spray":
       return { 
         isText: false, 
         image: 'https://media.valorant-api.com/sprays/' + uuid + '/fulltransparenticon.png',
+        uuid: uuid,
         text: null
       }
     case "Title":
@@ -459,12 +463,14 @@ const getLevelRewardData = async (uuid, rewardType) => {
       return {
         isText: true,
         image: null,
+        uuid: uuid,
         text: titleData.data.displayName
       }
     case "Character":
       return {
         isText: false,
         image: 'https://media.valorant-api.com/agents/' + uuid + '/displayicon.png',
+        uuid: uuid,
         text: null
       }
   }
@@ -1121,7 +1127,7 @@ function Home() {
         var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.playerUUID, user_creds.playerRegion);
       }
   
-      setCurrentlyLoadedMatchCount(endIndex);
+      setCurrentlyLoadedMatchCount(data.items.endIndex);
       setMaxMatchesFound(data.items.totalMatches);
   
       if(data.errored == false && data.items.totalMatches > 0) {

@@ -10,6 +10,14 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
+  if(reward_1.image === null) {
+    reward_1.image = 'https://media.valorant-api.com/sprays/' + reward_1.uuid + '/displayicon.png'
+  }
+
+  if(reward_2.image === null) {
+    reward_2.image = 'https://media.valorant-api.com/sprays/' + reward_2.uuid + '/displayicon.png'
+  }
+
   return(
     <>
       <span className='px-1 pt-1'>{title}</span>
