@@ -47,6 +47,19 @@ const scoreboard_vars_initial = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
 
+const gamemodes = {
+  "newmap": "Unrated",
+  "competitive": "Competitive",
+  "unrated": "Unrated",
+  "spikerush": "Spike Rush",
+  "deathmatch": "Deathmatch",
+  "ggteam": "Escalation",
+  "onefa": "Replication",
+  "snowball": "Snowball Fight", 
+  "custom": "Custom",
+  "": "Custom"
+}
+
 function Matchview() {
   const router = useRouter();
 
@@ -284,7 +297,7 @@ function Matchview() {
         setMatchMapName(knownMatchData.mapName);
         setMatchDate(newMatchDate);
         setMatchLength(newMatchLength);
-        setMatchMode(knownMatchData.gameMode);
+        setMatchMode(gamemodes[knownMatchData.queueID]);
         setMatchServer(knownMatchData.gameServer);
         setMatchGameVersion(knownMatchData.gameVersion);
   

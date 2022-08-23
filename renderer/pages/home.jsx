@@ -1930,7 +1930,7 @@ function Home() {
                                   />
                                   
                                 </Tooltip>
-                                <span>{activeQueueTab != 'spikerush' && activeQueueTab != '' ? (activeQueueTab[0].toUpperCase() + activeQueueTab.slice(1)) : ('Spike Rush')}</span>
+                                <span>{gamemodes[matchData.matchInfo.queueID]}</span>
                               </span>
                             </div>
                           </div>
