@@ -1249,10 +1249,10 @@ function Home() {
   var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
   var user_creds = JSON.parse(user_creds_raw);
 
-  const calculateMatchStats = (match, activeQueueTab) => {
+  const calculateMatchStats = (match) => {
     var gameStartUnix = match.matchInfo.gameStartMillis;
     var gameLengthMS = match.matchInfo.gameLengthMillis;
-    var gameMode = activeQueueTab;
+    var gameMode = match.matchInfo.queueID;
     var gameServer = match.matchInfo.gamePodId;
     var gameVersion = match.matchInfo.gameVersion;
 
@@ -1836,7 +1836,7 @@ function Home() {
                   <div className='day relative' key={index}>
                     <div id='day-header' className='text-lg ml-4 day-header'>{key}</div>
                     {currentMatches[key].map((match, index) => {
-                      var { matchData, matchViewData } = calculateMatchStats(match, activeQueueTab);
+                      var { matchData, matchViewData } = calculateMatchStats(match);
 
                       return (
                         <div 
@@ -1930,7 +1930,7 @@ function Home() {
                                   />
                                   
                                 </Tooltip>
-                                <span>{gamemodes[matchData.matchInfo.queueID]}</span>
+                                <span>{gamemodes[match.matchInfo.queueID]}</span>
                               </span>
                             </div>
                           </div>

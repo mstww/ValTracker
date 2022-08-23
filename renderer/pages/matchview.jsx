@@ -292,12 +292,14 @@ function Matchview() {
         if(newMatchLength.split(",").pop() === ' ') {
           newMatchLength = newMatchLength.substring(0, newMatchLength.lastIndexOf(','));
         }
+
+        console.log(knownMatchData);
   
         setMatchMap(knownMatchData.mapUUID);
         setMatchMapName(knownMatchData.mapName);
         setMatchDate(newMatchDate);
         setMatchLength(newMatchLength);
-        setMatchMode(gamemodes[knownMatchData.queueID]);
+        setMatchMode(gamemodes[knownMatchData.gameMode]);
         setMatchServer(knownMatchData.gameServer);
         setMatchGameVersion(knownMatchData.gameVersion);
   
@@ -471,7 +473,7 @@ function Matchview() {
                   </li>
                   <li className='flex flex-row items-center mb-6'>
                     <Tooltip content={'Mode'} color="error" placement={'left'} className='rounded-sm'><img src='/images/standard.png' className='w-7 shadow-img' /></Tooltip>
-                    <span className='relative text-lg top-0.5 left-2'>{isEscalation === false ? (matchMode.charAt(0).toUpperCase() + matchMode.slice(1)) : 'Escalation'}</span>
+                    <span className='relative text-lg top-0.5 left-2'>{matchMode}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
                     <Tooltip content={'Region // Server'} color="error" placement={'left'} className='rounded-sm'><img src='/images/globe.svg' className='w-7 shadow-img' /></Tooltip>
@@ -616,7 +618,7 @@ function Matchview() {
           transition={{ type: 'linear', duration: 0.5, delay: (activeTab === 'overview' && lastTab !== '' ? 0.6 : 0.1)}}
         > 
           <div id='player-agent-image' className='absolute bottom-8 -left-64 z-30 h-full flex items-center'>
-            <img src={'https://media.valorant-api.com/agents/' + playerAgentUUID + '/fullportraitv2.png'} className='shadow-img' />
+            <img src={'https://media.valorant-api.com/agents/' + playerAgentUUID + '/fullportrait.png'} className='shadow-img' />
           </div>
           <div id='map-name-text' className='z-40 absolute -bottom-2 left-0'>
             <span 
