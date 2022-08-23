@@ -1,4 +1,5 @@
 import { Progress } from "@nextui-org/react"
+import fetch from 'node-fetch';
 
 export default function ContractProgressCard({ title, reward_1, level_1, progress_max, progress_value, reward_2, level_2, level_1_isTextReward, level_2_isTextReward, isVisible }) {
   var color = 'gradient'
@@ -10,11 +11,14 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  if(reward_1.image === null) {
+  const res1 = await fetch(reward_1.image, { method: "HEAD" });
+  const res2 = await fetch(reward_2.image, { method: "HEAD" });
+
+  if(!res1.ok) {
     reward_1.image = 'https://media.valorant-api.com/sprays/' + reward_1.uuid + '/displayicon.png'
   }
 
-  if(reward_2.image === null) {
+  if(!res2.ok) {
     reward_2.image = 'https://media.valorant-api.com/sprays/' + reward_2.uuid + '/displayicon.png'
   }
 
