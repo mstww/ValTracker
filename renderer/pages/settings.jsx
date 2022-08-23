@@ -119,6 +119,7 @@ function Settings() {
   const [ legacyThemeToggle, setLegacyThemeToggle ] = React.useState(false);
 
   const [ appRP, setAppRP ] = React.useState(false);
+  const [ appRPwhenHidden, setAppRPwhenHidden ] = React.useState(false);
   const [ gameRP, setGameRP ] = React.useState(false);
 
   const overlayWrapper = React.useRef(null);
@@ -262,6 +263,20 @@ function Settings() {
     ipcRenderer.send('changeDiscordRP', `clear`);
 
     setAppRP(!appRP);
+  }
+
+  const changeAppRPWhenHidden = () => {
+    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
+    var data = JSON.parse(raw);
+    if(data.showDiscordRPWhenHidden === true) data.showDiscordRPWhenHidden = false;
+    else if(data.showDiscordRPWhenHidden === false) data.showDiscordRPWhenHidden = true;
+    else data.showDiscordRPWhenHidden = true;
+
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+
+    ipcRenderer.send('changeDiscordRP', `clear`);
+
+    setAppRPwhenHidden(!appRPwhenHidden);
   }
 
   const changeGameRP = () => {
@@ -510,7 +525,18 @@ function Settings() {
                 isChecked={appRP}
                 onClick={changeAppRP}
               />
+
+              <Setting 
+                title={'Stop Rich Presence when minimized'} 
+                desc={'Open VALTracker minimized on autostart.'} 
+                inputType={'checkbox'} 
+                isChecked={appRPwhenHidden}
+                isDisabled={!appRP}
+                onClick={changeAppRPWhenHidden}
+              />
+
               <SettingsSeperator />
+
               <Setting 
                 title={'VALORANT Game Presence'} 
                 desc={"Set your Discord Status to a Rich Presence about your current match!"} 

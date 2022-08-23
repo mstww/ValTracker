@@ -1154,6 +1154,11 @@ var reauth_interval;
       if(json.minimizeOnClose == false || json.minimizeOnClose == undefined) {
         mainWindow.close();
       } else {
+        var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+        if(config.showDiscordRPWhenHidden === true) {
+          RPState = 'ClientHidden';
+          discordClient.clearActivity(process.pid);
+        }
         mainWindow.hide();
   
         var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
@@ -1161,6 +1166,8 @@ var reauth_interval;
           {
             label: "Show",
             click: function () {
+              RPState = 'app';
+              sendMessageToWindow('setDRPtoCurrentPage');
               appIcon.destroy();
               mainWindow.show();
             },
