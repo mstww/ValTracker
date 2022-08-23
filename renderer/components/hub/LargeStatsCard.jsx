@@ -14,7 +14,7 @@ export default function SmallStatsCard({ img_src, header, win_percent, avg_kda, 
           </div>
           <div className='w-1/2 ml-2'>
             <h2 className='mt-1'>{avg_kda}</h2>
-            <p className='relative bottom-2 text-sm text-gray-400'>Avg KDA</p>
+            <p className='relative bottom-2 text-sm text-gray-400'>Avg KD</p>
           </div>
         </div>
       </div>
