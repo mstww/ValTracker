@@ -130,7 +130,7 @@ function Setup() {
       var playerUUID = userInfo[0].Subject;
       var playerRegion = region;
   
-      const playerMmrRaw = await getPlayerMMR(playerRegion, playerUUID, entitlement_token, bearer);
+      const playerMmr = await getPlayerMMR(playerRegion, playerUUID, entitlement_token, bearer);
       if(playerMmr.LatestCompetitiveUpdate.TierAfterUpdate) {
         var currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
       } else {
