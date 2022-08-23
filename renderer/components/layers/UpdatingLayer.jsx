@@ -91,7 +91,6 @@ function UpdateWindow() {
   }
 
   const finishUpdate = () => {
-    localStorage.setItem('show-whats-new', true);
     ipcRenderer.send('quit-app-and-install');
   } 
 
@@ -129,6 +128,7 @@ function UpdateWindow() {
     ipcRenderer.on('update-download-finished', () => {
       setDownloadCardShown(false);
       setFinishedCardShown(true);
+      localStorage.setItem('show-whats-new', true);
     });
     
     return () => {
