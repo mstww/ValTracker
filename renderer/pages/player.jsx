@@ -125,6 +125,22 @@ function getDifferenceInDays(date1, date2) {
   return Math.round(diffInMs / (1000 * 60 * 60 * 24));
 }
 
+async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
+  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
+    method: 'GET',
+    headers: {
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      'Authorization': 'Bearer ' + bearer,
+      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
+      'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    keepalive: true
+  })).json());
+}
+
 const fetchPlayer = async (name, tag) => {
   try {
     const playerInfoRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${name}/${tag}`, { keepalive: true });
@@ -139,21 +155,20 @@ const fetchPlayer = async (name, tag) => {
     const playerName = playerInfo.data.name;
     const playerTag = playerInfo.data.tag;
 
-    const playerMmrRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${region}/${puuid}`, { keepalive: true });
-    const playerMmr = await playerMmrRaw.json();
-
-    const currenttier = playerMmr.data.currenttier;
-    if(!currenttier) 
-      currenttier = 0;
-
-    const playerRank = playerMmr.data.currenttierpatched;
-    const playerRankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
-
     const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
     const tokenData = JSON.parse(rawTokenData);
 
     const bearer = tokenData.accessToken;
     const entitlement_token = await getEntitlement(bearer);
+
+    const playerMmr = await getPlayerMMR(region, puuid, entitlement_token, bearer);
+
+    const currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
+    if(!currenttier) 
+      currenttier = 0;
+
+    const playerRank = playerRanks[playerMmr.LatestCompetitiveUpdate.TierAfterUpdate];
+    const playerRankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
 
     const playerMatches = await getMatchHistory(region, puuid, 0, 5, 'unrated', entitlement_token, bearer);
     

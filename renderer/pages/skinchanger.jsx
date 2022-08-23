@@ -331,8 +331,6 @@ function Skinchanger() {
             var skin_data = skinData[i];
           }
         }
-
-        console.log(skin_data);
   
         setActiveSkinImage(skin_data.chromas[0].fullRender); 
         setActiveChroma(skin_data.chromas[0].uuid);

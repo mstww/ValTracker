@@ -13,6 +13,18 @@ async function getEntitlement(bearer) {
   })).json())['entitlements_token'];
 }
 
+async function getStoreOffers(region, entitlement_token) {
+  return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v1/offers/', {
+    method: 'GET',
+    headers: {
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    keepalive: true
+  })).json());
+}
+
 async function getShopData(region, puuid, entitlement_token, bearer) {
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v2/storefront/' + puuid, {
     method: 'GET',
@@ -57,7 +69,6 @@ async function fetchShop() {
     // FETCHING FROM CURRENT FILE
     return [daily, user_creds, tokenData];
   } else {
-  
     var lastShop = false;
   
     if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json')) {
@@ -67,12 +78,14 @@ async function fetchShop() {
   
     var data = {};
     data.singleSkins = [];
+
+    var entitlement_token = await getEntitlement(bearer);
   
     if(lastShop !== false && Date.now() < lastShop.singleSkinsExpireIn && Date.now() < lastShop.bundleExpiresIn) {
       var rawShopData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json');
       var shopData = JSON.parse(rawShopData);
       
-      var skinPriceData = await (await fetch(`https://api.henrikdev.xyz/valorant/v1/store-offers`)).json();
+      var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token);
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i]
@@ -82,9 +95,9 @@ async function fetchShop() {
         var skinName = skinData.data.displayName;
         var skinIcon = skinData.data.displayIcon;
   
-        for(var n = 0; n < skinPriceData.data.Offers.length; n++) {
-          if(skinPriceData.data.Offers[n].Rewards[0].ItemID == skinUUID) {
-            var skinPrice = skinPriceData.data.Offers[n].Cost[Object.keys(skinPriceData.data.Offers[n].Cost)[0]];
+        for(var n = 0; n < skinPriceData.Offers.length; n++) {
+          if(skinPriceData.Offers[n].Rewards[0].ItemID == skinUUID) {
+            var skinPrice = skinPriceData.Offers[n].Cost[Object.keys(skinPriceData.Offers[n].Cost)[0]];
           }
         }
   
@@ -180,7 +193,7 @@ async function fetchShop() {
         // nightmarket[i].Offer.OfferID
       }
 
-      var skinPriceData = await (await fetch(`https://api.henrikdev.xyz/valorant/v1/store-offers`)).json();
+      var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token);
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
@@ -190,9 +203,9 @@ async function fetchShop() {
         var skinName = skinData.data.displayName;
         var skinIcon = skinData.data.displayIcon;
   
-        for(var n = 0; n < skinPriceData.data.Offers.length; n++) {
-          if(skinPriceData.data.Offers[n].Rewards[0].ItemID == skinUUID) {
-            var skinPrice = skinPriceData.data.Offers[n].Cost[Object.keys(skinPriceData.data.Offers[n].Cost)[0]];
+        for(var n = 0; n < skinPriceData.Offers.length; n++) {
+          if(skinPriceData.Offers[n].Rewards[0].ItemID == skinUUID) {
+            var skinPrice = skinPriceData.Offers[n].Cost[Object.keys(skinPriceData.Offers[n].Cost)[0]];
           }
         }
   

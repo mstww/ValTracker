@@ -186,6 +186,22 @@ async function getAccessTokens(ssid) {
   }));
 }
 
+async function getPlayerMMR(region, puuid, entitlement_token, bearer) { 
+  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
+    method: 'GET',
+    headers: {
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      'Authorization': 'Bearer ' + bearer,
+      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
+      'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    keepalive: true
+  })).json());
+}
+
 async function checkUserData() {
   var raw = fs.readFileSync(app_data + "/user_data/user_creds.json");
   var user_creds = JSON.parse(raw);
@@ -210,10 +226,13 @@ async function checkUserData() {
   }
 
   if(!user_creds.playerRank) {
-    var mmr_data = await (await fetch(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${user_creds.playerRegion}/${user_creds.playerUUID}`)).json();
+    var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
+    var bearer = token_data.accessToken;
+    var ent = await getEntitlement(bearer);
+    var mmr_data = await getPlayerMMR(user_creds.playerRegion, user_creds.playerUUID, ent, bearer);
 
-    if(user_creds.playerRank != undefined) {
-      user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${mmr_data.data.currenttier}/largeicon.png`;
+    if(mmr_data.LatestCompetitiveUpdate.TierAfterUpdate !== undefined) {
+      user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${mmr_data.LatestCompetitiveUpdate.TierAfterUpdate}/largeicon.png`;
     } else {
       user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/largeicon.png`;
     }
@@ -328,11 +347,13 @@ async function reauthAccount(puuid) {
       try {
         var user_data_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_accounts/" + puuid.split('.').pop() + ".json");
         var user_data = JSON.parse(user_data_raw);
-  
-        var mmr_data = await (await fetch(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${user_data.playerRegion}/${puuid}`)).json();
-    
-        var currenttier = mmr_data.data.currenttier;
-        if(currenttier == null || currenttier == undefined) {
+
+        var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
+        var bearer = token_data.accessToken;
+        var ent = await getEntitlement(bearer);
+        var mmr_data = await getPlayerMMR(user_creds.playerRegion, user_creds.playerUUID, ent, bearer);
+        var currenttier = mmr_data.LatestCompetitiveUpdate.TierAfterUpdate;
+        if(currenttier === null || currenttier === undefined) {
           currenttier = 0;
         }
   
@@ -866,7 +887,6 @@ async function checkStoreForWishlistItems() {
       var entitlement_token = await getEntitlement(bearer);
     
       var shopData = await getShopData(region, puuid, entitlement_token, bearer);
-      console.log(shopData);
 
       var playerItems = await getPlayerItems(region, puuid, entitlement_token, bearer);
     
@@ -966,8 +986,6 @@ var reauth_interval;
         "auth": 'v' + pjson.version,
       }
     })).json();
-
-    console.log(featureStatus);
     
     if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
       if(featureStatus.data.app_discord_rp.enabled === true) {
@@ -1002,8 +1020,6 @@ var reauth_interval;
             case("message"): {
               if(msg.data === "fetchPlayerData") {
                 var data = await checkForMatch();
-              } else {
-                console.log(msg.data);
               }
             }
             case("WS_Event"): {
@@ -1060,8 +1076,6 @@ var reauth_interval;
         var bg = '#1b222b';
       }
     }
-
-    console.log(isLegacyTheme);
   
     mainWindow = createWindow('main', {
       width: 1400,
@@ -1518,19 +1532,6 @@ ipcMain.on("changeDiscordRP", function (event, arg) {
   } else {
     discordClient.clearActivity(process.pid);
   }
-});
-
-async function fetchUserMMR() {
-  var user_data_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_creds.json");
-  var user_data = JSON.parse(user_data_raw);
-  var user_UUID = user_data.playerUUID;
-  var mmr_data = await (await fetch(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/eu/${user_UUID}`)).json();
-  return mmr_data.data;
-}
-
-ipcMain.handle('fetchUserMMR', async (event, arg) => {
-  let mmr = await fetchUserMMR();
-  return mmr;
 });
 
 var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';

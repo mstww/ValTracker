@@ -49,6 +49,34 @@ async function getXMPPRegion(requiredCookie, bearer, id_token) {
   })).json());
 }
 
+async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
+  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
+    method: 'GET',
+    headers: {
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      'Authorization': 'Bearer ' + bearer,
+      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
+      'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    keepalive: true
+  })).json());
+}
+
+async function getEntitlement(bearer) {
+  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + bearer,
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    keepalive: true
+  })).json())['entitlements_token'];
+}
+
 const fetchPatchnotes = async () => {
   try {
     const response = await fetch(`https://api.valtracker.gg/patchnotes/v${pjson.version}`, { keepalive: true });
@@ -319,12 +347,13 @@ function Settings() {
         var new_account_data = await fetch("https://pd." + region + ".a.pvp.net/name-service/v2/players", options );
         var new_account_data = await new_account_data.json();
     
-        var account_rank_data = await fetch(`https://api.henrikdev.xyz/valorant/v1/by-puuid/mmr/${region}/${puuid}`);
-        var account_rank_data = await account_rank_data.json();
+        const entitlement_token = await getEntitlement(bearer);
+    
+        const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
     
         var currenttier = 0;
-        if(account_rank_data.data.currenttier != undefined) {
-          var currenttier = account_rank_data.data.currenttier
+        if(mmr_data.LatestCompetitiveUpdate.TierAfterUpdate != undefined) {
+          var currenttier = account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate
         }
     
         var accObj = {

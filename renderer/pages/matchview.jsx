@@ -159,7 +159,7 @@ function Matchview() {
           allPlayerAwardStats[playerData[i].subject].money_spent = 0;
   
           var playerDamage = 0;
-          console.log(playerData);
+          
           if(playerData[i].roundDamage !== null) {
             for(var j = 0; j < playerData[i].roundDamage.length; j++) {
               playerDamage += playerData[i].roundDamage[j].damage;

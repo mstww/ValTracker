@@ -67,15 +67,17 @@ async function requestUserCreds(region, puuid) {
 }
 
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
-    method: 'PUT',
+  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
+    method: 'GET',
     headers: {
       'X-Riot-Entitlements-JWT': entitlement_token,
       'Authorization': 'Bearer ' + bearer,
+      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
+      'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
       'Content-Type': 'application/json',
       'User-Agent': ''
     },
-    body: "[\"" + puuid + "\"]",
     keepalive: true
   })).json());
 }
