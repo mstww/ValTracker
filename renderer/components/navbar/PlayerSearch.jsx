@@ -25,6 +25,7 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
 
   const [ isHistoryDropdownShown, setIsHistoryDropdownShown ] = React.useState(false);
   const [ searchHistory, setSearchHistory ] = React.useState([]);
+  const [ isHistoryLocked, setIsHistoryLocked ] = React.useState(false);
 
   React.useEffect(() => {
     if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json')) {
@@ -49,6 +50,7 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(data));
       }
     }
+    setIsHistoryLocked(false);
   }
 
   return (
@@ -64,8 +66,14 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
           spellCheck='false'
           disabled={!isSearchShown}
           ref={playerSearchRef}
-          onFocus={() => { setIsHistoryDropdownShown(true) }}
-          onBlur={() => { setIsHistoryDropdownShown(false) }}
+          onFocus={() => { 
+            setIsHistoryLocked(false);
+            setIsHistoryDropdownShown(true);
+          }}
+          onBlur={() => { 
+            setIsHistoryLocked(false);
+            setIsHistoryDropdownShown(false);
+          }}
           onClick={() => { 
             isSearchShown ? 
             (searchHistory.length > 0 ? setIsHistoryDropdownShown(true) : null)
@@ -79,28 +87,46 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
           className={"absolute top-8 mt-2 ml-px bg-button-color z-30 w-full rounded-sm search-dropdown shadow-xl"}
           variants={account_switcher_variants}
           initial='closed'
-          animate={isHistoryDropdownShown ? 'open' : 'closed'}
+          animate={isHistoryDropdownShown || isHistoryLocked ? 'open' : 'closed'}
           transition={{ type: 'ease-in', duration: 0.3, delay: 0.35 }}
         >
           {searchHistory.map((item, index) => {
             return (
               <div 
                 className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-100 " + (index+1 !== searchHistory.length ? 'border-b border-maincolor-lightest' : '')}
+                onMouseEnter={() => {
+                  setIsHistoryLocked(true);
+                }}
+                onMouseLeave={() => {
+                  setIsHistoryLocked(true);
+                }}
                 onClick={(e) => {
-                  console.log(e.target.tagName)
-                  if(e.target.tagName !== "img" && e.target.tagName !== "IMG") {
+                  setIsHistoryLocked(false);
+                  if(e.target.id !== "remove-el" && e.target.tagName !== "img" && e.target.tagName !== "IMG") {
                     handleHistoryClick(item.name, item.tag, item.encoded_user);
                   }
                 }}
               >
                 <span className="text-sm font-light">{item.name + '#' + item.tag}</span>
-                <img 
-                  src='/images/close.svg' 
-                  className='absolute top-1 left-1 ml-0.5 w-6 cursor-pointer hover:bg-maincolor-lightest hover:bg-opacity-90 rounded-sm p-1 transition-all ease-in duration-100'
+                <div
+                  id='remove-el'
+                  className="absolute top-1 left-1 cursor-pointer hover:bg-maincolor-lightest hover:bg-opacity-90 rounded-sm p-1 transition-all ease-in duration-100"
                   onClick={() => {
+                    playerSearchRef.current.focus();
                     removeItemFromHistory(item.encoded_user);
-                  }} 
-                />
+                  }}
+                  onMouseEnter={() => {
+                    setIsHistoryLocked(true);
+                  }}
+                  onMouseLeave={() => {
+                    setIsHistoryLocked(true);
+                  }}
+                >
+                  <img 
+                    src='/images/close.svg' 
+                    className='w-4'
+                  />
+                </div>
               </div>
             )
           })}
