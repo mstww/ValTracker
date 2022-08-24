@@ -4,7 +4,7 @@ import { ipcRenderer } from 'electron';
 import { motion } from "framer-motion";
 import fs from 'fs';
 import fetch from 'node-fetch'
-import { Tooltip, Radio, Loading, Checkbox, Input } from '@nextui-org/react';
+import { Tooltip, Radio, Loading } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useFirstRender } from '../components/useFirstRender';

@@ -1,6 +1,5 @@
 import React from 'react';
 import Layout from '../components/Layout';
-import { ipcRenderer } from 'electron';
 import { motion } from "framer-motion"
 import { useRouter } from 'next/router';
 import moment from 'moment';
@@ -27,12 +26,6 @@ const overview_vars_noflex = {
   hidden: { opacity: 0, x: 200, y: 0, scale: 1, display: 'none' },
   enter: { opacity: 1, x: 0, y: 0, scale: 1, display: 'block' },
   exit: { opacity: 0, x: -200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
-}
-
-const rounds_vars = {
-  hidden: { opacity: 0, x: 0, y: -200, scale: 1, display: 'none' },
-  enter: { opacity: 1, x: 0, y: 0, scale: 1, display: 'flex' },
-  exit: { opacity: 0, x: 0, y: -0, scale: 1, transitionEnd: { display: 'none' } },
 }
 
 const scoreboard_vars = {
@@ -73,7 +66,6 @@ function Matchview() {
   const [ teamData, setTeamData ] = React.useState({});
   const [ matchScore, setMatchScore ] = React.useState('');
   const [ playerMatchResult, setPlayerMatchResult ] = React.useState('');
-  const [ playerData, setPlayerData ] = React.useState('');
   const [ rounds, setRounds ] = React.useState([]);
 
   // -------------------- MATCH INFO --------------------
@@ -90,19 +82,15 @@ function Matchview() {
 
   const [ playerName, setPlayerName ] = React.useState('');
   const [ playerUUID, setPlayerUUID ] = React.useState('');
-  const [ playerTeam, setPlayerTeam ] = React.useState('');
   const [ playerAgentUUID, setPlayerAgentUUID ] = React.useState('');
   const [ playerKDA, setPlayerKDA ] = React.useState('');
   const [ playerKD, setPlayerKD ] = React.useState('');
-  const [ playerScore, setPlayerScore ] = React.useState('');
   const [ playerACS, setPlayerACS ] = React.useState('');
   const [ playerKillsPerRound, setPlayerKillsPerRound ] = React.useState('');
   const [ playerCurrentTier, setPlayerCurrentTier ] = React.useState('');
-  const [ playerRank, setPlayerRank ] = React.useState('');
   const [ playerHsPercent, setPlayerHsPercent ] = React.useState('');
   const [ playerBsPercent, setPlayerBsPercent ] = React.useState('');
   const [ playerLsPercent, setPlayerLsPercent ] = React.useState('');
-  const [ playerPositiontext, setPlayerPositionText ] = React.useState('');
   const [ playerFBs, setPlayerFBs ] = React.useState('');
 
   // -------------------- PLAYER ACHIEVEMENTS --------------------
@@ -135,8 +123,6 @@ function Matchview() {
       var roundData = JSON.parse(sessionStorage.roundData);
       var teamData = JSON.parse(sessionStorage.teamData);
       var playerData = JSON.parse(sessionStorage.playerData);
-
-      setPlayerData(playerData);
 
       if(knownMatchData.gameMode !== 'deathmatch' && knownMatchData.gameMode !== 'ggteam' && knownMatchData.gameMode !== 'onefa') {
         const allPlayerAwardStats = [];
@@ -305,19 +291,15 @@ function Matchview() {
   
         setPlayerName(knownMatchData.playerName);
         setPlayerUUID(knownMatchData.playerUUID);
-        setPlayerTeam(knownMatchData.playerTeam);
         setPlayerAgentUUID(knownMatchData.playerAgent);
         setPlayerKDA(knownMatchData.playerKDA);
         setPlayerKD(knownMatchData.playerKD);
-        setPlayerScore(knownMatchData.playerScore);
         setPlayerACS(knownMatchData.playerACS);
         setPlayerKillsPerRound(knownMatchData.playerKillsPerRound);
         setPlayerCurrentTier(knownMatchData.playerCurrentTier);
-        setPlayerRank(knownMatchData.playerRankFixed);
         setPlayerHsPercent(knownMatchData.headShotsPercentRounded);
         setPlayerBsPercent(knownMatchData.bodyShotsPercentRounded);
         setPlayerLsPercent(knownMatchData.legShotsPercentRounded);
-        setPlayerPositionText(knownMatchData.playerPositionText);
         setPlayerFBs(knownMatchData.playerFBs);
   
         setRounds(roundData);
@@ -371,13 +353,10 @@ function Matchview() {
   
         setPlayerName(knownMatchData.playerName);
         setPlayerUUID(knownMatchData.playerUUID);
-        setPlayerTeam(knownMatchData.playerTeam);
         setPlayerAgentUUID(knownMatchData.playerAgent);
         setPlayerKDA(knownMatchData.playerKDA);
         setPlayerKD(knownMatchData.playerKD);
-        setPlayerScore(knownMatchData.playerScore);
         setPlayerKillsPerRound(knownMatchData.playerKillsPerRound);
-        setPlayerPositionText(knownMatchData.playerPositionText);
         
         setActiveTab('scoreboard');
         setIsDeathmatch(true);

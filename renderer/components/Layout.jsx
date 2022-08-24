@@ -10,7 +10,6 @@ import ReauthLayer from "./layers/ReauthLayer";
 import TextboxLayer from "./layers/TextboxLayer"
 import WhatsNewLayer from "./layers/WhatsNewLayer";
 import IpcLayer from "./layers/ipcLayer";
-import { useFirstRender } from "./useFirstRender";
 import { ipcRenderer } from 'electron';
 
 const variants = {
@@ -21,8 +20,6 @@ const variants = {
 
 export default function Layout({ children, classNames, setup }) {
   const router = useRouter();
-  const firstRender = useFirstRender();
-  const [ legacyTheme, setLegacyTheme ] = React.useState(false);
 
   var legacy = false;
 
