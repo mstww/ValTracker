@@ -125,14 +125,14 @@ function createThemes() {
   fs.writeFileSync(app_data + "/user_data/themes/color_theme.json", JSON.stringify(themesPointerFile));
 
   // Create /themes/preset_themes dir and all files in it
-  if(!fs.existsSync(app_data + "/user_data/themes/preset_themes")) {
+  /*if(!fs.existsSync(app_data + "/user_data/themes/preset_themes")) {
     fs.mkdirSync(app_data + "/user_data/themes/preset_themes");
   }
 
   // Create /themes/custom_themes dir
   if(!fs.existsSync(app_data + "/user_data/themes/custom_themes")) {
     fs.mkdirSync(app_data + "/user_data/themes/custom_themes");
-  }
+  }*/
 }
 
 function createMessageData() {

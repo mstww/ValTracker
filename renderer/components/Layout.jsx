@@ -33,44 +33,26 @@ export default function Layout({ children, classNames, setup }) {
   
   React.useEffect(() => {
     if(router.query.isLegacyTheme === true) {
-      setLegacyTheme(true);
+      document.body.classList.add('legacy');
+    } else {
+      var theme_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json");
+      var theme = JSON.parse(theme_raw);
+      var theme_name = theme.themeName;
+      if(theme_name == "legacy") {
+        document.body.classList.add('legacy');
+      }
     }
   }, []);
-  
-  React.useEffect(() => {
-    if(router.query.isLegacyTheme === true) {
-      setLegacyTheme(true);
-      document.body.classList.add('legacy');
-    }
-    var theme_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json");
-    var theme = JSON.parse(theme_raw);
-    var theme_name = theme.themeName;
-    if(theme_name == "legacy") {
-      setLegacyTheme(true);
-      document.body.classList.add('legacy');
-    }
-  }, []);
-
-  if(firstRender) {
-    var theme_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json");
-    var theme = JSON.parse(theme_raw);
-    var theme_name = theme.themeName;
-    if(theme_name == "legacy") {
-      legacy = true;
-    }
-  }
-
-  if(router.query.isLegacyTheme === true) {
-    legacy = true;
-    document.body.classList.add('legacy');
-  }
 
   React.useEffect(() => {
     ipcRenderer.on('useLegacyTheme', function(event, args) {
-      setLegacyTheme(args);
-      legacy = args;
+      document.body.classList.add('legacy');
     });
-  }, [])
+  }, []);
+
+  if(router.query.isLegacyTheme === true) {
+    legacy = true;
+  }
   
   return( 
     <div className={"flex flex-row bg-maincolor-light " + (legacy ? 'legacy' : '')}>

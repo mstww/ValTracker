@@ -1142,18 +1142,6 @@ function FavouriteMatches() {
           </Radio.Group>
 
         </div>
-        {/*<div className={'' + (loading || errored ? 'hidden' : '')}>
-          <div id='match-loading-error' className={'mt-4 ml-6 w-full flex flex-row justify-center ' + (matchFetchingError ? '' : 'hidden')}>
-            <span id='' className='text-gray-500'>Something went wrong while fetching new matches. Try again!</span>
-          </div>
-          <div id='shown-matches-info' className={'mt-4 ml-6 w-1/2 flex flex-row justify-between ' + (fetchingFurtherMatches ? 'hidden' : '')}>
-            <span id='x-out-of-n-matches' className='text-gray-500'>{currentlyLoadedMatchCount} out of {maxMatchesFound} Matches shown</span>
-            <span id='load-more-matches' className={'hover:underline mb-8 ' + (fetchingFurtherMatches ? 'cursor-wait' : 'cursor-pointer')} onClick={() => { fetchingFurtherMatches ? '' : fetchFurtherMatches() }}>Load more Matches</span>
-          </div>
-          <div className={'w-full flex mt-8 h-14 mb-6 justify-center items-center ' + (fetchingFurtherMatches || matchFetchingError ? '' : 'hidden')}>
-            <Loading color={'error'} size={'lg'} />
-          </div>
-        </div>*/}
       </div>
     </Layout>
   );
