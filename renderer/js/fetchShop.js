@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import fs from 'fs';
+import { ipcRenderer } from 'electron';
 
 async function getEntitlement(bearer) {
   return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
@@ -13,11 +14,12 @@ async function getEntitlement(bearer) {
   })).json())['entitlements_token'];
 }
 
-async function getStoreOffers(region, entitlement_token) {
+async function getStoreOffers(region, entitlement_token, bearer) {
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v1/offers/', {
     method: 'GET',
     headers: {
       'X-Riot-Entitlements-JWT': entitlement_token,
+      'Authorization': 'Bearer ' + bearer,
       'Content-Type': 'application/json',
       'User-Agent': ''
     },
@@ -85,7 +87,8 @@ async function fetchShop() {
       var rawShopData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json');
       var shopData = JSON.parse(rawShopData);
       
-      var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token);
+      var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
+      ipcRenderer.send('Debug', skinPriceData);
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i]
@@ -193,7 +196,7 @@ async function fetchShop() {
         // nightmarket[i].Offer.OfferID
       }
 
-      var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token);
+      var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];

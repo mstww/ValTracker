@@ -279,12 +279,16 @@ img {
   height: calc(100vh - 29px);
 }
 
-#nav-items div {
+#nav-items div:not(.search-dropdown):not(.search-dropdown div) {
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
   width: 88%;
 }
 
-#nav-items div:not([data-isactive=true]):hover {
+.search-dropdown {
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.5);
+}
+
+#nav-items div:not([data-isactive=true]):not(.search-dropdown):not(.search-dropdown div):not(.search-container):hover {
   box-shadow: 0 5px 10px rgb(0 0 0 / 0.5);
 }
 

@@ -287,6 +287,11 @@ async function noFilesFound() {
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
     fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
   }
+
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/search_history")) {
+    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/search_history");
+    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/search_history/history.json", JSON.stringify({ "arr":[] }));
+  }
     
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
     download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
@@ -1288,6 +1293,11 @@ var reauth_interval;
   
       if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
         fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
+      }
+
+      if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/search_history")) {
+        fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/search_history");
+        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/search_history/history.json", JSON.stringify({ "arr":[] }));
       }
       
       if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {

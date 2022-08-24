@@ -8,6 +8,7 @@ import pjson from '../../package.json';
 import SocialsIcon from './navigation/SocialsIcon';
 import fetch from 'node-fetch';
 import { ipcRenderer } from 'electron';
+import PlayerSearch from './navbar/PlayerSearch';
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -176,6 +177,38 @@ export default function Navbar({ page }) {
       var name = event.target.value.split('#')[0];
       var tag = event.target.value.split('#')[1];
       var name_encoded = encodeURIComponent(name + '#' + tag);
+
+      var search_history = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json'));
+
+      var data = {
+        "name": name,
+        "tag": tag,
+        "encoded_user": name_encoded
+      }
+      
+      var user_found = false;
+      for(var i = 0; i < search_history.arr.length; i++) {
+        if(search_history.arr[i].encoded_user === name_encoded) {
+          user_found = true;
+        }
+      }
+
+      if(user_found === false) {
+        if(search_history.arr.length >= 5) {
+          delete search_history.arr[search_history.arr.length-1];
+          var newArray = search_history.arr.filter(value => Object.keys(value).length !== 0);
+          newArray.unshift(data);
+      
+          search_history.arr = newArray;
+        } else {
+          search_history.arr.unshift(data);
+        }
+  
+        console.log(search_history);
+      
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(search_history));
+      }
+
       router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}`);
     }
   }
@@ -188,25 +221,17 @@ export default function Navbar({ page }) {
         <span className='relative text-sm bottom-3 text-gray-500'>v{pjson.version}</span>
       </div>
       <div id='nav-items' className='flex flex-col justify-center items-center'>
-        <div className='relative mb-6 mt-4 w-5/6'>
-          <input 
-            id='skin-search'
-            type='text'
-            className={(isSearchShown ? 'bg-button-color focus:outline-none text-sm font-light pl-9 placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none' : searchDisabledClasses)}
-            placeholder='Search for a player'
-            onKeyDown={handlePlayerSearch}
-            autoCorrect='off'
-            spellCheck='false'
-            disabled={!isSearchShown}
-            ref={playerSearchRef}
-            onClick={() => { isSearchShown ? null : ipcRenderer.send('relayTextbox', searchHiddenDesc) }}
-          />
-          <img src='/images/search.svg' className='absolute top-2 left-2 ml-0.5 w-4' />
-        </div>
+        <PlayerSearch 
+          isSearchShown={isSearchShown} 
+          searchDisabledClasses={searchDisabledClasses} 
+          handlePlayerSearch={handlePlayerSearch}
+          playerSearchRef={playerSearchRef} 
+          searchHiddenDesc={searchHiddenDesc} 
+        />
 
     	  <Link href={"/home"}>
           <div id='home-nav' 
-            className={(isHome ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2'}
+            className={(isHome ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px'}
             data-isactive={isHome}
           >
             <img src='/images/home.svg' className='ml-0.5 w-5' />
@@ -215,7 +240,7 @@ export default function Navbar({ page }) {
         </Link>
 
         <div id='shop-nav' 
-          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ') : disabledClasses}
+          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px') : disabledClasses}
           data-isactive={isShop}
           onClick={() => { isShopShown ? router.push("/shop") : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
         >
@@ -224,7 +249,7 @@ export default function Navbar({ page }) {
         </div>
 
         <div id='inv-nav' 
-          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ') : disabledClasses}
+          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isInv}
           onClick={() => { isInvShown ? router.push("/inventory") : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
         >
@@ -233,7 +258,7 @@ export default function Navbar({ page }) {
         </div>
 
         <div id='fav-nav' 
-          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ') : disabledClasses}
+          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isFav}
           onClick={() => { isFavsShown ? router.push("/favorites") : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
         >
@@ -242,7 +267,7 @@ export default function Navbar({ page }) {
         </div>
 
         <div id='fav-nav' 
-          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ') : disabledClasses}
+          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isWish}
           onClick={() => { isWishlistShown ? router.push("/wishlist") : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
         >

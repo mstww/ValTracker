@@ -573,7 +573,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     }
   }
 
-  // Get Progress in agent contract 
+  // Get Progress in battle pass contract 
   for(var i = 0; i < player_contracts.Contracts.length; i++) {
     if(player_contracts.Contracts[i].ContractDefinitionID === activeBattlePassContractUUID) {
       var battlePassUUID = player_contracts.Contracts[i].ContractDefinitionID
