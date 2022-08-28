@@ -142,7 +142,7 @@ export default function ReauthLayer() {
   }
 
   const restartAuthCycle = async () => {
-    ipcRenderer.send('relaunchApp');
+    ipcRenderer.send('restartApp');
   }
 
   React.useEffect(() => {

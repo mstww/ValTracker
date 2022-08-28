@@ -1743,9 +1743,9 @@ ipcMain.on('hideAppOnLogin', function(event, arg) {
   }
 });
 
-ipcMain.on('relaunchApp', function() {
+ipcMain.on('restartApp', function() {
   app.relaunch();
-  app.exit(0);
+  app.quit();
 });
 
 ipcMain.on('restartReauthCycle', async function() {
@@ -1791,8 +1791,4 @@ ipcMain.on('closeApp', function() {
 
 ipcMain.on('relayTextbox', function(event, args) {
   sendMessageToWindow('createTextbox', args);
-});
-
-ipcMain.on('relayUseLegacyTheme', function(event, args) {
-  sendMessageToWindow('useLegacyTheme', args);
 });

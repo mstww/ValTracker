@@ -41,12 +41,6 @@ export default function Layout({ children, classNames, setup }) {
     }
   }, []);
 
-  React.useEffect(() => {
-    ipcRenderer.on('useLegacyTheme', function(event, args) {
-      document.body.classList.add('legacy');
-    });
-  }, []);
-
   if(router.query.isLegacyTheme === true) {
     legacy = true;
   }

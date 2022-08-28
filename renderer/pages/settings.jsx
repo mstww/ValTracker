@@ -244,75 +244,107 @@ function Settings() {
     }
   }
 
-  const changeAutoOpen = () => {
-    ipcRenderer.send('openAppOnLogin', !autoOpen);
+  const changeAutoOpen = (e) => {
+    console.log(e)
+    if(typeof e === 'boolean') ipcRenderer.send('openAppOnLogin', e);
+    else ipcRenderer.send('openAppOnLogin', !autoOpen);
+
     setAutoOpen(!autoOpen);
   }
 
-  const changeOpenHiddenOnAuto = () => {
-    ipcRenderer.send('hideAppOnLogin', !startHidden);
+  const changeOpenHiddenOnAuto = (e) => {
+    console.log(e)
+    if(typeof e === 'boolean') ipcRenderer.send('hideAppOnLogin', e);
+    else ipcRenderer.send('hideAppOnLogin', !startHidden);
+
     setStartHidden(!startHidden)
   }
 
-  const changeMinClose = () => {
+  const changeSkinWishlistNotifications = (e) => {
+    console.log(e)
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
 
-    data.minimizeOnClose = !data.minimizeOnClose;
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+    if(typeof e === 'boolean') data.skinWishlistNotifications = e;
+    else data.skinWishlistNotifications = !data.skinWishlistNotifications;
 
-    setMinClose(!minClose);
-  }
-
-  const changeSkinWishlistNotifications = () => {
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
-    var data = JSON.parse(raw);
-
-    data.skinWishlistNotifications = !data.skinWishlistNotifications;
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
 
     setSkinWishlistNotifications(!skinWishlistNotifications);
   }
 
-  const changeHardwareAcceleration = () => {
+  const changeMinClose = (e) => {
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
 
-    data.enableHardwareAcceleration = !data.enableHardwareAcceleration;
+    if(typeof e === 'boolean') data.minimizeOnClose = e;
+    else data.minimizeOnClose = !data.minimizeOnClose;
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+
+    setMinClose(!minClose);
+  }
+
+  const changeHardwareAcceleration = (e) => {
+    
+    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
+    var data = JSON.parse(raw);
+
+    if(typeof e === 'boolean') data.enableHardwareAcceleration = e;
+    else data.enableHardwareAcceleration = !data.enableHardwareAcceleration;
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
 
     setHardwareAcceleration(!hardwareAcceleration);
   }
 
-  const changeLegacyThemeToggle = () => {
-    if(legacyThemeToggle == false) {
-      var data = {
-        themeName: 'legacy'
+  const changeLegacyThemeToggle = (e) => {
+    if(typeof e === 'boolean') {
+      if(e === true) {
+        var data = {
+          themeName: 'legacy'
+        }
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
+        document.body.classList.add('legacy');
+      } else {
+        var data = {
+          themeName: 'default'
+        }
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
+  
+        var legacyClasses = document.getElementsByClassName('legacy ');
+        for(var i = 0; i < legacyClasses.length; i++) {
+          legacyClasses[i].classList.remove('legacy');
+        }
       }
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
-      document.body.classList.add('legacy');
     } else {
-      var data = {
-        themeName: 'default'
-      }
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
-
-      var legacyClasses = document.getElementsByClassName('legacy ');
-      for(var i = 0; i < legacyClasses.length; i++) {
-        legacyClasses[i].classList.remove('legacy');
+      if(!legacyThemeToggle === true) {
+        var data = {
+          themeName: 'legacy'
+        }
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
+        document.body.classList.add('legacy');
+      } else {
+        var data = {
+          themeName: 'default'
+        }
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
+  
+        var legacyClasses = document.getElementsByClassName('legacy ');
+        for(var i = 0; i < legacyClasses.length; i++) {
+          legacyClasses[i].classList.remove('legacy');
+        }
       }
     }
-
-    ipcRenderer.send('relayUseLegacyTheme', legacyThemeToggle);
 
     setLegacyThemeToggle(!legacyThemeToggle);
   }
 
-  const changeAppRP = () => {
+  const changeAppRP = (e) => {
+    
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
 
-    data.hasDiscordRPenabled = !data.hasDiscordRPenabled;
+    if(typeof e === 'boolean') data.hasDiscordRPenabled = e;
+    else data.hasDiscordRPenabled = !data.hasDiscordRPenabled;
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
 
     ipcRenderer.send('changeDiscordRP', `clear`);
@@ -320,10 +352,13 @@ function Settings() {
     setAppRP(!appRP);
   }
 
-  const changeAppRPWhenHidden = () => {
+  const changeAppRPWhenHidden = (e) => {
+    
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
-    if(data.showDiscordRPWhenHidden === true) data.showDiscordRPWhenHidden = false;
+
+    if(typeof e === 'boolean') data.showDiscordRPWhenHidden = e;
+    else if(data.showDiscordRPWhenHidden === true) data.showDiscordRPWhenHidden = false;
     else if(data.showDiscordRPWhenHidden === false) data.showDiscordRPWhenHidden = true;
     else data.showDiscordRPWhenHidden = true;
 
@@ -334,50 +369,64 @@ function Settings() {
     setAppRPwhenHidden(!appRPwhenHidden);
   }
 
-  const changeGameRP = () => {
+  const changeGameRP = (e) => {
+    
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
 
-    data.hasValorantRPenabled = !data.hasValorantRPenabled;
+    if(typeof e === 'boolean') data.hasValorantRPenabled = e;
+    else data.hasValorantRPenabled = !data.hasValorantRPenabled;
+
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
 
     setGameRP(!gameRP);
   }
 
-  const changeShowMatchMode = () => {
+  const changeShowMatchMode = (e) => {
+    
     var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
-    data.showMode = !gameRP_showMode;
+
+    if(typeof e === 'boolean') data.showMode = e;
+    else data.showMode = !gameRP_showMode;
+    
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
 
     setGameRP_showMode(!gameRP_showMode);
-    
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
   }
 
-  const changeShowRank = () => {
+  const changeShowRank = (e) => {
+    
     var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
-    data.showRank = !gameRP_showRank;
+    
+    if(typeof e === 'boolean') data.showRank = e;
+    else data.showRank = !gameRP_showRank;
+    
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
 
     setGameRP_showRank(!gameRP_showRank);
-    
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
   }
 
-  const changeShowTimer = () => {
+  const changeShowTimer = (e) => {
+    
     var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
-    data.showTimer = !gameRP_showTimer;
+
+    if(typeof e === 'boolean') data.showTimer = e;
+    else data.showTimer = !gameRP_showTimer;
+    
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
     
     setGameRP_showTimer(!gameRP_showTimer);
-    
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
   }
 
-  const changeShowScore = () => {
+  const changeShowScore = (e) => {
     var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
-    data.showScore = !gameRP_showScore;
-    
-    setGameRP_showScore(!gameRP_showScore);
+
+    if(typeof e === 'boolean') data.showScore = e;
+    else data.showScore = !gameRP_showScore;
 
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
+    
+    setGameRP_showScore(!gameRP_showScore);
   }
 
   const addNewAccount = async () => {
@@ -465,32 +514,87 @@ function Settings() {
 
   const states = {
     true: 1,
-    false: 0
+    false: 0,
+    '1': true,
+    1: true,
+    '0': false,
+    0: false
   }
 
   // TODO: Validate code, apply settings, restart app, check if code is corrupted or not a real code, then send textbox that tells the user.
   const generateSettingsCode = () => {
     var str = '';
-    str += (states[autoOpen] + ';'); // 0
-    str += (states[startHidden] + ';'); // 1
-    str += (states[skinWishlistNotifications] + ';'); // 2
-    str += (states[minClose] + ';'); // 3
-    str += (states[hardwareAcceleration] + ';'); // 4
-    str += (states[legacyThemeToggle] + ';'); // 5
-    str += (states[appRP] + ';'); // 6
-    str += (states[appRPwhenHidden] + ';'); // 7
-    str += (states[gameRP] + ';'); // 8
-    str += (states[gameRP_showMode] + ';'); // 9
-    str += (states[gameRP_showRank] + ';'); // 10
-    str += (states[gameRP_showTimer] + ';'); // 11
+    str += (states[autoOpen]); // 0
+    str += (states[startHidden]); // 1
+    str += (states[skinWishlistNotifications]); // 2
+    str += (states[minClose]); // 3
+    str += (states[hardwareAcceleration]); // 4
+    str += (states[legacyThemeToggle]); // 5
+    str += (states[appRP]); // 6
+    str += (states[appRPwhenHidden]); // 7
+    str += (states[gameRP]); // 8
+    str += (states[gameRP_showMode]); // 9
+    str += (states[gameRP_showRank]); // 10
+    str += (states[gameRP_showTimer]); // 11
     str += (states[gameRP_showScore]); // 12
+
     console.log(str);
-    console.log(str.split(";"));
+    
+    var buff = Buffer.from(str);
+    str = buff.toString('base64');
+
     navigator.clipboard.writeText(str);
   }
 
-  const validateSettingsCode = () => {}
-  const applySettingsFromCode = () => {}
+  const validateSettingsCode = (settingsStates) => {
+    var verificationState = true;
+
+    if(settingsStates.length === 13) {
+      for(var i = 0; i < settingsStates.length; i++) {
+        if(settingsStates[i] !== '1' && settingsStates[i] !== '0') {
+          verificationState = false;
+          break;
+        }
+      }
+
+    } else {
+      verificationState = false;
+    }
+
+    return verificationState;
+  }
+
+  const applySettingsFromCode = (code) => {
+    let buff = Buffer.from(code, 'base64');
+    code = buff.toString('ascii');
+    
+    var settingsStates = code.split("");
+    console.log(settingsStates);
+    console.log(code);
+
+    var isUseable = validateSettingsCode(settingsStates);
+    
+    if(isUseable) {
+      changeAutoOpen(states[settingsStates[0]]);
+      changeOpenHiddenOnAuto(states[settingsStates[1]]);
+      changeSkinWishlistNotifications(states[settingsStates[2]]);
+      changeMinClose(states[settingsStates[3]]);
+      changeHardwareAcceleration(states[settingsStates[4]]);
+      changeLegacyThemeToggle(states[settingsStates[5]]);
+      changeAppRP(states[settingsStates[6]]);
+      changeAppRPWhenHidden(states[settingsStates[7]]);
+      changeGameRP(states[settingsStates[8]]);
+      changeShowMatchMode(states[settingsStates[9]]);
+      changeShowRank(states[settingsStates[10]]);
+      changeShowTimer(states[settingsStates[11]]);
+      changeShowScore(states[settingsStates[12]]);
+
+      ipcRenderer.send('restartApp');
+    } else {
+      closePopup(setOther_applySettingsCode);
+      ipcRenderer.send('relayTextbox', 'Invalid Profile Code.');
+    }
+  }
 
   const resetApp = () => {
     ipcRenderer.send('resetApp');
@@ -525,7 +629,7 @@ function Settings() {
           text={'This will restart the app and possibly change all of your settigns. If you want to back up your current settings, close this popup and copy your settings share code.'}
           button_1={'Confirm'}
           button_2={'Cancel'}
-          button_1_onClick={() => { resetApp() } }
+          button_1_onClick={() => { applySettingsFromCode(importSettingsVal) } }
           button_2_onClick={() => { closePopup(setOther_applySettingsCode) }}
           isOpen={other_applySettingsCode}
           isButtonClickable={true}

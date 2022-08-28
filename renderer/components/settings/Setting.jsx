@@ -6,7 +6,7 @@ export default function Setting({ title, desc, desc2, inputType, buttonText, isC
         <span className={"text-gray-500"}>{desc}</span> <br />
         {desc2 ? <span className={"text-gray-500 relative bottom-1"}>{desc2}</span> : null}
       </div>
-      <div className="ml-auto relative mr-28 w-44">
+      <div className="ml-auto relative mr-28 w-52">
         { inputType == "checkbox" ?
           <label className={"switch absolute right-0 " + (isDisabled ? 'disabled' : '') } id="valtracker-closing-behavior-switch">
             <input type='checkbox' id={(title.toLowerCase().replace(" ", "-")) + "tray-valtracker"} name={(title.toLowerCase().replace(" ", "-")) + "tray-valtracker"} checked={isChecked} readOnly onClick={onClick} disabled={isDisabled} />
@@ -31,7 +31,7 @@ export default function Setting({ title, desc, desc2, inputType, buttonText, isC
           ('')
         }
         { extraButton ?
-          <button className='mt-2 w-full' onClick={ extraButtonClick } id={id ? id : ''}>{extraButtonText}</button>
+          <button className='mt-2 w-full' onClick={ inputVal.length > 0 ? extraButtonClick : null } id={id ? id : ''}>{extraButtonText}</button>
           :
           ('')
         }
