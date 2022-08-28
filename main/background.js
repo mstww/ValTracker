@@ -954,7 +954,6 @@ async function checkStoreForWishlistItems() {
 
       var wishlistedSkinsInShop = [];
     
-      // TODO: Get wishlist here, check for all skins if they exist, if yes, send notifications
       for(var i = 0; i < user_wishlists.skins.length; i++) {
         for(var j = 0; j < shopSkinUUIDs.length; j++) {
           if(shopSkinUUIDs[j] === user_wishlists.skins[i].uuid) {

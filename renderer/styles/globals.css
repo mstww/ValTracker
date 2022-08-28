@@ -352,7 +352,6 @@ img {
 
 /* The switch - the box around the slider */
 .switch {
-  position: relative;
   display: inline-block;
   min-width: 50px;
   height: 24px;

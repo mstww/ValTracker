@@ -497,8 +497,6 @@ function FavouriteMatches() {
   }
 
   const sortMatchesAndSetActiveSort = (newValue) => {
-    // TODO: Get the player's stats and calculate this data/get it from matches themselves
-
     sortableFavMatches.forEach(match => {
       if(!match.statsData) {
         var stats_data = calculateSortStatsForMatch(match);

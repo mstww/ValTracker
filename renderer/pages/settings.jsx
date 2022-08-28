@@ -155,17 +155,24 @@ function Settings() {
   const [ gameRP_showTimer, setGameRP_showTimer ] = React.useState(true);
   const [ gameRP_showScore, setGameRP_showScore ] = React.useState(true);
 
+  const riot_removeAccount = React.useRef(null);
+  const [ riot_removeAccountPopupOpen, setRiot_RemoveAccountPopupOpen ] = React.useState(false);
+
+  const [ riot_accountList, setRiot_AccountList ] = React.useState([]);
+  const [ riot_activeAccountSelection, setRiot_ActiveAccountSelection ] = React.useState(null);
+
+  const [ other_copyCodeToClipButtonText, setOther_CopyCodeToClipButtonText ] = React.useState('Copy to Clipboard');
+
   const overlayWrapper = React.useRef(null);
   const [ popupBackgroundShown, setPopupBackgroundShown ] = React.useState(false);
 
   const other_resetApp = React.useRef(null);
   const [ other_resetAppPopupOpen, setOther_ResetAppPopupOpen ] = React.useState(false);
 
-  const riot_removeAccount = React.useRef(null);
-  const [ riot_removeAccountPopupOpen, setRiot_RemoveAccountPopupOpen ] = React.useState(false);
+  const [ importSettingsVal, setImportSettingsVal ] = React.useState('');
 
-  const [ riot_accountList, setRiot_AccountList ] = React.useState([]);
-  const [ riot_activeAccountSelection, setRiot_ActiveAccountSelection ] = React.useState(null);
+  const other_applySettingsCodePopup = React.useRef(null);
+  const [ other_applySettingsCode, setOther_applySettingsCode ] = React.useState(false);
 
   async function fetchUserAccounts() {
     var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
@@ -456,6 +463,35 @@ function Settings() {
     setPopupOpen(false);
   }
 
+  const states = {
+    true: 1,
+    false: 0
+  }
+
+  // TODO: Validate code, apply settings, restart app, check if code is corrupted or not a real code, then send textbox that tells the user.
+  const generateSettingsCode = () => {
+    var str = '';
+    str += (states[autoOpen] + ';'); // 0
+    str += (states[startHidden] + ';'); // 1
+    str += (states[skinWishlistNotifications] + ';'); // 2
+    str += (states[minClose] + ';'); // 3
+    str += (states[hardwareAcceleration] + ';'); // 4
+    str += (states[legacyThemeToggle] + ';'); // 5
+    str += (states[appRP] + ';'); // 6
+    str += (states[appRPwhenHidden] + ';'); // 7
+    str += (states[gameRP] + ';'); // 8
+    str += (states[gameRP_showMode] + ';'); // 9
+    str += (states[gameRP_showRank] + ';'); // 10
+    str += (states[gameRP_showTimer] + ';'); // 11
+    str += (states[gameRP_showScore]); // 12
+    console.log(str);
+    console.log(str.split(";"));
+    navigator.clipboard.writeText(str);
+  }
+
+  const validateSettingsCode = () => {}
+  const applySettingsFromCode = () => {}
+
   const resetApp = () => {
     ipcRenderer.send('resetApp');
   }
@@ -464,6 +500,7 @@ function Settings() {
     fetchUserAccounts();
     fetchSettings();
     ipcRenderer.send('changeDiscordRP', "settings_activity");
+    generateSettingsCode();
   }, []);
 
   return (
@@ -479,6 +516,18 @@ function Settings() {
           button_1_onClick={() => { resetApp() } }
           button_2_onClick={() => { closePopup(setOther_ResetAppPopupOpen) }}
           isOpen={other_resetAppPopupOpen}
+          isButtonClickable={true}
+        />
+
+        <PopupCard
+          useRef={other_applySettingsCodePopup}
+          header={'Apply Settings Profile?'}
+          text={'This will restart the app and possibly change all of your settigns. If you want to back up your current settings, close this popup and copy your settings share code.'}
+          button_1={'Confirm'}
+          button_2={'Cancel'}
+          button_1_onClick={() => { resetApp() } }
+          button_2_onClick={() => { closePopup(setOther_applySettingsCode) }}
+          isOpen={other_applySettingsCode}
           isButtonClickable={true}
         />
 
@@ -707,13 +756,15 @@ function Settings() {
           <SettingsWrapper type='other' activeWrapper={activeSettingsGroup}>
 
           <SettingsGroup header={'SETTINGS PROFILE'}>
-            {/* TODO */}
             <Setting
               title={'Import Settings'}
               desc={'Import a settings profile. You can copy your own code below.'}
-              inputType={'button'}
-              buttonText={'Change to input'}
-              onClick={() => {  }}
+              inputType={'text'}
+              inputVal={importSettingsVal}
+              setInputVal={setImportSettingsVal}
+              extraButton={true}
+              extraButtonText={'Apply'}
+              extraButtonClick={() => { openPopup(setOther_applySettingsCode) }}
             />
 
             <SettingsSeperator />
@@ -722,8 +773,14 @@ function Settings() {
               title={'Export Settings'}
               desc={'Copy your settings share code to the clipboard.'}
               inputType={'button'}
-              buttonText={'Copy to Clipboard'}
-              onClick={() => {  }}
+              buttonText={other_copyCodeToClipButtonText}
+              onClick={() => { 
+                generateSettingsCode();
+                setOther_CopyCodeToClipButtonText('Done!');
+                setTimeout(async () => {
+                  setOther_CopyCodeToClipButtonText('Copy to clipboard');
+                }, 2000);
+              }}
             />
           </SettingsGroup>
 
@@ -738,8 +795,9 @@ function Settings() {
             </SettingsGroup>
 
             <AboutWrapper header={'ABOUT'}>
-              <AboutGroup header={'USED API\'s'}>
+              <AboutGroup header={'USED APIs'}>
 
+                <AboutCredit url={'https://valtracker.gg/docs'} text={'VALTracker API'} />
                 <AboutCredit url={'https://valorant-api.com'} text={'valorant-api.com'} />
                 <AboutCredit url={'https://docs.henrikdev.xyz/valorant.html'} text={'docs.henrikdev.xyz'} />
 
