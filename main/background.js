@@ -123,16 +123,6 @@ function createThemes() {
   };
 
   fs.writeFileSync(app_data + "/user_data/themes/color_theme.json", JSON.stringify(themesPointerFile));
-
-  // Create /themes/preset_themes dir and all files in it
-  /*if(!fs.existsSync(app_data + "/user_data/themes/preset_themes")) {
-    fs.mkdirSync(app_data + "/user_data/themes/preset_themes");
-  }
-
-  // Create /themes/custom_themes dir
-  if(!fs.existsSync(app_data + "/user_data/themes/custom_themes")) {
-    fs.mkdirSync(app_data + "/user_data/themes/custom_themes");
-  }*/
 }
 
 function createMessageData() {
@@ -291,6 +281,11 @@ async function noFilesFound() {
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/search_history")) {
     fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/search_history");
     fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/search_history/history.json", JSON.stringify({ "arr":[] }));
+  }
+
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json")) {
+    var data = { showMode: true, showRank: true, showTimer: true, showScore: true };
+    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json", JSON.stringify(data));
   }
     
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
@@ -751,33 +746,48 @@ const gamemodes = {
 }
 
 async function decideRichPresenceData(data) {
+  var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
+
   switch(data.playerState) {
     case("INGAME"): {
-      sendMessageToWindow("")
       pregameTimestamp = null;
       menusTimestamp = null;
 
-      if(ingameTimestamp === null) ingameTimestamp = Date.now();
+      if(ingameTimestamp === null && config.showTimer === true) ingameTimestamp = Date.now();
 
       if(data.isCustomGame === true) {
-        if(data.playerAgent) {
-          playerAgent = data.playerAgent;
+
+        if(playerAgent === false && data.gameMode !== 'competitive') {
+          if(data.playerAgent) {
+            playerAgent = data.playerAgent;
+          } else {
+            var { agentUUID, matchData } = await fetchPlayerAgent();
+            playerAgent = agentUUID;
+  
+            data.gamePod = matchData.GamePodID;
+            data.matchID = matchData.MatchID;
+          }
+        } else if(data.gameMode === 'competitive') {
+          playerAgent = null;
+          var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+
+          var smallImage = user_data.playerRank.split("/")[5];
         }
 
-        if(playerAgent == false) {
-          var { agentUUID, matchData } = await fetchPlayerAgent();
-          playerAgent = agentUUID;
-
-          data.gamePod = matchData.GamePodID;
-          data.matchID = matchData.MatchID;
-        }
-
-        var details = "Custom Game - In Match";
-
-        if(data.teamScore === null && data.enemyScore === null) {
-          var scores = "Waiting for next round to end...";
+        if(config.showMode === true) {
+          var details = "Custom Game - In Match";
         } else {
-          var scores = data.teamScore + " - " + data.enemyScore;
+          var details =  "In Match";
+        }
+
+        if(config.showScore === true) {
+          if(data.teamScore === null && data.enemyScore === null) {
+            var scores = "Waiting for next round to end...";
+          } else {
+            var scores = data.teamScore + " - " + data.enemyScore;
+          }
+        } else {
+          var scores = null;
         }
 
         var map = data.mapPath.split("/").pop().toLowerCase();
@@ -791,27 +801,44 @@ async function decideRichPresenceData(data) {
 
         setRichPresence(details, null, map, mode, ingameTimestamp);
       } else {
-        if(playerAgent == false) {
+        if(playerAgent === false && data.gameMode !== 'competitive') {
           var { agentUUID, matchData } = await fetchPlayerAgent();
           playerAgent = agentUUID;
 
           data.gamePod = matchData.GamePodID;
           data.matchID = matchData.MatchID;
+
+          var smallImage = playerAgent;
+        } else if(data.gameMode === 'competitive' && config.showRank === true) {
+          playerAgent = null;
+          var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+
+          var smallImage = user_data.playerRank.split("/")[5];
+        } else {
+          var smallImage = undefined;
         }
 
-        var details = gamemodes[data.gameMode] + " - In Match";
-
-        if(data.teamScore === null && data.enemyScore === null) {
-          var scores = "Waiting for next round to end...";
+        if(config.showMode === true) {
+          var details = gamemodes[data.gameMode] + " - In Match";
         } else {
-          var scores = data.teamScore + " - " + data.enemyScore;
+          var details =  "In Match";
+        }
+
+        if(config.showScore === true) {
+          if(data.teamScore === null && data.enemyScore === null) {
+            var scores = "Waiting for next round to end...";
+          } else {
+            var scores = data.teamScore + " - " + data.enemyScore;
+          }
+        } else {
+          var scores = null;
         }
 
         var map = data.mapPath.split("/").pop().toLowerCase();
-        var agent = playerAgent;
 
-        setRichPresence(details, scores, map, agent, ingameTimestamp);
+        setRichPresence(details, scores, map, smallImage, ingameTimestamp);
       }
+
       lastState = "INGAME";
       lastGameMode = data.gameMode;
       break;
@@ -820,11 +847,17 @@ async function decideRichPresenceData(data) {
       menusTimestamp = null;
       ingameTimestamp = null;
 
-      if(pregameTimestamp === null) pregameTimestamp = Date.now();
+      if(pregameTimestamp === null && config.showTimer === true) pregameTimestamp = Date.now();
 
-      var details = gamemodes[data.gameMode] + " - Agent Select";
       var map = data.mapPath.split("/").pop().toLowerCase();
-      var mode = data.gameMode;
+
+      if(config.showMode === true) {
+        var details = gamemodes[data.gameMode] + " - Agent Select";
+        var mode = data.gameMode;
+      } else {
+        var details = "Agent Select";
+        var mode = null;
+      }
 
       setRichPresence(details, null, map, mode, pregameTimestamp);
       lastState = "PREGAME";
@@ -1298,6 +1331,11 @@ var reauth_interval;
       if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/search_history")) {
         fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/search_history");
         fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/search_history/history.json", JSON.stringify({ "arr":[] }));
+      }
+
+      if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json")) {
+        var data = { showMode: true, showRank: true, showTimer: true, showScore: true };
+        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json", JSON.stringify(data));
       }
       
       if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {

@@ -150,6 +150,11 @@ function Settings() {
   const [ appRPwhenHidden, setAppRPwhenHidden ] = React.useState(false);
   const [ gameRP, setGameRP ] = React.useState(false);
 
+  const [ gameRP_showMode, setGameRP_showMode ] = React.useState(true);
+  const [ gameRP_showRank, setGameRP_showRank ] = React.useState(true);
+  const [ gameRP_showTimer, setGameRP_showTimer ] = React.useState(true);
+  const [ gameRP_showScore, setGameRP_showScore ] = React.useState(true);
+
   const overlayWrapper = React.useRef(null);
   const [ popupBackgroundShown, setPopupBackgroundShown ] = React.useState(false);
 
@@ -187,26 +192,29 @@ function Settings() {
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
 
-    if(data.startOnBoot == true) {
+    if(data.startOnBoot === true) {
       setAutoOpen(true);
     }
-    if(data.startOnBoot == true && data.startHidden == true) {
+    if(data.startOnBoot === true && data.startHidden === true) {
       setStartHidden(true);
     }
-    if(data.skinWishlistNotifications == true || data.skinWishlistNotifications == undefined) {
+    if(data.skinWishlistNotifications === true || data.skinWishlistNotifications === undefined) {
       setSkinWishlistNotifications(true);
     }
-    if(data.minimizeOnClose == true) {
+    if(data.minimizeOnClose === true) {
       setMinClose(true);
     }
-    if(data.enableHardwareAcceleration == true || data.enableHardwareAcceleration == undefined) {
+    if(data.enableHardwareAcceleration === true || data.enableHardwareAcceleration === undefined) {
       setHardwareAcceleration(true);
     }
-    if(data.hasDiscordRPenabled == true || data.hasDiscordRPenabled == undefined) {
+    if(data.hasDiscordRPenabled === true || data.hasDiscordRPenabled === undefined) {
       setAppRP(true);
     }
-    if(data.hasValorantRPenabled == true || data.hasValorantRPenabled == undefined) {
+    if(data.hasValorantRPenabled === true || data.hasValorantRPenabled === undefined) {
       setGameRP(true);
+    }
+    if(data.showDiscordRPWhenHidden === true) {
+      setAppRPwhenHidden(true);
     }
     
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
@@ -214,6 +222,18 @@ function Settings() {
 
     if(data.themeName == 'legacy') {
       setLegacyThemeToggle(true);
+    }
+
+    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json')) {
+      var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
+
+      setGameRP_showMode(data.showMode);
+
+      setGameRP_showRank(data.showRank);
+  
+      setGameRP_showTimer(data.showTimer);
+  
+      setGameRP_showScore(data.showScore);
     }
   }
 
@@ -315,6 +335,42 @@ function Settings() {
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
 
     setGameRP(!gameRP);
+  }
+
+  const changeShowMatchMode = () => {
+    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
+    data.showMode = !gameRP_showMode;
+
+    setGameRP_showMode(!gameRP_showMode);
+    
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
+  }
+
+  const changeShowRank = () => {
+    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
+    data.showRank = !gameRP_showRank;
+
+    setGameRP_showRank(!gameRP_showRank);
+    
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
+  }
+
+  const changeShowTimer = () => {
+    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
+    data.showTimer = !gameRP_showTimer;
+    
+    setGameRP_showTimer(!gameRP_showTimer);
+    
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
+  }
+
+  const changeShowScore = () => {
+    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
+    data.showScore = !gameRP_showScore;
+    
+    setGameRP_showScore(!gameRP_showScore);
+
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
   }
 
   const addNewAccount = async () => {
@@ -473,7 +529,7 @@ function Settings() {
       <div className='w-full mt-4'>
         <div id='settings-topbar' className='flex flex-row h-1/5 justify-around'>
           <SettingsTile type='app' text={"App"} delay={0} active={activeSettingsGroup} onClick={() => {setActiveGroup('app')}} />
-          <SettingsTile type='rpc' text={"Discord Rich Presence"} delay={0.1} active={activeSettingsGroup} onClick={() => {setActiveGroup('rpc')}} />
+          <SettingsTile type='rpc' text={"Rich Presences"} delay={0.1} active={activeSettingsGroup} onClick={() => {setActiveGroup('rpc')}} />
           <SettingsTile type='riot' text={"Riot Account Management"} delay={0.15} active={activeSettingsGroup} onClick={() => {setActiveGroup('riot')}} />
           <SettingsTile type='patchnotes' text={"Patchnotes"} delay={0.2} active={activeSettingsGroup} onClick={() => {setActiveGroup('patchnotes')}} />
           <SettingsTile type='other' text={"Other"} delay={0.2} active={activeSettingsGroup} onClick={() => {setActiveGroup('other')}} />
@@ -491,11 +547,13 @@ function Settings() {
                 onClick={changeAutoOpen}
               />
 
+              <SettingsSeperator />
+
               <Setting 
                 title={'Open VALTracker minimized'} 
                 desc={'Open VALTracker minimized on autostart.'} 
                 inputType={'checkbox'} 
-                isChecked={startHidden}
+                isChecked={startHidden && autoOpen}
                 isDisabled={!autoOpen}
                 onClick={changeOpenHiddenOnAuto}
               />
@@ -546,7 +604,7 @@ function Settings() {
 
           <SettingsWrapper type='rpc' activeWrapper={activeSettingsGroup}>
 
-            <SettingsGroup header={'RICH PRESENCES'}>
+            <SettingsGroup header={'APP RICH PRESENCE'}>
               <Setting 
                 title={'VALTracker Rich Presence'} 
                 desc={"Show your friends that your're using VALTracker with a custom Rich Presence!"}
@@ -555,16 +613,19 @@ function Settings() {
                 onClick={changeAppRP}
               />
 
+              <SettingsSeperator />
+
               <Setting 
                 title={'Stop Rich Presence when minimized'} 
                 desc={'Open VALTracker minimized on autostart.'} 
-                inputType={'checkbox'} 
+                inputType={'checkbox'}
                 isChecked={appRPwhenHidden}
                 isDisabled={!appRP}
                 onClick={changeAppRPWhenHidden}
               />
+            </SettingsGroup>
 
-              <SettingsSeperator />
+            <SettingsGroup header={'VALORANT RICH PRESENCE'}>
 
               <Setting 
                 title={'VALORANT Game Presence'} 
@@ -572,6 +633,42 @@ function Settings() {
                 inputType={'checkbox'} 
                 isChecked={gameRP}
                 onClick={changeGameRP}
+              />
+
+              <SettingsSeperator />
+
+              <Setting 
+                title={'Show Match Mode'} 
+                desc={"Decide if you want to show the mode that you're currently playing!"} 
+                desc2={"Turning off this setting will disable the ability to show your rank when playing a competitive match."}
+                inputType={'checkbox'} 
+                isChecked={gameRP_showMode}
+                onClick={changeShowMatchMode}
+              />
+
+              <Setting 
+                title={'Show Rank instead of Agent'} 
+                desc={"Change the small picture to your rank instead of your agent if you play ranked!"} 
+                inputType={'checkbox'} 
+                isChecked={gameRP_showRank}
+                isDisabled={!gameRP_showMode}
+                onClick={changeShowRank}
+              />
+
+              <Setting 
+                title={'Show Timer'} 
+                desc={"Turn the timer for the Rich Presence on or off!"} 
+                inputType={'checkbox'} 
+                isChecked={gameRP_showTimer}
+                onClick={changeShowTimer}
+              />
+
+              <Setting 
+                title={'Show Score'} 
+                desc={"Turn the score for the Rich Presence on or off!"} 
+                inputType={'checkbox'} 
+                isChecked={gameRP_showScore}
+                onClick={changeShowScore}
               />
             </SettingsGroup>
             
@@ -608,6 +705,27 @@ function Settings() {
           </SettingsWrapper>
 
           <SettingsWrapper type='other' activeWrapper={activeSettingsGroup}>
+
+          <SettingsGroup header={'SETTINGS PROFILE'}>
+            {/* TODO */}
+            <Setting
+              title={'Import Settings'}
+              desc={'Import a settings profile. You can copy your own code below.'}
+              inputType={'button'}
+              buttonText={'Change to input'}
+              onClick={() => {  }}
+            />
+
+            <SettingsSeperator />
+
+            <Setting
+              title={'Export Settings'}
+              desc={'Copy your settings share code to the clipboard.'}
+              inputType={'button'}
+              buttonText={'Copy to Clipboard'}
+              onClick={() => {  }}
+            />
+          </SettingsGroup>
 
             <SettingsGroup header={'DANGER ZONE'} important={true}>
               <Setting 
