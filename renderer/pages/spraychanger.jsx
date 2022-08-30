@@ -288,7 +288,7 @@ function Spraychanger() {
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">
               <input type="checkbox" className='group' name="open-valtracker" onClick={toggleUnownedSkins} />
-              <span className="slider round bg-maincolor group-hover:bg-maincolor-lightest group-checked:bg-maincolor-lightest group-checked:group-hover:bg-button-color-hover" />
+              <span className="slider round my-auto bg-maincolor group-hover:bg-maincolor-lightest group-checked:bg-maincolor-lightest group-checked:group-hover:bg-button-color-hover" />
             </label>
             <span className='ml-2 text-sm'>Show skins you don't own</span>
           </div>

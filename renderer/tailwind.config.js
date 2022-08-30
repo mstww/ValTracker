@@ -21,7 +21,7 @@ var legacy_theme = {
     "maincolor-light": "#222222",
     "maincolor-lightest": "#101010",
     "gradient-left": "#d61044",
-    "gradient-right": "#d6107d",
+    "gradient-right": "#6f00ff",
     "button-color": "#bc0233",
     "button-color-hover": "#d61044",
     "button-text": "#ffffff",

@@ -16,7 +16,6 @@
       "!README.md",
       "!.gitingore",
       "!./.github",
-      "!./websocket_events.txt",
       "!./.vscode",
       "!./dist",
       "!./package-lock.json",

@@ -1,4 +1,4 @@
-export default function SkinTile({ skinImage, skinName, extraClasses, onClick, isOwned }) {
+export default function SkinTile({ skinImage, skinName, extraClasses, onClick, isOwned, contentTier }) {
   return (
     <div 
       id='skin-tile'
@@ -9,8 +9,11 @@ export default function SkinTile({ skinImage, skinName, extraClasses, onClick, i
       }
       onClick={onClick}
     >
-      <img id='skin-img' className={'shadow-img w-4/5 ' + (!isOwned ? 'opacity-30' : '')} src={ skinImage } />
-      <span className={'mt-2 absolute w-full text-center bottom-0 left-0 text-white ' + (!isOwned ? 'text-gray-400' : '')}>{ skinName }</span>
+      <img src={contentTier} className="absolute top-1 left-1 w-6" />
+      <img id='skin-img' className={'shadow-img w-3/4 ' + (!isOwned ? 'opacity-30' : '')} src={ skinImage } />
+      <div className={'mt-2 absolute w-full text-center bottom-0 left-0'}>
+        <span className={'text-white ' + (!isOwned ? 'text-gray-400' : '')}>{ skinName }</span>
+      </div>
     </div>
   )
 }

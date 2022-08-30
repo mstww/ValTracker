@@ -9,12 +9,6 @@ import fs from 'fs';
 import OverlayWrapper from '../components/settings/OverlayWrapper';
 import { motion } from 'framer-motion';
 
-const backdrop_variants = {
-  hidden: { opacity: 0, x: 0, y: 0, display: 'none' },
-  enter: { opacity: 1, x: 0, y: 0, display: 'flex' },
-  exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
-}
-
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
   enter: { opacity: 1, x: 0, y: 0, scale: 1, display: 'block' },
@@ -76,6 +70,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
 
   const [ weapons, setWeapons ] = React.useState([]);
   const [ playerItems, setPlayerItems ] = React.useState([]);
+  const [ skinTiers, setSkinTiers ] = React.useState([]); 
 
   if(router.query.playerItems) {
     var playerItemsAll = JSON.parse(router.query.playerItems);
@@ -103,6 +98,11 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
     fetchApi();
   }, [ weaponType ]);
 
+  React.useEffect(async () => {
+    var skintiers = await(await fetch('https://valorant-api.com/v1/contenttiers')).json();
+    setSkinTiers(skintiers.data);
+  }, [])
+
   for(var i = 0; i < weapons.length; i++) {
     if(weapons[i].uuid == router.query.usedSkin) {
       weapons.unshift(weapons[i]);
@@ -114,6 +114,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
     <div ref={useRef}>
       {weapons.map(weapon => {
         var isOwned = false;
+
         if(weapon.themeUuid == "5a629df4-4765-0214-bd40-fbb96542941f") {
           isOwned = true;
         } else {
@@ -128,6 +129,13 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
             }
           }
         }
+
+        for(var i = 0; i < skinTiers.length; i++) {
+          if(weapon.contentTierUuid === skinTiers[i].uuid) {
+            var contentImage = skinTiers[i].displayIcon;
+          }
+        }
+
         return (
           <SkinTile
             key={weapon.displayName.replace(" ", "-")}
@@ -137,10 +145,11 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
             }
             skinName={weapon.displayName}
             extraClasses={(activeSkin == weapon.uuid && isOwned ? ' border-button-color border-2 ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
-            onClick={
-              () => {setActiveSkin(weapon.uuid)}
-            }
+            onClick={() => {
+              setActiveSkin(weapon.uuid);
+            }}
             isOwned={isOwned}
+            contentTier={contentImage}
           />
         )
       })}
@@ -615,7 +624,7 @@ function Skinchanger() {
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">
               <input type="checkbox" className='group' name="open-valtracker" onClick={toggleUnownedSkins} />
-              <span className="slider round bg-maincolor group-hover:bg-maincolor-lightest group-checked:bg-maincolor-lightest group-checked:group-hover:bg-button-color-hover"></span>
+              <span className="slider round my-auto bg-maincolor group-hover:bg-maincolor-lightest group-checked:bg-maincolor-lightest group-checked:group-hover:bg-button-color-hover" />
             </label>
             <span className='ml-2 text-sm'>Show skins you don't own</span>
           </div>
