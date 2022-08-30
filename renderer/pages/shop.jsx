@@ -370,7 +370,7 @@ function Shop() {
             <span className='relative top-px'>{cardSkinPrice}</span>
             <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
           </div>
-          <h1 className='z-20 text-2xl flex flex-row items-center'><img src={cardSkinTier} className='w-9 mr-2' /> { cardSkinName }</h1>
+          <h1 className='z-20 text-2xl flex flex-row items-center'><img src={cardSkinTier} className='w-9 mr-2 shadow-img' /> { cardSkinName }</h1>
           <div id='skin-image' className='z-10 bottom-0 left-0 absolute w-full h-full flex justify-center items-center'>
             <img src={ cardSkinImage } className='shadow-img' />
           </div>

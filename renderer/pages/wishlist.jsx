@@ -109,11 +109,11 @@ export default function Wishlist() {
                       exir="exit"
                       transition={{ type: 'linear', duration: 0.5, delay: (index / 100) }}
                     >
-                      <td className='py-1 pl-1 flex flex-col items-center h-20'>
+                      <td className='py-1 pl-1 flex flex-col items-center min-h-20'>
                         <div className="w-full flex items-center justify-center h-12 relative top-0 right-5">
                           <img src={skin.displayIcon} className='shadow-img max-h-full transform scale-90' />
                         </div>
-                        <span className={'ml-4 text-lg font-light relative right-5'}>{skin.displayName}</span>
+                        <span className={'ml-4 text-lg font-light relative right-5 text-center'}>{skin.displayName}</span>
                       </td>
                       <td className={'py-1 text-xl'}>
                         <div className="inline-flex flex-row items-center w-full">
