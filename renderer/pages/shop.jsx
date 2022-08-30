@@ -129,6 +129,7 @@ function Shop() {
   const [ cardSkinName, setCardSkinName ] = React.useState('');
   const [ cardSkinImage, setCardSkinImage ] = React.useState('');
   const [ cardSkinPrice, setCardSkinPrice ] = React.useState('');
+  const [ cardSkinTier, setCardSkinTier ] = React.useState('');
   const [ cardSkinChromas, setCardSkinChromas ] = React.useState([]);
   const [ cardSkinLevels, setCardSkinLevels ] = React.useState([]);
 
@@ -173,6 +174,7 @@ function Shop() {
         image: skin.skinIcon,
         price: skin.skinPrice,
         uuid: skin.skinUUID,
+        skinTierImage: skin.skinTierImage,
       }
 
       if(index == 0) {
@@ -279,7 +281,7 @@ function Shop() {
     router.push('/nightmarket?store=' + raw + '&nm_end=' + nightMarketEnd);
   }
 
-  const showShopSkin = (uuid, name, price, image, index) => {
+  const showShopSkin = (uuid, name, price, image, tierimage, index) => {
     setActiveCardSkinChroma(0);
     setActiveCardSkinLevel(0);
     
@@ -287,6 +289,7 @@ function Shop() {
     setCardSkinName(name);
     setCardSkinImage(image);
     setCardSkinPrice(price);
+    setCardSkinTier(tierimage);
 
     for(var i = 0; i < skinList.length; i++) {
       if(skinList[i].levels[0].uuid == uuid) {
@@ -334,7 +337,7 @@ function Shop() {
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <motion.div 
-          className='w-4/5 h-4/5 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
+          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
           variants={card_variants}
           initial="hidden"
           animate={showCard ? "enter" : "exit"}
@@ -350,6 +353,7 @@ function Shop() {
               setCardSkinName('');
               setCardSkinImage('');
               setCardSkinPrice('');
+              setCardSkinTier('');
 
               setCardSkinChromas([]);
               setCardSkinLevels([]);
@@ -366,7 +370,7 @@ function Shop() {
             <span className='relative top-px'>{cardSkinPrice}</span>
             <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
           </div>
-          <h1 className='z-20 text-2xl'>{ cardSkinName }</h1>
+          <h1 className='z-20 text-2xl flex flex-row items-center'><img src={cardSkinTier} className='w-9 mr-2' /> { cardSkinName }</h1>
           <div id='skin-image' className='z-10 bottom-0 left-0 absolute w-full h-full flex justify-center items-center'>
             <img src={ cardSkinImage } className='shadow-img' />
           </div>
@@ -384,10 +388,7 @@ function Shop() {
                     }
                     src={chroma.swatch}
                     onClick={() => { 
-                      switchCardChroma(
-                        chroma.displayIcon ? chroma.displayIcon : chroma.fullRender,
-                        index
-                      );
+                      switchCardChroma(chroma.displayIcon ? chroma.displayIcon : chroma.fullRender, index);
                     }}
                   />
                 )

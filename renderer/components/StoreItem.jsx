@@ -53,7 +53,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <motion.div 
-          className='w-4/5 h-4/5 rounded-sm mb-8 flex flex-col justify-between p-4 pointer-events-none relative'
+          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded-sm mb-8 flex flex-col justify-between p-4 pointer-events-none relative'
           variants={card_variants}
           initial="hidden"
           animate={isThisSkinsOverlayShown ? "enter" : "exit"}
@@ -122,7 +122,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         className='group z-10 h-full w-1/4 relative bg-maincolor-lightest mr-2 rounded-sm shadow-lg hover:shadow-2xl hover:bg-opacity-70 hover:z-0 transition-all duration-100 ease-in'
         onClick={(e) => {
           if(e.target.id !== 'star-img') {
-            clickHandler(item.uuid, item.name, item.price, item.image, index);
+            clickHandler(item.uuid, item.name, item.price, item.image, item.skinTierImage, index);
           }
         }}
       >
@@ -173,7 +173,10 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             }}
           />
         </div>
-        <span className='absolute top-2 z-20 left-2 text-lg'>{ item.name }</span>
+        <div className='absolute top-2 z-20 left-2 flex flex-row'>
+          <img src={item.skinTierImage} className="w-6 h-6 relative top-px mr-2" />
+          <span className="text-lg">{ item.name }</span>
+        </div>
         <div className='flex w-full h-4/5 items-center justify-center mt-6 z-10'>
           <img src={ item.image ? item.image : '/invisible_weapons/vandal.png' } className={'w-4/5 drop-shadow-2xl transition-opacity duration-100 ease-in delay-' + delay} />
         </div>

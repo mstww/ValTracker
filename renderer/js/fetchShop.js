@@ -88,19 +88,30 @@ async function fetchShop() {
       var shopData = JSON.parse(rawShopData);
       
       var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
-      ipcRenderer.send('Debug', skinPriceData);
+      var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
+  
+      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins`)).json();
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
-        var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i]
-  
-        var skinData = await (await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${skinUUID}`)).json();
-  
-        var skinName = skinData.data.displayName;
-        var skinIcon = skinData.data.displayIcon;
+        var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
+
+        for(var j = 0; j < allSkins.data.length; j++) {
+          if(skinUUID === allSkins.data[j].levels[0].uuid) {
+            var skinName = allSkins.data[j].displayName;
+            var skinIcon = allSkins.data[j].displayIcon;
+            var tierUUID = allSkins.data[j].contentTierUuid;
+          }
+        }
   
         for(var n = 0; n < skinPriceData.Offers.length; n++) {
           if(skinPriceData.Offers[n].Rewards[0].ItemID == skinUUID) {
             var skinPrice = skinPriceData.Offers[n].Cost[Object.keys(skinPriceData.Offers[n].Cost)[0]];
+          }
+        }
+        
+        for(var j = 0; j < skinTiers.data.length; j++) {
+          if(tierUUID === skinTiers.data[j].uuid) {
+            var skinTierImage = skinTiers.data[j].displayIcon;
           }
         }
   
@@ -109,6 +120,7 @@ async function fetchShop() {
           skinName,
           skinIcon,
           skinPrice,
+          skinTierImage,
           expiresIn: shopData.singleSkinsExpireIn
         }
         data.singleSkins.push(obj)
@@ -197,18 +209,30 @@ async function fetchShop() {
       }
 
       var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
+      var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
+  
+      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins`)).json();
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
-  
-        var skinData = await (await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${skinUUID}`)).json();
-  
-        var skinName = skinData.data.displayName;
-        var skinIcon = skinData.data.displayIcon;
+
+        for(var j = 0; j < allSkins.data.length; j++) {
+          if(skinUUID === allSkins.data[j].levels[0].uuid) {
+            var skinName = allSkins.data[j].displayName;
+            var skinIcon = allSkins.data[j].displayIcon;
+            var tierUUID = allSkins.data[j].contentTierUuid;
+          }
+        }
   
         for(var n = 0; n < skinPriceData.Offers.length; n++) {
           if(skinPriceData.Offers[n].Rewards[0].ItemID == skinUUID) {
             var skinPrice = skinPriceData.Offers[n].Cost[Object.keys(skinPriceData.Offers[n].Cost)[0]];
+          }
+        }
+        
+        for(var j = 0; j < skinTiers.data.length; j++) {
+          if(tierUUID === skinTiers.data[j].uuid) {
+            var skinTierImage = skinTiers.data[j].displayIcon;
           }
         }
   
@@ -217,6 +241,7 @@ async function fetchShop() {
           skinName,
           skinIcon,
           skinPrice,
+          skinTierImage,
           expiresIn: shopData.singleSkinsExpireIn
         }
         data.singleSkins.push(obj);
