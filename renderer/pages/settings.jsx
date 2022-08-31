@@ -537,8 +537,6 @@ function Settings() {
     str += (states[gameRP_showRank]); // 10
     str += (states[gameRP_showTimer]); // 11
     str += (states[gameRP_showScore]); // 12
-
-    console.log(str);
     
     var buff = Buffer.from(str);
     str = buff.toString('base64');
@@ -569,8 +567,6 @@ function Settings() {
     code = buff.toString('ascii');
     
     var settingsStates = code.split("");
-    console.log(settingsStates);
-    console.log(code);
 
     var isUseable = validateSettingsCode(settingsStates);
     

@@ -14,7 +14,6 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
 
   React.useEffect(async () => {
     if(reward_1.image && reward_1.image !== "/images/radianite_icon.png") {
-      console.log(reward_1);
       const res1 = await fetch(reward_1.image, { method: "HEAD" });
     
       if(!res1.ok) {

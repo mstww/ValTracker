@@ -203,8 +203,6 @@ export default function Navbar({ page }) {
         } else {
           search_history.arr.unshift(data);
         }
-  
-        console.log(search_history);
       
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(search_history));
       }

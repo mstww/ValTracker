@@ -98,7 +98,10 @@ async function fetchShop() {
         for(var j = 0; j < allSkins.data.length; j++) {
           if(skinUUID === allSkins.data[j].levels[0].uuid) {
             var skinName = allSkins.data[j].displayName;
-            var skinIcon = allSkins.data[j].displayIcon;
+            
+            if(allSkins.data[j].displayIcon !== null) var skinIcon = allSkins.data[j].displayIcon;
+            else var skinIcon = allSkins.data[j].levels[0].displayIcon;
+            
             var tierUUID = allSkins.data[j].contentTierUuid;
           }
         }
@@ -110,7 +113,7 @@ async function fetchShop() {
         }
         
         for(var j = 0; j < skinTiers.data.length; j++) {
-          if(tierUUID === skinTiers.data[j].uuid) {
+          if(tierUUID === skinTiers.data[j].uuid && skinTiers.data[j].displayIcon !== null) {
             var skinTierImage = skinTiers.data[j].displayIcon;
           }
         }
@@ -193,8 +196,6 @@ async function fetchShop() {
       fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData));
       fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json', JSON.stringify(shopData));
 
-      var bundleID = shopData.FeaturedBundle.Bundle.DataAssetID
-
       // Calculate Bundle Price
       var bundlePrice = 0;
       for(var i = 0; i < shopData.FeaturedBundle.Bundles[0].Items.length; i++) {
@@ -219,7 +220,10 @@ async function fetchShop() {
         for(var j = 0; j < allSkins.data.length; j++) {
           if(skinUUID === allSkins.data[j].levels[0].uuid) {
             var skinName = allSkins.data[j].displayName;
-            var skinIcon = allSkins.data[j].displayIcon;
+
+            if(allSkins.data[j].displayIcon !== null) var skinIcon = allSkins.data[j].displayIcon;
+            else var skinIcon = allSkins.data[j].levels[0].displayIcon;
+            
             var tierUUID = allSkins.data[j].contentTierUuid;
           }
         }
@@ -231,7 +235,7 @@ async function fetchShop() {
         }
         
         for(var j = 0; j < skinTiers.data.length; j++) {
-          if(tierUUID === skinTiers.data[j].uuid) {
+          if(tierUUID === skinTiers.data[j].uuid && skinTiers.data[j].displayIcon !== null) {
             var skinTierImage = skinTiers.data[j].displayIcon;
           }
         }

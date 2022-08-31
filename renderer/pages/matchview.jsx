@@ -278,9 +278,7 @@ function Matchview() {
         if(newMatchLength.split(",").pop() === ' ') {
           newMatchLength = newMatchLength.substring(0, newMatchLength.lastIndexOf(','));
         }
-
-        console.log(knownMatchData);
-  
+        
         setMatchMap(knownMatchData.mapUUID);
         setMatchMapName(knownMatchData.mapName);
         setMatchDate(newMatchDate);

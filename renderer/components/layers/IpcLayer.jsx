@@ -46,10 +46,6 @@ export default function IpcLayer() {
       }
     });
 
-    ipcRenderer.on("message", function(event, args) {
-      console.log(args)
-    });
-
     return () => {
       ipcRenderer.removeAllListeners();
     }
