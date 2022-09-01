@@ -1206,7 +1206,7 @@ var reauth_interval;
         mainWindow.close();
       } else {
         var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-        if(config.showDiscordRPWhenHidden === true) {
+        if(config.hideDiscordRPWhenHidden === true) {
           RPState = 'ClientHidden';
           discordClient.clearActivity(process.pid);
         }

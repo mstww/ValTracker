@@ -220,7 +220,7 @@ function Settings() {
     if(data.hasValorantRPenabled === true || data.hasValorantRPenabled === undefined) {
       setGameRP(true);
     }
-    if(data.showDiscordRPWhenHidden === true) {
+    if(data.hideDiscordRPWhenHidden === true) {
       setAppRPwhenHidden(true);
     }
     
@@ -357,10 +357,10 @@ function Settings() {
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
 
-    if(typeof e === 'boolean') data.showDiscordRPWhenHidden = e;
-    else if(data.showDiscordRPWhenHidden === true) data.showDiscordRPWhenHidden = false;
-    else if(data.showDiscordRPWhenHidden === false) data.showDiscordRPWhenHidden = true;
-    else data.showDiscordRPWhenHidden = true;
+    if(typeof e === 'boolean') data.hideDiscordRPWhenHidden = e;
+    else if(data.hideDiscordRPWhenHidden === true) data.hideDiscordRPWhenHidden = false;
+    else if(data.hideDiscordRPWhenHidden === false) data.hideDiscordRPWhenHidden = true;
+    else data.hideDiscordRPWhenHidden = true;
 
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
 
