@@ -28,7 +28,7 @@ export default function WhatsNewLayer() {
     if(localStorage.getItem('show-whats-new')) {
       var whats_new_data = await(await fetch('http://api.valtracker.gg/whats-new')).json();
       
-      setNewVALTrackerVersion(whats_new_data.data.version);
+      setNewVALTrackerVersion(whats_new_data.data.version.version);
       
       var newAdditions = md_conv.makeHtml(whats_new_data.data.whats_new.additions);
       var newFixes = md_conv.makeHtml(whats_new_data.data.whats_new.fixes);
