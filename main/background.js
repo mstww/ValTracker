@@ -156,6 +156,7 @@ function createInventoryData() {
 }
 
 async function getUserData(region) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch("https://pd." + region + ".a.pvp.net/name-service/v2/players", {
     method: 'PUT',
     body: "[\"" + user_creds.playerUUID + "\"]",
@@ -178,6 +179,7 @@ async function getAccessTokens(ssid) {
 
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) { 
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
     method: 'GET',
     headers: {
@@ -496,6 +498,7 @@ async function getDataFromWebSocketEvent(eventData) {
 }
 
 async function getShopData(region, puuid, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v2/storefront/' + puuid, {
     method: 'GET',
     headers: {
@@ -509,6 +512,7 @@ async function getShopData(region, puuid, entitlement_token, bearer) {
 }
 
 async function getPlayerItems(region, puuid, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/store/v1/entitlements/${puuid}/e7c63390-eda7-46e0-bb7a-a6abdacd2433`, {
     method: 'GET',
     headers: {

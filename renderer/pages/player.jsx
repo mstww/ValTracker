@@ -94,6 +94,7 @@ async function getEntitlement(bearer) {
 }
 
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
     method: 'GET',
     headers: {
@@ -107,6 +108,7 @@ async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entit
 }
 
 async function getMatch(region, matchId, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/match-details/v1/matches/${matchId}`, {
     method: 'GET',
     headers: {
@@ -127,6 +129,7 @@ function getDifferenceInDays(date1, date2) {
 
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
     method: 'GET',
     headers: {

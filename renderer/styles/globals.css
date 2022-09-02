@@ -515,6 +515,38 @@ input:checked + .slider:before {
   @apply border-2 border-maincolor-lightest;
 }
 
+.matchview-tile.active {
+  position: relative;
+  padding: 0.5rem 1rem;
+  transition: 0s;
+  @apply bg-maincolor-lightest;
+  width: fit-content;
+}
+
+.matchview-tile.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: 50%;
+  @apply border-b-2 border-gradient-left rounded-b-sm;
+  padding: 0.5rem 50%;
+}
+
+.matchview-tile {
+  padding: 0.5rem 1rem;
+  border-radius: 0px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: inline;
+  @apply rounded-sm border-2 border-transparent text-base;
+}
+
+.matchview-tile:hover {
+  @apply border-2 border-maincolor-lightest;
+}
+
 button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button) {
   border: none;
   @apply bg-button-color text-button-text text-sm;
@@ -1233,4 +1265,27 @@ h5 {
 
 .w-10\% {
   width: 10%;
+}
+
+.h-85\% {
+  height: 85%;
+}
+
+.h-90\% {
+  height: 90%;
+}
+
+.agent-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+ol {
+  margin-left: 1.2rem;
+}
+
+ol li {
+  list-style: decimal;
+  margin-left: 1rem;
 }

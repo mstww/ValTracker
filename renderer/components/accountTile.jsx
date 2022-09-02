@@ -41,6 +41,7 @@ async function switcher_getXMPPRegion(requiredCookie, bearer, id_token) {
 }
 
 async function switcher_getShopData(region, puuid, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v2/storefront/' + puuid, {
     method: 'GET',
     headers: {

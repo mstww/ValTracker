@@ -384,27 +384,18 @@ function Matchview() {
           &nbsp;&nbsp;
           <span className='text-val-red'>{matchScore ? matchScore.split("-").pop() : ''}</span>
         </h1>
-        <div className='mt-9 text-lg w-1/3 flex flex-row justify-around'>
+        <div className='mt-9 text-lg w-1/2 flex flex-row justify-around'>
           <span 
-            className={'matchview-navitem ' + (activeTab == 'overview' ? 'active' : '') + (isDeathmatch == true ? ' hidden' : ' inline-block')}
+            className={'matchview-tile ' + (activeTab == 'overview' ? 'active' : '') + (isDeathmatch == true ? ' hidden' : ' inline-block')}
             onClick={() => {
               setLastTab(activeTab);
               setActiveTab('overview');
             }}
           >
             OVERVIEW
-          </span> 
-          {/*<span 
-            className={'matchview-navitem inline-block ' + (activeTab == 'rounds' ? 'active' : '')}
-            onClick={() => {
-              setLastTab(activeTab);
-              setActiveTab('rounds');
-            }}
-          >
-            ROUNDS
-          </span>*/}
+          </span>
           <span 
-            className={'matchview-navitem inline-block ' + (activeTab == 'scoreboard' ? 'active' : '')}
+            className={'matchview-tile ' + (activeTab == 'scoreboard' ? 'active' : '')}
             onClick={() => {
               setLastTab(activeTab);
               setActiveTab('scoreboard');
@@ -668,76 +659,6 @@ function Matchview() {
           </div>
         </motion.div>
       </motion.div>
-
-      {/*<motion.div 
-        className={'w-full h-4/5 p-4 pt-2.5 flex flex-row'}
-        variants={rounds_vars}
-        initial="hidden"
-        animate={activeTab === 'rounds' ? "enter" : "exit"}
-        transition={{ type: 'linear', duration: 0.5, delay: (activeTab === 'rounds' ? 0.5 : 0) }}
-      > 
-        <div id='left' className='w-1/4 h-full flex flex-col mr-2'>
-          <div className='w-full h-1/2 border-2 border-maincolor-lightest rounded-sm p-2 mb-4'>
-            <span>Player Stats</span>
-            <hr />
-            Damage this round, combat score, eco stats, loadout, abilities bought/used
-            <ul className='mt-4'>
-              <li className='flex flex-row items-center mb-6 border-2 border-maincolor-lightest rounded-sm h-14 p-1'>
-                <div className='h-full w-3/5 flex flex-row items-center'>
-                  <img src='https://media.valorant-api.com/gear/822bcab2-40a2-324e-c137-e09195ad7692/shop/newimage.png' className='h-4/5' />
-                  <img src='https://media.valorant-api.com/weapons/63e6c2b6-4a8e-869c-3d4c-e38355226584/killstreamicon.png' className='h-3/5 flip-img' />
-                </div>
-                <div className='h-full w-2/5 flex flex-row items-center'>
-                  <div className='w-1/2 h-full'>
-                    <img src={'https://media.valorant-api.com/agents/' + playerAgentUUID + '/abilities/ability1/displayicon.png'} className='h-4/5' />
-                  </div>
-                  <div className='w-1/2 h-full'>
-                    <img src={'https://media.valorant-api.com/agents/' + playerAgentUUID + '/abilities/grenade/displayicon.png'} className='h-4/5' />
-                  </div>
-                </div>
-              </li>
-              <li className='flex flex-row items-center mb-6'>
-                <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded-sm'><img src='/images/signal_graph.svg' className='w-7' /></Tooltip>
-                <span className='relative text-lg top-0.5 left-2'>128 Damage</span>
-              </li>
-              <li className='flex flex-row items-center mb-6'>
-                <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded-sm'><img src='/images/signal_graph.svg' className='w-7' /></Tooltip>
-                <span className='relative text-lg top-0.5 left-2'>20 Combat Score</span>
-              </li>
-              <li className='flex flex-row items-center mb-6'>
-                <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded-sm'><img src='/images/signal_graph.svg' className='w-7' /></Tooltip>
-                <span className='relative text-lg top-0.5 left-2'>3900 Credits spent</span>
-              </li>
-            </ul>
-          </div>
-          <div className='w-full h-1/2 border-2 border-maincolor-lightest rounded-sm p-2'>
-            <span>Team Stats</span>
-            <hr />
-            <span>Kills/Team, Total Money spent, loadout of everyone</span>
-            <ul className='mt-4'>
-              <li className='flex flex-row items-center mb-6'>
-                <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded-sm'><img src='/images/signal_graph.svg' className='w-7' /></Tooltip>
-                <span className='relative text-lg top-0.5 left-2'>{playerKD} ({playerKDA})</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div id='mid' className='w-2/4 border-2 border-maincolor-lightest rounded-sm p-2 h-full mx-2'>
-          Map
-        </div>
-        <div id='right' className='w-1/4 h-full flex flex-col ml-2'>
-          <div className='w-full h-1/2 border-2 border-maincolor-lightest rounded-sm p-2 mb-4'>
-            <span>Events</span>
-            <hr />
-            <span>Every kill, spike plant/defuse</span>
-          </div>
-          <div className='w-full h-1/2 border-2 border-maincolor-lightest rounded-sm p-2'>
-            <span>Round Select</span>
-            <hr />
-            <span>All rounds, round 0 auto selected</span>
-          </div>
-          </div>
-        </motion.div>*/}
       
       <motion.div 
         className={'w-full h-4/5 p-4 pt-2.5'}

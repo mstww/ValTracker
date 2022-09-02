@@ -28,6 +28,7 @@ async function getEntitlement(bearer) {
 }
 
 async function getOffers(region, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v1/offers/', {
     method: 'GET',
     headers: {
@@ -41,6 +42,7 @@ async function getOffers(region, entitlement_token, bearer) {
 }
 
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`, {
     method: 'PUT',
     headers: {

@@ -43,6 +43,7 @@ async function getXMPPRegion(requiredCookie, bearer, id_token) {
 }
 
 async function getShopData(region, puuid, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/store/v2/storefront/${puuid}`, {
     method: 'GET',
     headers: {
@@ -56,6 +57,7 @@ async function getShopData(region, puuid, entitlement_token, bearer) {
 }
 
 async function requestUserCreds(region, puuid) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
     method: 'PUT',
     headers: {
@@ -68,6 +70,7 @@ async function requestUserCreds(region, puuid) {
 
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
     method: 'GET',
     headers: {

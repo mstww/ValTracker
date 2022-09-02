@@ -47,6 +47,7 @@ async function getEntitlement(bearer) {
 }
 
 async function getWallet(region, puuid, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v1/wallet/' + puuid, {
     method: 'GET',
     headers: {

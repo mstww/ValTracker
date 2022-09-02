@@ -48,8 +48,8 @@ export default function Layout({ children, classNames, setup }) {
   return( 
     <div className={"flex flex-row bg-maincolor-light " + (legacy ? 'legacy' : '')}>
       <WindowControls />
+      <UpdatingLayer />
       {setup ? '' : <MessageLayer />}
-      {setup ? '' : <UpdatingLayer />}
       {setup ? '' : <ReauthLayer />}
       {setup ? '' : <TextboxLayer />}
       {setup ? '' : <WhatsNewLayer />}

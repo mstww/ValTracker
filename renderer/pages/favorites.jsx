@@ -66,6 +66,7 @@ async function getEntitlement(bearer) {
 
 async function getMatch(region, matchId, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/match-details/v1/matches/${matchId}`, {
     method: 'GET',
     headers: {

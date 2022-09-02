@@ -15,6 +15,7 @@ async function getEntitlement(bearer) {
 }
 
 async function getStoreOffers(region, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v1/offers/', {
     method: 'GET',
     headers: {
@@ -28,6 +29,7 @@ async function getStoreOffers(region, entitlement_token, bearer) {
 }
 
 async function getShopData(region, puuid, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v2/storefront/' + puuid, {
     method: 'GET',
     headers: {

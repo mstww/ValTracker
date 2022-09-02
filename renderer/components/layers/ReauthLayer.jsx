@@ -66,6 +66,7 @@ async function getEntitlement(bearer) {
 
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
     method: 'GET',
     headers: {
@@ -102,7 +103,8 @@ export default function ReauthLayer() {
       var puuid = await getPlayerUUID(bearer);
   
       var reagiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
-      var region = reagiondata.affinities.live
+      var region = reagiondata.affinities.live;
+      if(region === 'latam' || region === 'br') region = 'na';
       var options = {
         method: "PUT",
         body: "[\"" + puuid + "\"]",
