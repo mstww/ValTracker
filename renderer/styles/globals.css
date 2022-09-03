@@ -1289,3 +1289,33 @@ ol li {
   list-style: decimal;
   margin-left: 1rem;
 }
+
+/* The switch - the box around the slider */
+.language-checkbox {
+  display: inline-block;
+  width: 45%;
+  @apply h-10 relative mb-2 mr-2;
+}
+
+.language-checkbox.disabled {
+  cursor: initial;
+}
+
+/* Hide default HTML checkbox */
+.language-checkbox input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.language-checkbox span {
+  @apply border-2 border-maincolor-lightest rounded-sm w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+}
+
+.language-checkbox span:hover {
+  @apply bg-maincolor-light;
+}
+
+.language-checkbox span.active {
+  @apply border-2 border-button-color bg-maincolor-light cursor-default;
+}

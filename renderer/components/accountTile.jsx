@@ -108,10 +108,10 @@ export default function AccountTile({ currenttier, puuid, username, usertag, use
   
       fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
 
-      router.push(router.route + '?account=' + puuidToBeSwitchedTo);
+      router.push(router.route + '?account=' + puuidToBeSwitchedTo + `&lang=${router.query.lang}`);
     } catch(err) {
       console.log(err);
-      router.push(router.route + '?account=' + puuidToBeSwitchedTo);
+      router.push(router.route + '?account=' + puuidToBeSwitchedTo + `&lang=${router.query.lang}`);
     }
   }
 

@@ -1,0 +1,99 @@
+{
+  "en-US": {
+    "component_err": {
+      "err_text": "Error while loading Component.",
+      "button_text": "Reload"   
+    },
+    "top_l": {
+      "bundle_header": "Featured Bundle",
+      "contracts": {
+        "level_text": "Level",
+        "xp_text": "TO GO",
+        "battle_pass_header": "Battle Pass Progress",
+        "agent_contract_header": "Agent Contract Progress"
+      }
+    },
+    "top_r": {
+      "headers": {
+        "h_1": "Headshot% of last 8 Matches",
+        "h_2": "Damage/Round of last 8 Matches",
+        "h_3": "KD of last 8 Matches"
+      },
+      "latest_text": "Latest"
+    },
+    "bot_l": {
+      "errors": {
+        "no_matches_found": "No matches found.",
+        "err_while_fetching": "Something went wrong while fetching new matches. Try again!"
+      },
+      "loading_tooltip": "Checking for new matches...",
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Unrated",
+        "competitive": "Competitive",
+        "unrated": "Unrated",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Escalation",
+        "onefa": "Replication",
+        "snowball": "Snowball Fight", 
+        "custom": "Custom",
+        "": "Custom"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTORY",
+        "DEFEAT": "DEFEAT"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ num1 }} out of {{ num2 }} Matches shown",
+        "load_more": "Load more Matches"
+      },
+      "match_pos": {
+        "Match-MVP": "Match MVP",
+        "Team-MVP": "Team MVP",
+        "2nd": "2nd",
+        "3rd": "3rd",
+        "4th": "4th",
+        "5th": "5th",
+        "6th": "6th",
+        "7th": "7th",
+        "8th": "8th",
+        "9th": "9th",
+        "10th": "10th"
+      }
+    },
+    "bot_r": {
+      "stats": {
+        "header": "Stats of last {{ num1 }} Matches",
+        "stat_1": "Avg Kills/Match",
+        "stat_2": "Avg Kills/Round",
+        "stat_3": "Win%",
+        "stat_4": "Avg Headshot%"
+      },
+      "best_map": {
+        "header": "Best Map",
+        "stats": {
+          "stat_1": "Win%",
+          "stat_2": "Avg KD"
+        }
+      },
+      "best_agent": {
+        "header": "Best Agent",
+        "stat_1": "Avg Score/Match",
+        "stat_2": "Avg KDA",
+        "stat_3": "Avg Kills/Round",
+        "stat_4": "Avg Kills/Match"
+      },
+      "match_filter": {
+        "header": "Change Match Filter",
+        "fl_1": "Unrated",
+        "fl_2": "Competitive",
+        "fl_3": "Deathmatch",
+        "fl_4": "Spike Rush",
+        "fl_5": "Replication",
+        "fl_6": "Escalation",
+        "fl_7": "Custom"
+      }
+    }
+  }
+}

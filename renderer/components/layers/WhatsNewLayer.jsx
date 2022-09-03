@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import fetch from 'node-fetch';
 import parser from 'showdown';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const md_conv = new parser.Converter();
 
@@ -19,6 +20,8 @@ const backdrop_variants = {
 }
 
 export default function WhatsNewLayer() {
+  const router = useRouter();
+  
   const [ isWhatsNewShown, setIsWhatsNewShown ] = React.useState(false);
   const [ newVALTrackerVersion, setNewVALTrackerVersion ] = React.useState('');
   const [ whatsNewAdditions, setWhatsNewAdditions ] = React.useState('');
@@ -53,7 +56,7 @@ export default function WhatsNewLayer() {
       id={'whats-new-backdrop'}
     >
       <motion.div 
-        className='relative flex flex-col justify-center items-center w-96 bg-maincolor rounded-sm p-4 pointer-events-auto'
+        className='relative flex flex-col justify-center items-center w-1/2 bg-maincolor rounded-sm p-4 pointer-events-auto'
         key={"WhatsNewCard"}
         variants={card_variants}
         initial="hidden"
@@ -80,7 +83,7 @@ export default function WhatsNewLayer() {
         <span className='text-sm text-gray-500'>
           Click 
           <span className='cursor-pointer text-button-color hover:text-button-color-hover transition-all duration-100 ease-linear'>
-            <Link href={'/settings?tab=patchnotes'}> here </Link>
+            <Link href={'/settings?tab=patchnotes&lang=' + router.query.lang}> here </Link>
           </span>
           to see all Patchnotes 
         </span>

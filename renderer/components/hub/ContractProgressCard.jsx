@@ -2,7 +2,7 @@ import { Progress } from "@nextui-org/react"
 import fetch from 'node-fetch';
 import React from "react";
 
-export default function ContractProgressCard({ title, reward_1, level_1, progress_max, progress_value, reward_2, level_2, level_1_isTextReward, level_2_isTextReward, isVisible }) {
+export default function ContractProgressCard({ title, reward_1, level_1, progress_max, progress_value, reward_2, level_2, level_1_isTextReward, level_2_isTextReward, level_locale, xp_locale, isVisible }) {
   var color = 'gradient'
   if(parseInt(progress_value) === parseInt(progress_max) && progress_value !== undefined) {
     color = 'warning'
@@ -50,7 +50,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
                 <span className='relative bottom-0 opacity-0 select-none'>{level_1}</span>
               </>
             }
-            <span className='absolute bottom-1'>Level {level_1}</span>
+            <span className='absolute bottom-1'>{level_locale} {level_1}</span>
           </div>
 
           <div className='w-1/2 mx-auto h-full p-2 flex flex-col justify-center text-center relative'>
@@ -60,7 +60,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
               :
               null
             }
-            <p className='text-gray-400 mt-0'>{numberWithCommas(progress_max - progress_value)}<span className="ml-0.5 inline font-light">XP</span> TO GO</p>
+            <p className='text-gray-400 mt-0'>{numberWithCommas(progress_max - progress_value)}<span className="ml-0.5 inline font-light">XP</span> {xp_locale}</p>
           </div>
 
           <div className='w-1/4 h-full flex flex-col text-center items-center justify-center'>
@@ -75,7 +75,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
                 <span className='relative bottom-0 opacity-0 select-none'>{level_1}</span>
               </>
             }
-            <span className='absolute bottom-1'>Level {level_2}</span>
+            <span className='absolute bottom-1'>{level_locale} {level_2}</span>
           </div>
 
         </div>

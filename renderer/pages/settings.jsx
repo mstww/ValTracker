@@ -17,6 +17,10 @@ import AboutGroup from '../components/settings/AboutGroup';
 import AboutWrapper from '../components/settings/AboutWrapper';
 import OverlayWrapper from '../components/settings/OverlayWrapper';
 import PopupCard from '../components/settings/PopupCard';
+import LanguageCheckbox from '../components/settings/LanguageCheckbox';
+import AllLangs from '../locales/languages.json';
+import L from '../locales/translations/settings.json';
+import LocalText from '../components/translation/LocalText';
 
 const md_conv = new parser.Converter();
 
@@ -131,7 +135,6 @@ function Patchnotes() {
 function Settings() {
   const router = useRouter();
 
-  // Check for querys first
   if(router.query.tab) {
     var initialActive = router.query.tab;
   } else {
@@ -156,13 +159,19 @@ function Settings() {
   const [ gameRP_showTimer, setGameRP_showTimer ] = React.useState(true);
   const [ gameRP_showScore, setGameRP_showScore ] = React.useState(true);
 
+  const general_changeLang = React.useRef(null);
+  const [ general_changeLangPopupOpen, setGeneral_changeLangPopupOpen ] = React.useState(false);
+
+  const [ currentSelectedLanguage, setCurrentSelectedLanguage ] = React.useState(false);
+  const [ loadData, setLoadData ] = React.useState({});
+
   const riot_removeAccount = React.useRef(null);
   const [ riot_removeAccountPopupOpen, setRiot_RemoveAccountPopupOpen ] = React.useState(false);
 
   const [ riot_accountList, setRiot_AccountList ] = React.useState([]);
   const [ riot_activeAccountSelection, setRiot_ActiveAccountSelection ] = React.useState(null);
 
-  const [ other_copyCodeToClipButtonText, setOther_CopyCodeToClipButtonText ] = React.useState('Copy to Clipboard');
+  const [ other_copyCodeToClipButtonText, setOther_CopyCodeToClipButtonText ] = React.useState(LocalText(L, 'pg_5.grp_1.setting_2.button_text'));
 
   const overlayWrapper = React.useRef(null);
   const [ popupBackgroundShown, setPopupBackgroundShown ] = React.useState(false);
@@ -371,7 +380,6 @@ function Settings() {
   }
 
   const changeGameRP = (e) => {
-    
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
     var data = JSON.parse(raw);
 
@@ -486,10 +494,10 @@ function Settings() {
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
   
-        router.push('/settings?tab=riot&counter=' + router.query.counter);
+        router.push('/settings?tab=riot&counter=' + router.query.counter + `&lang=${router.query.lang}`);
       } catch(err) {
         console.log(err)
-        router.push('/settings?tab=riot&counter=' + router.query.counter);
+        router.push('/settings?tab=riot&counter=' + router.query.counter + `&lang=${router.query.lang}`);
       }
     }
   }
@@ -593,6 +601,14 @@ function Settings() {
     }
   }
 
+  const changeLanguageAndRestart = () => {
+    var loadData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+    loadData.appLang = currentSelectedLanguage;
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(loadData));
+
+    ipcRenderer.send('restartApp');
+  }
+
   const resetApp = () => {
     ipcRenderer.send('resetApp');
   }
@@ -604,9 +620,47 @@ function Settings() {
     generateSettingsCode();
   }, []);
 
+  React.useEffect(() => {
+    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+    setLoadData(data);
+  }, [ general_changeLangPopupOpen ]);
+
   return (
     <Layout>
       <OverlayWrapper useRef={overlayWrapper} isShown={popupBackgroundShown}>
+
+        <PopupCard
+          useRef={general_changeLang}
+          header={'Select Language'}
+          text={'Select a language and click the button below. The app will restart to apply changes.'}
+          button_1={'Confirm'}
+          button_2={'Cancel'}
+          button_1_onClick={() => { 
+            changeLanguageAndRestart();
+          }}
+          button_2_onClick={() => {
+            closePopup(setGeneral_changeLangPopupOpen);
+            setCurrentSelectedLanguage('en-US');
+          }}
+          isWideCard={true}
+          isButtonClickable={(loadData.appLang === undefined ? 'en-US' : loadData.appLang ) !== currentSelectedLanguage}
+          isOpen={general_changeLangPopupOpen}
+        >
+          <div className="w-full mt-4 flex flex-row flex-wrap items-center">
+            {
+              Object.keys(AllLangs).map((lang, index) => {
+                var appLang = loadData.appLang;
+                if(appLang === undefined) appLang = 'en-US';
+
+                if(appLang !== lang) {
+                  return (
+                    <LanguageCheckbox locale={lang} selectedLang={currentSelectedLanguage} displayName={AllLangs[lang].displayName} click={() => { setCurrentSelectedLanguage(lang) }} />
+                  )
+                }
+              })
+            }
+          </div>
+        </PopupCard>
 
         <PopupCard
           useRef={other_resetApp}
@@ -678,20 +732,20 @@ function Settings() {
 
       <div className='w-full mt-4'>
         <div id='settings-topbar' className='flex flex-row h-1/5 justify-around'>
-          <SettingsTile type='app' text={"App"} delay={0} active={activeSettingsGroup} onClick={() => {setActiveGroup('app')}} />
-          <SettingsTile type='rpc' text={"Rich Presences"} delay={0.1} active={activeSettingsGroup} onClick={() => {setActiveGroup('rpc')}} />
-          <SettingsTile type='riot' text={"Riot Account Management"} delay={0.15} active={activeSettingsGroup} onClick={() => {setActiveGroup('riot')}} />
-          <SettingsTile type='patchnotes' text={"Patchnotes"} delay={0.2} active={activeSettingsGroup} onClick={() => {setActiveGroup('patchnotes')}} />
-          <SettingsTile type='other' text={"Other"} delay={0.2} active={activeSettingsGroup} onClick={() => {setActiveGroup('other')}} />
+          <SettingsTile type='app' text={LocalText(L, 'nav.el_1')} delay={0} active={activeSettingsGroup} onClick={() => {setActiveGroup('app')}} />
+          <SettingsTile type='rpc' text={LocalText(L, 'nav.el_2')} delay={0.1} active={activeSettingsGroup} onClick={() => {setActiveGroup('rpc')}} />
+          <SettingsTile type='riot' text={LocalText(L, 'nav.el_3')} delay={0.15} active={activeSettingsGroup} onClick={() => {setActiveGroup('riot')}} />
+          <SettingsTile type='patchnotes' text={LocalText(L, 'nav.el_4')} delay={0.2} active={activeSettingsGroup} onClick={() => {setActiveGroup('patchnotes')}} />
+          <SettingsTile type='other' text={LocalText(L, 'nav.el_5')} delay={0.2} active={activeSettingsGroup} onClick={() => {setActiveGroup('other')}} />
         </div>
         <div id='wrapper-handler' className='ml-20 mt-10 h-4/5'>
 
           <SettingsWrapper type='app' activeWrapper={activeSettingsGroup}>
 
-            <SettingsGroup header={'APP BEHAVIOUR'}>
+            <SettingsGroup header={LocalText(L, 'pg_1.grp_1.name')}>
               <Setting 
-                title={'Open VALTracker'} 
-                desc={'Open VALTracker automatically right when your PC starts.'} 
+                title={LocalText(L, 'pg_1.grp_1.setting_1.name')} 
+                desc={LocalText(L, 'pg_1.grp_1.setting_1.desc')} 
                 inputType={'checkbox'} 
                 isChecked={autoOpen} 
                 onClick={changeAutoOpen}
@@ -700,8 +754,8 @@ function Settings() {
               <SettingsSeperator />
 
               <Setting 
-                title={'Open VALTracker minimized'} 
-                desc={'Open VALTracker minimized on autostart.'} 
+                title={LocalText(L, 'pg_1.grp_1.setting_2.name')} 
+                desc={LocalText(L, 'pg_1.grp_1.setting_2.desc')} 
                 inputType={'checkbox'} 
                 isChecked={startHidden && autoOpen}
                 isDisabled={!autoOpen}
@@ -709,41 +763,51 @@ function Settings() {
               />
             </SettingsGroup>
 
-            <SettingsGroup header={'SKIN WISHLIST'}>
+            <SettingsGroup header={LocalText(L, 'pg_1.grp_2.name')}>
               <Setting 
-                title={'Skin Wishlist Notifications'} 
-                desc={'Enable or disable Skin Wishlist notifications.'} 
-                desc2={'Tip: Open VALTracker Minimized so that you don\'t get disturbed by the window popping up.'}
+                title={LocalText(L, 'pg_1.grp_2.setting_1.name')} 
+                desc={LocalText(L, 'pg_1.grp_2.setting_1.desc')} 
+                inputType={'button'}
+                buttonText={LocalText(L, 'pg_1.grp_2.setting_1.button_text')}
+                onClick={() => { openPopup(setGeneral_changeLangPopupOpen) }}
+              />
+            </SettingsGroup>
+
+            <SettingsGroup header={LocalText(L, 'pg_1.grp_3.name')}>
+              <Setting 
+                title={LocalText(L, 'pg_1.grp_3.setting_1.name')} 
+                desc={LocalText(L, 'pg_1.grp_3.setting_1.desc')} 
+                desc2={LocalText(L, 'pg_1.grp_3.setting_1.desc2')}
                 inputType={'checkbox'} 
                 isChecked={skinWishlistNotifications}
                 onClick={changeSkinWishlistNotifications}
               />
             </SettingsGroup>
 
-            <SettingsGroup header={'CLOSE BUTTON'}>
+            <SettingsGroup header={LocalText(L, 'pg_1.grp_4.name')}>
               <Setting
-                title={'Minimize to Tray'} 
-                desc={'Closing the app window will minimize it to your system Tray.'} 
+                title={LocalText(L, 'pg_1.grp_4.setting_1.name')} 
+                desc={LocalText(L, 'pg_1.grp_4.setting_1.desc')} 
                 inputType={'checkbox'} 
                 isChecked={minClose} 
                 onClick={changeMinClose}
               />
             </SettingsGroup>
 
-            <SettingsGroup header={'PERFORMANCE'}>
+            <SettingsGroup header={LocalText(L, 'pg_1.grp_5.name')}>
               <Setting 
-                title={'Hardware Acceleration'} 
-                desc={'Enable or disable Hardware Acceleration. Requires a restart for changes to apply.'} 
+                title={LocalText(L, 'pg_1.grp_5.setting_1.name')} 
+                desc={LocalText(L, 'pg_1.grp_5.setting_1.desc')} 
                 inputType={'checkbox'} 
                 isChecked={hardwareAcceleration}
                 onClick={changeHardwareAcceleration}
               />
             </SettingsGroup>
 
-            <SettingsGroup header={'COLOR THEME'}>
+            <SettingsGroup header={LocalText(L, 'pg_1.grp_6.name')}>
               <Setting 
-                title={'Legacy Theme'} 
-                desc={"Toggle the App's Legacy Color Theme."} 
+                title={LocalText(L, 'pg_1.grp_6.setting_1.name')} 
+                desc={LocalText(L, 'pg_1.grp_6.setting_1.desc')} 
                 inputType={'checkbox'}
                 isChecked={legacyThemeToggle}
                 onClick={changeLegacyThemeToggle}
@@ -754,10 +818,10 @@ function Settings() {
 
           <SettingsWrapper type='rpc' activeWrapper={activeSettingsGroup}>
 
-            <SettingsGroup header={'APP RICH PRESENCE'}>
+            <SettingsGroup header={LocalText(L, 'pg_2.grp_1.name')}>
               <Setting 
-                title={'VALTracker Rich Presence'} 
-                desc={"Show your friends that your're using VALTracker with a custom Rich Presence!"}
+                title={LocalText(L, 'pg_2.grp_1.setting_1.name')} 
+                desc={LocalText(L, 'pg_2.grp_1.setting_1.desc')}
                 inputType={'checkbox'}
                 isChecked={appRP}
                 onClick={changeAppRP}
@@ -766,8 +830,8 @@ function Settings() {
               <SettingsSeperator />
 
               <Setting 
-                title={'Stop Rich Presence when minimized'} 
-                desc={'Open VALTracker minimized on autostart.'} 
+                title={LocalText(L, 'pg_2.grp_1.setting_2.name')} 
+                desc={LocalText(L, 'pg_2.grp_1.setting_2.desc')} 
                 inputType={'checkbox'}
                 isChecked={appRPwhenHidden}
                 isDisabled={!appRP}
@@ -775,11 +839,11 @@ function Settings() {
               />
             </SettingsGroup>
 
-            <SettingsGroup header={'VALORANT RICH PRESENCE'}>
+            <SettingsGroup header={LocalText(L, 'pg_2.grp_2.name')}>
 
               <Setting 
-                title={'VALORANT Game Presence'} 
-                desc={"Set your Discord Status to a Rich Presence about your current match!"} 
+                title={LocalText(L, 'pg_2.grp_2.setting_1.name')} 
+                desc={LocalText(L, 'pg_2.grp_2.setting_1.desc')} 
                 inputType={'checkbox'} 
                 isChecked={gameRP}
                 onClick={changeGameRP}
@@ -788,17 +852,17 @@ function Settings() {
               <SettingsSeperator />
 
               <Setting 
-                title={'Show Match Mode'} 
-                desc={"Decide if you want to show the mode that you're currently playing!"} 
-                desc2={"Turning off this setting will disable the ability to show your rank when playing a competitive match."}
+                title={LocalText(L, 'pg_2.grp_2.setting_2.name')} 
+                desc={LocalText(L, 'pg_2.grp_2.setting_2.desc')} 
+                desc2={LocalText(L, 'pg_2.grp_2.setting_2.desc2')}
                 inputType={'checkbox'} 
                 isChecked={gameRP_showMode}
                 onClick={changeShowMatchMode}
               />
 
               <Setting 
-                title={'Show Rank instead of Agent'} 
-                desc={"Change the small picture to your rank instead of your agent if you play ranked!"} 
+                title={LocalText(L, 'pg_2.grp_2.setting_3.name')} 
+                desc={LocalText(L, 'pg_2.grp_2.setting_3.desc')} 
                 inputType={'checkbox'} 
                 isChecked={gameRP_showRank}
                 isDisabled={!gameRP_showMode}
@@ -806,16 +870,16 @@ function Settings() {
               />
 
               <Setting 
-                title={'Show Timer'} 
-                desc={"Turn the timer for the Rich Presence on or off!"} 
+                title={LocalText(L, 'pg_2.grp_2.setting_4.name')} 
+                desc={LocalText(L, 'pg_2.grp_2.setting_4.desc')} 
                 inputType={'checkbox'} 
                 isChecked={gameRP_showTimer}
                 onClick={changeShowTimer}
               />
 
               <Setting 
-                title={'Show Score'} 
-                desc={"Turn the score for the Rich Presence on or off!"} 
+                title={LocalText(L, 'pg_2.grp_2.setting_5.name')} 
+                desc={LocalText(L, 'pg_2.grp_2.setting_5.desc')} 
                 inputType={'checkbox'} 
                 isChecked={gameRP_showScore}
                 onClick={changeShowScore}
@@ -826,22 +890,22 @@ function Settings() {
 
           <SettingsWrapper type='riot' activeWrapper={activeSettingsGroup}>
 
-            <SettingsGroup header={'ACCOUNT MANAGEMENT'}>
+            <SettingsGroup header={LocalText(L, 'pg_3.grp_1.name')}>
               <Setting 
-                title={'Add an Account'} 
-                desc={"Open a login window to add a new Riot Account."} 
+                title={LocalText(L, 'pg_3.grp_1.setting_1.name')} 
+                desc={LocalText(L, 'pg_3.grp_1.setting_1.desc')} 
                 inputType={'button'} 
-                buttonText={'Add new Account'} 
+                buttonText={LocalText(L, 'pg_3.grp_1.setting_1.button_text')} 
                 onClick={addNewAccount}
               />
 
               <SettingsSeperator />
 
               <Setting
-                title={'Remove an Account'}
-                desc={'Remove a Riot Account from VALTracker.'}
+                title={LocalText(L, 'pg_3.grp_1.setting_2.name')}
+                desc={LocalText(L, 'pg_3.grp_1.setting_2.desc')}
                 inputType={'button'}
-                buttonText={'Remove Account'}
+                buttonText={LocalText(L, 'pg_3.grp_1.setting_2.button_text')}
                 onClick={() => { openPopup(setRiot_RemoveAccountPopupOpen) }}
               />
             </SettingsGroup>
@@ -856,47 +920,47 @@ function Settings() {
 
           <SettingsWrapper type='other' activeWrapper={activeSettingsGroup}>
 
-          <SettingsGroup header={'SETTINGS PROFILE'}>
-            <Setting
-              title={'Import Settings'}
-              desc={'Import a settings profile. You can copy your own code below.'}
-              inputType={'text'}
-              inputVal={importSettingsVal}
-              setInputVal={setImportSettingsVal}
-              extraButton={true}
-              extraButtonText={'Apply'}
-              extraButtonClick={() => { openPopup(setOther_applySettingsCode) }}
-            />
+            <SettingsGroup header={LocalText(L, 'pg_5.grp_1.name')}>
+              <Setting
+                title={LocalText(L, 'pg_5.grp_1.setting_1.name')}
+                desc={LocalText(L, 'pg_5.grp_1.setting_1.desc')}
+                inputType={'text'}
+                inputVal={importSettingsVal}
+                setInputVal={setImportSettingsVal}
+                extraButton={true}
+                extraButtonText={LocalText(L, 'pg_5.grp_1.setting_1.extra_button_text')}
+                extraButtonClick={() => { openPopup(setOther_applySettingsCode) }}
+              />
 
-            <SettingsSeperator />
+              <SettingsSeperator />
 
-            <Setting
-              title={'Export Settings'}
-              desc={'Copy your settings share code to the clipboard.'}
-              inputType={'button'}
-              buttonText={other_copyCodeToClipButtonText}
-              onClick={() => { 
-                generateSettingsCode();
-                setOther_CopyCodeToClipButtonText('Done!');
-                setTimeout(async () => {
-                  setOther_CopyCodeToClipButtonText('Copy to clipboard');
-                }, 2000);
-              }}
-            />
-          </SettingsGroup>
+              <Setting
+                title={LocalText(L, 'pg_5.grp_1.setting_2.name')}
+                desc={LocalText(L, 'pg_5.grp_1.setting_2.desc')}
+                inputType={'button'}
+                buttonText={other_copyCodeToClipButtonText}
+                onClick={() => { 
+                  generateSettingsCode();
+                  setOther_CopyCodeToClipButtonText(LocalText(L, 'pg_5.grp_1.setting_2.button_text_2'));
+                  setTimeout(async () => {
+                    setOther_CopyCodeToClipButtonText(LocalText(L, 'pg_5.grp_1.setting_2.button_text'));
+                  }, 2000);
+                }}
+              />
+            </SettingsGroup>
 
-            <SettingsGroup header={'DANGER ZONE'} important={true}>
+            <SettingsGroup header={LocalText(L, 'pg_5.grp_2.name')} important={true}>
               <Setting 
-                title={'Reset VALTracker'} 
-                desc={"Reset the App. This includes account data, settings, and all other data."}
+                title={LocalText(L, 'pg_5.grp_2.setting_1.name')} 
+                desc={LocalText(L, 'pg_5.grp_2.setting_1.desc')}
                 inputType={'button'} 
-                buttonText={'Reset VALTracker'}
+                buttonText={LocalText(L, 'pg_5.grp_2.setting_1.button_text')}
                 onClick={() => { openPopup(setOther_ResetAppPopupOpen) }}
               />
             </SettingsGroup>
 
-            <AboutWrapper header={'ABOUT'}>
-              <AboutGroup header={'USED APIs'}>
+            <AboutWrapper header={LocalText(L, 'pg_5.about.name')}>
+              <AboutGroup header={LocalText(L, 'pg_5.about.grp_1')}>
 
                 <AboutCredit url={'https://valtracker.gg/docs'} text={'VALTracker API'} />
                 <AboutCredit url={'https://valorant-api.com'} text={'valorant-api.com'} />
@@ -904,10 +968,9 @@ function Settings() {
 
               </AboutGroup>
 
-              <AboutGroup header={'UI ELEMENTS'}>
+              <AboutGroup header={LocalText(L, 'pg_5.about.grp_2')}>
 
                 <AboutCredit url={'https://nextui.org'} text={'NextUI'} />
-                <AboutCredit url={'https://fontawesome.com/'} text={'Fontawesome'} />
                 <AboutCredit url={'https://streamlinehq.com/'} text={'Streamline'} />
 
               </AboutGroup>

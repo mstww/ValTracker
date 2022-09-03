@@ -8,7 +8,9 @@ import pjson from '../../package.json';
 import SocialsIcon from './navigation/SocialsIcon';
 import fetch from 'node-fetch';
 import { ipcRenderer } from 'electron';
-import PlayerSearch from './navbar/PlayerSearch';
+import PlayerSearch from './navigation/PlayerSearch';
+import L from '../locales/translations/navbar.json';
+import LocalText from './translation/LocalText';
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -207,7 +209,7 @@ export default function Navbar({ page }) {
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(search_history));
       }
 
-      router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}`);
+      router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
     }
   }
 
@@ -224,7 +226,8 @@ export default function Navbar({ page }) {
           searchDisabledClasses={searchDisabledClasses} 
           handlePlayerSearch={handlePlayerSearch}
           playerSearchRef={playerSearchRef} 
-          searchHiddenDesc={searchHiddenDesc} 
+          searchHiddenDesc={searchHiddenDesc}
+          placeholderText={LocalText(L, 'el_1')}
         />
 
     	  <Link href={"/home"}>
@@ -233,44 +236,44 @@ export default function Navbar({ page }) {
             data-isactive={isHome}
           >
             <img src='/images/home.svg' className='ml-0.5 w-5' />
-            <span className='text-sm font-light relative top-px ml-2'> Home</span>
+            <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_2')}</span>
           </div>
         </Link>
 
         <div id='shop-nav' 
           className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px') : disabledClasses}
           data-isactive={isShop}
-          onClick={() => { isShopShown ? router.push("/shop") : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
+          onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
         >
           <img src='/images/store.svg' className='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'> Shop</span>
+          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_3')}</span>
         </div>
 
         <div id='inv-nav' 
           className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isInv}
-          onClick={() => { isInvShown ? router.push("/inventory") : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
+          onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
         >
           <img src='/images/user.svg' className='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'> Inventory</span>
+          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_4')}</span>
         </div>
 
         <div id='fav-nav' 
           className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isFav}
-          onClick={() => { isFavsShown ? router.push("/favorites") : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
+          onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
         >
           <img src='/images/star_white.svg' className='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'> Favorite Matches</span>
+          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_5')}</span>
         </div>
 
         <div id='fav-nav' 
           className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isWish}
-          onClick={() => { isWishlistShown ? router.push("/wishlist") : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
+          onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
         >
           <img src='/images/clipboard.svg' className='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'> Your Wishlist</span>
+          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_6')}</span>
         </div>
       </div>
       <div className='absolute bottom-16 w-full flex justify-around'>

@@ -160,10 +160,10 @@ function Setup() {
       fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json", JSON.stringify(load_data));
   
       ipcRenderer.send('finishedSetup');
-      router.push('/home');
+      router.push('/home?lang=' + router.query.lang);
     } catch(err) {
       console.log(err);
-      router.push('/setup');
+      router.push('/setup?lang=' + router.query.lang);
     }
   }
 

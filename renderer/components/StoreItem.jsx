@@ -7,7 +7,7 @@ const slide_bottom = {
   enter: { opacity: 1, x: 0, y: 0 },
 }
 
-export default function StoreItem({ item, delay, index, clickHandler, shownOverlayUUID, wishlistedItems, setWishlistedItems, userData }) {
+export default function StoreItem({ item, delay, index, clickHandler, shownOverlayUUID, wishlistedItems, setWishlistedItems, userData, wishlistTextLocale }) {
   const [ isWishlisted, setIsWishlisted ] = React.useState(false);
   const [ wishlistPosition, setWishlistPosition ] = React.useState(null);
 
@@ -108,7 +108,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                 id='star-img'
                 className='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear'
               />
-              Add to wishlist
+              {wishlistTextLocale}
             </button>
           </div>
         </motion.div>

@@ -795,7 +795,7 @@ function FavouriteMatches() {
                                   sessionStorage.setItem("roundData", JSON.stringify(match.roundResults));
                                   sessionStorage.setItem("teamData", JSON.stringify({ Blue, Red }));
                                   sessionStorage.setItem("playerData", JSON.stringify(match.players));
-                                  router.push(`/matchview?isDeathmatch=${activeQueueTab == 'deathmatch'}?isRanked=${activeQueueTab == 'competitive'}`);
+                                  router.push(`/matchview?isDeathmatch=${activeQueueTab == 'deathmatch'}&isRanked=${activeQueueTab == 'competitive'}&lang=${router.query.lang}`);
                                 }
                               }}
                             >
@@ -985,7 +985,7 @@ function FavouriteMatches() {
                             sessionStorage.setItem("roundData", JSON.stringify(match.roundResults));
                             sessionStorage.setItem("teamData", JSON.stringify({ Blue, Red }));
                             sessionStorage.setItem("playerData", JSON.stringify(match.players));
-                            router.push(`/matchview?isDeathmatch=${activeQueueTab == 'deathmatch'}?isRanked=${activeQueueTab == 'competitive'}`);
+                            router.push(`/matchview?isDeathmatch=${activeQueueTab == 'deathmatch'}&isRanked=${activeQueueTab == 'competitive'}&lang=${router.query.lang}`);
                           }
                         }}
                       >

@@ -1,0 +1,18 @@
+{
+  "en-US": {
+    "el_1": "Search for a player",
+    "el_2": "Home",
+    "el_3": "Shop",
+    "el_4": "Inventory",
+    "el_5": "Favorite Matches",
+    "el_6": "Your Wishlist"
+  },
+  "de-DE": {
+    "el_1": "Suche nach einem Spieler",
+    "el_2": "Home",
+    "el_3": "Shop",
+    "el_4": "Inventar",
+    "el_5": "Favorisierte Matches",
+    "el_6": "Deine Wunschliste"
+  }
+}

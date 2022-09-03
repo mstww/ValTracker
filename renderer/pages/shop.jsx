@@ -9,6 +9,8 @@ import fetchShop from '../js/fetchShop';
 import { useRouter } from 'next/router';
 import { Collapse } from '@nextui-org/react';
 import fs from 'fs';
+import L from '../locales/translations/shop.json';
+import LocalText from '../components/translation/LocalText';
 
 const slide_right = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -60,17 +62,17 @@ async function getWallet(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
-function bundleTimeToHMS(n) {
+function bundleTimeToHMS(n, o) {
   n = Number(n);
   var d = Math.floor(n / 86400);
   var h = Math.floor((n - d * 86400) / 3600);
   var m = Math.floor(n % 3600 / 60);
   var s = Math.floor(n % 3600 % 60);
 
-  var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
-  var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-  var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+  var dDisplay = d > 0 ? d + (d == 1 ? " " + o.d_1 + ", " : " " + o.d_2 + ", ") : "";
+  var hDisplay = h > 0 ? h + (h == 1 ? " " + o.h_1 + ", " : " " + o.h_2 + ", ") : "";
+  var mDisplay = m > 0 ? m + (m == 1 ? " " + o.m_1 + ", " : " " + o.m_2 + ", ") : "";
+  var sDisplay = s > 0 ? s + (s == 1 ? " " + o.s_1 : " " + o.s_2) : "";
   var str = dDisplay + hDisplay + mDisplay + sDisplay;
 
   if(str.split(",").pop() === ' ') {
@@ -80,15 +82,15 @@ function bundleTimeToHMS(n) {
   return str;
 }
 
-function singleSkinsToHMS(n) {
+function singleSkinsToHMS(n, o) {
   n = Number(n);
   var h = Math.floor(n / 3600);
   var m = Math.floor(n % 3600 / 60);
   var s = Math.floor(n % 3600 % 60);
 
-  var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-  var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+  var hDisplay = h > 0 ? h + (h == 1 ? " " + o.h_1 + ", " : " " + o.h_2 + ", ") : "";
+  var mDisplay = m > 0 ? m + (m == 1 ? " " + o.m_1 + ", " : " " + o.m_2 + ", ") : "";
+  var sDisplay = s > 0 ? s + (s == 1 ? " " + o.s_1 : " " + o.s_2) : "";
   var str = hDisplay + mDisplay + sDisplay;
 
   if(str.split(",").pop() === ' ') {
@@ -151,6 +153,9 @@ function Shop() {
     setWishlistedItems(user_wishlist.skins);
   }, []);
 
+  var localBundleHeader = LocalText(L, "bundle_header");
+  var localTimerObj = LocalText(L, "timer");
+
   React.useEffect(async () => {
     // Set Discord Activity
     ipcRenderer.send('changeDiscordRP', "shop_activity");
@@ -189,7 +194,7 @@ function Shop() {
       }
     });
 
-    setBundleHeader("Featured Bundle - " + data.featuredBundle.bundleName);
+    setBundleHeader(localBundleHeader + " - " + data.featuredBundle.bundleName);
     setBundleImage(data.featuredBundle.bundleIcon);
     setBundlePrice(data.featuredBundle.bundlePrice);
 
@@ -200,8 +205,8 @@ function Shop() {
     var bundleTimer = Math.abs(moment().diff(data.featuredBundle.expiresIn, 'seconds'));
     var singleSkinTimer = Math.abs(moment().diff(data.singleSkins[0].expiresIn, 'seconds'));
 
-    var initialBundle = bundleTimeToHMS(bundleTimer) + " remaining";
-    var initialSkins = singleSkinsToHMS(singleSkinTimer) + " remaining";
+    var initialBundle = bundleTimeToHMS(bundleTimer, localTimerObj) + " " + localTimerObj.rem;
+    var initialSkins = singleSkinsToHMS(singleSkinTimer, localTimerObj) + " " + localTimerObj.rem;
 
     setBundleTimer(initialBundle);
     setDailyTimer(initialSkins);
@@ -209,7 +214,7 @@ function Shop() {
     if(data.nightMarket) {
       var nmTimer = Math.abs(moment().diff(data.nightMarket.nightMarketExpiresIn, 'seconds'));
       nmTimer = nmTimer-1;
-      var initialNM = bundleTimeToHMS(nmTimer) + " remaining";
+      var initialNM = bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
 
       setNightMarketTimer(initialNM);
       setNightMarketEnd(data.nightMarket.nightMarketExpiresIn);
@@ -231,14 +236,14 @@ function Shop() {
         router.reload();
       }
 
-      var bundleText = bundleTimeToHMS(bundleTimer) + " remaining";
-      var singleSkinText = singleSkinsToHMS(singleSkinTimer) + " remaining";
+      var bundleText = bundleTimeToHMS(bundleTimer, localTimerObj) + " " + localTimerObj.rem;
+      var singleSkinText = singleSkinsToHMS(singleSkinTimer, localTimerObj) + " " + localTimerObj.rem;
 
       setBundleTimer(bundleText);
       setDailyTimer(singleSkinText);
 
       if(data.nightMarket) {
-        var nmText = bundleTimeToHMS(nmTimer) + " remaining";
+        var nmText = bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
         setNightMarketTimer(nmText);
       }
     }, 1000);
@@ -279,7 +284,7 @@ function Shop() {
   
   const switchToNM = () => {
     var raw = JSON.stringify(playerStore);
-    router.push('/nightmarket?store=' + raw + '&nm_end=' + nightMarketEnd);
+    router.push('/nightmarket?store=' + raw + '&nm_end=' + nightMarketEnd + `&lang=${router.query.lang}`);
   }
 
   const showShopSkin = (uuid, name, price, image, tierimage, index) => {
@@ -396,7 +401,7 @@ function Shop() {
               }) : '' }
             </div>
             { cardSkinLevels.length > 1 ?
-              <Collapse id='levels-collapse' title={'Levels'}>
+              <Collapse id='levels-collapse' title={LocalText(L, "overlay_levels")}>
                 <div id='levels'>
                   { cardSkinLevels.map((level, index) => {
                     return(
@@ -479,7 +484,7 @@ function Shop() {
               id='wallet'
               className='bg-opacity-60 bg-black p-4 flex flex-col rounded-sm shadow-lg mb-4'
             >
-              <h1 className='text-2xl mb-2'>Your Wallet</h1>
+              <h1 className='text-2xl mb-2'>{LocalText(L, "wallet_header")}</h1>
               <span className='flex flex-row text-center items-center mb-2'>
                 <img src="/images/vp_icon.png" className='w-8 mr-2' /> 
                 <span id="wallet-vp">{walletVP}</span>
@@ -498,13 +503,13 @@ function Shop() {
                 (nightMarketShown ? 'flex' : 'hidden')
               }
             >
-              <h1 className='text-2xl mb-2'>Night Market</h1>
+              <h1 className='text-2xl mb-2'>{LocalText(L, "night_market_header")}</h1>
               <span id='nm-timer' className='flex flex-row text-center items-center mb-2 text-gray-500'>{nightMarketTimer}</span>
             </div>
           </motion.div>
         </div>
         <div id='daily-shop' className='mt-4'>
-          <h1 className='text-2xl'>Daily Store</h1>
+          <h1 className='text-2xl'>{LocalText(L, "daily_shop_header")}</h1>
           <span id='single-skin-timer' className='text-gray-500'>{dailyTimer}</span>
           <div 
             id='single-items-wrapper' 
@@ -519,6 +524,7 @@ function Shop() {
               setWishlistedItems={setWishlistedItems} 
               wishlistedItems={wishlistedItems} 
               userData={userData} 
+              wishlistTextLocale={LocalText(L, "add_to_wishlist")}
             />
             <StoreItem 
               delay={0.05} 
@@ -529,6 +535,7 @@ function Shop() {
               setWishlistedItems={setWishlistedItems} 
               wishlistedItems={wishlistedItems} 
               userData={userData} 
+              wishlistTextLocale={LocalText(L, "add_to_wishlist")}
             />
             <StoreItem 
               delay={0.1} 
@@ -539,6 +546,7 @@ function Shop() {
               setWishlistedItems={setWishlistedItems} 
               wishlistedItems={wishlistedItems} 
               userData={userData} 
+              wishlistTextLocale={LocalText(L, "add_to_wishlist")}
             />
             <StoreItem 
               delay={0.15} 
@@ -549,6 +557,7 @@ function Shop() {
               setWishlistedItems={setWishlistedItems} 
               wishlistedItems={wishlistedItems} 
               userData={userData} 
+              wishlistTextLocale={LocalText(L, "add_to_wishlist")}
             />
           </div>
         </div>

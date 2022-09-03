@@ -1,0 +1,284 @@
+{
+  "en-US": {
+    "nav": {
+      "el_1": "General",
+      "el_2": "Rich Presences",
+      "el_3": "Riot Account Management",
+      "el_4": "Patchnotes",
+      "el_5": "Other"
+    },
+    "pg_1": {
+      "grp_1": {
+        "name": "APP BEHAVIOUR",
+        "setting_1": {
+          "name": "Open VALTracker",
+          "desc": "Open VALTracker automatically right when your PC starts."
+        },
+        "setting_2": {
+          "name": "Open VALTracker minimized",
+          "desc": "Open VALTracker minimized on autostart."
+        }
+      },
+      "grp_2": {
+        "name": "LANGUAGE",
+        "setting_1": {
+          "name": "Change Language",
+          "desc": "Change VALTracker's Language. This will open a popup.",
+          "button_text": "Change Language"
+        }
+      },
+      "grp_3": {
+        "name": "SKIN WISHLIST",
+        "setting_1": {
+          "name": "Skin Wishlist Notifications",
+          "desc": "Enable or disable Skin Wishlist notifications.",
+          "desc2": "Tip: Open VALTracker Minimized so that you don't get disturbed by the window popping up."
+        }
+      },
+      "grp_4": {
+        "name": "CLOSE BUTTON",
+        "setting_1": {
+          "name": "Minimize to Tray",
+          "desc": "Closing the app window will minimize it to your system tray."
+        }
+      },
+      "grp_5": {
+        "name": "PERFORMANCE",
+        "setting_1": {
+          "name": "Hardware Acceleration",
+          "desc": "Enable or disable Hardware Acceleration. Requires a restart for changes to apply."
+        }
+      },
+      "grp_6": {
+        "name": "COLOR THEME",
+        "setting_1": {
+          "name": "Legacy Theme",
+          "desc": "Toggle the App's Legacy Color Theme."
+        }
+      }
+    },
+    "pg_2": {
+      "grp_1": {
+        "name": "APP RICH PRESENCE",
+        "setting_1": {
+          "name": "VALTracker Rich Presence",
+          "desc": "Show your friends that your're using VALTracker with a custom Rich Presence!"
+        },
+        "setting_2": {
+          "name": "Hide Rich Presence when minimized",
+          "desc": "Hide VALTracker's Rich Presence whenever the app is minimized."
+        }
+      },
+      "grp_2": {
+        "name": "VALORANT Rich Presence",
+        "setting_1": {
+          "name": "VALORANT Game Presence",
+          "desc": "Set your Discord Status to a Rich Presence about your current match!"
+        },
+        "setting_2": {
+          "name": "Show Match Mode",
+          "desc": "Decide if you want to show the mode that you're currently playing!",
+          "desc2": "Turning off this setting will disable the ability to show your rank when playing a competitive match."
+        },
+        "setting_3": {
+          "name": "Show Rank instead of Agent",
+          "desc": "Change the small picture to your rank instead of your agent if you play ranked!"
+        },
+        "setting_4": {
+          "name": "Show Timer",
+          "desc": "Turn the timer for the Rich Presence on or off!"
+        },
+        "setting_5": {
+          "name": "Show Score",
+          "desc": "Turn the score for the Rich Presence on or off!"
+        }
+      }
+    },
+    "pg_3": {
+      "grp_1": {
+        "name": "ACCOUNT MANAGEMENT",
+        "setting_1": {
+          "name": "Add an Account",
+          "desc": "Open a login window to add a new Riot Account.",
+          "button_text": "Add new Account"
+        },
+        "setting_2": {
+          "name": "Remove an Account",
+          "desc": "Remove a Riot Account from VALTracker.",
+          "button_text": "Remove Account"
+        }
+      }
+    },
+    "pg_4": {},
+    "pg_5": {
+      "grp_1": {
+        "name": "SETTINGS PROFILE",
+        "setting_1": {
+          "name": "Import Settings",
+          "desc": "Import a settings profile. You can copy your own code below.",
+          "extra_button_text": "Apply"
+        },
+        "setting_2": {
+          "name": "Export Settings",
+          "desc": "Copy your settings share code to the clipboard.",
+          "button_text": "Copy to clipboard",
+          "button_text_2": "Done!"
+        }
+      },
+      "grp_2": {
+        "name": "DANGER ZONE",
+        "setting_1": {
+          "name": "Reset VALTracker",
+          "desc": "Reset the App. This includes account data, settings, and all other data.",
+          "button_text": "Reset VALTracker"
+        }
+      },
+      "about": {
+        "name": "ABOUT",
+        "grp_1": "USED APIs",
+        "grp_2": "UI ELEMENTS"
+      }
+    }
+  },
+  "de-DE": {
+    "nav": {
+      "el_1": "Allgemein",
+      "el_2": "Rich Presences",
+      "el_3": "Riot-Konto Verwaltung",
+      "el_4": "Patchnotes",
+      "el_5": "Sonstiges"
+    },
+    "pg_1": {
+      "grp_1": {
+        "name": "VERHALTEN DER APP",
+        "setting_1": {
+          "name": "VALTracker öffnen",
+          "desc": "Öffne VALTracker automatisch wenn dein PC startet."
+        },
+        "setting_2": {
+          "name": "Öffne VALTracker minimiert",
+          "desc": "Öffne VALTracker minimiert, wenn es automatisch geöffnet wird."
+        }
+      },
+      "grp_2": {
+        "name": "SPRACHE",
+        "setting_1": {
+          "name": "Sprache ändern",
+          "desc": "Ändere VALTracker's Sprache. Dies wird ein Pop-up öffnen.",
+          "button_text": "Sprache ändern"
+        }
+      },
+      "grp_3": {
+        "name": "SKIN WUNSCHLISTE",
+        "setting_1": {
+          "name": "Skin-Wunschlistenbenachrichtigungen",
+          "desc": "Schalte die Benachrichtigungen für die Skin-Wunschliste ein oder aus.",
+          "desc2": "Tipp: Lass VALTracker automatisch und minimiert öffnen, damit die App direkt deinen Shop überprüfen kann."
+        }
+      },
+      "grp_4": {
+        "name": "SCHLIEßEN DER APP",
+        "setting_1": {
+          "name": "In Tray minimieren",
+          "desc": "Das schließen der Ppp minimiert sie in den System-tray."
+        }
+      },
+      "grp_5": {
+        "name": "LEISTUNG",
+        "setting_1": {
+          "name": "Hardware-Beschleunigung",
+          "desc": "Schalte Hardware-Beschleunigung ein oder aus. Erfordert einen Neustart, damit die Änderungen wirksam werden."
+        }
+      },
+      "grp_6": {
+        "name": "FARBSCHEMA",
+        "setting_1": {
+          "name": "Legacy Farbschema",
+          "desc": "Schalte das \"Legacy\" Farmthema ein oder aus."
+        }
+      }
+    },
+    "pg_2": {
+      "grp_1": {
+        "name": "APP STATUS",
+        "setting_1": {
+          "name": "VALTracker Discord Status",
+          "desc": "Zeige deinen Freunden mit diesem Discord Status, dass du VALTracker benutzt!"
+        },
+        "setting_2": {
+          "name": "Verstecke Status bei minimierter App",
+          "desc": "Verstecke VALTracker's Discord Status solange die App minimiert ist."
+        }
+      },
+      "grp_2": {
+        "name": "VALORANT STATUS",
+        "setting_1": {
+          "name": "VALORANT Spiel Status",
+          "desc": "Lass dein aktuelles Match als Discord Status angezeigt werden!"
+        },
+        "setting_2": {
+          "name": "Zeige Match-Modus",
+          "desc": "Zeige oder vertecke den Modus, den du gerade spielst.",
+          "desc2": "Wenn du diese Einstelling aus schaltest, kannst du deinen Rang nicht anzeigen lassen."
+        },
+        "setting_3": {
+          "name": "Zeige Rang statt Agent",
+          "desc": "Ändere das kleine Bild zu deinem Rang anstelle deines Charakters, wenn du ein gewertetes Match spielst!"
+        },
+        "setting_4": {
+          "name": "Zeige Timer",
+          "desc": "Schalte den Timer für den Discord Status ein oder aus!"
+        },
+        "setting_5": {
+          "name": "Zeige Match-Stand",
+          "desc": "Schalte den aktuellen Match-Stand ein oder aus!"
+        }
+      }
+    },
+    "pg_3": {
+      "grp_1": {
+        "name": "KONTOVERWALTUNG",
+        "setting_1": {
+          "name": "Füge ein Konto hinzu",
+          "desc": "Öffne ein Log-in Fenster, um einen weiteres Riot-Konto hinzuzufügen.",
+          "button_text": "Konto hinzufügen"
+        },
+        "setting_2": {
+          "name": "Entferne ein Konto",
+          "desc": "Entferne ein Riot-Konto von VALTracker.",
+          "button_text": "Konto entfernen"
+        }
+      }
+    },
+    "pg_4": {},
+    "pg_5": {
+      "grp_1": {
+        "name": "EINSTELLUNGSPROFILE",
+        "setting_1": {
+          "name": "Einstellungen importieren",
+          "desc": "Importiere ein Einstellungsprofil via code. Du kannst deinen eigenen Code weiter unten kopieren.",
+          "extra_button_text": "Anwenden"
+        },
+        "setting_2": {
+          "name": "Einstellungen exportieren",
+          "desc": "Kopiere deinen Einstellungs-Profilcode zur Zwischenablage.",
+          "button_text": "Kopieren",
+          "button_text_2": "Kopiert!"
+        }
+      },
+      "grp_2": {
+        "name": "GEFAHRENZONE",
+        "setting_1": {
+          "name": "VALTracker zurücksetzen",
+          "desc": "Setze VALTracker zurück. Dazu gehören Kontodaten, Einstellungen und alle anderen Daten.",
+          "button_text": "VALTracker zurücksetzen"
+        }
+      },
+      "about": {
+        "name": "ÜBER VALTRACKER",
+        "grp_1": "BENUTZTE APIs",
+        "grp_2": "UI ELEMENTE"
+      }
+    }
+  }
+}

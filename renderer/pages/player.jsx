@@ -858,7 +858,7 @@ function PlayerInfo() {
         >
           <span className='text-3xl'>Whoops!</span><br />
           <span className='text-xl'>{errorReason}</span><br />
-          <button className={isReloadable ? '' : 'hidden'} onClick={() => { router.push(`/player?name=${router.query.name}&tag=${router.query.tag}`) }}>Reload</button>
+          <button className={isReloadable ? '' : 'hidden'} onClick={() => { router.push(`/player?name=${router.query.name}&tag=${router.query.tag}&lang=${router.query.lang}`) }}>Reload</button>
         </motion.div>
       </div>
     </>

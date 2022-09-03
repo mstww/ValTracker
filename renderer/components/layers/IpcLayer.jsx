@@ -9,7 +9,6 @@ export default function IpcLayer() {
 
   React.useEffect(() => {
     ipcRenderer.on('setDRPtoCurrentPage', function(event, args) {
-      var page = router.pathname.split("/").pop();
       switch(page) {
         case("home"): {
           ipcRenderer.send('changeDiscordRP', 'hub_activity');

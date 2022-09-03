@@ -14,6 +14,8 @@ import ModeSelectionCard from '../components/hub/ModeSelectionCard';
 import { useFirstRender } from '../components/useFirstRender';
 import InfoChart from '../components/hub/InfoChart';
 import { useRouter } from 'next/router';
+import L from '../locales/translations/home.json';
+import LocalText from '../components/translation/LocalText';
 
 const playerRanks = {
   '0': 'Unranked',
@@ -1694,7 +1696,7 @@ function Home() {
           <div className='home-top-info-tile border-2 rounded-sm border-maincolor-lightest h-full p-1 relative'>
             <div className='flex flex-col h-full px-1'>
               <div>
-                <span className='leading-none'>Featured Bundle - {featuredBundleName}</span>
+                <span className='leading-none'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
                 <hr className='' />
               </div>
               <div className='flex w-full mt-2 relative h-full justify-center items-center'>
@@ -1721,7 +1723,9 @@ function Home() {
           <div className='home-top-info-tile relative border-2 rounded-sm border-maincolor-lightest flex flex-col'>
             <div className={'flex flex-col h-full ' + (contractsLoading || contractsError ? 'hidden' : '')}>
               <ContractProgressCard 
-                title={'Battle Pass Progress'} 
+                title={LocalText(L, "top_l.contracts.battle_pass_header")} 
+                level_locale={LocalText(L, "top_l.contracts.level_text")}
+                xp_locale={LocalText(L, "top_l.contracts.xp_text")}
                 reward_1={battlePass_prevLevelReward} 
                 level_1={battlePass_prevLevelNum}
                 level_1_isTextReward={battlePass_prevLevelReward ? battlePass_prevLevelReward.isText : null}
@@ -1735,7 +1739,9 @@ function Home() {
 
               <hr className='bg-maincolor-lightest h-0.5 border-none' />
               <ContractProgressCard 
-                title={'Agent Contract Progress'}
+                title={LocalText(L, "top_l.contracts.agent_contract_header")} 
+                level_locale={LocalText(L, "top_l.contracts.level_text")}
+                xp_locale={LocalText(L, "top_l.contracts.xp_text")}
                 reward_1={agentContract_prevLevelReward}
                 level_1={agentContract_prevLevelNum}
                 level_1_isTextReward={agentContract_prevLevelReward ? agentContract_prevLevelReward.isText : null}
@@ -1751,14 +1757,14 @@ function Home() {
               <div
                 className={'flex flex-col w-full h-4/5 justify-center items-center text-center ' + (contractsError ? ' ' : 'hidden ') + (contractsLoading ? 'hidden' : '')}
               >
-                <div>Error while loading Component.</div>
+                <div>{LocalText(L, "component_err.err_text")}</div>
                 <button 
                   className='mt-2' 
                   onClick={async () => { 
                     fetchContractData();
                   }}
                 >
-                  Reload
+                  {LocalText(L, "component_err.button_text")}
                 </button>
               </div>
               <div
@@ -1776,19 +1782,19 @@ function Home() {
             >
               <div>
                 <InfoChart
-                  label={'Headshot% of last 8 Matches'}
+                  label={LocalText(L, "top_r.headers.h_1")}
                   data={headshotChartData}
                 />
               </div>
               <div>
                 <InfoChart
-                  label={'Damage/Round of last 8 Matches'}
+                  label={LocalText(L, "top_r.headers.h_2")}
                   data={damageChartData}
                 />
               </div>
               <div>
                 <InfoChart
-                  label={'KD of last 8 Matches'}
+                  label={LocalText(L, "top_r.headers.h_3")}
                   data={killsDeathsChartData}
                 />
               </div>
@@ -1797,14 +1803,14 @@ function Home() {
           <div
             className={'absolute top-0 left-0 z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (chartsError ? ' ' : 'hidden ') + (chartsLoading ? 'hidden' : '')}
           >
-            <div>Error while loading Component.</div>
+            <div>{LocalText(L, "component_err.err_text")}</div>
             <button 
               className='mt-2' 
               onClick={async () => { 
                 fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
               }}
             >
-              Reload
+              {LocalText(L, "component_err.button_text")}
             </button>
           </div>
           <div
@@ -1815,7 +1821,7 @@ function Home() {
           <div
             className={'absolute top-0 left-0 z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (areChartsActive ? 'hidden ' : ' ')}
           >
-            <div>No matches of this type found.</div>
+            <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
         <div id='bottom-left-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded-sm p-2'>
@@ -1827,7 +1833,7 @@ function Home() {
               + (currentlyLoadedMatchCount <= 0 ? ' disabled ' : ' ')
             }
           >
-            <Tooltip content={'Checking for new matches...'} color="error" placement={'left'} className='rounded-sm absolute top-2 right-7'>
+            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded-sm absolute top-2 right-7'>
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
@@ -1860,7 +1866,7 @@ function Home() {
                               sessionStorage.setItem("roundData", JSON.stringify(match.roundResults));
                               sessionStorage.setItem("teamData", JSON.stringify({ Blue, Red }));
                               sessionStorage.setItem("playerData", JSON.stringify(match.players));
-                              router.push(`/matchview?isDeathmatch=${activeQueueTab == 'deathmatch'}?isRanked=${activeQueueTab == 'competitive'}`);
+                              router.push(`/matchview?isDeathmatch=${activeQueueTab == 'deathmatch'}&isRanked=${activeQueueTab == 'competitive'}&lang=${router.query.lang}`);
                             }
                           }}
                         >
@@ -1932,13 +1938,13 @@ function Home() {
                                   />
                                   
                                 </Tooltip>
-                                <span>{gamemodes[match.matchInfo.queueID]}</span>
+                                <span>{LocalText(L, "bot_l.gamemodes." + match.matchInfo.queueID)}</span>
                               </span>
                             </div>
                           </div>
                           <div id='match-score' className='w-1/3 flex flex-row items-center'>
                             <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                              <span className={'text-xl ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
+                              <span className={'text-xl ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
                               {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                             </div>
                             {activeQueueTab != 'deathmatch' ? 
@@ -1947,7 +1953,7 @@ function Home() {
                                   id='scoreboard-pos' 
                                   className={'rounded-sm text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
                                 >
-                                  {matchData.playerPositionText}
+                                  {LocalText(L, "bot_l.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                 </div>
                               )
                               : 
@@ -1998,16 +2004,16 @@ function Home() {
                 )
               })
               :
-              <span>No matches found.</span>
+              <span>{LocalText(L, "bot_l.errors.no_matches_found")}</span>
             }
           </div>
           <div className={'' + (loading || errored ? 'hidden' : '')}>
             <div id='match-loading-error' className={'mt-4 ml-6 w-full flex flex-row justify-center ' + (matchFetchingError ? '' : 'hidden')}>
-              <span id='' className='text-gray-500'>Something went wrong while fetching new matches. Try again!</span>
+              <span id='' className='text-gray-500'>{LocalText(L, "bot_l.errors.err_while_fetching")}</span>
             </div>
             <div id='shown-matches-info' className={'mt-4 ml-6 w-1/2 flex flex-row justify-between ' + (fetchingFurtherMatches ? 'hidden' : '')}>
-              <span id='x-out-of-n-matches' className='text-gray-500'>{currentlyLoadedMatchCount} out of {maxMatchesFound} Matches shown</span>
-              <span id='load-more-matches' className={'hover:underline mb-8 ' + (fetchingFurtherMatches ? 'cursor-wait' : 'cursor-pointer')} onClick={() => { fetchingFurtherMatches ? '' : fetchFurtherMatches() }}>Load more Matches</span>
+              <span id='x-out-of-n-matches' className='text-gray-500'>{LocalText(L, "bot_l.bottom_text.loaded_matches_count", currentlyLoadedMatchCount, maxMatchesFound)}</span>
+              <span id='load-more-matches' className={'hover:underline mb-8 ' + (fetchingFurtherMatches ? 'cursor-wait' : 'cursor-pointer')} onClick={() => { fetchingFurtherMatches ? '' : fetchFurtherMatches() }}>{LocalText(L, "bot_l.bottom_text.load_more")}</span>
             </div>
             <div className={'w-full flex mt-8 h-14 mb-6 justify-center items-center ' + (fetchingFurtherMatches || matchFetchingError ? '' : 'hidden')}>
               <Loading color={'error'} size={'lg'} />
@@ -2017,14 +2023,14 @@ function Home() {
             id='errored' 
             className={'z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (errored ? ' ' : 'hidden ') + (loading ? 'hidden' : '')}
           >
-            <div>Error while loading Component.</div>
+            <div>{LocalText(L, "component_err.err_text")}</div>
             <button 
               className='mt-2' 
               onClick={async () => { 
                 fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
               }}
             >
-              Reload
+              {LocalText(L, "component_err.button_text")}
             </button>
           </div>
           <div 
@@ -2037,7 +2043,7 @@ function Home() {
             id='errored' 
             className={'z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (areChartsActive ? 'hidden ' : ' ')}
           >
-            <div>No matches of this type found.</div>
+            <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
         <div id='bottom-right-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded-sm p-2'>
@@ -2045,68 +2051,70 @@ function Home() {
             {
               currentlyLoadedMatchCount > 0 ?
               <div className={'p-0 m-0' + (areStatsActive ? '' : ' hidden ')}>
-                <span>Stats of last {currentlyLoadedMatchCount} Matches</span>
+                <span>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
                 <hr />
                 <div className='flex flex-row justify-between mt-1.5'>
-                  <SmallStatsCard number={avgKillsPerMatch} desc={'Avg Kills/Match'} />
-                  <SmallStatsCard number={avgKillsPerRound} desc={'Avg Kills/Round'} />
+                  <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} />
+                  <SmallStatsCard number={avgKillsPerRound} desc={LocalText(L, "bot_r.stats.stat_2")} />
                 </div>
 
                 <div className='flex flex-row justify-between mt-1.5'>
-                  <SmallStatsCard number={winratePercent} desc={'Win%'} />
-                  <SmallStatsCard number={headshotPercent} desc={'Avg Headshot%'} />
+                  <SmallStatsCard number={winratePercent} desc={LocalText(L, "bot_r.stats.stat_3")} />
+                  <SmallStatsCard number={headshotPercent} desc={LocalText(L, "bot_r.stats.stat_4")} />
                 </div>
 
-                <span className='mt-1'>Best Map</span>
+                <span className='mt-1'>{LocalText(L, "bot_r.best_map.header")}</span>
                 <LargeStatsCard 
                   header={bestMapName}
+                  stat_1_locale={LocalText(L, "bot_r.best_map.stats.stat_1")}
+                  stat_2_locale={LocalText(L, "bot_r.best_map.stats.stat_2")}
                   img_src={bestMapImage} 
                   win_percent={bestMapWinPercent}
                   avg_kda={bestMapKdaRatio}
                   extraClasses={''} 
                 />
 
-                <span className='mt-1'>Best Agent</span>
+                <span className='mt-1'>{LocalText(L, "bot_r.best_agent.header")}</span>
                 <FlatLargeStatsCard
                   img_src={bestAgentImage}
                   header={bestAgentName}
                   top_num={bestAgentAvgScore}
-                  top_desc={'Avg Score/Match'}
+                  top_desc={LocalText(L, "bot_r.best_agent.stat_1")}
                   stat_1_num={bestAgentAvgKda}
-                  stat_1_desc={'Avg KDA'}
+                  stat_1_desc={LocalText(L, "bot_r.best_agent.stat_2")}
                   stat_2_num={bestAgentKillsPerRound}
-                  stat_2_desc={'Avg Kills/Round'}
+                  stat_2_desc={LocalText(L, "bot_r.best_agent.stat_3")}
                   stat_3_num={bestAgentKillsPerMatch}
-                  stat_3_desc={'Avg Kills/Match'}
+                  stat_3_desc={LocalText(L, "bot_r.best_agent.stat_4")}
                 />
               </div>
               : 
               null
             }
-            <span>Change Match Filter</span>
+            <span>{LocalText(L, "bot_r.match_filter.header")}</span>
             <hr className='mb-2' />
             <div className='flex flex-row flex-wrap justify-between'>
-              <ModeSelectionCard mode_name={'unrated'} display_name={'Unrated'} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard mode_name={'competitive'} display_name={'Competitive'} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard mode_name={'deathmatch'} display_name={'Deathmatch'} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard mode_name={'spikerush'} display_name={'Spike Rush'} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard mode_name={'onefa'} display_name={'Replication'} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard mode_name={'ggteam'} display_name={'Escalation'} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard mode_name={'custom'} display_name={'Custom'} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard mode_name={'unrated'} display_name={LocalText(L, "bot_r.match_filter.fl_1")} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard mode_name={'competitive'} display_name={LocalText(L, "bot_r.match_filter.fl_2")} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard mode_name={'deathmatch'} display_name={LocalText(L, "bot_r.match_filter.fl_3")} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard mode_name={'spikerush'} display_name={LocalText(L, "bot_r.match_filter.fl_4")} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard mode_name={'onefa'} display_name={LocalText(L, "bot_r.match_filter.fl_5")} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard mode_name={'ggteam'} display_name={LocalText(L, "bot_r.match_filter.fl_6")} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard mode_name={'custom'} display_name={LocalText(L, "bot_r.match_filter.fl_7")} active={activeQueueTab} setActive={setActiveQueueTab} />
             </div>
           </div>
           <div 
             id='errored' 
             className={'z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (errored ? ' ' : 'hidden ') + (loading ? 'hidden' : '')}
           >
-            <div>Error while loading Component.</div>
+            <div>{LocalText(L, "component_err.err_text")}</div>
             <button 
               className='mt-2' 
               onClick={async () => { 
                 fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
               }}
             >
-              Reload
+              {LocalText(L, "component_err.button_text")}
             </button>
           </div>
           <div 

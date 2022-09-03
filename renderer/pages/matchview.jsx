@@ -780,7 +780,7 @@ function Matchview() {
                           className={'ml-4 text-xl text-val-' + (playerStats.subjectTeam.toLowerCase())} 
                           onClick={() => {
                             var name_encoded = encodeURIComponent(playerStats.subjectName + '#' + playerStats.subjectTag);
-                            router.push(`/player?name=${playerStats.subjectName}&tag=${playerStats.subjectTag}&searchvalue=${name_encoded}`);
+                            router.push(`/player?name=${playerStats.subjectName}&tag=${playerStats.subjectTag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
                           }}
                         >
                           {playerStats.subjectName}

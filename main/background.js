@@ -300,10 +300,10 @@ async function noFilesFound() {
 
   // Load Window with Setup Sequence
   if (isProd) {
-    await mainWindow.loadURL('app://./setup.html');
+    await mainWindow.loadURL(`app://./setup.html?lang=en-US`);
   } else {
     const port = process.argv[2];
-    await mainWindow.loadURL(`http://localhost:${port}/setup`);
+    await mainWindow.loadURL(`http://localhost:${port}/setup?lang=en-US`);
   }
 }
 
@@ -1347,6 +1347,11 @@ var reauth_interval;
       
       if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
         var { error, items, reauthArray } = await reauthAllAccounts();
+        var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+
+        if(on_load.appLang === undefined) var appLang = 'en-US'
+        else var appLang = on_load.appLang;
+
         if(!error) {
           if(items.expiresIn) {
             var expiresIn = items.expiresIn;
@@ -1359,23 +1364,22 @@ var reauth_interval;
             reauth_interval = setInterval(reauthAllAccounts, expiresIn * 1000); 
             console.log("All accounts will be reauthenticated in 55 Minutes.");
           }
-  
+
           if (isProd) {
-            await mainWindow.loadURL('app://./home.html?isLegacyTheme=' + isLegacyTheme);
+            await mainWindow.loadURL(`app://./home.html?isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
           } else {
             const port = process.argv[2];
-            await mainWindow.loadURL(`http://localhost:${port}/home?isLegacyTheme=` + isLegacyTheme);
+            await mainWindow.loadURL(`http://localhost:${port}/home?isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
           } 
         } else {
           if (isProd) {
-            await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=` + isLegacyTheme);
+            await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
           } else {
             const port = process.argv[2];
-            await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=` + isLegacyTheme);
+            await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
           } 
         }
     
-        var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
         if(on_load.skinWishlistNotifications === undefined || on_load.skinWishlistNotifications === true) {
           checkStoreForWishlistItems();
         }
@@ -1750,38 +1754,6 @@ ipcMain.on('hideAppOnLogin', function(event, arg) {
 ipcMain.on('restartApp', function() {
   app.relaunch();
   app.quit();
-});
-
-ipcMain.on('restartReauthCycle', async function() {
-  var { error, items, reauthArray } = await reauthAllAccounts();
-  if(!error) {
-    if(items.expiresIn) {
-      var expiresIn = items.expiresIn;
-    } else {
-      // 55 Minutes 
-      var expiresIn = 55 * 60;
-    }
-
-    if(items !== false) {
-      clearInterval(reauth_interval);
-      reauth_interval = setInterval(reauthAllAccounts, expiresIn * 1000);
-      console.log("All accounts will be reauthenticated in 55 Minutes.");
-    }
-
-    if (isProd) {
-      await mainWindow.loadURL('app://./home.html');
-    } else {
-      const port = process.argv[2];
-      await mainWindow.loadURL(`http://localhost:${port}/home`);
-    } 
-  } else {
-    if (isProd) {
-      await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}`);
-    } else {
-      const port = process.argv[2];
-      await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}`);
-    } 
-  }
 });
 
 ipcMain.on('resetApp', function() {

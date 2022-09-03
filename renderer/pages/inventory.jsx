@@ -90,19 +90,19 @@ function Inventory() {
   const redirectToSkinChanger = (weaponType, usedSkin, usedChroma, usedLevel) => {
     var items_stringified = JSON.stringify(player_items);
     var path = `/skinchanger?weaponType=${weaponType}&usedSkin=${usedSkin}&usedLevel=${usedLevel}&usedChroma=${usedChroma}&playerItems=${items_stringified}`;
-    router.push(path);
+    router.push(path + '&lang=' + router.query.lang);
   }
 
   const redirectToCardChanger = (usedCard) => {
     var items_stringified = JSON.stringify(player_items);
     var path = `/cardchanger?usedCard=${usedCard}&playerItems=${items_stringified}`;
-    router.push(path);
+    router.push(path + '&lang=' + router.query.lang);
   }
 
   const redirectToSprayChanger = (usedSpray, equipslot) => {
     var items_stringified = JSON.stringify(player_items);
     var path = `/spraychanger?usedSpray=${usedSpray}&equipslot=${equipslot}&playerItems=${items_stringified}`;
-    router.push(path);
+    router.push(path + '&lang=' + router.query.lang);
   }
 
   var token_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');

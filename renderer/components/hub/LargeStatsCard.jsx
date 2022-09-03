@@ -1,4 +1,4 @@
-export default function SmallStatsCard({ img_src, header, win_percent, avg_kda, extraClasses }) {
+export default function SmallStatsCard({ img_src, header, win_percent, avg_kda, stat_1_locale, stat_2_locale, extraClasses }) {
   return(
     <div className={'w-full border-2 rounded-sm border-maincolor-lightest flex flex-row ' + (extraClasses ? extraClasses : '')}>
       <div className={"p-2 w-1/2"}>
@@ -10,11 +10,11 @@ export default function SmallStatsCard({ img_src, header, win_percent, avg_kda, 
         <div className="flex flex-row">
           <div className='w-1/2 ml-2'>
             <h2 className='mt-1'>{win_percent}</h2>
-            <p className='relative bottom-2 text-sm text-gray-400'>Win%</p>
+            <p className='relative bottom-2 text-sm text-gray-400'>{stat_1_locale}</p>
           </div>
           <div className='w-1/2 ml-2'>
             <h2 className='mt-1'>{avg_kda}</h2>
-            <p className='relative bottom-2 text-sm text-gray-400'>Avg KD</p>
+            <p className='relative bottom-2 text-sm text-gray-400'>{stat_2_locale}</p>
           </div>
         </div>
       </div>

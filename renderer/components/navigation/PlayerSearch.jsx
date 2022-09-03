@@ -20,7 +20,7 @@ const account_switcher_variants = {
   }
 }
 
-export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc }) {
+export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText }) {
   const router = useRouter();
 
   const [ isHistoryDropdownShown, setIsHistoryDropdownShown ] = React.useState(false);
@@ -35,7 +35,7 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
   }, []);
 
   const handleHistoryClick = (name, tag, name_encoded) => {
-    router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}`);
+    router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
   }
 
   const removeItemFromHistory = (name_encoded) => {
@@ -60,7 +60,7 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
           id='skin-search'
           type='text'
           className={(isSearchShown ? 'bg-button-color focus:outline-none text-sm z-40 font-light pl-9 placeholder:text-white hover:bg-button-color-hover hover:shadow-2xl h-8 ml-px w-full flex items-center px-2 py-1 rounded-sm cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none' : searchDisabledClasses)}
-          placeholder='Search for a player'
+          placeholder={placeholderText}
           onKeyDown={handlePlayerSearch}
           autoCorrect='off'
           spellCheck='false'

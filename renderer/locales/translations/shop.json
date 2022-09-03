@@ -1,0 +1,21 @@
+{
+  "en-US": {
+    "bundle_header": "Featured Bundle",
+    "daily_shop_header": "Daily Store",
+    "night_market_header": "Night Market",
+    "wallet_header": "Your Wallet",
+    "timer": {
+      "d_1": "day",
+      "d_2": "days",
+      "h_1": "hour",
+      "h_2": "hours",
+      "m_1": "minute",
+      "m_2": "minutes",
+      "s_1": "second",
+      "s_2": "seconds",
+      "rem": "remaining"
+    },
+    "overlay_levels": "Levels",
+    "add_to_wishlist": "Add to wishlist"
+  }
+}
