@@ -1,0 +1,40 @@
+{
+  "en-US": {
+    "progress": {
+      "lang": "Language",
+      "riot": "Riot Login",
+      "confirm": "Confirmation",
+      "finish": "Finish Setup"
+    },
+    "page_1": {
+      "header": "Choose a Language",
+      "info": "This can later be changed in the settings.",
+      "button_1_text": "Continue"
+    },
+    "page_2": {
+      "header": "Log in with your Riot Account",
+      "login_button_text_1": "Open Login Window",
+      "login_button_text_2": "Done!",
+      "loading_states": {
+        "s0": "Fetching Region...",
+        "s1": "Fetching Player Store...",
+        "s2": "Fetching Player Details...",
+        "s3": "Fetching Player Rank...",
+        "s4": "Writing to file...",
+        "err": "Error! Please contact the developer for help.",
+        "win_closed": "Login Window closed."
+      },
+      "button_1_text": "Continue",
+      "button_2_text": "Back"
+    },
+    "page_3": {
+      "header": "Confirm Details",
+      "button_1_text": "Continue",
+      "button_2_text": "Back"
+    },
+    "page_4": {
+      "header": "And that's it!",
+      "finish_button_text": "Finish Setup"
+    }
+  }
+}

@@ -94,6 +94,8 @@ img {
 }
 
 #window-title {
+  position: relative;
+  bottom: 1px;
   -ms-grid-column: 1;
   grid-column: 1;
   display: -webkit-box;
@@ -169,7 +171,6 @@ img {
   grid-row: 1 / span 1;
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex;
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
@@ -223,6 +224,11 @@ img {
 #min-button {
   -ms-grid-column: 1;
   grid-column: 1;
+}
+
+#min-button.setup {
+  -ms-grid-column: 1;
+  grid-column: 2;
 }
 
 #max-button,
@@ -547,7 +553,7 @@ input:checked + .slider:before {
   @apply border-2 border-maincolor-lightest;
 }
 
-button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button):not(.change-color-btn) {
+button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button):not(.change-color-btn):not(.setup-button):not(.disabled) {
   border: none;
   @apply bg-button-color text-button-text text-sm;
   padding: 8px 25px;
@@ -559,7 +565,30 @@ button:not(button.text-button):not(button[aria-label='next']):not(button[aria-la
   transition: all 0.3s;
 }
 
-button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.change-color-btn):not(.normal-buttons button):hover {
+button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.change-color-btn):not(.normal-buttons button):not(.setup-button):not(.disabled):hover {
+  @apply bg-button-color-hover;
+  border-radius: 0px;
+}
+
+.setup-button {
+  position: absolute;
+  border: none;
+  @apply bg-button-color text-button-text text-sm;
+  padding: 8px 25px;
+  border-radius: 4px;
+  outline: none;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+button.disabled {
+  @apply bg-gray-600 hover:bg-gray-600 cursor-default;
+  padding: 8px 25px;
+  border-radius: 4px;
+}
+
+.setup-button:hover {
   @apply bg-button-color-hover;
   border-radius: 0px;
 }
@@ -1305,7 +1334,7 @@ ol li {
 /* The switch - the box around the slider */
 .language-checkbox {
   display: inline-block;
-  width: 45%;
+  width: 48%;
   @apply h-10 relative mb-2 mr-2;
 }
 
@@ -1325,9 +1354,13 @@ ol li {
 }
 
 .language-checkbox span:hover {
-  @apply bg-maincolor-light;
+  @apply bg-maincolor-lightest;
 }
 
 .language-checkbox span.active {
-  @apply border-2 border-button-color bg-maincolor-light cursor-default;
+  @apply border-2 border-button-color cursor-default;
+}
+
+.setup-content {
+  height: calc(100% - 2.75rem);
 }

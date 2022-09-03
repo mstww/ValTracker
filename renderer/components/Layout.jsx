@@ -47,7 +47,7 @@ export default function Layout({ children, classNames, setup }) {
   
   return( 
     <div className={"flex flex-row bg-maincolor-light " + (legacy ? 'legacy' : '')}>
-      <WindowControls />
+      <WindowControls setup={setup} />
       <UpdatingLayer />
       {setup ? '' : <MessageLayer />}
       {setup ? '' : <ReauthLayer />}
@@ -64,7 +64,7 @@ export default function Layout({ children, classNames, setup }) {
           exit="exit"
           transition={{ type: 'ease', duration: 0.3 }}
           id={setup ? 'layout-setup' : 'Layout'}
-          className={"bg-maincolor-light overflow-x-hidden " + (classNames ? classNames : '') + (setup ? ' mt-px' : ' ')}
+          className={"bg-maincolor-light overflow-x-hidden " + (classNames ? classNames : '')}
         >
           {children}
         </motion.main>

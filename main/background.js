@@ -14,6 +14,8 @@ const discord_rps = require("../modules/discord_rps.js");
 
 // Change Discord RP if App requests it
 var RPState = "app";
+    
+var app_data = app.getPath("userData");
 
 if(fs.existsSync(process.env.APPDATA + "/user_data/load_files/on_load.json")) {
   let onLoadData2 = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
@@ -1106,6 +1108,8 @@ var reauth_interval;
     }
 
     var isLegacyTheme = false;
+
+    var bg = '#1b222b';
   
     if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/')) {
       var theme_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json");
@@ -1113,59 +1117,72 @@ var reauth_interval;
       if(theme.themeName == "legacy") {
         var bg = '#222222';
         isLegacyTheme = true;
-      } else {
-        var bg = '#1b222b';
       }
     }
   
-    mainWindow = createWindow('main', {
-      width: 1400,
-      height: 840,
-      minWidth: 1400,
-      minHeight: 840,
-      frame: false,
-      backgroundColor: bg,
-      webPreferences: {
-        nodeIntegration: true,
-        enableRemoteModule: false,
-        contextIsolation: false,
-        devTools: true
-      },
-      show: startedHidden === undefined,
-    });
-  
-    if(startedHidden !== undefined && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
-      var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
-      var contextMenu = Menu.buildFromTemplate([
-        {
-          label: "Show",
-          click: function () {
-            appIcon.destroy();
-            mainWindow.show();
-          },
-        },
-        {
-          label: "Quit",
-          click: function () {
-            app.isQuiting = true;
-            appIcon.destroy();
-            app.quit();
-          },
-        },
-      ]);
-  
-      appIcon.setContextMenu(contextMenu);
-    }
-  
     if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
+      console.log("E");
+      mainWindow = createWindow('setup-win', {
+        width: 620,
+        height: 400,
+        minWidth: 620,
+        minHeight: 400,
+        maxWidth: 620,
+        maxHeight: 400,
+        frame: false,
+        backgroundColor: bg,
+        webPreferences: {
+          nodeIntegration: true,
+          enableRemoteModule: false,
+          contextIsolation: false,
+          devTools: true
+        },
+        show: startedHidden === undefined,
+      });
+
+      noFilesFound();
+  
+      mainWindow.onbeforeunload = () => {
+        win.removeAllListeners();
+      };
+    
+      mainWindow.on("move", () => {
+        sendMessageToWindow("togglerestore", mainWindow.isMaximized());
+      });
+    
+      ipcMain.handle("checkWindowState", () => {
+        return mainWindow.isMaximized();
+      });
+      
+      ipcMain.handle("min-window", async function (event, args) {
+        mainWindow.minimize();
+      });
+    
+      ipcMain.handle("max-window", async function (event, args) {
+        mainWindow.maximize();
+        return mainWindow.isMaximized();
+      });
+    
+      ipcMain.handle("restore-window", async function (event, args) {
+        mainWindow.unmaximize();
+        return mainWindow.isMaximized();
+      });
+    
+      ipcMain.on("close-window", async function (event, args) {
+        mainWindow.close();
+      });
+
       var isInSetup = false;
       
       ipcMain.on("isInSetup", function () {
         isInSetup = true;
       }); 
   
-      ipcMain.on("finishedSetup", function () {
+      ipcMain.on("finishedSetup", async function () {
         isInSetup = false;
+
+        app.relaunch();
+        app.quit();
       });
   
       app.on("before-quit", () => {
@@ -1173,56 +1190,33 @@ var reauth_interval;
           fs.rmSync(process.env.APPDATA + "/VALTracker/user_data", { recursive: true, force: true });
         }
       });
-    }
-  
-    mainWindow.onbeforeunload = () => {
-      win.removeAllListeners();
-    };
-  
-    mainWindow.on("move", () => {
-      sendMessageToWindow("togglerestore", mainWindow.isMaximized());
-    });
-  
-    ipcMain.handle("checkWindowState", () => {
-      return mainWindow.isMaximized();
-    });
     
-    ipcMain.handle("min-window", async function (event, args) {
-      mainWindow.minimize();
-    });
-  
-    ipcMain.handle("max-window", async function (event, args) {
-      mainWindow.maximize();
-      return mainWindow.isMaximized();
-    });
-  
-    ipcMain.handle("restore-window", async function (event, args) {
-      mainWindow.unmaximize();
-      return mainWindow.isMaximized();
-    });
-  
-    ipcMain.on("close-window", async function (event, args) {
-      var app_data = app.getPath("userData");
-      var raw = fs.readFileSync(app_data + "/user_data/load_files/on_load.json");
-      var json = JSON.parse(raw);
-  
-      if(json.minimizeOnClose == false || json.minimizeOnClose == undefined) {
-        mainWindow.close();
-      } else {
-        var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-        if(config.hideDiscordRPWhenHidden === true) {
-          RPState = 'ClientHidden';
-          discordClient.clearActivity(process.pid);
-        }
-        mainWindow.hide();
-  
+      mainWindow.on("closed", () => {
+        mainWindow = null;
+      });
+    } else {
+      mainWindow = createWindow('main', {
+        width: 1400,
+        height: 840,
+        minWidth: 1400,
+        minHeight: 840,
+        frame: false,
+        backgroundColor: bg,
+        webPreferences: {
+          nodeIntegration: true,
+          enableRemoteModule: false,
+          contextIsolation: false,
+          devTools: true
+        },
+        show: startedHidden === undefined,
+      });
+    
+      if(startedHidden !== undefined && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
         var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
         var contextMenu = Menu.buildFromTemplate([
           {
             label: "Show",
             click: function () {
-              RPState = 'app';
-              sendMessageToWindow('setDRPtoCurrentPage');
               appIcon.destroy();
               mainWindow.show();
             },
@@ -1236,159 +1230,223 @@ var reauth_interval;
             },
           },
         ]);
-  
+    
         appIcon.setContextMenu(contextMenu);
       }
-    }); 
   
-    app_data = app.getPath("userData");
-  
-    if(fs.existsSync(app_data + "/settings")) {
-      fs.renameSync(app_data + "/settings", app_data + "/user_data");
-    }
-  
-    if(!fs.existsSync(app_data + "/user_data")) {
-      noFilesFound();
-    } else {
-      if(!fs.existsSync(app_data + "/user_data/favourite_matches")) {
-        createFavMatches();
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/home_settings")) {
-        createHomeSettings();
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/load_files")) {
-        createLoadFiles();
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/player_profile_settings")) {
-        createPlayerProfileSettings();
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/riot_games_data")) {
-        createRiotGamesData();
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/riot_games_data/cookies.json")) {
-        var cookiesData = [];
-  
-        fs.writeFileSync(app_data + "/user_data/riot_games_data/cookies.json", JSON.stringify(cookiesData));
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/riot_games_data/token_data.json")) {
-        var tokenData = {};
-  
-        fs.writeFileSync(app_data + "/user_data/riot_games_data/token_data.json", JSON.stringify(tokenData));
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/shop_data")) {
-        fs.mkdirSync(app_data + "/user_data/shop_data");
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/themes")) {
-        createThemes();
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/message_data")) {
-        createMessageData();
-      }
-  
-      if(!fs.existsSync(app_data + "/user_data/user_accounts/")) {
-        fs.mkdirSync(app_data + "/user_data/user_accounts/");
-      } 
-  
-      if(!fs.existsSync(app_data + "/user_data/player_inventory")) {
-        createInventoryData();
-      }
-  
-      if(fs.existsSync(app_data + "/user_data/user_creds.json")) {
-        await checkUserData(); 
-  
-        var raw = fs.readFileSync(app_data + "/user_data/user_creds.json");
-        var user_creds = JSON.parse(raw);
-  
-        if(!fs.existsSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID)) {
-          fs.mkdirSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID);
-  
-          if(fs.existsSync(app_data + "/user_data/riot_games_data/token_data.json")) {
-            var raw = fs.readFileSync(app_data + "/user_data/riot_games_data/token_data.json");
-            fs.writeFileSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID + "/token_data.json", raw);
-          }
-    
-          if(fs.existsSync(app_data + "/user_data/riot_games_data/cookies.json")) {
-            var raw = fs.readFileSync(app_data + "/user_data/riot_games_data/cookies.json");
-            fs.writeFileSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID + "/cookies.json", raw);
-          }
-        }
-      }
-      
-      if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/wishlists")) {
-        fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/wishlists");
-      }
-  
-      if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
-        fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
-      }
-
-      if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/search_history")) {
-        fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/search_history");
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/search_history/history.json", JSON.stringify({ "arr":[] }));
-      }
-
-      if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json")) {
-        var data = { showMode: true, showRank: true, showTimer: true, showScore: true };
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json", JSON.stringify(data));
-      }
-      
-      if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
-        download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+      mainWindow.onbeforeunload = () => {
+        win.removeAllListeners();
       };
+    
+      mainWindow.on("move", () => {
+        sendMessageToWindow("togglerestore", mainWindow.isMaximized());
+      });
+    
+      ipcMain.handle("checkWindowState", () => {
+        return mainWindow.isMaximized();
+      });
       
-      if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
-        var { error, items, reauthArray } = await reauthAllAccounts();
-        var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-
-        if(on_load.appLang === undefined) var appLang = 'en-US'
-        else var appLang = on_load.appLang;
-
-        if(!error) {
-          if(items.expiresIn) {
-            var expiresIn = items.expiresIn;
-          } else {
-            // 55 Minutes 
-            var expiresIn = 55 * 60;
-          }
-  
-          if(items !== false) {
-            reauth_interval = setInterval(reauthAllAccounts, expiresIn * 1000); 
-            console.log("All accounts will be reauthenticated in 55 Minutes.");
-          }
-
-          if (isProd) {
-            await mainWindow.loadURL(`app://./home.html?isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
-          } else {
-            const port = process.argv[2];
-            await mainWindow.loadURL(`http://localhost:${port}/home?isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
-          } 
+      ipcMain.handle("min-window", async function (event, args) {
+        mainWindow.minimize();
+      });
+    
+      ipcMain.handle("max-window", async function (event, args) {
+        mainWindow.maximize();
+        return mainWindow.isMaximized();
+      });
+    
+      ipcMain.handle("restore-window", async function (event, args) {
+        mainWindow.unmaximize();
+        return mainWindow.isMaximized();
+      });
+    
+      ipcMain.on("close-window", async function (event, args) {
+        var app_data = app.getPath("userData");
+        var raw = fs.readFileSync(app_data + "/user_data/load_files/on_load.json");
+        var json = JSON.parse(raw);
+    
+        if(json.minimizeOnClose == false || json.minimizeOnClose == undefined) {
+          mainWindow.close();
         } else {
-          if (isProd) {
-            await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
-          } else {
-            const port = process.argv[2];
-            await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
-          } 
+          var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+          if(config.hideDiscordRPWhenHidden === true) {
+            RPState = 'ClientHidden';
+            discordClient.clearActivity(process.pid);
+          }
+          mainWindow.hide();
+    
+          var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+          var contextMenu = Menu.buildFromTemplate([
+            {
+              label: "Show",
+              click: function () {
+                RPState = 'app';
+                sendMessageToWindow('setDRPtoCurrentPage');
+                appIcon.destroy();
+                mainWindow.show();
+              },
+            },
+            {
+              label: "Quit",
+              click: function () {
+                app.isQuiting = true;
+                appIcon.destroy();
+                app.quit();
+              },
+            },
+          ]);
+    
+          appIcon.setContextMenu(contextMenu);
+        }
+      }); 
+    
+      if(fs.existsSync(app_data + "/settings")) {
+        fs.renameSync(app_data + "/settings", app_data + "/user_data");
+      }
+    
+      if(!fs.existsSync(app_data + "/user_data")) {
+        noFilesFound();
+      } else {
+        if(!fs.existsSync(app_data + "/user_data/favourite_matches")) {
+          createFavMatches();
         }
     
-        if(on_load.skinWishlistNotifications === undefined || on_load.skinWishlistNotifications === true) {
-          checkStoreForWishlistItems();
+        if(!fs.existsSync(app_data + "/user_data/home_settings")) {
+          createHomeSettings();
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/load_files")) {
+          createLoadFiles();
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/player_profile_settings")) {
+          createPlayerProfileSettings();
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/riot_games_data")) {
+          createRiotGamesData();
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/riot_games_data/cookies.json")) {
+          var cookiesData = [];
+    
+          fs.writeFileSync(app_data + "/user_data/riot_games_data/cookies.json", JSON.stringify(cookiesData));
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/riot_games_data/token_data.json")) {
+          var tokenData = {};
+    
+          fs.writeFileSync(app_data + "/user_data/riot_games_data/token_data.json", JSON.stringify(tokenData));
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/shop_data")) {
+          fs.mkdirSync(app_data + "/user_data/shop_data");
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/themes")) {
+          createThemes();
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/message_data")) {
+          createMessageData();
+        }
+    
+        if(!fs.existsSync(app_data + "/user_data/user_accounts/")) {
+          fs.mkdirSync(app_data + "/user_data/user_accounts/");
+        } 
+    
+        if(!fs.existsSync(app_data + "/user_data/player_inventory")) {
+          createInventoryData();
+        }
+    
+        if(fs.existsSync(app_data + "/user_data/user_creds.json")) {
+          await checkUserData(); 
+    
+          var raw = fs.readFileSync(app_data + "/user_data/user_creds.json");
+          var user_creds = JSON.parse(raw);
+    
+          if(!fs.existsSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID)) {
+            fs.mkdirSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID);
+    
+            if(fs.existsSync(app_data + "/user_data/riot_games_data/token_data.json")) {
+              var raw = fs.readFileSync(app_data + "/user_data/riot_games_data/token_data.json");
+              fs.writeFileSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID + "/token_data.json", raw);
+            }
+      
+            if(fs.existsSync(app_data + "/user_data/riot_games_data/cookies.json")) {
+              var raw = fs.readFileSync(app_data + "/user_data/riot_games_data/cookies.json");
+              fs.writeFileSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID + "/cookies.json", raw);
+            }
+          }
+        }
+        
+        if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/wishlists")) {
+          fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/wishlists");
+        }
+    
+        if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
+          fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
+        }
+  
+        if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/search_history")) {
+          fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/search_history");
+          fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/search_history/history.json", JSON.stringify({ "arr":[] }));
+        }
+  
+        if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json")) {
+          var data = { showMode: true, showRank: true, showTimer: true, showScore: true };
+          fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json", JSON.stringify(data));
+        }
+        
+        if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
+          download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+        };
+        
+        if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
+          var { error, items, reauthArray } = await reauthAllAccounts();
+          var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+  
+          if(on_load.appLang === undefined) var appLang = 'en-US'
+          else var appLang = on_load.appLang;
+  
+          if(!error) {
+            if(items.expiresIn) {
+              var expiresIn = items.expiresIn;
+            } else {
+              // 55 Minutes 
+              var expiresIn = 55 * 60;
+            }
+    
+            if(items !== false) {
+              reauth_interval = setInterval(reauthAllAccounts, expiresIn * 1000); 
+              console.log("All accounts will be reauthenticated in 55 Minutes.");
+            }
+  
+            if (isProd) {
+              await mainWindow.loadURL(`app://./home.html?isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
+            } else {
+              const port = process.argv[2];
+              await mainWindow.loadURL(`http://localhost:${port}/home?isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
+            } 
+          } else {
+            if (isProd) {
+              await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
+            } else {
+              const port = process.argv[2];
+              await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
+            } 
+          }
+      
+          if(on_load.skinWishlistNotifications === undefined || on_load.skinWishlistNotifications === true) {
+            checkStoreForWishlistItems();
+          }
         }
       }
+    
+      mainWindow.on("closed", () => {
+        mainWindow = null;
+      });
     }
-  
-    mainWindow.on("closed", () => {
-      mainWindow = null;
-    });
   } else {
     autoUpdater.checkForUpdates();
 

@@ -3,7 +3,7 @@ import React from 'react';
 
 const ipcRenderer = electron.ipcRenderer || false;
 
-export default function Navbar() {
+export default function WindowControls({ setup }) {
 
   const handleMin = async () => {
     var args = await ipcRenderer.invoke("min-window");
@@ -57,29 +57,29 @@ export default function Navbar() {
         </div>
 
         <div id="window-controls">
-  
-          <div className="button" id="min-button" onClick={ handleMin }>
+
+          <div className={"button " + (setup ? 'hidden' : 'flex')} id="min-button" onClick={ handleMin }>
             <img 
               className="icon"
               src='/icons/min-w-10.png'
               draggable="false" 
             />
           </div>
-          <div className="button" id="max-button" onClick={ handleMax }>
+          <div className={"button " + (setup ? 'hidden' : 'flex')} id="max-button" onClick={ handleMax }>
             <img 
               className="icon"
               src='/icons/max-w-10.png'
               draggable="false" 
             />
           </div>
-          <div className="button" id="restore-button" onClick={ handleRestore }>
+          <div className="button flex" id="restore-button" onClick={ handleRestore }>
             <img 
               className="icon"
               src='/icons/restore-w-10.png'
               draggable="false" 
             />
           </div>
-          <div className="button" id="close-button" onClick={ handleClose }>
+          <div className="button flex" id="close-button" onClick={ handleClose }>
             <img 
               className="icon"
               src='/icons/close-w-10.png'
