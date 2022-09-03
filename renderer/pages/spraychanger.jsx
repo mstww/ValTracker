@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import fetch from 'node-fetch'
 import SkinTile from '../components/skins/SkinTile';
 import fs from 'fs';
+import L from '../locales/translations/invchanger.json';
+import LocalText from '../components/translation/LocalText';
 
 async function getEntitlement(bearer) {
   return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
@@ -278,7 +280,7 @@ function Spraychanger() {
               id='skin-search'
               type='text'
               className='group bg-button-color text-sm font-light pl-8 placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-pointer my-2 transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
-              placeholder='Search for a spray'
+              placeholder={LocalText(L, "sprays.search_placeholder")}
               onKeyUp={handlePlayerSearch}
               autoCorrect='off'
               spellCheck='false'
@@ -291,7 +293,7 @@ function Spraychanger() {
               <input type="checkbox" className='group' name="open-valtracker" onClick={toggleUnownedSkins} />
               <span className="slider round my-auto bg-maincolor group-hover:bg-maincolor-lightest group-checked:bg-maincolor-lightest group-checked:group-hover:bg-button-color-hover" />
             </label>
-            <span className='ml-2 text-sm'>Show skins you don't own</span>
+            <span className='ml-2 text-sm'>{LocalText(L, "sprays.switch_label")}</span>
           </div>
           <div id='skin-list' className='mt-4 overflow-y-auto pr-1'>
             <SkinTiles setActiveSkin={setShownSkin} activeSkin={shownSkin} useRef={skinTilesRef} showUnowned={showUnownedSkins} />
@@ -302,13 +304,13 @@ function Spraychanger() {
             <button 
               onClick={() => { setSkin() }} 
               className={
-              'w-full h-12 mt-2 block ' 
+              'w-full h-12 mt-2 block change-color-btn ' 
               + 
               (showSetSkinButton ? '' : 'hidden')
               + 
-              (setSkinSuccess ? 'bg-green-500 hover:bg-green-500 pointer-events-none cursor-default' : '')}
+              (setSkinSuccess ? ' bg-green-500 hover:bg-green-500 pointer-events-none cursor-default' : ' bg-button-color hover:bg-button-color-hover')}
             >
-              {setSkinSuccess ? 'Done!' : 'Set Spray'}
+              {setSkinSuccess ? LocalText(L, "sprays.equip_button.state_2") : LocalText(L, "sprays.equip_button.state_1")}
             </button>
           </div>
           <div className='flex flex-row items-center justify-center w-auto mx-auto' id='skin-img'>

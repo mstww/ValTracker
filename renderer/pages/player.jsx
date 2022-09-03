@@ -9,54 +9,8 @@ import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import { Loading } from "@nextui-org/react";
 import { Tooltip } from '@nextui-org/react';
-
-const errorReasons = {
-  "400": "Something went wrong with the request. Please try again.",
-  "401": "It seems you're not authorized to view this player.",
-  "403": "We had a problem connecting to Riots Servers. Please try again or come back later.",
-  "404": "Sorry, we couldn't find that player.",
-  "405": "Something went wrong with the request. Please try again.",
-  "406": "Something went wrong with the request. Please try again.",
-  "408": "Something went wrong with the request. Please try again.",
-  "429": "The Rate Limit as been hit. Please try again in 2 Minutes.",
-
-  "500": "It seems something went wrong on the Server. Please try again later.",
-  "501": "It seems something went wrong on the Server. Please try again later.",
-  "502": "It seems something went wrong on the Server. Please try again later.",
-  "503": "It seems the Server is offline. Please try again later.",
-  "504": "It seems something went wrong on the Server. Please try again later.",
-}
-
-const playerRanks = {
-  '0': 'Unranked',
-  '1': 'UNUSED',
-  '2': 'UNUSED',
-  '3': 'Iron 1',
-  '4': 'Iron 2',
-  '5': 'Iron 3',
-  '6': 'Bronze 1',
-  '7': 'Bronze 2',
-  '8': 'Bronze 3',
-  '9': 'Silver 1',
-  '10': 'Silver 2',
-  '11': 'Silver 3',
-  '12': 'Gold 1',
-  '13': 'Gold 2',
-  '14': 'Gold 3',
-  '15': 'Platinum 1',
-  '16': 'Platinum 2',
-  '17': 'Platinum 3',
-  '18': 'Diamond 1',
-  '19': 'Diamond 2',
-  '20': 'Diamond 3',
-  '21': 'Ascendant 1',
-  '22': 'Ascendant 2',
-  '23': 'Ascendant 3',
-  '24': 'Immortal 1',
-  '25': 'Immortal 2',
-  '26': 'Immortal 3',
-  '27': 'Radiant',
-}
+import L from '../locales/translations/player.json';
+import LocalText from '../components/translation/LocalText';
 
 const variants = {
   hidden: { opacity: 0, x: -100, y: 0 },
@@ -167,8 +121,10 @@ const fetchPlayer = async (name, tag) => {
     const playerMmr = await getPlayerMMR(region, puuid, entitlement_token, bearer);
 
     const currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
-    if(!currenttier) 
-      currenttier = 0;
+    if(!currenttier) currenttier = 0;
+
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers')).json()
+    var playerRanks = playerRanksRaw.data[playerRanksRaw.data.length-1].tiers
 
     const playerRank = playerRanks[playerMmr.LatestCompetitiveUpdate.TierAfterUpdate];
     const playerRankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
@@ -301,6 +257,8 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
 function PlayerInfo() {
   const router = useRouter();
 
+  var errorReasons = LocalText(L, "errorReasons");
+
   const [ loading, setLoading ] = React.useState(true);
   const [ error, setError ] = React.useState(false);
   const [ errorReason, setErrorReason ] = React.useState('');
@@ -324,6 +282,8 @@ function PlayerInfo() {
   const [ matchFetchingError, setMatchFetchingError ] = React.useState(false);
 
   const [ mapData, setMapData ] = React.useState({});
+
+  const [ playerRanks, setPlayerRanks ] = React.useState([]);
 
   React.useEffect(() => {
     const fetchApi = async () => {
@@ -378,6 +338,11 @@ function PlayerInfo() {
     }
 
     fetchApi();
+  }, []);
+
+  React.useEffect(async () => {
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers')).json()
+    setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
   }, []);
 
   const fetchFurtherMatches = async () => {
@@ -498,13 +463,13 @@ function PlayerInfo() {
         </div>
         <div id='matches'>
           <div id='match-type-selector' className='flex justify-between mb-4'>
-            <MatchTypeTile type='unrated' text={"Unrated"} delay={0} active={activeQueueTab} onClick={() => {changeMatchType('unrated')}} />
-            <MatchTypeTile type='competitive' text={"Competitive"} delay={0.05} active={activeQueueTab} onClick={() => {changeMatchType('competitive')}} />
-            <MatchTypeTile type='deathmatch' text={"Deathmatch"} delay={0.1} active={activeQueueTab} onClick={() => {changeMatchType('deathmatch')}} />
-            <MatchTypeTile type='spikerush' text={"Spike Rush"} delay={0.15} active={activeQueueTab} onClick={() => {changeMatchType('spikerush')}} />
-            <MatchTypeTile type='replication' text={"Replication"} delay={0.2} active={activeQueueTab} onClick={() => {changeMatchType('replication')}} />
-            <MatchTypeTile type='escalation' text={"Escalation"} delay={0.25} active={activeQueueTab} onClick={() => {changeMatchType('escalation')}} />
-            <MatchTypeTile type='custom' text={"Custom"} delay={0.3} active={activeQueueTab} onClick={() => {changeMatchType('custom')}} />
+            <MatchTypeTile type='unrated' text={LocalText(L, "matches.gamemodes.unrated")} delay={0} active={activeQueueTab} onClick={() => {changeMatchType('unrated')}} />
+            <MatchTypeTile type='competitive' text={LocalText(L, "matches.gamemodes.competitive")} delay={0.05} active={activeQueueTab} onClick={() => {changeMatchType('competitive')}} />
+            <MatchTypeTile type='deathmatch' text={LocalText(L, "matches.gamemodes.deathmatch")} delay={0.1} active={activeQueueTab} onClick={() => {changeMatchType('deathmatch')}} />
+            <MatchTypeTile type='spikerush' text={LocalText(L, "matches.gamemodes.spikerush")} delay={0.15} active={activeQueueTab} onClick={() => {changeMatchType('spikerush')}} />
+            <MatchTypeTile type='replication' text={LocalText(L, "matches.gamemodes.onefa")} delay={0.2} active={activeQueueTab} onClick={() => {changeMatchType('replication')}} />
+            <MatchTypeTile type='escalation' text={LocalText(L, "matches.gamemodes.ggteam")} delay={0.25} active={activeQueueTab} onClick={() => {changeMatchType('escalation')}} />
+            <MatchTypeTile type='custom' text={LocalText(L, "matches.gamemodes.custom")} delay={0.3} active={activeQueueTab} onClick={() => {changeMatchType('custom')}} />
           </div>
           <div id='match-timeline' className='relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1'>
             {Object.keys(matches).map((key, index) => {
@@ -737,7 +702,7 @@ function PlayerInfo() {
                         </div>
                         <div id='match-score' className='w-1/4 flex flex-row items-center'>
                           <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                            <span className={'text-2xl ' + matchOutcomeColor}>{matchOutcome}</span>
+                            <span className={'text-2xl ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
                             {activeQueueTab != 'deathmatch' ? (<span className='text-xl'>{matchScore}</span>) : ''}
                           </div>
                           {activeQueueTab != 'deathmatch' ? 
@@ -746,7 +711,7 @@ function PlayerInfo() {
                                 id='scoreboard-pos' 
                                 className={'rounded-sm h-9 py-1 px-2 ml-6 ' + playerPositionColor}
                               >
-                                {playerPositionText}
+                                {LocalText(L, "matches.match_pos." + (playerPositionText ? playerPositionText.replace(" ", "-") : ''))}
                               </div>
                             )
                             : 
@@ -806,11 +771,11 @@ function PlayerInfo() {
             (
               <>
                 <div id='match-loading-error' className={'mt-4 ml-6 w-full flex flex-row justify-center ' + (matchFetchingError ? '' : 'hidden')}>
-                  <span id='' className='text-gray-500'>Something went wrong while fetching new matches. Try again!</span>
+                  <span id='' className='text-gray-500'>{LocalText(L, "matches.errors.err_while_fetching")}</span>
                 </div>
                 <div id='shown-matches-info' className={'mt-4 ml-6 w-1/2 flex flex-row justify-between ' + (isFetchingMatches ? 'hidden' : '')}>
-                  <span id='x-out-of-n-matches' className='text-gray-500'>{shownMatches} out of {maxMatches} Matches shown</span>
-                  <span id='load-more-matches' className={'hover:underline mb-8 ' + (isFetchingMatches ? 'cursor-wait' : 'cursor-pointer')} onClick={() => { isFetchingMatches ? '' : fetchFurtherMatches() }}>Load more Matches</span>
+                  <span id='x-out-of-n-matches' className='text-gray-500'>{LocalText(L, "matches.bottom_text.loaded_matches_count", shownMatches, maxMatches)}</span>
+                  <span id='load-more-matches' className={'hover:underline mb-8 ' + (isFetchingMatches ? 'cursor-wait' : 'cursor-pointer')} onClick={() => { isFetchingMatches ? '' : fetchFurtherMatches() }}>{LocalText(L, "matches.bottom_text.load_more")}</span>
                 </div>
                 <div className={'w-full flex mt-8 h-14 mb-6 justify-center items-center ' + (isFetchingMatches || matchFetchingError ? '' : 'hidden')}>
                   <Loading color={'error'} size={'lg'} />
@@ -824,7 +789,7 @@ function PlayerInfo() {
                   <Loading color={'error'} size={'lg'} />
                 </div>
                 <div id='shown-matches-error' className={'mt-4 ml-6 w-full flex flex-row justify-center ' + (isFetchingMatches ? 'hidden' : '')}>
-                  <span id='' className='text-gray-500'>We couldn't find any matches. Try another mode!</span>
+                  <span id='' className='text-gray-500'>{LocalText(L, "matches.errors.no_matches_found")}</span>
                 </div>
               </>
             )
@@ -858,7 +823,7 @@ function PlayerInfo() {
         >
           <span className='text-3xl'>Whoops!</span><br />
           <span className='text-xl'>{errorReason}</span><br />
-          <button className={isReloadable ? '' : 'hidden'} onClick={() => { router.push(`/player?name=${router.query.name}&tag=${router.query.tag}&lang=${router.query.lang}`) }}>Reload</button>
+          <button className={isReloadable ? '' : 'hidden'} onClick={() => { router.push(`/player?name=${router.query.name}&tag=${router.query.tag}&lang=${router.query.lang}`) }}>{LocalText(L, "reload_button_text")}</button>
         </motion.div>
       </div>
     </>
@@ -867,7 +832,7 @@ function PlayerInfo() {
 
 function PlayerProfile() {
   React.useEffect(() => {
-    ipcRenderer.send('changeDiscordRP', 'pprofile_acitivity')
+    ipcRenderer.send('changeDiscordRP', 'pprofile_acitivity');
   });
 
   return (

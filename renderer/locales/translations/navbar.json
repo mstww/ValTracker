@@ -1,18 +1,20 @@
 {
   "en-US": {
-    "el_1": "Search for a player",
-    "el_2": "Home",
-    "el_3": "Shop",
-    "el_4": "Inventory",
-    "el_5": "Favorite Matches",
-    "el_6": "Your Wishlist"
+    "search_placeholder": "Search for a player",
+    "history_close": "Close History",
+    "home": "Home",
+    "shop": "Shop",
+    "inventory": "Inventory",
+    "fav_matches": "Favorite Matches",
+    "wishlist": "Your Wishlist"
   },
   "de-DE": {
-    "el_1": "Suche nach einem Spieler",
-    "el_2": "Home",
-    "el_3": "Shop",
-    "el_4": "Inventar",
-    "el_5": "Favorisierte Matches",
-    "el_6": "Deine Wunschliste"
+    "search_placeholder": "Suche nach einem Spieler",
+    "history_close": "Suchverlauf schließen",
+    "home": "Home",
+    "shop": "Shop",
+    "inventory": "Inventar",
+    "fav_matches": "Favorisierte Matches",
+    "wishlist": "Deine Wunschliste"
   }
 }

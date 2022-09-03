@@ -5,6 +5,8 @@ import fetch from 'node-fetch';
 import { useRouter } from 'next/router'
 import { ipcRenderer } from 'electron';
 import { motion } from 'framer-motion';
+import L from '../locales/translations/inventory.json';
+import LocalText from '../components/translation/LocalText';
 
 async function getEntitlement(bearer) {
   return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
@@ -676,7 +678,7 @@ function Inventory() {
 
           <div id='save-inv' className='flex flex-col items-center justify-center'>
             <button className='w-5/6' onClick={() => { toggleSaveInvDialogue() }}>
-              Save current loadout
+              {LocalText(L, "save_loadout_button_text")}
             </button>
             <select
               id='inv_selector_select' 
@@ -692,7 +694,7 @@ function Inventory() {
               }}
               className='bg-button-color text-md font-light placeholder:text-white hover:bg-button-color-hover h-8 w-5/6 flex items-center px-2 py-1 shadow-lg hover:shadow-2xl rounded-sm cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mt-4'
             >
-              <option value='0' disabled>Select Inventory</option>
+              <option value='0' disabled>{LocalText(L, "preset_select_placeholder")}</option>
               {
                 // Reverse Map
                 presetList.reverse().map((preset, i) => {
@@ -707,7 +709,7 @@ function Inventory() {
           <div id='inv_selector' className='flex items-center justify-center'>
             <div className={'w-full flex items-center justify-center ' + (showDeletePresetButton ? '' : 'hidden')}>
               <button className={'w-5/6 '} onClick={() => { toggleDeleteCurrentPresetDialogue() }}>
-                Delete current preset
+                {LocalText(L, "save_loadout_button_text")}
               </button>
             </div>
           </div>

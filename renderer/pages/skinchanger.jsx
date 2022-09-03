@@ -8,6 +8,8 @@ import LevelTile from '../components/skins/LevelTile';
 import fs from 'fs';
 import OverlayWrapper from '../components/settings/OverlayWrapper';
 import { motion } from 'framer-motion';
+import L from '../locales/translations/invchanger.json';
+import LocalText from '../components/translation/LocalText';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -615,7 +617,7 @@ function Skinchanger() {
               id='skin-search'
               type='text'
               className='group bg-button-color text-sm font-light pl-8 placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-pointer my-2 transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
-              placeholder='Search for a skin'
+              placeholder={LocalText(L, "skins.search_placeholder")}
               onKeyUp={handlePlayerSearch}
               autoCorrect='off'
               spellCheck='false'
@@ -628,7 +630,7 @@ function Skinchanger() {
               <input type="checkbox" className='group' name="open-valtracker" onClick={toggleUnownedSkins} />
               <span className="slider round my-auto bg-maincolor group-hover:bg-maincolor-lightest group-checked:bg-maincolor-lightest group-checked:group-hover:bg-button-color-hover" />
             </label>
-            <span className='ml-2 text-sm'>Show skins you don't own</span>
+            <span className='ml-2 text-sm'>{LocalText(L, "skins.switch_label")}</span>
           </div>
           <div id='skin-list' className='mt-4 overflow-y-auto pr-1'>
             <SkinTiles setActiveSkin={setShownSkin} activeSkin={shownSkin} useRef={skinTilesRef} showUnowned={showUnownedSkins} />
@@ -678,11 +680,11 @@ function Skinchanger() {
               <div className='flex flex-row justify-around items-center'>
                 <button 
                   onClick={() => { setSkin() }} 
-                  className={'w-full h-12 mt-2 block ' 
+                  className={'w-full h-12 mt-2 block change-color-btn ' 
                   + (showSetSkinButton ? '' : 'hidden') 
-                  + (setSkinSuccess ? 'bg-green-500 hover:bg-green-500 pointer-events-none cursor-default' : '')}
+                  + (setSkinSuccess ? ' bg-green-500 hover:bg-green-400 pointer-events-none cursor-default' : ' bg-button-color hover:bg-button-color-hover')}
                 >
-                  {setSkinSuccess ? 'Done!' : 'Set Skin'}
+                  {setSkinSuccess ? LocalText(L, "skins.skinsequip_button.state_2") : LocalText(L, "skins.skinsequip_button.state_1")}
                 </button>
                 <button 
                   onClick={() => { 
@@ -690,7 +692,7 @@ function Skinchanger() {
                   }} 
                   className={'text-button w-full h-12 mt-2 relative top-1 block ' + (isVideoAvailable ? '' : 'hidden')}
                 >
-                  Show Video
+                  {LocalText(L, "skins.video_button")}
                 </button>
               </div>
               <div className='flex flex-row w-full mt-2'>
@@ -749,7 +751,7 @@ function Skinchanger() {
                     id='star-img'
                     className='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear'
                   />
-                  Add to wishlist
+                  {LocalText(L, "skins.wishlist_button")}
                 </button>
                 {
                   activeSkinPrice ? 

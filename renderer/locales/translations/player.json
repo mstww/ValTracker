@@ -1,0 +1,61 @@
+{
+  "en-US": {
+    "errorReasons": {
+      "400": "Something went wrong with the request. Please try again.",
+      "401": "It seems you're not authorized to view this player.",
+      "403": "We had a problem connecting to Riots Servers. Please try again or come back later.",
+      "404": "Sorry, we couldn't find that player.",
+      "405": "Something went wrong with the request. Please try again.",
+      "406": "Something went wrong with the request. Please try again.",
+      "408": "Something went wrong with the request. Please try again.",
+      "429": "The Rate Limit as been hit. Please try again in 2 Minutes.",
+      "500": "It seems something went wrong on the Server. Please try again later.",
+      "501": "It seems something went wrong on the Server. Please try again later.",
+      "502": "It seems something went wrong on the Server. Please try again later.",
+      "503": "It seems the Server is offline. Please try again later.",
+      "504": "It seems something went wrong on the Server. Please try again later."
+    },
+    "reload_button_text": "Reload",
+    "matches": {
+      "errors": {
+        "no_matches_found": "No matches found.",
+        "err_while_fetching": "Something went wrong while fetching new matches. Try again!"
+      },
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Unrated",
+        "competitive": "Competitive",
+        "unrated": "Unrated",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Escalation",
+        "onefa": "Replication",
+        "snowball": "Snowball Fight", 
+        "custom": "Custom",
+        "": "Custom"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTORY",
+        "DEFEAT": "DEFEAT",
+        "DRAW": "DRAW"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val1 }} out of {{ num2 }} Matches shown",
+        "load_more": "Load more Matches"
+      },
+      "match_pos": {
+        "Match-MVP": "Match MVP",
+        "Team-MVP": "Team MVP",
+        "2nd": "2nd",
+        "3rd": "3rd",
+        "4th": "4th",
+        "5th": "5th",
+        "6th": "6th",
+        "7th": "7th",
+        "8th": "8th",
+        "9th": "9th",
+        "10th": "10th"
+      }
+    }
+  }
+}

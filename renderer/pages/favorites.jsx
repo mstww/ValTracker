@@ -8,6 +8,8 @@ import { Tooltip, Radio, Loading } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useFirstRender } from '../components/useFirstRender';
+import L from '../locales/translations/favorites.json';
+import LocalText from '../components/translation/LocalText';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -19,37 +21,6 @@ const backdrop_variants = {
   hidden: { opacity: 0, x: 0, y: 0, display: 'none' },
   enter: { opacity: 1, x: 0, y: 0, display: 'flex' },
   exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
-}
-
-const playerRanks = {
-  '0': 'Unranked',
-  '1': 'UNUSED',
-  '2': 'UNUSED',
-  '3': 'Iron 1',
-  '4': 'Iron 2',
-  '5': 'Iron 3',
-  '6': 'Bronze 1',
-  '7': 'Bronze 2',
-  '8': 'Bronze 3',
-  '9': 'Silver 1',
-  '10': 'Silver 2',
-  '11': 'Silver 3',
-  '12': 'Gold 1',
-  '13': 'Gold 2',
-  '14': 'Gold 3',
-  '15': 'Platinum 1',
-  '16': 'Platinum 2',
-  '17': 'Platinum 3',
-  '18': 'Diamond 1',
-  '19': 'Diamond 2',
-  '20': 'Diamond 3',
-  '21': 'Ascendant 1',
-  '22': 'Ascendant 2',
-  '23': 'Ascendant 3',
-  '24': 'Immortal 1',
-  '25': 'Immortal 2',
-  '26': 'Immortal 3',
-  '27': 'Radiant',
 }
 
 async function getEntitlement(bearer) {
@@ -106,6 +77,8 @@ function FavouriteMatches() {
   const [ deleteMatchCardShown, setDeleteMatchCardShown ] = React.useState(false);
 
   const [ matchInfo, setMatchInfo ] = React.useState({});
+
+  const [ playerRanks, setPlayerRanks ] = React.useState([]);
 
   // ----------------------- END STATES -----------------------
 
@@ -630,6 +603,11 @@ function FavouriteMatches() {
       setShownMatchesPerDay({ ...shownMatchesPerDay });
     }
   }, [ activeQueueTab ]);
+
+  React.useEffect(async () => {
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers')).json()
+    setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
+  }, []);
   
   return (
     <Layout>
@@ -649,9 +627,9 @@ function FavouriteMatches() {
           animate={deleteMatchCardShown ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.3 }}
         >
-          <h1>Delete match</h1>
+          <h1>{LocalText(L, "modals.remove_match.header")}</h1>
           <p>
-            Do you really want to delete this match? 
+            {LocalText(L, "modals.remove_match.desc")}
             <div 
               id='match'
               className={'relative flex flex-row h-20 border-2 p-1.5 my-2 border-maincolor-lightest rounded-sm mr-2 cursor-default w-full'}
@@ -698,7 +676,7 @@ function FavouriteMatches() {
                 </div>
               </div>
             </div>
-            You can go to the hub to save it as a favorite again.
+            {LocalText(L, "modals.remove_match.desc2")}
           </p>
           
           <div className='mt-4'>
@@ -712,9 +690,9 @@ function FavouriteMatches() {
                 }, 310);
               }}
             >
-              Delete Match
+              {LocalText(L, "modals.remove_match.button_1")}
             </button>
-            <button className='text-button' onClick={() => { toggleDeleteMatchDialogue() }}>Cancel</button>
+            <button className='text-button' onClick={() => { toggleDeleteMatchDialogue() }}>{LocalText(L, "modals.remove_match.button_2")}</button>
           </div>
         </motion.div>
       </motion.div>
@@ -755,25 +733,8 @@ function FavouriteMatches() {
                               break;
                             }
                           }
-    
-                          switch(match.matchInfo.queueID) {
-                            case('ggteam'): {
-                              var fixedQueueDisplayName = 'Escalation';
-                              break;
-                            } 
-                            case('onefa'): {
-                              var fixedQueueDisplayName = 'Replication';
-                              break;
-                            }
-                            case('spikerush'): {
-                              var fixedQueueDisplayName = 'Spike Rush';
-                              break;
-                            }
-                            default: {
-                              var fixedQueueDisplayName = match.matchInfo.queueID[0].toUpperCase() + match.matchInfo.queueID.slice(1);
-                              break;
-                            }
-                          }
+
+                          var fixedQueueDisplayName = LocalText(L, "matches.gamemodes." + fixedQueueName);
     
                           return (
                             <div 
@@ -866,7 +827,7 @@ function FavouriteMatches() {
                                       id='scoreboard-pos' 
                                       className={'rounded-sm text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
                                     >
-                                      {matchData.playerPositionText}
+                                      {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                     </div>
                                   )
                                   : 
@@ -946,24 +907,7 @@ function FavouriteMatches() {
                       }
                     }
 
-                    switch(match.matchInfo.queueID) {
-                      case('ggteam'): {
-                        var fixedQueueDisplayName = 'Escalation';
-                        break;
-                      } 
-                      case('onefa'): {
-                        var fixedQueueDisplayName = 'Replication';
-                        break;
-                      }
-                      case('spikerush'): {
-                        var fixedQueueDisplayName = 'Spike Rush';
-                        break;
-                      }
-                      default: {
-                        var fixedQueueDisplayName = match.matchInfo.queueID[0].toUpperCase() + match.matchInfo.queueID.slice(1);
-                        break;
-                      }
-                    }
+                    var fixedQueueDisplayName = LocalText(L, "matches.gamemodes." + fixedQueueName);
 
                     return (
                       <div 
@@ -1056,7 +1000,7 @@ function FavouriteMatches() {
                                 id='scoreboard-pos' 
                                 className={'rounded-sm text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
                               >
-                                {matchData.playerPositionText}
+                              {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                               </div>
                             )
                             : 
@@ -1107,37 +1051,37 @@ function FavouriteMatches() {
               </>
             }
           </div>
-          <span className='text-center text-lg'>{isLoadingNewMatches ? 'Loading' : 'That\'s it!'}</span>
+          <span className='text-center text-lg'>{isLoadingNewMatches ? LocalText(L, "loading") : LocalText(L, "matches_bottom")}</span>
         </div>
         <div className='w-1/4 favs-right border-2 border-maincolor-lightest p-4 mt-7'>
-          <span>Filters</span>
+          <span className='text-lg'>{LocalText(L, "filters.header")}</span>
           <hr />
-          <span className='text-gray-500 mb-0 relative top-4 text-lg'>Mode</span>
+          <span className='text-gray-500 mb-0 relative top-4 text-lg'>{LocalText(L, "filters.filters.header")}</span>
           <Radio.Group 
             value={activeQueueTab}
             onChange={setActiveQueueTab}
             className={'mt-0 pt-0 top-0 ml-4 font-thin'}
           >
-            <Radio value="all" color={'error'} size='md'>All</Radio>
-            <Radio value="unrated" color={'error'}>Unrated</Radio>
-            <Radio value="competitive" color={'error'}>Competitive</Radio>
-            <Radio value="deathmatch" color={'error'}>Deathmatch</Radio>
-            <Radio value="spikerush" color={'error'}>Spike Rush</Radio>
-            <Radio value="replication" color={'error'}>Replication</Radio>
-            <Radio value="escalation" color={'error'}>Escalation</Radio>
-            <Radio value="custom" color={'error'}>Custom</Radio>
+            <Radio value="all" color={'error'} size='md'>{LocalText(L, "filters.modes.fm_1")}</Radio>
+            <Radio value="unrated" color={'error'}>{LocalText(L, "filters.modes.fm_2")}</Radio>
+            <Radio value="competitive" color={'error'}>{LocalText(L, "filters.modes.fm_3")}</Radio>
+            <Radio value="deathmatch" color={'error'}>{LocalText(L, "filters.modes.fm_4")}</Radio>
+            <Radio value="spikerush" color={'error'}>{LocalText(L, "filters.modes.fm_5")}</Radio>
+            <Radio value="replication" color={'error'}>{LocalText(L, "filters.modes.fm_6")}</Radio>
+            <Radio value="escalation" color={'error'}>{LocalText(L, "filters.modes.fm_7")}</Radio>
+            <Radio value="custom" color={'error'}>{LocalText(L, "filters.modes.fm_8")}</Radio>
           </Radio.Group>
 
-          <span className='text-gray-500 mb-0 relative top-4 text-lg'>Sort by</span>
+          <span className='text-gray-500 mb-0 relative top-4 text-lg'>{LocalText(L, "filters.sort_by.header")}</span>
           <Radio.Group 
             value={activeSort}
             onChange={sortMatchesAndSetActiveSort}
             className={'mt-0 pt-0 top-0 ml-4 font-thin'}
           >
-            <Radio value="none" color={'error'}>None</Radio>
-            <Radio value="KD" color={'error'}>KD</Radio>
-            <Radio value="HS%" color={'error'}>HS%</Radio>
-            <Radio value="ACS" color={'error'}>ACS</Radio>
+            <Radio value="none" color={'error'}>{LocalText(L, "filters.sort_by.fs_1")}</Radio>
+            <Radio value="KD" color={'error'}>{LocalText(L, "filters.sort_by.fs_2")}</Radio>
+            <Radio value="HS%" color={'error'}>{LocalText(L, "filters.sort_by.fs_3")}</Radio>
+            <Radio value="ACS" color={'error'}>{LocalText(L, "filters.sort_by.fs_4")}</Radio>
           </Radio.Group>
 
         </div>

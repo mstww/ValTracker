@@ -1,0 +1,94 @@
+{
+  "en-US": {
+    "match_outcomes": {
+      "VICTORY": "VICTORY",
+      "DEFEAT": "DEFEAT",
+      "DRAW": "DRAW"
+    },
+    "nav": {
+      "overview": "Overview",
+      "scoreboard": "Scoreboard"
+    },
+    "match_info": {
+      "header": "MATCH INFORMATION",
+      "date_format": "D. MMMM YYYY, h:mm a",
+      "tooltips": {
+        "date": "Match Date",
+        "time": "Match Length",
+        "mode": "Mode",
+        "region_server": "Region // Server",
+        "patch": "Patch"
+      }
+    },
+    "awards": {
+      "rotated_text": "AWARDS",
+      "most_money": {
+        "title": "Monopoly Man",
+        "desc": "You spent the most money."
+      },
+      "least_money": {
+        "title": "Smart Spender",
+        "desc": "You spent the least money."
+      },
+      "most_kills": {
+        "title": "Shots fired!",
+        "desc": "You had the most kills."
+      },
+      "most_assists": {
+        "title": "Pocket Sage",
+        "desc": "You had the most assists."
+      },
+      "most_acs": {
+        "title": "Automaton",
+        "desc_1": "You had the highest ACS.",
+        "desc_2": "You had the highest Score." 
+      },
+      "most_fbs": {
+        "title": "Need for Speed",
+        "desc": "You had the most first bloods."
+      },
+      "most_dmg": {
+        "title": "That's a lot of damage!",
+        "desc": "You dealt the most damage."
+      },
+      "best_hs": {
+        "title": "Check him PC!",
+        "desc": "You had the highest Headshot%."
+      }
+    },
+    "round_results": {
+      "round_text": "Round",
+      "tks": "Team Kills",
+      "pks": "Player Kills",
+      "tooltips": {
+        "Eliminated": "Eliminated",
+        "Bomb-detonated": "Bomb detonated",
+        "Bomb-defused": "Bomb defused",
+        "side-switch": "Switching Sides"
+      }
+    },
+    "player_stats": {
+      "header": "PLAYER STATS",
+      "stats": {
+        "dmg_round": "Damage/Round",
+        "dmg": "Damage",
+        "fbs": "First Bloods",
+        "hit_percent": "Hit Percentages:"
+      },
+      "tooltips": {
+        "dmg_round": "Damage/Round",
+        "dmg": "Damage",
+        "fbs": "First Bloods",
+        "hit_percent": "Hit Percentages"
+      }
+    },
+    "scoreboard": {
+      "headers": {
+        "agent_name": "Agent and Name",
+        "fbs": "First Bloods",
+        "dmg_round": "Damage/Round",
+        "dmg": "Damage"
+      }
+    }
+  }
+}

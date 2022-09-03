@@ -227,7 +227,8 @@ export default function Navbar({ page }) {
           handlePlayerSearch={handlePlayerSearch}
           playerSearchRef={playerSearchRef} 
           searchHiddenDesc={searchHiddenDesc}
-          placeholderText={LocalText(L, 'el_1')}
+          placeholderText={LocalText(L, 'search_placeholder')}
+          closeLocale={LocalText(L, 'history_close')}
         />
 
     	  <Link href={"/home"}>
@@ -236,7 +237,7 @@ export default function Navbar({ page }) {
             data-isactive={isHome}
           >
             <img src='/images/home.svg' className='ml-0.5 w-5' />
-            <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_2')}</span>
+            <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'home')}</span>
           </div>
         </Link>
 
@@ -246,7 +247,7 @@ export default function Navbar({ page }) {
           onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
         >
           <img src='/images/store.svg' className='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_3')}</span>
+          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'shop')}</span>
         </div>
 
         <div id='inv-nav' 
@@ -255,7 +256,7 @@ export default function Navbar({ page }) {
           onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
         >
           <img src='/images/user.svg' className='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_4')}</span>
+          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'inventory')}</span>
         </div>
 
         <div id='fav-nav' 
@@ -264,7 +265,7 @@ export default function Navbar({ page }) {
           onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
         >
           <img src='/images/star_white.svg' className='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_5')}</span>
+          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'fav_matches')}</span>
         </div>
 
         <div id='fav-nav' 
@@ -273,7 +274,7 @@ export default function Navbar({ page }) {
           onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
         >
           <img src='/images/clipboard.svg' className='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'el_6')}</span>
+          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'wishlist')}</span>
         </div>
       </div>
       <div className='absolute bottom-16 w-full flex justify-around'>

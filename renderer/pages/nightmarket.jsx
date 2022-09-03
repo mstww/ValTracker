@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import fetch from 'node-fetch';
 import fs from 'fs';
 import { Collapse } from '@nextui-org/react';
+import L from '../locales/translations/shop.json';
+import LocalText from '../components/translation/LocalText';
 
 const slide_bottom = {
   hidden: { opacity: 0, x: 0, y: 50 },
@@ -25,17 +27,17 @@ const card_variants = {
   exit: { opacity: 0, x: 0, y: 0, scale: 0.8, transitionEnd: { display: 'none' } },
 }
 
-function bundleTimeToHMS(n) {
+function bundleTimeToHMS(n, o) {
   n = Number(n);
   var d = Math.floor(n / 86400);
   var h = Math.floor((n - d * 86400) / 3600);
   var m = Math.floor(n % 3600 / 60);
   var s = Math.floor(n % 3600 % 60);
 
-  var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
-  var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-  var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+  var dDisplay = d > 0 ? d + (d == 1 ? " " + o.d_1 + ", " : " " + o.d_2 + ", ") : "";
+  var hDisplay = h > 0 ? h + (h == 1 ? " " + o.h_1 + ", " : " " + o.h_2 + ", ") : "";
+  var mDisplay = m > 0 ? m + (m == 1 ? " " + o.m_1 + ", " : " " + o.m_2 + ", ") : "";
+  var sDisplay = s > 0 ? s + (s == 1 ? " " + o.s_1 : " " + o.s_2) : "";
   var str = dDisplay + hDisplay + mDisplay + sDisplay;
 
   if(str.split(",").pop() === ' ') {
@@ -71,6 +73,8 @@ function NightMarket() {
   var user_creds = JSON.parse(user_creds_raw);
   var puuid = user_creds.playerUUID;
 
+  var localTimerObj = LocalText(L, "timer");
+
   React.useEffect(async () => {
     const raw_skins = await fetch('https://valorant-api.com/v1/weapons/skins');
     const skins = await raw_skins.json();
@@ -80,7 +84,7 @@ function NightMarket() {
   React.useEffect(() => {
     if(router.query.nm_end) {
       var nmTimer = Math.abs(moment().diff(parseInt(router.query.nm_end), 'seconds'));
-      var initialNM = bundleTimeToHMS(nmTimer) + " remaining";
+      var initialNM = bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
       setNightMarketTimerNum(nmTimer);
       setNightMarketTimer(initialNM);
     }
@@ -88,7 +92,7 @@ function NightMarket() {
     var timer = setInterval(() => {
       var new_nm_timer = nightMarketTimerNum - 1;
       setNightMarketTimerNum(new_nm_timer);
-      setNightMarketTimer(bundleTimeToHMS(new_nm_timer) + " remaining");
+      setNightMarketTimer(bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem);
     }, 1000);
 
     return () => clearInterval(timer);
@@ -294,7 +298,7 @@ function NightMarket() {
         <img src='/images/back_arrow.svg' className='w-8 p-1' />
       </div>
       <div className='absolute top-4 left-4'>
-        <h1 className='text-2xl'>Night Market - {nightMarketTimer}</h1>
+        <h1 className='text-2xl'>{LocalText(L, "night_market_header")} - {nightMarketTimer}</h1>
       </div>
       <div className='night-market-items flex flex-row w-2/3 mx-auto items-center justify-around flex-wrap overflow-hidden'>
         {nightMarket.map((item, index) => {

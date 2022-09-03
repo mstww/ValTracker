@@ -42,10 +42,11 @@
       },
       "match_outcomes": {
         "VICTORY": "VICTORY",
-        "DEFEAT": "DEFEAT"
+        "DEFEAT": "DEFEAT",
+        "DRAW": "DRAW"
       },
       "bottom_text": {
-        "loaded_matches_count": "{{ num1 }} out of {{ num2 }} Matches shown",
+        "loaded_matches_count": "{{ val1 }} out of {{ num2 }} Matches shown",
         "load_more": "Load more Matches"
       },
       "match_pos": {
@@ -64,7 +65,7 @@
     },
     "bot_r": {
       "stats": {
-        "header": "Stats of last {{ num1 }} Matches",
+        "header": "Stats of last {{ val1 }} Matches",
         "stat_1": "Avg Kills/Match",
         "stat_2": "Avg Kills/Round",
         "stat_3": "Win%",

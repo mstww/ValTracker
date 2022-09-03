@@ -4,6 +4,8 @@ import { Spacer } from "@nextui-org/react";
 import fs from 'fs';
 import { motion } from "framer-motion";
 import moment from "moment";
+import L from '../locales/translations/wishlist.json';
+import LocalText from "../components/translation/LocalText";
 
 const scoreboard_vars_initial = {
   hidden: { opacity: 0, x: -200, y: 0, scale: 1, display: 'none' },
@@ -38,7 +40,7 @@ export default function Wishlist() {
           <table className="w-full" id="scoreboard-table">
             <tbody id="test-scoreboard">
               <tr className="scoreboard-header">
-                <td className="w-1/6 relative left-1">Skin</td>
+                <td className="w-1/6 relative left-1">{LocalText(L, "headers.skin")}</td>
                 <td className={"w-10%"} onClick={() => {
                   setCurrentSortStat('price');
 
@@ -48,7 +50,7 @@ export default function Wishlist() {
 
                   setPlayerWishlistSkins(newArray);
                 }}>
-                  <span className='cursor-pointer'>Price</span>
+                  <span className='cursor-pointer'>{LocalText(L, "headers.price")}</span>
                   {
                     currentSortStat === 'price' ?
                     <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
@@ -65,7 +67,7 @@ export default function Wishlist() {
 
                   setPlayerWishlistSkins(newArray);
                 }}>
-                  <span className='cursor-pointer'>Wishlisted at</span>
+                  <span className='cursor-pointer'>{LocalText(L, "headers.wishlisted_on")}</span>
                   {
                     currentSortStat === 'wishedAt' ?
                     <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
@@ -82,7 +84,7 @@ export default function Wishlist() {
 
                   setPlayerWishlistSkins(newArray);
                 }}>
-                  <span className='cursor-pointer'>Days since</span>
+                  <span className='cursor-pointer'>{LocalText(L, "headers.days_since")}</span>
                   {
                     currentSortStat === 'daysSince' ?
                     <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
@@ -91,7 +93,7 @@ export default function Wishlist() {
                   }
                 </td>
                 <td className={"w-10%"}>
-                  <span className=''>Remove from wishlist</span>
+                  <span className=''>{LocalText(L, "headers.remove")}</span>
                 </td>
               </tr>
               <Spacer y={0.5} />
@@ -147,7 +149,7 @@ export default function Wishlist() {
                           }}
                         >
                           <img src="/images/star_white_filled.svg" className="w-5 relative bottom-px mr-1" />
-                          Remove
+                          {LocalText(L, "content.remove_button_text")}
                         </button>
                       </td>
                     </motion.tr>
@@ -158,7 +160,7 @@ export default function Wishlist() {
             </tbody>
           </table>
           : 
-          <div className="w-full text-center">Nothing to see here! Wishlist a skin in your store or in the inventory.</div>
+          <div className="w-full text-center">{LocalText(L, "content.empty_text")}</div>
         }
       </div>
     </Layout>

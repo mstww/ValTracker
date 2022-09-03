@@ -1,0 +1,16 @@
+{
+  "en-US": {
+    "headers": {
+      "skin": "Skin",
+      "price": "Price",
+      "wishlisted_on": "Wishlisted on",
+      "days_since": "Days since",
+      "remove": "Remove from Wishlist"
+    },
+    "content": {
+      "date_format": "MMMM Do, YYYY",
+      "remove_button_text": "Remove",
+      "empty_text": "Nothing to see here! Wishlist a skin in your store or in the inventory."
+    }
+  }
+}

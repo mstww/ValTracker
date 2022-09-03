@@ -547,7 +547,7 @@ input:checked + .slider:before {
   @apply border-2 border-maincolor-lightest;
 }
 
-button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button) {
+button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button):not(.change-color-btn) {
   border: none;
   @apply bg-button-color text-button-text text-sm;
   padding: 8px 25px;
@@ -559,9 +559,21 @@ button:not(button.text-button):not(button[aria-label='next']):not(button[aria-la
   transition: all 0.3s;
 }
 
-button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):hover {
+button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.change-color-btn):not(.normal-buttons button):hover {
   @apply bg-button-color-hover;
   border-radius: 0px;
+}
+
+.change-color-btn {
+  border: none;
+  @apply text-button-text text-sm;
+  padding: 8px 25px;
+  border-radius: 4px;
+  outline: none;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
 }
 
 h1 {

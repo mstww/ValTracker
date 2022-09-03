@@ -1,0 +1,30 @@
+{
+  "en-US": {
+    "cards": {
+      "search_placeholder": "Search for a card",
+      "switch_label": "Show cards you don't own",
+      "equip_button": {
+        "state_1": "Equip Card",
+        "state_2": "Done"
+      }
+    },
+    "sprays": {
+      "search_placeholder": "Search for a spray",
+      "switch_label": "Show sprays you don't own",
+      "equip_button": {
+        "state_1": "Equip Spray",
+        "state_2": "Done"
+      }
+    },
+    "skins": {
+      "search_placeholder": "Search for a skin",
+      "switch_label": "Show skins you don't own",
+      "equip_button": {
+        "state_1": "Equip Skin",
+        "state_2": "Done"
+      },
+      "video_button": "Show Video",
+      "wishlist_button": "Add to wishlist"
+    }
+  }
+}

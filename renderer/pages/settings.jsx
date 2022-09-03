@@ -631,16 +631,16 @@ function Settings() {
 
         <PopupCard
           useRef={general_changeLang}
-          header={'Select Language'}
-          text={'Select a language and click the button below. The app will restart to apply changes.'}
-          button_1={'Confirm'}
-          button_2={'Cancel'}
+          header={LocalText(L, "modals.change_lang.header")}
+          text={LocalText(L, "modals.change_lang.desc")}
+          button_1={LocalText(L, "modals.change_lang.button_1")}
+          button_2={LocalText(L, "modals.change_lang.button_2")}
           button_1_onClick={() => { 
             changeLanguageAndRestart();
           }}
           button_2_onClick={() => {
             closePopup(setGeneral_changeLangPopupOpen);
-            setCurrentSelectedLanguage('en-US');
+            setCurrentSelectedLanguage(loadData.appLang === undefined ? 'en-US' : loadData.appLang);
           }}
           isWideCard={true}
           isButtonClickable={(loadData.appLang === undefined ? 'en-US' : loadData.appLang ) !== currentSelectedLanguage}
@@ -664,10 +664,10 @@ function Settings() {
 
         <PopupCard
           useRef={other_resetApp}
-          header={'Reset VALTracker?'}
-          text={'This will reset all data saved by the app, including account data, shop data, favourite matches and settings. This action cannot be undone.'}
-          button_1={'Confirm'}
-          button_2={'Cancel'}
+          header={LocalText(L, "modals.reset_app.header")}
+          text={LocalText(L, "modals.reset_app.desc")}
+          button_1={LocalText(L, "modals.reset_app.button_1")}
+          button_2={LocalText(L, "modals.reset_app.button_2")}
           button_1_onClick={() => { resetApp() } }
           button_2_onClick={() => { closePopup(setOther_ResetAppPopupOpen) }}
           isOpen={other_resetAppPopupOpen}
@@ -676,10 +676,10 @@ function Settings() {
 
         <PopupCard
           useRef={other_applySettingsCodePopup}
-          header={'Apply Settings Profile?'}
-          text={'This will restart the app and possibly change all of your settigns. If you want to back up your current settings, close this popup and copy your settings share code.'}
-          button_1={'Confirm'}
-          button_2={'Cancel'}
+          header={LocalText(L, "modals.apply_settings_profile.header")}
+          text={LocalText(L, "modals.apply_settings_profile.desc")}
+          button_1={LocalText(L, "modals.apply_settings_profile.button_1")}
+          button_2={LocalText(L, "modals.apply_settings_profile.button_2")}
           button_1_onClick={() => { applySettingsFromCode(importSettingsVal) } }
           button_2_onClick={() => { closePopup(setOther_applySettingsCode) }}
           isOpen={other_applySettingsCode}
@@ -688,10 +688,10 @@ function Settings() {
 
         <PopupCard
           useRef={riot_removeAccount}
-          header={'Select Account to Remove'}
-          text={'Select the account you wish to remove from VALTracker.'}
-          button_1={'Confirm'}
-          button_2={'Cancel'}
+          header={LocalText(L, "modals.remove_riot_acc.header")}
+          text={LocalText(L, "modals.remove_riot_acc.desc")}
+          button_1={LocalText(L, "modals.remove_riot_acc.button_1")}
+          button_2={LocalText(L, "modals.remove_riot_acc.button_2")}
           button_1_onClick={() => { removeAccount(riot_activeAccountSelection, setRiot_RemoveAccountPopupOpen) }}
           button_2_onClick={() => { 
             closePopup(setRiot_RemoveAccountPopupOpen);

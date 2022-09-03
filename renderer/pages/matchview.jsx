@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import moment from 'moment';
 import { Tooltip, Spacer } from '@nextui-org/react'
 import AwardTile from '../components/matchview/AwardTile';
+import L from '../locales/translations/matchview.json';
+import LocalText from '../components/translation/LocalText';
 
 const overview_vars_first_load = {
   hidden: { opacity: 0, x: 0, y: 200, scale: 1, display: 'none' },
@@ -271,7 +273,7 @@ function Matchview() {
         var x = knownMatchData.gameLengthMS;
         var tempTime = moment.duration(x);
         if(tempTime.hours() > 0) {
-          var newMatchLength = tempTime.hours() + ' hours, ' + tempTime.minutes() + ' minutes, ' + tempTime.seconds() + ' seconds';
+          var newMatchLength = tempTime.hours() + ' hour, ' + tempTime.minutes() + ' minutes, ' + tempTime.seconds() + ' seconds';
         } else {
           var newMatchLength = tempTime.minutes() + ' minutes, ' + tempTime.seconds() + ' seconds';
         }
@@ -380,11 +382,11 @@ function Matchview() {
         <h1 className='text-5xl mt-8'>
           <span className='text-val-blue'>{matchScore ? matchScore.split("-")[0] : ''}</span>
           &nbsp;&nbsp;
-          <span className='text-val-yellow'>{playerMatchResult}</span>
+          <span className='text-val-yellow'>{LocalText(L, "match_outcomes." + playerMatchResult)}</span>
           &nbsp;&nbsp;
           <span className='text-val-red'>{matchScore ? matchScore.split("-").pop() : ''}</span>
         </h1>
-        <div className='mt-9 text-lg w-1/2 flex flex-row justify-around'>
+        <div className='mt-9 w-1/2 flex flex-row justify-around'>
           <span 
             className={'matchview-tile ' + (activeTab == 'overview' ? 'active' : '') + (isDeathmatch == true ? ' hidden' : ' inline-block')}
             onClick={() => {
@@ -392,7 +394,7 @@ function Matchview() {
               setActiveTab('overview');
             }}
           >
-            OVERVIEW
+            {LocalText(L, "nav.overview")}
           </span>
           <span 
             className={'matchview-tile ' + (activeTab == 'scoreboard' ? 'active' : '')}
@@ -401,7 +403,7 @@ function Matchview() {
               setActiveTab('scoreboard');
             }}
           >
-            SCOREBOARD
+          {LocalText(L, "nav.scoreboard")}
           </span>
         </div>
       </div>
@@ -428,29 +430,29 @@ function Matchview() {
             </div>
             <div id='matchview-gradient-overlay' className='absolute top-0 h-full w-full left-0 z-30'>
               <div className='w-1/2 ml-auto p-4'>
-                <span className='text-xl'>MATCH INFORMATION</span>
+                <span className='text-xl'>{LocalText(L, "match_info.header")}</span>
                 <hr />
                 <ul className='mt-4'>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={'Match Date'} color="error" placement={'left'} className='rounded-sm'><img src='/images/calendar.svg' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.date")} color="error" placement={'left'} className='rounded-sm'><img src='/images/calendar.svg' className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>{matchDate}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={'Match Length'} color="error" placement={'left'} className='rounded-sm'><img src='/images/clock.svg' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.time")} color="error" placement={'left'} className='rounded-sm'><img src='/images/clock.svg' className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>{matchLenght}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={'Mode'} color="error" placement={'left'} className='rounded-sm'><img src='/images/standard.png' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.mode")} color="error" placement={'left'} className='rounded-sm'><img src='/images/standard.png' className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>{matchMode}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={'Region // Server'} color="error" placement={'left'} className='rounded-sm'><img src='/images/globe.svg' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.region_server")} color="error" placement={'left'} className='rounded-sm'><img src='/images/globe.svg' className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>
                       {matchServer ? matchServer.split(".")[2].split("-")[0].toUpperCase() : ''} // {matchServer ? (matchServer.split("-")[4].charAt(0).toUpperCase() + matchServer.split("-")[4].slice(1)) : ''}
                     </span>
                   </li>
                   <li className='flex flex-row items-center mb-8'>
-                    <Tooltip content={'Patch'} color="error" placement={'left'} className='rounded-sm'><img src='/images/valorant_v.svg' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.patch")} color="error" placement={'left'} className='rounded-sm'><img src='/images/valorant_v.svg' className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>Patch {matchGameVersion ? (matchGameVersion.split("-")[1].startsWith('0') ? matchGameVersion.split("-")[1].slice(1) : matchGameVersion.split("-")[1]) : ''}</span>
                   </li>
                 </ul> 
@@ -472,18 +474,82 @@ function Matchview() {
                 <img src={'/images/6k_new.png'} className='h-full relative right-4 shadow-img' />
               </div>
               <div id='map-name-text' className='z-30 absolute -bottom-6 left-0'>
-                <span id='rotated-side-text' className='text-6xl font-bold text-black text-opacity-80 ml-10 relative top-0.5'>AWARDS</span>
+                <span id='rotated-side-text' className='text-6xl font-bold text-black text-opacity-80 ml-10 relative top-0.5'>{LocalText(L, "awards.rotated_text")}</span>
               </div>
               <div id='matchview-gradient-overlay-small' className='absolute top-0 h-full w-full left-0 z-30 overflow-auto'>
                 <div className='w-2/3 ml-auto p-2'>
-                  {hasPlayerSpentMost === true && isEscalation === false ? <AwardTile icon={'/images/chess.svg'} title={'Monopoly Man'} desc={'You spent the most money.'} /> : null}
-                  {hasPlayerSpentLeast === true && isEscalation === false ? <AwardTile icon={'/images/dollar.svg'} title={'Smart Spender'} desc={'You spent the least money.'} /> : null}
-                  {hasPlayerMostKills === true ? <AwardTile icon={'/images/skull.svg'} title={'Shots fired!'} desc={'You had the most kills.'} /> : null}
-                  {hasPlayerMostAssists === true ? <AwardTile icon={'/images/heart_pulse.svg'} title={'Pocket Sage'} desc={'You had the most assists.'} /> : null}
-                  {hasPlayerMostACS === true ? <AwardTile icon={'/images/robot.svg'} title={'Automaton'} desc={isEscalation === true ? 'You had the highest Score.' : 'You had the highest ACS.'} /> : null}
-                  {hasPlayerMostFBs === true && isEscalation === false ? <AwardTile icon={'/images/gauge.svg'} title={'Need for Speed'} desc={'You had the most first bloods.'} /> : null}
-                  {hasPlayerDealtMostDmg === true ? <AwardTile icon={'/images/arrow_increase.svg'} title={'That\'s a lot of damage!'} desc={'You dealt the most damage.'} /> : null}
-                  {hasPlayerHighestHsPercent === true ? <AwardTile icon={'/images/crosshair.svg'} rotate_icon title={'Check him PC!'} desc={'You had the highest Headshot%.'} /> : null}
+                  {
+                    hasPlayerSpentMost === true && isEscalation === false ? 
+                    <AwardTile 
+                      icon={'/images/chess.svg'} 
+                      title={LocalText(L, "awards.most_money.title")} 
+                      desc={LocalText(L, "awards.most_money.desc")} 
+                    /> 
+                    : null
+                  }
+                  {
+                    hasPlayerSpentLeast === true && isEscalation === false ? 
+                    <AwardTile 
+                      icon={'/images/dollar.svg'} 
+                      title={LocalText(L, "awards.least_money.title")} 
+                      desc={LocalText(L, "awards.least_money.desc")} 
+                    /> 
+                    : null
+                  }
+                  {
+                    hasPlayerMostKills === true ? 
+                    <AwardTile 
+                      icon={'/images/skull.svg'} 
+                      title={LocalText(L, "awards.most_kills.title")} 
+                      desc={LocalText(L, "awards.most_kills.desc")} 
+                    /> 
+                    : null
+                  }
+                  {
+                    hasPlayerMostAssists === true ? 
+                    <AwardTile 
+                      icon={'/images/heart_pulse.svg'} 
+                      title={LocalText(L, "awards.most_assists.title")} 
+                      desc={LocalText(L, "awards.most_assists.desc")} 
+                    /> 
+                    : null
+                  }
+                  {
+                    hasPlayerMostACS === true ? 
+                    <AwardTile 
+                      icon={'/images/robot.svg'} 
+                      title={LocalText(L, "awards.most_acs.title")} 
+                      desc={isEscalation === true ? LocalText(L, "awards.most_acs.desc_2") : LocalText(L, "awards.most_acs.desc_1")} /> 
+                    : null
+                  }
+                  {
+                    hasPlayerMostFBs === true && isEscalation === false ? 
+                    <AwardTile 
+                      icon={'/images/gauge.svg'} 
+                      title={LocalText(L, "awards.most_fbs.title")} 
+                      desc={LocalText(L, "awards.most_fbs.desc")} 
+                    /> 
+                    : null
+                  }
+                  {
+                    hasPlayerDealtMostDmg === true ? 
+                    <AwardTile 
+                      icon={'/images/arrow_increase.svg'} 
+                      title={LocalText(L, "awards.most_dmg.title")} 
+                      desc={LocalText(L, "awards.most_dmg.desc")} 
+                    /> 
+                    : null
+                  }
+                  {
+                    hasPlayerHighestHsPercent === true ? 
+                    <AwardTile 
+                      icon={'/images/crosshair.svg'} 
+                      rotate_icon 
+                      title={LocalText(L, "awards.best_hs.title")} 
+                      desc={LocalText(L, "awards.best_hs.desc")} 
+                    /> 
+                    : null
+                  }
                 </div>
               </div>
             </motion.div>
@@ -531,19 +597,19 @@ function Matchview() {
                         <div className='h-full flex flex-row items-center w-2/4'>
                           {
                             isSpikePlanted ? 
-                            <Tooltip content={round.roundResult} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
+                            <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
                               <img src='/images/standard.png' className='h-4/6 shadow-img' />
                             </Tooltip>
                             :
-                            <Tooltip content={round.roundResult} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
+                            <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
                               <img src='/images/skull.svg' className='h-4/6 shadow-img' />
                             </Tooltip>
                           }
                           <div className='ml-2.5 flex flex-col relative'>
                             <span className={'text-xl relative bottom-1.5 ' + (hasPlayerTeamWonRound ? 'text-val-blue' : 'text-val-red')}>
-                              {hasPlayerTeamWonRound ? 'VICTORY' : 'DEFEAT'}
+                              {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : LocalText(L, "match_outcomes.VICTORY")}
                             </span>
-                            <span className='absolute -bottom-2 left-px font-light text-sm'>Round {index+1}</span>
+                            <span className='absolute -bottom-2 left-px font-light text-sm'>{LocalText(L, "round_results.round_text")} {index+1}</span>
                           </div>
                         </div>
 
@@ -551,20 +617,20 @@ function Matchview() {
                           <span className='text-xl relative bottom-1.5 '>
                             <span className='text-val-blue'>{teamBlueRoundKills}</span> / <span className='text-val-red'>{teamRedRoundKills}</span>
                           </span>
-                          <span className='absolute -bottom-2 left-px font-light text-sm'>Team Kills</span>
+                          <span className='absolute -bottom-2 left-px font-light text-sm'>{LocalText(L, "round_results.tks")}</span>
                         </div>
                         <div className='ml-2 flex flex-col relative w-1/3'>
                           <span className='text-xl relative bottom-1.5 '>
                             <span className='text-val-blue'>{playerKills}</span>
                           </span>
-                          <span className='absolute -bottom-2 left-px font-light text-sm'>Player Kills</span>
+                          <span className='absolute -bottom-2 left-px font-light text-sm'>{LocalText(L, "round_results.pks")}</span>
                         </div>
                       </div>
                       {
                         // Index to check when 12 rounds are over here has to be 11, because index starts at 0.
                         index === 11 ?
                         <div className='h-8 p-1 mb-1 flex flex-row items-center justify-center relative overflow-hidden'>
-                          <Tooltip content={"Switching sides"} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
+                          <Tooltip content={LocalText(L, "round_results.tooltips.side-switch")} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
                             <img src='/images/swap.svg' className='h-8 shadow-img' />
                           </Tooltip>
                         </div>
@@ -614,7 +680,7 @@ function Matchview() {
           </div>
           <div id='matchview-gradient-overlay' className='absolute top-0 h-full w-full left-0 z-30'>
             <div className='w-1/2 ml-auto p-4 relative h-full'>
-              <span className='text-xl'>PLAYER STATS</span>
+              <span className='text-xl'>{LocalText(L, "player_stats.header")}</span>
               <hr />
               <ul className='mt-4'>
                 <li className='flex flex-row items-center mb-6'>
@@ -626,16 +692,16 @@ function Matchview() {
                   <span className='relative text-lg top-0.5 left-2'>{playerACS} {isEscalation === true ? 'Score' : 'ACS'}</span>
                 </li>
                 <li className='flex flex-row items-center mb-6'>
-                  <Tooltip content={'Damage/Round'} color="error" placement={'left'} className='rounded-sm'><img src='/images/skull.svg' className='w-7 shadow-img' /></Tooltip>
-                  <span className='relative text-lg top-0.5 left-2'>{playerKillsPerRound} {isEscalation === true ? 'Damage' : 'Damage/Round'}</span>
+                  <Tooltip content={isEscalation === true ? LocalText(L, "player_stats.tooltips.dmg") : LocalText(L, "player_stats.tooltips.dmg_round")} color="error" placement={'left'} className='rounded-sm'><img src='/images/skull.svg' className='w-7 shadow-img' /></Tooltip>
+                  <span className='relative text-lg top-0.5 left-2'>{playerKillsPerRound} {isEscalation === true ? LocalText(L, "player_stats.stats.dmg") : LocalText(L, "player_stats.stats.dmg_round")}</span>
                 </li>
                 <li className={'flex flex-row items-center mb-6 ' + (isEscalation === true ? 'hidden' : '')}>
-                  <Tooltip content={'First Bloods'} color="error" placement={'left'} className='rounded-sm'><img src='/images/flash.svg' className='w-7 shadow-img' /></Tooltip>
-                  <span className='relative text-lg top-0.5 left-2 '>{playerFBs} First Bloods</span>
+                  <Tooltip content={LocalText(L, "player_stats.stats.fbs")} color="error" placement={'left'} className='rounded-sm'><img src='/images/flash.svg' className='w-7 shadow-img' /></Tooltip>
+                  <span className='relative text-lg top-0.5 left-2 '>{playerFBs} {LocalText(L, "player_stats.stats.fbs")}</span>
                 </li>
                 <li className='flex flex-row items-center mb-6'>
-                  <Tooltip content={'Hit Percentages'} color="error" placement={'left'} className='rounded-sm'><img src='/images/crosshair.svg' className='w-7 relative top-px transform rotate-45 shadow-img' /></Tooltip>
-                  <span className='relative text-lg top-0.5 left-2.5'>Hit Percentages:</span>
+                  <Tooltip content={LocalText(L, "player_stats.stats.hit_percent")} color="error" placement={'left'} className='rounded-sm'><img src='/images/crosshair.svg' className='w-7 relative top-px transform rotate-45 shadow-img' /></Tooltip>
+                  <span className='relative text-lg top-0.5 left-2.5'>{LocalText(L, "player_stats.stats.hit_percent")}</span>
                 </li>
                 <li className='flex flex-row items-center mb-6 h-56 ml-4'>
                   <img src='/images/human_body_silhouette.svg' className='h-56 opacity-80 shadow-img' />
@@ -670,7 +736,7 @@ function Matchview() {
         <table className="w-full" id="scoreboard-table">
           <tbody id="test-scoreboard">
             <tr className="scoreboard-header">
-              <td className="w-1/4 relative left-1">Agent and Name</td>
+              <td className="w-1/4 relative left-1">{LocalText(L, "scoreboard.headers.agent_name")}</td>
               <td className={"w-1/5 " + (isDeathmatch ? 'hidden' : '')} onClick={() => {
                 setCurrentSortStat('acs');
 
@@ -731,7 +797,7 @@ function Matchview() {
 
                 setPlayerScoreboardStats(newArray);
               }}>
-                <span className='cursor-pointer'>First Bloods</span>
+                <span className='cursor-pointer'>{LocalText(L, "scoreboard.headers.fbs")}</span>
                 {
                   currentSortStat === 'fbs' ?
                   <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
@@ -748,7 +814,7 @@ function Matchview() {
 
                 setPlayerScoreboardStats(newArray);
               }}>
-                <span className='cursor-pointer'>{isEscalation === true ? 'Damage' : 'Damage/Round'}</span>
+                <span className='cursor-pointer'>{isEscalation === true ? LocalText(L, "scoreboard.headers.dmg") : LocalText(L, "scoreboard.headers.dmg_round")}</span>
                 {
                   currentSortStat === 'round_dmg' ?
                   <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
@@ -773,7 +839,7 @@ function Matchview() {
                       <Tooltip 
                         content={playerStats.subjectName + '#' + playerStats.subjectTag} 
                         color="error" 
-                        placement={'top'} 
+                        placement={'right'} 
                         className='rounded-sm'
                       >
                         <span 

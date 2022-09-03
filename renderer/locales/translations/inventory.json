@@ -1,5 +1,7 @@
 {
   "en-US": {
-    
+    "save_loadout_button_text": "Save current loadout",
+    "delete_preset_button": "Delete current preset",
+    "preset_select_placeholder": "Select Preset"
   }
 }

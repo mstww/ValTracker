@@ -20,7 +20,7 @@ const account_switcher_variants = {
   }
 }
 
-export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText }) {
+export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText, closeLocale }) {
   const router = useRouter();
 
   const [ isHistoryDropdownShown, setIsHistoryDropdownShown ] = React.useState(false);
@@ -70,9 +70,8 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
             setIsHistoryLocked(false);
             setIsHistoryDropdownShown(true);
           }}
-          onBlur={() => { 
+          onBlur={() => {
             setIsHistoryLocked(false);
-            setIsHistoryDropdownShown(false);
           }}
           onClick={() => { 
             isSearchShown ? 
@@ -93,16 +92,11 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
           {searchHistory.map((item, index) => {
             return (
               <div 
-                className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-100 " + (index+1 !== searchHistory.length ? 'border-b border-maincolor-lightest' : '')}
-                onMouseEnter={() => {
-                  setIsHistoryLocked(true);
-                }}
-                onMouseLeave={() => {
-                  setIsHistoryLocked(true);
-                }}
+                className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-100 border-b border-maincolor-lightest"}
                 onClick={(e) => {
-                  setIsHistoryLocked(false);
                   if(e.target.id !== "remove-el" && e.target.tagName !== "img" && e.target.tagName !== "IMG") {
+                    setIsHistoryLocked(false);
+                    setIsHistoryDropdownShown(false);
                     handleHistoryClick(item.name, item.tag, item.encoded_user);
                   }
                 }}
@@ -130,6 +124,15 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
               </div>
             )
           })}
+          <span 
+            className="text-sm text-gray-400 hover:underline ml-2 cursor-pointer" 
+            onClick={() => { 
+              setIsHistoryLocked(false);
+              setIsHistoryDropdownShown(false);
+            }}
+          >
+            {closeLocale}
+          </span>
         </motion.div>
       </div>
     </>

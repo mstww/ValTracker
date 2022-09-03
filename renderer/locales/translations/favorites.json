@@ -1,0 +1,68 @@
+{
+  "en-US": {
+    "modals": {
+      "remove_match": {
+        "header": "Remove Match?",
+        "desc": "Do you really want to remove this match?",
+        "desc2": "You can go to the hub to save it as a favorite again.",
+        "button_1": "Remove Match",
+        "button_2": "Cancel"
+      }
+    },
+    "matches": {
+      "gamemodes": {
+        "newmap": "Unrated",
+        "competitive": "Competitive",
+        "unrated": "Unrated",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Escalation",
+        "onefa": "Replication",
+        "snowball": "Snowball Fight", 
+        "custom": "Custom",
+        "": "Custom"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTORY",
+        "DEFEAT": "DEFEAT",
+        "DRAW": "DRAW"
+      },
+      "match_pos": {
+        "Match-MVP": "Match MVP",
+        "Team-MVP": "Team MVP",
+        "2nd": "2nd",
+        "3rd": "3rd",
+        "4th": "4th",
+        "5th": "5th",
+        "6th": "6th",
+        "7th": "7th",
+        "8th": "8th",
+        "9th": "9th",
+        "10th": "10th"
+      }
+    },
+    "filters": {
+      "header": "Filters",
+      "modes": {
+        "header": "Mode",
+        "fm_1": "All",
+        "fm_2": "Unrated",
+        "fm_3": "Competitive",
+        "fm_4": "Deathmatch",
+        "fm_5": "Spike Rush",
+        "fm_6": "Replication",
+        "fm_7": "Escalation",
+        "fm_8": "Custom"
+      },
+      "sort_by": {
+        "header": "Sort by",
+        "fs_1": "None",
+        "fs_2": "KD",
+        "fs_3": "HS%",
+        "fs_4": "ACS"
+      }
+    },
+    "loading": "Loading",
+    "matches_bottom": "That's it!"
+  }
+}
