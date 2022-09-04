@@ -17,18 +17,6 @@ const card_variants = {
   exit: { opacity: 0, x: 0, y: 0, scale: 0.8, transitionEnd: { display: 'none' } },
 }
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': '',
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function getOffers(region, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v1/offers/', {
@@ -228,7 +216,7 @@ function Skinchanger() {
     var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
     var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'))
 
-    var entitlement_token = await getEntitlement(token_data.accessToken);
+    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
     var skinPriceData = await getOffers(user_data.playerRegion, entitlement_token, token_data.accessToken);
 
     setSkinPrices(skinPriceData.Offers);
@@ -554,7 +542,7 @@ function Skinchanger() {
     var region = user_creds.playerRegion;
     var bearer = tokenData.accessToken;
 
-    var entitlement_token = await getEntitlement(bearer);
+    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
     await setSkins(region, inventory.Subject, entitlement_token, bearer, inventory);
 
     setIngameSkin(skin);

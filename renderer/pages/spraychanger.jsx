@@ -7,18 +7,6 @@ import fs from 'fs';
 import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`, {
@@ -256,7 +244,7 @@ function Spraychanger() {
     var region = user_creds.playerRegion;
     var bearer = tokenData.accessToken;
 
-    var entitlement_token = await getEntitlement(bearer);
+    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
     await setSkins(region, inventory.Subject, entitlement_token, bearer, inventory);
 
     setIngameSkin(spray);

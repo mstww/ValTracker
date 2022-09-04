@@ -52,18 +52,6 @@ async function getPlayerUUID(bearer) {
   })).json())['sub'];
 }
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function getXMPPRegion(requiredCookie, bearer, id_token) {
   return (await (await fetch("https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant", {
     "method": "PUT",
@@ -154,7 +142,7 @@ function Setup() {
         setProgress(10);
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s0"));
         var puuid = await getPlayerUUID(bearer);
-        var entitlement_token = await getEntitlement(bearer);
+        var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
         setProgress(30);
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s1"));
         var regiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
@@ -210,9 +198,11 @@ function Setup() {
     
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/entitlement.json', JSON.stringify({ entitlement_token }));
         
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(data.tokenData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(data.riotcookies));
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json', JSON.stringify({ entitlement_token }));
     
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(userData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + playerUUID + '.json', JSON.stringify(userData));

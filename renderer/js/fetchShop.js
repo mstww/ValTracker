@@ -1,18 +1,5 @@
 import fetch from 'node-fetch';
 import fs from 'fs';
-import { ipcRenderer } from 'electron';
-
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': '',
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
 
 async function getStoreOffers(region, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -69,7 +56,7 @@ async function fetchShop() {
     }
   }
 
-  var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_data/on_load.json'));
+  var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
 
   if(daily !== false) {
     // FETCHING FROM CURRENT FILE
@@ -85,7 +72,7 @@ async function fetchShop() {
     var data = {};
     data.singleSkins = [];
 
-    var entitlement_token = await getEntitlement(bearer);
+    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
   
     if(lastShop !== false && Date.now() < lastShop.singleSkinsExpireIn && Date.now() < lastShop.bundleExpiresIn) {
       var rawShopData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/current_shop.json');
@@ -169,7 +156,7 @@ async function fetchShop() {
       return [data, user_creds, tokenData];
     } else {
       // REFETCHING SHOP
-      var entitlement_token = await getEntitlement(bearer);
+      var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
 
       var shopData = await getShopData(region, puuid, entitlement_token, bearer);
 

@@ -8,18 +8,6 @@ import { motion } from 'framer-motion';
 import L from '../locales/translations/inventory.json';
 import LocalText from '../components/translation/LocalText';
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function getPlayerLoadout(region, puuid, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`, {
@@ -117,7 +105,7 @@ function Inventory() {
     ipcRenderer.send('changeDiscordRP', 'skins_activity');
     var bearer = token_data.accessToken;
     try {
-      var entitlement_token = await getEntitlement(bearer);
+      var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
       var player_loadout_data = await getPlayerLoadout(user_data.playerRegion, user_data.playerUUID, entitlement_token, bearer);
       setPlayerLoadout(player_loadout_data);
       fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/current_inventory.json', JSON.stringify(player_loadout_data));
@@ -289,7 +277,7 @@ function Inventory() {
 
     var bearer = token_data.accessToken;
 
-    var entitlement_token = await getEntitlement(bearer);
+    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
     var new_inv = await setSkins(user_data.playerRegion, user_data.playerUUID, entitlement_token, bearer, loadout);
 
     new_inv.Guns.forEach(async gun => {

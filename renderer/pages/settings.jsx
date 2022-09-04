@@ -70,18 +70,6 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 const fetchPatchnotes = async (lang) => {
   try {
     const response = await fetch(`https://api.valtracker.gg/patchnotes/v${pjson.version}`, { keepalive: true });
@@ -472,7 +460,7 @@ function Settings() {
         var new_account_data = await fetch("https://pd." + region + ".a.pvp.net/name-service/v2/players", options );
         var new_account_data = await new_account_data.json();
     
-        const entitlement_token = await getEntitlement(bearer);
+        const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
     
         const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
     
@@ -496,6 +484,7 @@ function Settings() {
         }
     
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/entitlement.json', JSON.stringify(data.tokenData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
   
         router.push('/settings?tab=riot&counter=' + router.query.counter + `&lang=${router.query.lang}`);

@@ -15,18 +15,6 @@ async function switcher_getPlayerUUID(bearer) {
   })).json())['sub'];
 }
 
-async function switcher_getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function switcher_getXMPPRegion(requiredCookie, bearer, id_token) {
   return (await (await fetch("https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant", {
     "method": "PUT",
@@ -83,13 +71,16 @@ export default function AccountTile({ currenttier, puuid, username, usertag, use
     var newCookieData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/cookies.json');
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', newCookieData_raw); // works
   
+    var newEntitlementData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/entitlement.json');
+    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json', newEntitlementData_raw); // works
+  
     var bearer = newTokenData.accessToken;
     
     sessionStorage.removeItem('navbar-rank');
     try {
       puuid = await switcher_getPlayerUUID(bearer);
   
-      var entitlement_token = await switcher_getEntitlement(bearer);
+      var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
   
       var region = newUserCreds.playerRegion
   

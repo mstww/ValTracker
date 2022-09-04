@@ -483,6 +483,71 @@ async function reauthAllAccounts() {
   }
 }
 
+async function refreshEntitlementToken(uuid) {
+  // Get entitlement for every account and write to file
+  var bearer = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + uuid.split(".").pop() + "/token_data.json")).accessToken;
+  var entitlement_token = await getEntitlement(bearer);
+
+  fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + uuid.split(".").pop() + "/entitlement.json", JSON.stringify({ entitlement_token }));
+
+  if(uuid.startsWith(".")) {
+    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/entitlement.json", JSON.stringify({ entitlement_token }));
+  }
+}
+
+async function refreshAllEntitlementTokens() {
+  var puuid_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+  var puuid_parsed = JSON.parse(puuid_raw);
+
+  if(puuid_parsed.playerUUID) {
+    var puuid = puuid_parsed.playerUUID;
+  
+    var account_puuids = fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/user_accounts/");
+    var accountsToReauth = [];
+
+    account_puuids.forEach(uuid => {
+      if(uuid.split(".")[0] == puuid) { 
+        accountsToReauth.push("." + uuid.split(".")[0]);
+      } else {
+        accountsToReauth.push(uuid.split(".")[0]);
+      }
+    });
+  
+    var expectedLength = accountsToReauth.length;
+  
+    var i = 0;
+  
+    var data_array = [];
+    var reauth_array = [];
+
+    // Make a promise and check if it is rejected
+    var promise = new Promise(async function(resolve, reject) {
+      accountsToReauth.forEach(async (uuid) => {
+        await refreshEntitlementToken(uuid);
+
+        i++;
+
+        if(i == expectedLength) 
+          resolve({ data_array, reauth_array });
+      });
+    });
+
+    // Check if promise the promise was rejected
+    var account_data = await promise.then(function({ data_array, reauth_array }) {
+      if(reauth_array.length > 0) {
+        console.log("Error while getting Entitlements.");
+        return { ent_error: true, ent_items: false, ent_reauthArray: reauth_array }; 
+      } else {
+        return { ent_error: false, ent_items: data_array[0], ent_reauthArray: null }; 
+      }
+    });
+    
+    return account_data;
+  } else {
+    return { ent_error: true, ent_items: false, ent_reauthArray: null };
+  }
+}
+
 // -------------------- START RICH PRESENCE STATES --------------------
 
 var playerAgent = false;
@@ -652,7 +717,7 @@ async function fetchPlayerAgent() {
   var region = user_data.playerRegion;
   var puuid = user_data.playerUUID;
 
-  var entitlement_token = await getEntitlement(bearer);
+  var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
 
   var player_data = await getPlayer_CoreGame(region, puuid, entitlement_token, bearer);
 
@@ -950,7 +1015,7 @@ async function checkStoreForWishlistItems() {
       var puuid = user_creds.playerUUID;
       var region = user_creds.playerRegion;
     
-      var entitlement_token = await getEntitlement(bearer);
+      var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
     
       var shopData = await getShopData(region, puuid, entitlement_token, bearer);
 
@@ -1463,15 +1528,19 @@ var reauth_interval;
           else var appLang = on_load.appLang;
   
           if(!error) {
+            await refreshAllEntitlementTokens();
+
             if(items.expiresIn) {
               var expiresIn = items.expiresIn;
             } else {
               // 55 Minutes 
               var expiresIn = 55 * 60;
             }
+            var ent_expiresIn = 25 * 60;
     
             if(items !== false) {
               reauth_interval = setInterval(reauthAllAccounts, expiresIn * 1000); 
+              reauth_interval = setInterval(refreshAllEntitlementTokens, ent_expiresIn * 1000); 
               console.log("All accounts will be reauthenticated in 55 Minutes.");
             }
   

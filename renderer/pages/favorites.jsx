@@ -23,18 +23,6 @@ const backdrop_variants = {
   exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
 }
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': '',
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function getMatch(region, matchId, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
   if(region === 'latam' || region === 'br') region = 'na';
@@ -106,7 +94,7 @@ function FavouriteMatches() {
       var match = favMatchesData[i]      
 
       if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches/' + match.MatchID + '.json')) {
-        var entitlement = await getEntitlement(bearer);
+        var entitlement = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
         var data = await getMatch(user_creds.playerRegion, match.MatchID, entitlement, bearer);
 
         allMatches.push(data);

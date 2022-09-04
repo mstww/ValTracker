@@ -17,18 +17,6 @@ import { useRouter } from 'next/router';
 import L from '../locales/translations/home.json';
 import LocalText from '../components/translation/LocalText';
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': '',
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
@@ -85,7 +73,7 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
     const tokenData = JSON.parse(rawTokenData);
 
     const bearer = tokenData.accessToken;
-    const entitlement_token = await getEntitlement(bearer);
+    const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
 
     const playerMatches = await getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer);
     
@@ -1143,7 +1131,7 @@ function Home() {
   
       const bearer = tokenData.accessToken;
 
-      const entitlement_token = await getEntitlement(bearer);
+      const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
 
       var contract_progress = await calculateContractProgress(user_creds.playerRegion, user_creds.playerUUID, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
   
@@ -1610,9 +1598,11 @@ function Home() {
   }, []);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + router.query.lang)).json()
-    setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
-  }, []);
+    if(!firstRender) {
+      var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + router.query.lang)).json()
+      setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
+    }
+  }, [ router.query ]);
 
   return (
     <Layout>

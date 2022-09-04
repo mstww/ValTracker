@@ -54,18 +54,6 @@ async function getXMPPRegion(requiredCookie, bearer, id_token) {
   })).json());
 }
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
   if(region === 'latam' || region === 'br') region = 'na';
@@ -115,7 +103,7 @@ export default function ReauthLayer() {
       var new_account_data = await fetch("https://pd." + region + ".a.pvp.net/name-service/v2/players", options);
       var new_account_data = await new_account_data.json();
     
-      const entitlement_token = await getEntitlement(bearer);
+      const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
   
       const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
   

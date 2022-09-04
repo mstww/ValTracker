@@ -35,18 +35,6 @@ const loading_variants = {
   }
 }
 
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': '',
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
@@ -116,7 +104,7 @@ const fetchPlayer = async (name, tag, lang) => {
     const tokenData = JSON.parse(rawTokenData);
 
     const bearer = tokenData.accessToken;
-    const entitlement_token = await getEntitlement(bearer);
+    const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
 
     const playerMmr = await getPlayerMMR(region, puuid, entitlement_token, bearer);
 
@@ -188,7 +176,7 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
     const tokenData = JSON.parse(rawTokenData);
 
     const bearer = tokenData.accessToken;
-    const entitlement_token = await getEntitlement(bearer);
+    const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
 
     const playerMatches = await getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer);
     
