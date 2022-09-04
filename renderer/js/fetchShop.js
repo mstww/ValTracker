@@ -69,6 +69,8 @@ async function fetchShop() {
     }
   }
 
+  var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_data/on_load.json'));
+
   if(daily !== false) {
     // FETCHING FROM CURRENT FILE
     return [daily, user_creds, tokenData];
@@ -92,7 +94,7 @@ async function fetchShop() {
       var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
       var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
   
-      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins`)).json();
+      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${on_load.appLang}`)).json();
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
@@ -105,6 +107,7 @@ async function fetchShop() {
             else var skinIcon = allSkins.data[j].levels[0].displayIcon;
             
             var tierUUID = allSkins.data[j].contentTierUuid;
+            var isMelee = (allSkins.data[j].assetPath.split("/")[3] === 'Melee')
           }
         }
   
@@ -126,6 +129,7 @@ async function fetchShop() {
           skinIcon,
           skinPrice,
           skinTierImage,
+          isMelee,
           expiresIn: shopData.singleSkinsExpireIn
         }
         data.singleSkins.push(obj)
@@ -134,7 +138,7 @@ async function fetchShop() {
       var bundleUUID = shopData.FeaturedBundle.Bundle.DataAssetID;
       
       try {
-        var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle`)).json();
+        var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle?language=${on_load.appLang}`)).json();
         
         data.featuredBundle = {
           bundleUUID,
@@ -214,7 +218,7 @@ async function fetchShop() {
       var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
       var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
   
-      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins`)).json();
+      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${on_load.appLang}`)).json();
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
@@ -227,6 +231,7 @@ async function fetchShop() {
             else var skinIcon = allSkins.data[j].levels[0].displayIcon;
             
             var tierUUID = allSkins.data[j].contentTierUuid;
+            var isMelee = (allSkins.data[j].assetPath.split("/")[3] === 'Melee')
           }
         }
   
@@ -248,13 +253,14 @@ async function fetchShop() {
           skinIcon,
           skinPrice,
           skinTierImage,
+          isMelee,
           expiresIn: shopData.singleSkinsExpireIn
         }
         data.singleSkins.push(obj);
       }
       
       try {
-        var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle`)).json();
+        var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle?language=${on_load.appLang}`)).json();
         
         data.featuredBundle = {
           bundleUUID,

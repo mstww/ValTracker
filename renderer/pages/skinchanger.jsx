@@ -57,9 +57,9 @@ async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   })).json());
 }
 
-const fetchSkins = async (weaponType) => {
+const fetchSkins = async (weaponType, lang) => {
   try {
-    const response = await fetch(`https://valorant-api.com/v1/weapons/${weaponType}`, { keepalive: true });
+    const response = await fetch(`https://valorant-api.com/v1/weapons/${weaponType}?language=${lang}`, { keepalive: true });
     const json = await response.json();
 
     return { errored: false, items: json.data.skins };
@@ -92,7 +92,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
     }
 
     const fetchApi = async () => {
-      const { errored, items } = await fetchSkins(weaponType);
+      const { errored, items } = await fetchSkins(weaponType, router.query.lang);
 
       if(!errored)
         setWeapons(items);
@@ -103,7 +103,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
   }, [ weaponType ]);
 
   React.useEffect(async () => {
-    var skintiers = await(await fetch('https://valorant-api.com/v1/contenttiers')).json();
+    var skintiers = await(await fetch('https://valorant-api.com/v1/contenttiers?language=' + router.query.lang)).json();
     setSkinTiers(skintiers.data);
   }, [])
 
@@ -223,7 +223,7 @@ function Skinchanger() {
   }, [ showVideo ]);
 
   React.useEffect(async () => {
-    var skin_data = await(await fetch(`https://valorant-api.com/v1/weapons/skins`, { keepalive: true })).json();
+    var skin_data = await(await fetch(`https://valorant-api.com/v1/weapons/skins?language=${router.query.lang}` , { keepalive: true })).json();
 
     var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
     var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'))

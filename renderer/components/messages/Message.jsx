@@ -4,6 +4,7 @@ import { shell } from 'electron';
 import React from 'react';
 import fs from 'fs';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 const variants = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -14,12 +15,15 @@ const variants = {
 const md_conv = new parser.Converter();
 
 export default function Message({ date, message, unix, delay }) {
+  const router = useRouter();
+  
   const messageRef = React.useRef(null);
   const contentRef = React.useRef(null);
 
   const [ isMessageShown, setIsMessageShown ] = React.useState(true);
 
-  var date = moment(date).format('MMMM DD, YYYY');
+  moment.locale(router.query.lang);
+  var date = moment(date).format('D. MMMM, YYYY');
   var message = md_conv.makeHtml(message);
 
   const closeMessage = (ref) => {

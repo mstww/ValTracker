@@ -161,7 +161,7 @@ function Shop() {
     ipcRenderer.send('changeDiscordRP', "shop_activity");
 
     // Fetch shop
-    const raw_skins = await fetch('https://valorant-api.com/v1/weapons/skins');
+    const raw_skins = await fetch('https://valorant-api.com/v1/weapons/skins?language=' + router.query.lang);
     const skins = await raw_skins.json();
     setSkinList(skins.data);
 
@@ -180,6 +180,8 @@ function Shop() {
         image: skin.skinIcon,
         price: skin.skinPrice,
         uuid: skin.skinUUID,
+        skinTier: skin.skinTierImage,
+        isMelee: skin.isMelee,
         skinTierImage: skin.skinTierImage,
       }
 

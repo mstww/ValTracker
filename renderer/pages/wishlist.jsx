@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import moment from "moment";
 import L from '../locales/translations/wishlist.json';
 import LocalText from "../components/translation/LocalText";
+import { useRouter } from "next/router";
 
 const scoreboard_vars_initial = {
   hidden: { opacity: 0, x: -200, y: 0, scale: 1, display: 'none' },
@@ -14,6 +15,8 @@ const scoreboard_vars_initial = {
 }
 
 export default function Wishlist() {
+  const router = useRouter();
+  
   const [ currentSortStat, setCurrentSortStat ] = React.useState('');
 
   const [ playerWishlistSkins, setPlayerWishlistSkins ] = React.useState([]);
@@ -99,7 +102,8 @@ export default function Wishlist() {
               <Spacer y={0.5} />
 
               {playerWishlistSkins.map((skin, index) => {
-                var dateAdded = moment(skin.wishlistedAt).format('MMMM Do, YYYY');
+                moment.locale(router.query.lang);
+                var dateAdded = moment(skin.wishlistedAt).format('D. MMMM, YYYY');
                 var daysSinceAdded = Math.abs(moment().diff(parseInt(skin.wishlistedAt), 'days'));
                 return (
                   <>

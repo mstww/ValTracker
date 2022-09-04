@@ -35,7 +35,7 @@ async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
 
 const fetchCards = async () => {
   try {
-    const response = await fetch(`https://valorant-api.com/v1/sprays`, { keepalive: true });
+    const response = await fetch(`https://valorant-api.com/v1/sprays?language=${router.query.lang}`, { keepalive: true });
     const json = await response.json();
 
     return { errored: false, items: json.data };
@@ -145,7 +145,7 @@ function Spraychanger() {
   // Fetch data for ALL skins once, then load from cache
 
   React.useEffect(async () => {
-    var skin_data = await(await fetch(`https://valorant-api.com/v1/sprays`, { keepalive: true })).json();
+    var skin_data = await(await fetch(`https://valorant-api.com/v1/sprays?language=${router.query.lang}`, { keepalive: true })).json();
 
     setSkinData(skin_data.data);
     setIngameSkin(router.query.usedSpray);

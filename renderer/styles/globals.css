@@ -1369,6 +1369,18 @@ ol li {
   height: calc(100% - 2.75rem);
 }
 
+body.maximized #scoreline {
+  @apply relative right-8;
+}
+
+body[lang="de-DE"].maximized #scoreline span.text-xl.text-val-red {
+  @apply relative right-0;
+}
+
+body[lang="de-DE"] #scoreline span.text-xl.text-val-red {
+  @apply relative right-4;
+}
+
 body[lang="de-DE"] #scoreboard-pos {
   @apply ml-12;
 }

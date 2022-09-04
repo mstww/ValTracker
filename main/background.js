@@ -985,7 +985,7 @@ async function checkStoreForWishlistItems() {
       for(var i = 0; i < user_wishlists.skins.length; i++) {
         for(var j = 0; j < shopSkinUUIDs.length; j++) {
           if(shopSkinUUIDs[j] === user_wishlists.skins[i].uuid) {
-            wishlistedSkinsInShop.push(user_wishlists.skins[i].displayName);
+            wishlistedSkinsInShop.push({ displayName: user_wishlists.skins[i].displayName, isMelee: user_wishlists.skins[i].isMelee });
           }
         }
       }
@@ -993,10 +993,19 @@ async function checkStoreForWishlistItems() {
       if(wishlistedSkinsInShop.length === 1) {
         notifier.notify({
           title: LocalText(L, 'skin_wishlist_notifications.notif_1.header'),
-          message: LocalText(L, 'skin_wishlist_notifications.notif_1.desc', wishlistedSkinsInShop[0], hoursLeft, hoursStr),
+          message: (
+            wishlistedSkinsInShop[0].isMelee ? 
+            LocalText(L, 'skin_wishlist_notifications.notif_1.desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr) 
+            : 
+            LocalText(L, 'skin_wishlist_notifications.notif_1.melee_desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr)
+          ),
           icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
           wait: 3,
           appID: 'VALTracker'
+        }, function (err, response, metadata) {
+          if(response === undefined && err === null && JSON.stringify(metadata) === JSON.stringify({})) {
+            mainWindow.show();
+          }
         });
       } else if(wishlistedSkinsInShop.length > 1) {
         notifier.notify({
@@ -1005,6 +1014,10 @@ async function checkStoreForWishlistItems() {
           icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
           wait: 3,
           appID: 'VALTracker'
+        }, function (err, response, metadata) {
+          if(response === undefined && err === null && JSON.stringify(metadata) === JSON.stringify({})) {
+            mainWindow.show();
+          }
         });
       }
       

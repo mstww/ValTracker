@@ -8,6 +8,7 @@ import { Progress } from '@nextui-org/react';
 import fetch from 'node-fetch';
 import L from '../../locales/translations/updates.json';
 import LocalText from '../translation/LocalText';
+import { useRouter } from 'next/router';
 
 const update_card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -27,7 +28,7 @@ const backdrop_variants = {
   exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
 }
 
-const fetchPatchnotes = async () => {
+const fetchPatchnotes = async (lang) => {
   var updateDenied = false;
 
   if(!updateDenied) {
@@ -44,6 +45,7 @@ const fetchPatchnotes = async () => {
       var version_compare = compareVersions(current_version, newest_version);
     
       if(version_compare == -1) {
+        moment.locale(lang);
         var formatted_date = moment(newest_date).format('D. MMMM, YYYY');
     
         var info = `${newest_version} (${formatted_date})`;
@@ -66,6 +68,8 @@ const fetchPatchnotes = async () => {
 }
 
 function UpdateWindow() {
+  const router = useRouter();
+
   const [ info, setInfo ] = React.useState('');
   const [ desc, setDesc ] = React.useState('');
 
@@ -102,7 +106,7 @@ function UpdateWindow() {
 
   React.useEffect(() => {
     const fetchApi = async () => {
-      const { errored, items } = await fetchPatchnotes();
+      const { errored, items } = await fetchPatchnotes(router.query.lang);
 
       if(!errored) {
         setInfo(items.update_info);

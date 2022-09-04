@@ -82,13 +82,14 @@ async function getEntitlement(bearer) {
   })).json())['entitlements_token'];
 }
 
-const fetchPatchnotes = async () => {
+const fetchPatchnotes = async (lang) => {
   try {
     const response = await fetch(`https://api.valtracker.gg/patchnotes/v${pjson.version}`, { keepalive: true });
     const json = await response.json();
 
     const patchnotes = md_conv.makeHtml(json.data.patchnotes);
-    const releaseDate = moment(json.data.release_date).format('MMMM Do YYYY');
+    moment.locale(lang);
+    const releaseDate = moment(json.data.release_date).format('D. MMMM, YYYY');
 
     return { errored: false, patchnotes: patchnotes, releaseDate: releaseDate, version: json.data.version };
   } catch(err) {
@@ -97,13 +98,14 @@ const fetchPatchnotes = async () => {
 }
 
 function Patchnotes() {
+  const router = useRouter();
   const [ patchnotes, setPatchnotes ] = React.useState([]);
   const [ releaseDate, setReleaseDate ] = React.useState(null);
   const [ version, setVersion ] = React.useState(null);
 
   React.useEffect(() => {
     const fetchApi = async () => {
-      const { errored, patchnotes, releaseDate, version } = await fetchPatchnotes();
+      const { errored, patchnotes, releaseDate, version } = await fetchPatchnotes(router.query.lang);
 
       if(!errored)
         setPatchnotes(patchnotes);

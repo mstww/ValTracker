@@ -98,7 +98,7 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
-const fetchPlayer = async (name, tag) => {
+const fetchPlayer = async (name, tag, lang) => {
   try {
     const playerInfoRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${name}/${tag}`, { keepalive: true });
     const playerInfo = await playerInfoRaw.json();
@@ -123,7 +123,7 @@ const fetchPlayer = async (name, tag) => {
     const currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
     if(!currenttier) currenttier = 0;
 
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers')).json()
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + lang)).json()
     var playerRanks = playerRanksRaw.data[playerRanksRaw.data.length-1].tiers
 
     const playerRank = playerRanks[playerMmr.LatestCompetitiveUpdate.TierAfterUpdate];
@@ -146,27 +146,15 @@ const fetchPlayer = async (name, tag) => {
 
     for(var i = 0; i < matches.length; i++) {
       var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
-      if(dateDiff == 0) {
-        // Create array if it doesn't exist
-        if(!matchesByDates['today']) matchesByDates['today'] = [];
+      moment.locale(lang);
+      var startdate = moment();
+      startdate = startdate.subtract(dateDiff, "days");
+      var matchDate = startdate.format("D. MMMM");
 
-        matchesByDates['today'].push(matches[i]);
-      } else if(dateDiff == 1) {
-        // Create array if it doesn't exist
-        if(!matchesByDates['yesterday']) matchesByDates['yesterday'] = []
+      // Create array if it doesn't exist
+      if(!matchesByDates[matchDate]) matchesByDates[matchDate] = [];
 
-        matchesByDates['yesterday'].push(matches[i]);
-      } else {
-        // Get date difference between now and match date
-        var startdate = moment();
-        startdate = startdate.subtract(dateDiff, "days");
-        var matchDate = startdate.format("MMMM Do");
-
-        // Create array if it doesn't exist
-        if(!matchesByDates[matchDate]) matchesByDates[matchDate] = [];
-
-        matchesByDates[matchDate].push(matches[i]);
-      }
+      matchesByDates[matchDate].push(matches[i]);
     }
       
     var json = {
@@ -194,7 +182,7 @@ const fetchPlayer = async (name, tag) => {
   }
 }
 
-const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region) => {
+const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region, lang) => {
   try {
     const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
     const tokenData = JSON.parse(rawTokenData);
@@ -217,27 +205,15 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
 
     for(var i = 0; i < matches.length; i++) {
       var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
-      if(dateDiff == 0) {
-        // Create array if it doesn't exist
-        if(!currentMatches['today']) currentMatches['today'] = [];
+      moment.locale(lang);
+      var startdate = moment();
+      startdate = startdate.subtract(dateDiff, "days");
+      var matchDate = startdate.format("D. MMMM");
 
-        currentMatches['today'].push(matches[i]);
-      } else if(dateDiff == 1) {
-        // Create array if it doesn't exist
-        if(!currentMatches['yesterday']) currentMatches['yesterday'] = []
+      // Create array if it doesn't exist
+      if(!currentMatches[matchDate]) currentMatches[matchDate] = [];
 
-        currentMatches['yesterday'].push(matches[i]);
-      } else {
-        // Get date difference between now and match date
-        var startdate = moment();
-        startdate = startdate.subtract(dateDiff, "days");
-        var matchDate = startdate.format("MMMM Do");
-
-        // Create array if it doesn't exist
-        if(!currentMatches[matchDate]) currentMatches[matchDate] = [];
-
-        currentMatches[matchDate].push(matches[i]);
-      }
+      currentMatches[matchDate].push(matches[i]);
     }
       
     var json = {
@@ -287,13 +263,13 @@ function PlayerInfo() {
 
   React.useEffect(() => {
     const fetchApi = async () => {
-      var map_data_raw = await fetch('https://valorant-api.com/v1/maps', { 'Content-Type': 'application/json' });
+      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
       var map_data = await map_data_raw.json();
       setMapData(map_data);
 
       var name = router.query.name;
       var tag = router.query.tag;
-      const { errored, items } = await fetchPlayer(name, tag);
+      const { errored, items } = await fetchPlayer(name, tag, router.query.lang);
       
       if(!errored) {
         setMatches(items.matches.games);
@@ -341,7 +317,7 @@ function PlayerInfo() {
   }, []);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers')).json()
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + router.query.lang)).json()
     setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
   }, []);
 
@@ -350,7 +326,7 @@ function PlayerInfo() {
     setMatchFetchingError(false);
 
     const fetchApi = async () => {
-      const { errored, items } = await fetchMatches(shownMatches, shownMatches + 5, matches, activeQueueTab, playerUUID, playerRegion);
+      const { errored, items } = await fetchMatches(shownMatches, shownMatches + 5, matches, activeQueueTab, playerUUID, playerRegion, router.query.lang);
 
       if(!errored) {
         setShownMatches(items.matches.endIndex);
@@ -395,7 +371,7 @@ function PlayerInfo() {
     setShownMatches(0);
     setMaxMatches(0);
     const fetchApi = async () => {
-      const { errored, items } = await fetchMatches(0, 5, [], type, playerUUID, playerRegion);
+      const { errored, items } = await fetchMatches(0, 5, [], type, playerUUID, playerRegion, router.query.lang);
 
       if(!errored) {
         setMatches(items.matches.games);
@@ -473,9 +449,12 @@ function PlayerInfo() {
           </div>
           <div id='match-timeline' className='relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1'>
             {Object.keys(matches).map((key, index) => {
+              moment.locale(router.query.lang);
+              var startdate = moment();
+              var today = startdate.format("D. MMMM");
               return (
                 <div className='day relative' key={index}>
-                  <div id='day-header' className='text-lg ml-4 day-header'>{key}</div>
+                  <div id='day-header' className='text-lg ml-4 day-header'>{today === key ? 'Today' : key}</div>
                   {matches[key].map((match, index) => {
                     /* MATCH INFO */
                     var winningTeamScore;
@@ -659,14 +638,14 @@ function PlayerInfo() {
                     }
 
                     return (
-                      <div id='match' className='flex flex-row h-24 border-2 p-1.5 mb-2 border-maincolor-lightest rounded-sm' key={index}>
+                      <div id='match' className='flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded-sm' key={index}>
                         <div className='w-1/4 flex flex-row'>
                           <div id='agent-img'>
                             <img className='h-full shadow-img' src={playerAgent ? `https://media.valorant-api.com/agents/${playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
                             <span className='text-2xl'>{mapName}</span>
-                            <span className='text-lg font-light flex flex-row items-center'> 
+                            <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
                                 content={playerCurrentTier > 3 ? playerRankFixed : ''}
                                 color="error" 
@@ -701,9 +680,9 @@ function PlayerInfo() {
                           </div>
                         </div>
                         <div id='match-score' className='w-1/4 flex flex-row items-center'>
-                          <div id='scoreline' className='flex flex-col text-center w-1/2'>
-                            <span className={'text-2xl ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
-                            {activeQueueTab != 'deathmatch' ? (<span className='text-xl'>{matchScore}</span>) : ''}
+                          <div id='scoreline' className='flex flex-col text-center w-1/3'>
+                            <span className={'text-xl ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
+                            {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchScore}</span>) : ''}
                           </div>
                           {activeQueueTab != 'deathmatch' ? 
                             (
@@ -720,11 +699,11 @@ function PlayerInfo() {
                         </div>
                         <div id='match-stats-1' className='w-1/4 flex flex-row items-center pl-4'>
                           <div id='left-side' className='flex flex-col'>
-                            <span className='text-xl'>KDA</span>
+                            <span className='text-lg'>KDA</span>
                             <span className='text-base font-light'>Score</span>
                           </div>
                           <div id='right-side' className='flex flex-col ml-8'>
-                            <div className='text-xl' id='kda-display'>
+                            <div className='text-lg' id='kda-display'>
                               <span className='kda-display-span'>{playerKills}</span> 
                               <span className='kda-display-span'>{playerDeaths}</span>
                               <span className=''>{playerAssists}</span>
@@ -736,20 +715,20 @@ function PlayerInfo() {
                         </div>
                         <div id='match-stats-2' className='w-1/4 flex flex-row items-center'>
                           <div className='w-1/3 flex flex-col items-center'>
-                            <span className='text-xl'>KD</span>
-                            <span className={'text-lg font-light ' + playerKdColor}>{playerKD}</span>
+                            <span className='text-lg'>KD</span>
+                            <span className={'text-base font-light ' + playerKdColor}>{playerKD}</span>
                           </div>
                           {
                             activeQueueTab != 'deathmatch' ?
                             (
                               <>
                                 <div className='w-1/3 flex flex-col items-center'>
-                                  <span className='text-xl'>HS%</span>
-                                  <span className='text-lg font-light text-gray-400'>{headShotsPercentRounded}%</span>
+                                  <span className='text-lg'>HS%</span>
+                                  <span className='text-base font-light text-gray-400'>{headShotsPercentRounded}%</span>
                                 </div>
                                 <div className='w-1/3 flex flex-col items-center'>
-                                  <span className='text-xl'>ACS</span>
-                                  <span className='text-lg font-light text-gray-400'>{averageDamageRounded}</span>
+                                  <span className='text-lg'>ACS</span>
+                                  <span className='text-base font-light text-gray-400'>{averageDamageRounded}</span>
                                 </div>
                               </>
                             )

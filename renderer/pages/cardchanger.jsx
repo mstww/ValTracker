@@ -33,9 +33,9 @@ async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   })).json());
 }
 
-const fetchCards = async () => {
+const fetchCards = async (lang) => {
   try {
-    const response = await fetch(`https://valorant-api.com/v1/playercards`, { keepalive: true });
+    const response = await fetch(`https://valorant-api.com/v1/playercards?language=${lang}`, { keepalive: true });
     const json = await response.json();
 
     return { errored: false, items: json.data };
@@ -67,7 +67,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
     }
 
     const fetchApi = async () => {
-      const { errored, items } = await fetchCards();
+      const { errored, items } = await fetchCards(router.query.lang);
 
       if(!errored)
         setWeapons(items);
@@ -145,7 +145,7 @@ function Cardchanger() {
   // Fetch data for ALL skins once, then load from cache
 
   React.useEffect(async () => {
-    var skin_data = await(await fetch(`https://valorant-api.com/v1/playercards`, { keepalive: true })).json();
+    var skin_data = await(await fetch(`https://valorant-api.com/v1/playercards?language=${router.query.lang}`, { keepalive: true })).json();
 
     setSkinData(skin_data.data);
     setShownSkin(router.query.usedCard);

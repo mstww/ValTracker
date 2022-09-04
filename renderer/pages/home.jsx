@@ -78,7 +78,7 @@ function getDifferenceInDays(date1, date2) {
   return Math.round(diffInMs / (1000 * 60 * 60 * 24));
 }
 
-const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region) => {
+const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region, lang) => {
   try {
     var newMatches = currentMatches;
     const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
@@ -102,27 +102,15 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
 
     for(var i = 0; i < matches.length; i++) {
       var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
-      if(dateDiff == 0) {
-        // Create array if it doesn't exist
-        if(!newMatches['today']) newMatches['today'] = [];
+      moment.locale(lang);
+      var startdate = moment();
+      startdate = startdate.subtract(dateDiff, "days");
+      var matchDate = startdate.format("D. MMMM");
 
-        newMatches['today'].push(matches[i]);
-      } else if(dateDiff == 1) {
-        // Create array if it doesn't exist
-        if(!newMatches['yesterday']) newMatches['yesterday'] = [];
+      // Create array if it doesn't exist
+      if(!newMatches[matchDate]) newMatches[matchDate] = [];
 
-        newMatches['yesterday'].push(matches[i]);
-      } else {
-        // Get date difference between now and match date
-        var startdate = moment();
-        startdate = startdate.subtract(dateDiff, "days");
-        var matchDate = startdate.format("MMMM Do");
-
-        // Create array if it doesn't exist
-        if(!newMatches[matchDate]) newMatches[matchDate] = [];
-
-        newMatches[matchDate].push(matches[i]);
-      }
+      newMatches[matchDate].push(matches[i]);
     }
       
     var json = {
@@ -383,7 +371,7 @@ function calculatePlayerStatsFromMatches(matchdays, puuid) {
   return returnObj;
 }
 
-const getLevelRewardData = async (uuid, rewardType) => {
+const getLevelRewardData = async (uuid, rewardType, lang) => {
   switch(rewardType) {
     case "EquippableSkinLevel":
       return {
@@ -420,7 +408,7 @@ const getLevelRewardData = async (uuid, rewardType) => {
         text: null
       }
     case "Title":
-      var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid, { 'Content-Type': 'application/json' })).json();
+      var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid + `?language=${lang}`, { 'Content-Type': 'application/json' })).json();
       return {
         isText: true,
         image: null,
@@ -437,8 +425,8 @@ const getLevelRewardData = async (uuid, rewardType) => {
   }
 }
 
-const calculateContractProgress = async (region, puuid, bearer, entitlement, client_version) => {
-  var contracts = await (await fetch('https://valorant-api.com/v1/contracts', { 'Content-Type': 'application/json' })).json();
+const calculateContractProgress = async (region, puuid, bearer, entitlement, client_version, lang) => {
+  var contracts = await (await fetch('https://valorant-api.com/v1/contracts?language=' + lang, { 'Content-Type': 'application/json' })).json();
   var player_contracts = await getPlayerContracts(region, puuid, entitlement, bearer, client_version);
 
   var activeAgentContractUUID = player_contracts.ActiveSpecialContract;
@@ -453,7 +441,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     }
   }
 
-  var agentContractData = await(await fetch('https://valorant-api.com/v1/contracts/' + agentContractUUID, { 'Content-Type': 'application/json' })).json();
+  var agentContractData = await(await fetch('https://valorant-api.com/v1/contracts/' + agentContractUUID + '?language=' + lang, { 'Content-Type': 'application/json' })).json();
   var tierCount = 0;
 
   var agentContractProgression = {
@@ -493,17 +481,17 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
       if(tierCount == agentContractProgressionLevel) {
         if(current_level) {
           if(atEnd === true) {
-            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
   
             agentContractProgression.current_level.reward = current_level_data;
             agentContractProgression.current_level.levelNum = tierCount -1;
           } else {
-            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
   
             agentContractProgression.current_level.reward = current_level_data;
             agentContractProgression.current_level.levelNum = tierCount;
           }
-          var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+          var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
 
           agentContractProgression.current_level.reward = current_level_data;
           agentContractProgression.current_level.levelNum = tierCount;
@@ -513,7 +501,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
         }
         
         if(atEnd === true) {
-          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
 
           agentContractProgression.next_level.reward = next_level_data;
           agentContractProgression.next_level.levelNum = tierCount;
@@ -521,7 +509,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
           agentContractProgression.totalXPneeded = 1;
           agentContractProgression.currentXPowned = 1;
         } else {
-          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
 
           agentContractProgression.next_level.reward = next_level_data;
           agentContractProgression.next_level.levelNum = tierCount + 1;
@@ -542,7 +530,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     }
   }
 
-  var battlePassData = await(await fetch('https://valorant-api.com/v1/contracts/' + battlePassUUID, { 'Content-Type': 'application/json' })).json();
+  var battlePassData = await(await fetch('https://valorant-api.com/v1/contracts/' + battlePassUUID + '?language=' + lang, { 'Content-Type': 'application/json' })).json();
   tierCount = 0;
 
   var battlePassProgression = {
@@ -582,12 +570,12 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
       if(tierCount == battlePassProgressionLevel) {
         if(current_level) {
           if(atEnd === true) {
-            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
   
             battlePassProgression.current_level.reward = current_level_data;
             battlePassProgression.current_level.levelNum = tierCount -1;
           } else {
-            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type);
+            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
   
             battlePassProgression.current_level.reward = current_level_data;
             battlePassProgression.current_level.levelNum = tierCount;
@@ -598,7 +586,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
         }
 
         if(atEnd === true) {
-          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
 
           battlePassProgression.totalXPneeded = 1;
           battlePassProgression.currentXPowned = 1;
@@ -606,7 +594,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
           battlePassProgression.next_level.reward = next_level_data;
           battlePassProgression.next_level.levelNum = tierCount;
         } else {
-          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type);
+          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
 
           battlePassProgression.totalXPneeded = next_level.xp;
           battlePassProgression.currentXPowned = battlePassXpRemaining;
@@ -725,7 +713,7 @@ function Home() {
     var puuid = user_creds.playerUUID;
 
     if(keepCurrentMatches === true) {
-      var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.playerUUID, user_creds.playerRegion);
+      var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.playerUUID, user_creds.playerRegion, router.query.lang);
 
       setMaxMatchesFound(data.items.totalMatches);
 
@@ -740,28 +728,16 @@ function Home() {
       var newMatches = currentMatches;
 
       for(var i = 0; i < new_matches.length; i++) {
-        var dateDiff = getDifferenceInDays(new_matches[i].matchInfo.gameStartMillis, Date.now());
-        if(dateDiff == 0) {
-          // Create array if it doesn't exist
-          if(!newMatches['today']) newMatches['today'] = [];
+        var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+        moment.locale(lang);
+        var startdate = moment();
+        startdate = startdate.subtract(dateDiff, "days");
+        var matchDate = startdate.format("D. MMMM");
   
-          newMatches['today'].push(new_matches[i]);
-        } else if(dateDiff == 1) {
-          // Create array if it doesn't exist
-          if(!newMatches['yesterday']) newMatches['yesterday'] = [];
+        // Create array if it doesn't exist
+        if(!newMatches[matchDate]) newMatches[matchDate] = [];
   
-          newMatches['yesterday'].push(new_matches[i]);
-        } else {
-          // Get date difference between now and match date
-          var startdate = moment();
-          startdate = startdate.subtract(dateDiff, "days");
-          var matchDate = startdate.format("MMMM Do");
-  
-          // Create array if it doesn't exist
-          if(!newMatches[matchDate]) newMatches[matchDate] = [];
-  
-          newMatches[matchDate].push(new_matches[i]);
-        }
+        newMatches[matchDate].push(matches[i]);
       }
 
       data.items.games = newMatches;
@@ -782,7 +758,7 @@ function Home() {
         if(mapData) {
           var map_data = mapData
         } else {
-          var map_data_raw = await fetch('https://valorant-api.com/v1/maps', { 'Content-Type': 'application/json' });
+          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
           var map_data = await map_data_raw.json();
         }
   
@@ -804,7 +780,7 @@ function Home() {
           return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
         });
   
-        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0], { 'Content-Type': 'application/json' });
+        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + router.query.lang, { 'Content-Type': 'application/json' });
         var agent_data = await agent_data_raw.json();
   
         setBestAgentName(agent_data.data.displayName);
@@ -846,7 +822,7 @@ function Home() {
       var latest_old_matches = old_matches.slice(0, 5);
       
       // Get newest 4 Matches from Match history
-      var data = await fetchMatches(0, 5, [], mode, user_creds.playerUUID, user_creds.playerRegion);
+      var data = await fetchMatches(0, 5, [], mode, user_creds.playerUUID, user_creds.playerRegion, router.query.lang);
 
       setMaxMatchesFound(data.items.totalMatches);
 
@@ -885,28 +861,16 @@ function Home() {
         var newMatches = [];
   
         for(var i = 0; i < newMatchesArray.length; i++) {
-          var dateDiff = getDifferenceInDays(newMatchesArray[i].matchInfo.gameStartMillis, Date.now());
-          if(dateDiff == 0) {
-            // Create array if it doesn't exist
-            if(!newMatches['today']) newMatches['today'] = [];
+          var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+          moment.locale(lang);
+          var startdate = moment();
+          startdate = startdate.subtract(dateDiff, "days");
+          var matchDate = startdate.format("D. MMMM");
     
-            newMatches['today'].push(newMatchesArray[i]);
-          } else if(dateDiff == 1) {
-            // Create array if it doesn't exist
-            if(!newMatches['yesterday']) newMatches['yesterday'] = [];
+          // Create array if it doesn't exist
+          if(!newMatches[matchDate]) newMatches[matchDate] = [];
     
-            newMatches['yesterday'].push(newMatchesArray[i]);
-          } else {
-            // Get date difference between now and match date
-            var startdate = moment();
-            startdate = startdate.subtract(dateDiff, "days");
-            var matchDate = startdate.format("MMMM Do");
-    
-            // Create array if it doesn't exist
-            if(!newMatches[matchDate]) newMatches[matchDate] = [];
-    
-            newMatches[matchDate].push(newMatchesArray[i]);
-          }
+          newMatches[matchDate].push(matches[i]);
         }
   
         data.items.games = newMatches;
@@ -938,7 +902,7 @@ function Home() {
             return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
           });
     
-          var map_data_raw = await fetch('https://valorant-api.com/v1/maps', { 'Content-Type': 'application/json' });
+          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
           var map_data = await map_data_raw.json();
     
           var best_map = map_stats[sorted_map_stats[0]];
@@ -959,7 +923,7 @@ function Home() {
             return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
           });
     
-          var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0], { 'Content-Type': 'application/json' });
+          var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + router.query.lang, { 'Content-Type': 'application/json' });
           var agent_data = await agent_data_raw.json();
     
           setBestAgentName(agent_data.data.displayName);
@@ -1006,7 +970,7 @@ function Home() {
         return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
       });
 
-      var map_data_raw = await fetch('https://valorant-api.com/v1/maps', { 'Content-Type': 'application/json' });
+      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
       var map_data = await map_data_raw.json();
 
       var best_map = map_stats[sorted_map_stats[0]];
@@ -1027,7 +991,7 @@ function Home() {
         return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
       });
 
-      var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0], { 'Content-Type': 'application/json' });
+      var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + router.query.lang, { 'Content-Type': 'application/json' });
       var agent_data = await agent_data_raw.json();
 
       setBestAgentName(agent_data.data.displayName);
@@ -1082,9 +1046,9 @@ function Home() {
       setKillsDeathsChartData([]);
   
       if(isNewQueue) {
-        var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.playerUUID, user_creds.playerRegion);
+        var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.playerUUID, user_creds.playerRegion, router.query.lang);
       } else {
-        var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.playerUUID, user_creds.playerRegion);
+        var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.playerUUID, user_creds.playerRegion, router.query.lang);
       }
   
       setCurrentlyLoadedMatchCount(data.items.endIndex);
@@ -1117,7 +1081,7 @@ function Home() {
           return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
         });
   
-        var map_data_raw = await fetch('https://valorant-api.com/v1/maps', { 'Content-Type': 'application/json' });
+        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
         var map_data = await map_data_raw.json();
   
         var best_map = map_stats[sorted_map_stats[0]];
@@ -1138,7 +1102,7 @@ function Home() {
           return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
         });
   
-        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0], { 'Content-Type': 'application/json' });
+        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + router.query.lang, { 'Content-Type': 'application/json' });
         var agent_data = await agent_data_raw.json();
   
         setBestAgentName(agent_data.data.displayName);
@@ -1181,7 +1145,7 @@ function Home() {
 
       const entitlement_token = await getEntitlement(bearer);
 
-      var contract_progress = await calculateContractProgress(user_creds.playerRegion, user_creds.playerUUID, bearer, entitlement_token, version_data.data.riotClientVersion);
+      var contract_progress = await calculateContractProgress(user_creds.playerRegion, user_creds.playerUUID, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
   
       setAgentContract_prevLevelNum(contract_progress.agentContractProgress.current_level.levelNum);
       setAgentContract_prevLevelReward(contract_progress.agentContractProgress.current_level.reward);
@@ -1526,7 +1490,7 @@ function Home() {
 
   React.useEffect(async () => {
     const refetchFeaturedBundle = async () => {
-      var featured_bundle_raw = await fetch('https://api.valtracker.gg/featured-bundle', { 'Content-Type': 'application/json' });
+      var featured_bundle_raw = await fetch('https://api.valtracker.gg/featured-bundle?language=' + router.query.lang, { 'Content-Type': 'application/json' });
       var featured_bundle = await featured_bundle_raw.json();
 
       setFeaturedBundleName(featured_bundle.data.name);
@@ -1646,7 +1610,7 @@ function Home() {
   }, []);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers')).json()
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + router.query.lang)).json()
     setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
   }, []);
 
@@ -1804,9 +1768,12 @@ function Home() {
             </Tooltip>
             {currentlyLoadedMatchCount > 0 ?
               Object.keys(currentMatches).map((key, index) => {
+                moment.locale(router.query.lang);
+                var startdate = moment();
+                var today = startdate.format("D. MMMM");
                 return (
                   <div className='day relative' key={index}>
-                    <div id='day-header' className='text-lg ml-4 day-header'>{key}</div>
+                    <div id='day-header' className='text-lg ml-4 day-header'>{today === key ? 'Today' : key}</div>
                     {currentMatches[key].map((match, index) => {
                       var { matchData, matchViewData } = calculateMatchStats(match);
 
@@ -1907,7 +1874,7 @@ function Home() {
                             </div>
                           </div>
                           <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                            <div id='scoreline' className='flex flex-col text-center w-1/2'>
+                            <div id='scoreline' className='flex flex-col text-center w-1/3'>
                               <span className={'text-xl ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
                               {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                             </div>

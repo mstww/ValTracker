@@ -129,27 +129,15 @@ function FavouriteMatches() {
 
     for(var i = 0; i < allMatches.length; i++) {
       var dateDiff = getDifferenceInDays(allMatches[i].matchInfo.gameStartMillis, Date.now());
-      if(dateDiff == 0) {
-        // Create array if it doesn't exist
-        if(!newMatches['today']) newMatches['today'] = [];
+      moment.locale(router.query.lang);
+      var startdate = moment();
+      startdate = startdate.subtract(dateDiff, "days");
+      var matchDate = startdate.format("D. MMMM, YYYY");
 
-        newMatches['today'].push(allMatches[i]);
-      } else if(dateDiff == 1) {
-        // Create array if it doesn't exist
-        if(!newMatches['yesterday']) newMatches['yesterday'] = [];
+      // Create array if it doesn't exist
+      if(!newMatches[matchDate]) newMatches[matchDate] = [];
 
-        newMatches['yesterday'].push(allMatches[i]);
-      } else {
-        // Get date difference between now and match date
-        var startdate = moment();
-        startdate = startdate.subtract(dateDiff, "days");
-        var matchDate = startdate.format("MMMM Do, YYYY");
-
-        // Create array if it doesn't exist
-        if(!newMatches[matchDate]) newMatches[matchDate] = [];
-
-        newMatches[matchDate].push(allMatches[i]);
-      }
+      newMatches[matchDate].push(allMatches[i]);
     }
 
     var sortedMatches = newMatches;
@@ -573,7 +561,7 @@ function FavouriteMatches() {
   React.useEffect(async () => {
     ipcRenderer.send('changeDiscordRP', "favmatches_activity");
 
-    var map_data_raw = await fetch('https://valorant-api.com/v1/maps', { 'Content-Type': 'application/json' });
+    var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
     var map_data = await map_data_raw.json();
     setMapData(map_data);
 
@@ -605,7 +593,7 @@ function FavouriteMatches() {
   }, [ activeQueueTab ]);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers')).json()
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + router.query.lang)).json()
     setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
   }, []);
   
@@ -709,9 +697,12 @@ function FavouriteMatches() {
               <>
                 {favMatchLength > 0 ?
                   Object.keys(favMatches).map((key, index) => {
+                    moment.locale(router.query.lang);
+                    var startdate = moment();
+                    var today = startdate.format("D. MMMM");
                     return (
                       <div className={'day relative ' + (shownMatchesPerDay[key].isShown === false ? 'hidden' : '')} key={index}>
-                        <div id='day-header' className='text-lg ml-4 day-header'>{key}</div>
+                        <div id='day-header' className='text-lg ml-4 day-header'>{today === key ? 'Today' : key}</div>
                         {favMatches[key].map((match, index) => {
                           var { matchData, matchViewData } = calculateMatchStats(match, '');
     
@@ -817,7 +808,7 @@ function FavouriteMatches() {
                                 </div>
                               </div>
                               <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                                <div id='scoreline' className='flex flex-col text-center w-1/2'>
+                                <div id='scoreline' className='flex flex-col text-center w-1/3'>
                                   <span className={'text-xl ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
                                   {match.matchInfo.queueID != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                                 </div>
@@ -825,7 +816,7 @@ function FavouriteMatches() {
                                   (
                                     <div 
                                       id='scoreboard-pos' 
-                                      className={'rounded-sm text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
+                                      className={'rounded-sm text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
                                     >
                                       {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                     </div>
@@ -990,7 +981,7 @@ function FavouriteMatches() {
                           </div>
                         </div>
                         <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                          <div id='scoreline' className='flex flex-col text-center w-1/2'>
+                          <div id='scoreline' className='flex flex-col text-center w-1/3'>
                             <span className={'text-xl ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
                             {match.matchInfo.queueID != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                           </div>
@@ -998,7 +989,7 @@ function FavouriteMatches() {
                             (
                               <div 
                                 id='scoreboard-pos' 
-                                className={'rounded-sm text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
+                                className={'rounded-sm text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
                               >
                               {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                               </div>

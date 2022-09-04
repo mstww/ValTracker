@@ -81,6 +81,8 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                     "displayName": item.name,
                     "displayIcon": item.image,
                     "price": item.price,
+                    "skinTier": item.skinTier,
+                    "isMelee": item.isMelee,
                     "wishlistedAt": Date.now()
                   }
   
@@ -156,6 +158,8 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                   "displayName": item.name,
                   "displayIcon": item.image,
                   "price": item.price,
+                  "skinTier": item.skinTier,
+                  "isMelee": item.isMelee,
                   "wishlistedAt": Date.now()
                 }
 

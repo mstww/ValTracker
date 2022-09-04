@@ -257,6 +257,7 @@ function Matchview() {
         setMatchScore(knownMatchData.matchScore);
         setPlayerMatchResult(knownMatchData.matchOutcome);
   
+        moment.locale(router.query.lang);
         var newMatchDate = moment(knownMatchData.gameStartUnix).format('D. MMMM YYYY, h:mm a');
   
         var x = knownMatchData.gameLengthMS;
