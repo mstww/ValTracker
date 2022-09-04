@@ -6,6 +6,7 @@ import SkinTile from '../components/skins/SkinTile';
 import fs from 'fs';
 import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
+import APIi18n from '../components/translation/ValApiFormatter';
 
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -23,7 +24,7 @@ async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
 
 const fetchCards = async (lang) => {
   try {
-    const response = await fetch(`https://valorant-api.com/v1/playercards?language=${lang}`, { keepalive: true });
+    const response = await fetch(`https://valorant-api.com/v1/playercards?language=${APIi18n(lang)}`, { keepalive: true });
     const json = await response.json();
 
     return { errored: false, items: json.data };
@@ -133,7 +134,7 @@ function Cardchanger() {
   // Fetch data for ALL skins once, then load from cache
 
   React.useEffect(async () => {
-    var skin_data = await(await fetch(`https://valorant-api.com/v1/playercards?language=${router.query.lang}`, { keepalive: true })).json();
+    var skin_data = await(await fetch(`https://valorant-api.com/v1/playercards?language=${APIi18n(router.query.lang)}`, { keepalive: true })).json();
 
     setSkinData(skin_data.data);
     setShownSkin(router.query.usedCard);
@@ -300,7 +301,7 @@ function Cardchanger() {
               + 
               (setSkinSuccess ? ' bg-green-500 hover:bg-green-500 pointer-events-none cursor-default' : ' bg-button-color hover:bg-button-color-hover')}
             >
-              {setSkinSuccess ? LocalText(L, "cards.state_2") : LocalText(L, "cards.state_1")}
+              {setSkinSuccess ? LocalText(L, "cards.equip_button.state_2") : LocalText(L, "cards.equip_button.state_1")}
             </button>
           </div>
           <div className='flex flex-row items-center justify-center w-2/4 mx-auto' id='skin-img'>

@@ -10,6 +10,7 @@ import moment from 'moment';
 import { useFirstRender } from '../components/useFirstRender';
 import L from '../locales/translations/favorites.json';
 import LocalText from '../components/translation/LocalText';
+import APIi18n from '../components/translation/ValApiFormatter';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -549,7 +550,7 @@ function FavouriteMatches() {
   React.useEffect(async () => {
     ipcRenderer.send('changeDiscordRP', "favmatches_activity");
 
-    var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+    var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
     var map_data = await map_data_raw.json();
     setMapData(map_data);
 
@@ -581,7 +582,7 @@ function FavouriteMatches() {
   }, [ activeQueueTab ]);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + router.query.lang)).json()
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
     setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
   }, []);
   

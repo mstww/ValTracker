@@ -52,6 +52,18 @@ async function getPlayerUUID(bearer) {
   })).json())['sub'];
 }
 
+async function getEntitlement(bearer) {
+  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + bearer,
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    keepalive: true
+  })).json())['entitlements_token'];
+}
+
 async function getXMPPRegion(requiredCookie, bearer, id_token) {
   return (await (await fetch("https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant", {
     "method": "PUT",
@@ -91,21 +103,48 @@ async function requestUserCreds(region, puuid) {
   })).json());
 }
 
-async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
-  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
     method: 'GET',
     headers: {
       'X-Riot-Entitlements-JWT': entitlement_token,
       'Authorization': 'Bearer ' + bearer,
-      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
-      'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
       'Content-Type': 'application/json',
       'User-Agent': ''
     },
     keepalive: true
   })).json());
+}
+
+async function getMatch(region, matchId, entitlement_token, bearer) {
+  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  if(region === 'latam' || region === 'br') region = 'na';
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-details/v1/matches/${matchId}`, {
+    method: 'GET',
+    headers: {
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      "X-Riot-ClientPlatform": "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9",
+      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
+      'Authorization': 'Bearer ' + bearer,
+      'Content-Type': 'application/json'
+    },
+    keepalive: true
+  })).json());
+}
+
+async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
+  var matches = await getMatchHistory(region, puuid, 0, 1, 'competitive', entitlement_token, bearer);
+  if(matches.History.length > 0) {
+    var match_data = await getMatch(matches.History[0].MatchID);
+    for(var i = 0; i < match_data.players.length; i++) {
+      if(match_data.players[i].subject === puuid) {
+        return match_data.players[i].competitiveTier;
+      }
+    }
+  } else {
+    return 0;
+  }
 }
 
 function Setup() {
@@ -142,7 +181,7 @@ function Setup() {
         setProgress(10);
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s0"));
         var puuid = await getPlayerUUID(bearer);
-        var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+        var entitlement_token = await getEntitlement(bearer);
         setProgress(30);
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s1"));
         var regiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
@@ -171,12 +210,7 @@ function Setup() {
         setProgress(60);
     
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s3"));
-        const playerMmr = await getPlayerMMR(playerRegion, playerUUID, entitlement_token, bearer);
-        if(playerMmr.LatestCompetitiveUpdate.TierAfterUpdate) {
-          var currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
-        } else {
-          var currenttier = 0;
-        }
+        const currenttier = await getPlayerMMR(playerRegion, playerUUID, entitlement_token, bearer);
         setProgress(90);
     
         var userData = {
@@ -198,11 +232,9 @@ function Setup() {
     
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/entitlement.json', JSON.stringify({ entitlement_token }));
         
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(data.tokenData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(data.riotcookies));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json', JSON.stringify({ entitlement_token }));
     
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(userData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + playerUUID + '.json', JSON.stringify(userData));

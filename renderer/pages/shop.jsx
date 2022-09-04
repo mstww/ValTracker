@@ -11,6 +11,7 @@ import { Collapse } from '@nextui-org/react';
 import fs from 'fs';
 import L from '../locales/translations/shop.json';
 import LocalText from '../components/translation/LocalText';
+import APIi18n from '../components/translation/ValApiFormatter';
 
 const slide_right = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -149,7 +150,7 @@ function Shop() {
     ipcRenderer.send('changeDiscordRP', "shop_activity");
 
     // Fetch shop
-    const raw_skins = await fetch('https://valorant-api.com/v1/weapons/skins?language=' + router.query.lang);
+    const raw_skins = await fetch('https://valorant-api.com/v1/weapons/skins?language=' + APIi18n(router.query.lang));
     const skins = await raw_skins.json();
     setSkinList(skins.data);
 

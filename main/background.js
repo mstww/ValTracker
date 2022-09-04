@@ -212,21 +212,48 @@ async function getAccessTokens(ssid) {
   }));
 }
 
-async function getPlayerMMR(region, puuid, entitlement_token, bearer) { 
-  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
     method: 'GET',
     headers: {
       'X-Riot-Entitlements-JWT': entitlement_token,
       'Authorization': 'Bearer ' + bearer,
-      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
-      'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
       'Content-Type': 'application/json',
       'User-Agent': ''
     },
     keepalive: true
   })).json());
+}
+
+async function getMatch(region, matchId, entitlement_token, bearer) {
+  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
+  if(region === 'latam' || region === 'br') region = 'na';
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-details/v1/matches/${matchId}`, {
+    method: 'GET',
+    headers: {
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      "X-Riot-ClientPlatform": "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9",
+      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
+      'Authorization': 'Bearer ' + bearer,
+      'Content-Type': 'application/json'
+    },
+    keepalive: true
+  })).json());
+}
+
+async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
+  var matches = await getMatchHistory(region, puuid, 0, 1, 'competitive', entitlement_token, bearer);
+  if(matches.History.length > 0) {
+    var match_data = await getMatch(matches.History[0].MatchID);
+    for(var i = 0; i < match_data.players.length; i++) {
+      if(match_data.players[i].subject === puuid) {
+        return match_data.players[i].competitiveTier;
+      }
+    }
+  } else {
+    return 0;
+  }
 }
 
 async function checkUserData() {
@@ -256,13 +283,9 @@ async function checkUserData() {
     var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
     var bearer = token_data.accessToken;
     var ent = await getEntitlement(bearer);
-    var mmr_data = await getPlayerMMR(user_creds.playerRegion, user_creds.playerUUID, ent, bearer);
+    var currenttier = await getPlayerMMR(user_creds.playerRegion, user_creds.playerUUID, ent, bearer);
 
-    if(mmr_data.LatestCompetitiveUpdate.TierAfterUpdate !== undefined) {
-      user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${mmr_data.LatestCompetitiveUpdate.TierAfterUpdate}/largeicon.png`;
-    } else {
-      user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/largeicon.png`;
-    }
+    user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
 
     fs.writeFileSync(app_data + "/user_data/user_creds.json", JSON.stringify(user_creds));
     fs.writeFileSync(app_data + "/user_data/user_accounts/" + user_creds.playerUUID + ".json", JSON.stringify(user_creds));
@@ -388,11 +411,8 @@ async function reauthAccount(puuid) {
         var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
         var bearer = token_data.accessToken;
         var ent = await getEntitlement(bearer);
-        var mmr_data = await getPlayerMMR(user_creds.playerRegion, user_creds.playerUUID, ent, bearer);
-        var currenttier = mmr_data.LatestCompetitiveUpdate.TierAfterUpdate;
-        if(currenttier === null || currenttier === undefined) {
-          currenttier = 0;
-        }
+        
+        var currenttier = await getPlayerMMR(user_creds.playerRegion, user_creds.playerUUID, ent, bearer);
   
         user_data.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
   

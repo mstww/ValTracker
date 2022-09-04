@@ -8,6 +8,7 @@ import fs from 'fs';
 import { Collapse } from '@nextui-org/react';
 import L from '../locales/translations/shop.json';
 import LocalText from '../components/translation/LocalText';
+import APIi18n from '../components/translation/ValApiFormatter';
 
 const slide_bottom = {
   hidden: { opacity: 0, x: 0, y: 50 },
@@ -76,7 +77,7 @@ function NightMarket() {
   var localTimerObj = LocalText(L, "timer");
 
   React.useEffect(async () => {
-    const raw_skins = await fetch('https://valorant-api.com/v1/weapons/skins?language=' + router.query.lang);
+    const raw_skins = await fetch('https://valorant-api.com/v1/weapons/skins?language=' + APIi18n(router.query.lang));
     const skins = await raw_skins.json();
     setSkinList(skins.data);
   }, []);
@@ -104,7 +105,7 @@ function NightMarket() {
       var skins = [];
       
       for(var i = 0; i < data.nightMarket.offers.length; i++) {
-        var raw = await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${data.nightMarket.offers[i].Offer.Rewards[0].ItemID}?language=${router.query.lang}`, { keepalive: true });
+        var raw = await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${data.nightMarket.offers[i].Offer.Rewards[0].ItemID}?language=${APIi18n(router.query.lang)}`, { keepalive: true });
         var skin = await raw.json();
         var skin_data = {
           uuid: skin.data.uuid,

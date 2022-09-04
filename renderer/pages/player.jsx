@@ -11,6 +11,7 @@ import { Loading } from "@nextui-org/react";
 import { Tooltip } from '@nextui-org/react';
 import L from '../locales/translations/player.json';
 import LocalText from '../components/translation/LocalText';
+import APIi18n from '../components/translation/ValApiFormatter';
 
 const variants = {
   hidden: { opacity: 0, x: -100, y: 0 },
@@ -111,7 +112,7 @@ const fetchPlayer = async (name, tag, lang) => {
     const currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
     if(!currenttier) currenttier = 0;
 
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + lang)).json()
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(lang))).json()
     var playerRanks = playerRanksRaw.data[playerRanksRaw.data.length-1].tiers
 
     const playerRank = playerRanks[playerMmr.LatestCompetitiveUpdate.TierAfterUpdate];
@@ -251,7 +252,7 @@ function PlayerInfo() {
 
   React.useEffect(() => {
     const fetchApi = async () => {
-      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
       var map_data = await map_data_raw.json();
       setMapData(map_data);
 
@@ -305,7 +306,7 @@ function PlayerInfo() {
   }, []);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + router.query.lang)).json()
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
     setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
   }, []);
 

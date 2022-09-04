@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import L from '../locales/translations/home.json';
 import LocalText from '../components/translation/LocalText';
 
+import APIi18n from '../components/translation/ValApiFormatter';
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
@@ -396,7 +397,7 @@ const getLevelRewardData = async (uuid, rewardType, lang) => {
         text: null
       }
     case "Title":
-      var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid + `?language=${lang}`, { 'Content-Type': 'application/json' })).json();
+      var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid + `?language=${APIi18n(lang)}`, { 'Content-Type': 'application/json' })).json();
       return {
         isText: true,
         image: null,
@@ -414,7 +415,7 @@ const getLevelRewardData = async (uuid, rewardType, lang) => {
 }
 
 const calculateContractProgress = async (region, puuid, bearer, entitlement, client_version, lang) => {
-  var contracts = await (await fetch('https://valorant-api.com/v1/contracts?language=' + lang, { 'Content-Type': 'application/json' })).json();
+  var contracts = await (await fetch('https://valorant-api.com/v1/contracts?language=' + APIi18n(lang), { 'Content-Type': 'application/json' })).json();
   var player_contracts = await getPlayerContracts(region, puuid, entitlement, bearer, client_version);
 
   var activeAgentContractUUID = player_contracts.ActiveSpecialContract;
@@ -429,7 +430,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     }
   }
 
-  var agentContractData = await(await fetch('https://valorant-api.com/v1/contracts/' + agentContractUUID + '?language=' + lang, { 'Content-Type': 'application/json' })).json();
+  var agentContractData = await(await fetch('https://valorant-api.com/v1/contracts/' + agentContractUUID + '?language=' + APIi18n(lang), { 'Content-Type': 'application/json' })).json();
   var tierCount = 0;
 
   var agentContractProgression = {
@@ -518,7 +519,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     }
   }
 
-  var battlePassData = await(await fetch('https://valorant-api.com/v1/contracts/' + battlePassUUID + '?language=' + lang, { 'Content-Type': 'application/json' })).json();
+  var battlePassData = await(await fetch('https://valorant-api.com/v1/contracts/' + battlePassUUID + '?language=' + APIi18n(lang), { 'Content-Type': 'application/json' })).json();
   tierCount = 0;
 
   var battlePassProgression = {
@@ -746,7 +747,7 @@ function Home() {
         if(mapData) {
           var map_data = mapData
         } else {
-          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
           var map_data = await map_data_raw.json();
         }
   
@@ -768,7 +769,7 @@ function Home() {
           return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
         });
   
-        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
         var agent_data = await agent_data_raw.json();
   
         setBestAgentName(agent_data.data.displayName);
@@ -890,7 +891,7 @@ function Home() {
             return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
           });
     
-          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
           var map_data = await map_data_raw.json();
     
           var best_map = map_stats[sorted_map_stats[0]];
@@ -911,7 +912,7 @@ function Home() {
             return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
           });
     
-          var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+          var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
           var agent_data = await agent_data_raw.json();
     
           setBestAgentName(agent_data.data.displayName);
@@ -958,7 +959,7 @@ function Home() {
         return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
       });
 
-      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
       var map_data = await map_data_raw.json();
 
       var best_map = map_stats[sorted_map_stats[0]];
@@ -979,7 +980,7 @@ function Home() {
         return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
       });
 
-      var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+      var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
       var agent_data = await agent_data_raw.json();
 
       setBestAgentName(agent_data.data.displayName);
@@ -1069,7 +1070,7 @@ function Home() {
           return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
         });
   
-        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
         var map_data = await map_data_raw.json();
   
         var best_map = map_stats[sorted_map_stats[0]];
@@ -1090,7 +1091,7 @@ function Home() {
           return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
         });
   
-        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + router.query.lang, { 'Content-Type': 'application/json' });
+        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
         var agent_data = await agent_data_raw.json();
   
         setBestAgentName(agent_data.data.displayName);
@@ -1599,9 +1600,13 @@ function Home() {
 
   React.useEffect(async () => {
     if(!firstRender) {
-      var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + router.query.lang)).json()
+      var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
       setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
     }
+  }, [ router.query ]);
+
+  React.useEffect(() => {
+    document.body.setAttribute("lang", router.query.lang);
   }, [ router.query ]);
 
   return (
@@ -1933,7 +1938,9 @@ function Home() {
               <span id='' className='text-gray-500'>{LocalText(L, "bot_l.errors.err_while_fetching")}</span>
             </div>
             <div id='shown-matches-info' className={'mt-4 ml-6 w-1/2 flex flex-row justify-between ' + (fetchingFurtherMatches ? 'hidden' : '')}>
-              <span id='x-out-of-n-matches' className='text-gray-500'>{LocalText(L, "bot_l.bottom_text.loaded_matches_count", currentlyLoadedMatchCount, maxMatchesFound)}</span>
+              <span id='x-out-of-n-matches' className='text-gray-500'>
+                {LocalText(L, "bot_l.bottom_text.loaded_matches_count", (currentlyLoadedMatchCount > maxMatchesFound ? maxMatchesFound : currentlyLoadedMatchCount), maxMatchesFound)}
+              </span>
               <span id='load-more-matches' className={'hover:underline mb-8 ' + (fetchingFurtherMatches ? 'cursor-wait' : 'cursor-pointer')} onClick={() => { fetchingFurtherMatches ? '' : fetchFurtherMatches() }}>{LocalText(L, "bot_l.bottom_text.load_more")}</span>
             </div>
             <div className={'w-full flex mt-8 h-14 mb-6 justify-center items-center ' + (fetchingFurtherMatches || matchFetchingError ? '' : 'hidden')}>

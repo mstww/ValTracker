@@ -76,6 +76,7 @@ function Inventory() {
   const [ currentPresetName, setCurrentPresetName ] = React.useState('0');
 
   const loadoutNameRef = React.useRef(null);
+  const [ isClickable, setIsClickable ] = React.useState(false);
 
   const redirectToSkinChanger = (weaponType, usedSkin, usedChroma, usedLevel) => {
     var items_stringified = JSON.stringify(player_items);
@@ -172,12 +173,13 @@ function Inventory() {
           setShowDeletePresetButton(true);
         }
       });
+      setIsClickable(true);
     } catch(err) {
       console.log(err);
     }
   }, []);
 
-  var tile_classes = 'bg-maincolor-lightest hover:bg-opacity-70 transition-all duration-100 ease-in cursor-pointer rounded-sm relative shadow-lg hover:shadow-xl flex items-center justify-center';
+  var tile_classes = 'bg-maincolor-lightest hover:bg-opacity-70 transition-all duration-100 ease-in rounded-sm relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
@@ -398,27 +400,33 @@ function Inventory() {
             id="classic" 
             className={ tile_classes }
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/classic.png' data-weapontype='29a0cfab-485b-f5d5-779a-b59f85e204a8' alt='Classic' className='pointer-events-none mx-auto w-4/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Classic</span>
           </div>
-          <div 
+          <div
             id="shorty" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/shorty.png' data-weapontype='42da8ccc-40d5-affc-beec-15aa47b42eda' alt='Shorty' className='pointer-events-none mx-auto w-5/6' />
@@ -427,12 +435,15 @@ function Inventory() {
           <div id="frenzy" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/frenzy.png' data-weapontype='44d4e95c-4157-0037-81b2-17841bf2e8e3' alt='Frenzy' className='pointer-events-none mx-auto w-3/5' />
@@ -442,12 +453,15 @@ function Inventory() {
             id="ghost" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/ghost.png' data-weapontype='1baa85b4-4c70-1284-64bb-6481dfc3bb4e' alt='Ghost' className='pointer-events-none mx-auto w-5/6' />
@@ -457,12 +471,15 @@ function Inventory() {
             id="sheriff" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/sheriff.png' data-weapontype='e336c6b8-418d-9340-d77f-7a9e4cfe0702' alt='Sheriff' className='pointer-events-none mx-auto w-5/6' />
@@ -472,12 +489,15 @@ function Inventory() {
             id="stinger"
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/stinger.png' data-weapontype='f7e1b454-4ad4-1063-ec0a-159e56b58941' alt='Stinger' className='pointer-events-none mx-auto w-5/6' />
@@ -487,12 +507,15 @@ function Inventory() {
             id="spectre" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/spectre.png' data-weapontype='462080d1-4035-2937-7c09-27aa2a5c27a7' alt='Spectre' className='pointer-events-none mx-auto w-5/6' />
@@ -502,12 +525,15 @@ function Inventory() {
             id="bucky" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/bucky.png' data-weapontype='910be174-449b-c412-ab22-d0873436b21b' alt='Bucky' className='pointer-events-none mx-auto w-5/6' />
@@ -517,12 +543,15 @@ function Inventory() {
             id="judge" 
             className={ tile_classes }
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/judge.png' data-weapontype='ec845bf4-4f79-ddda-a3da-0db3774b2794' alt='Judge' className='pointer-events-none mx-auto w-5/6' />
@@ -547,12 +576,15 @@ function Inventory() {
             id="guardian" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/guardian.png' data-weapontype='4ade7faa-4cf1-8376-95ef-39884480959b' alt='Guardian' className='pointer-events-none mx-auto w-5/6' />
@@ -562,12 +594,15 @@ function Inventory() {
             id="phantom" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/phantom.png' data-weapontype='ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a' alt='Phantom' className='pointer-events-none mx-auto w-5/6' />
@@ -577,12 +612,15 @@ function Inventory() {
             id="vandal" 
             className={ tile_classes }
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/vandal.png' data-weapontype='9c82e19d-4575-0200-1a81-3eacf00cf872' alt='Vandal' className='pointer-events-none mx-auto w-5/6' />
@@ -592,12 +630,15 @@ function Inventory() {
             id="marshal" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/marshal.png' data-weapontype='c4883e50-4494-202c-3ec3-6b8a9284f00b' alt='Marshal' className='pointer-events-none mx-auto w-5/6' />
@@ -607,12 +648,15 @@ function Inventory() {
             id="operator" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/operator.png' data-weapontype='a03b24d3-4319-996d-0f8c-94bbfba1dfc7' alt='Operator' className='pointer-events-none mx-auto w-5/6' />
@@ -622,12 +666,15 @@ function Inventory() {
             id="ares" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/ares.png' data-weapontype='55d8a0f4-4274-ca67-fe2c-06ab45efdf58' alt='Ares' className='pointer-events-none mx-auto w-5/6' />
@@ -637,12 +684,15 @@ function Inventory() {
             id="odin" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/odin.png' data-weapontype='63e6c2b6-4a8e-869c-3d4c-e38355226584' alt='Odin' className='pointer-events-none mx-auto w-5/6' />
@@ -652,12 +702,15 @@ function Inventory() {
             id="melee" 
             className={ tile_classes } 
             onClick={
+              isClickable ? 
               (e) => redirectToSkinChanger(
                 e.target.firstChild.getAttribute('data-weapontype'), 
                 e.target.firstChild.getAttribute('data-skin'), 
                 e.target.firstChild.getAttribute('data-skinchroma'), 
                 e.target.firstChild.getAttribute('data-skinlevel')
               )
+              :
+              null
             }
           >
             <img src='/invisible_weapons/melee.png' data-weapontype='2f59173c-4bed-b6c3-2191-dea9b58be9c7' alt='Melee' className='pointer-events-none mx-auto w-2/5' />

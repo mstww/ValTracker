@@ -10,6 +10,7 @@ import OverlayWrapper from '../components/settings/OverlayWrapper';
 import { motion } from 'framer-motion';
 import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
+import APIi18n from '../components/translation/ValApiFormatter';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -47,7 +48,7 @@ async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
 
 const fetchSkins = async (weaponType, lang) => {
   try {
-    const response = await fetch(`https://valorant-api.com/v1/weapons/${weaponType}?language=${lang}`, { keepalive: true });
+    const response = await fetch(`https://valorant-api.com/v1/weapons/${weaponType}?language=${APIi18n(lang)}`, { keepalive: true });
     const json = await response.json();
 
     return { errored: false, items: json.data.skins };
@@ -91,7 +92,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
   }, [ weaponType ]);
 
   React.useEffect(async () => {
-    var skintiers = await(await fetch('https://valorant-api.com/v1/contenttiers?language=' + router.query.lang)).json();
+    var skintiers = await(await fetch('https://valorant-api.com/v1/contenttiers?language=' + APIi18n(router.query.lang))).json();
     setSkinTiers(skintiers.data);
   }, [])
 
@@ -211,7 +212,7 @@ function Skinchanger() {
   }, [ showVideo ]);
 
   React.useEffect(async () => {
-    var skin_data = await(await fetch(`https://valorant-api.com/v1/weapons/skins?language=${router.query.lang}` , { keepalive: true })).json();
+    var skin_data = await(await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(router.query.lang)}` , { keepalive: true })).json();
 
     var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
     var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'))
@@ -672,7 +673,7 @@ function Skinchanger() {
                   + (showSetSkinButton ? '' : 'hidden') 
                   + (setSkinSuccess ? ' bg-green-500 hover:bg-green-400 pointer-events-none cursor-default' : ' bg-button-color hover:bg-button-color-hover')}
                 >
-                  {setSkinSuccess ? LocalText(L, "skins.skinsequip_button.state_2") : LocalText(L, "skins.skinsequip_button.state_1")}
+                  {setSkinSuccess ? LocalText(L, "skins.equip_button.state_2") : LocalText(L, "skins.equip_button.state_1")}
                 </button>
                 <button 
                   onClick={() => { 

@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import fs from 'fs';
+import APIi18n from '../components/translation/ValApiFormatter';
 
 async function getStoreOffers(region, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -81,7 +82,7 @@ async function fetchShop() {
       var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
       var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
   
-      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${on_load.appLang}`)).json();
+      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(on_load.appLang)}`)).json();
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
@@ -205,7 +206,7 @@ async function fetchShop() {
       var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
       var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
   
-      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${on_load.appLang}`)).json();
+      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(on_load.appLang)}`)).json();
   
       for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
         var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
@@ -247,7 +248,7 @@ async function fetchShop() {
       }
       
       try {
-        var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle?language=${on_load.appLang}`)).json();
+        var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle?language=${APIi18n(on_load.appLang)}`)).json();
         
         data.featuredBundle = {
           bundleUUID,
