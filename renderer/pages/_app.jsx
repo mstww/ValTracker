@@ -5,7 +5,7 @@ import { NextUIProvider, createTheme } from '@nextui-org/react';
 
 import '../styles/globals.css';
 
-const theme = createTheme({
+const valtracker_theme = createTheme({
   type: "dark",
   theme: {
     colors: {
@@ -13,15 +13,24 @@ const theme = createTheme({
       text: '#ffffff',
     },
   }
-})
+});
 
+const light_theme = createTheme({
+  type: "light",
+  theme: {
+    colors: {
+      gradient: 'linear-gradient(to right, #2761FF, #BB1CFF)',
+      text: '#141414',
+    },
+  }
+});
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   return (
     <>
-      <NextUIProvider theme={theme}>
+      <NextUIProvider theme={valtracker_theme}>
         <AnimatePresence
           exitBeforeEnter={true}
           onExitComplete={() => window.scrollTo(0, 0)}

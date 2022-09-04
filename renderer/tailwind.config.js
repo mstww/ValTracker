@@ -30,6 +30,21 @@ var legacy_theme = {
   },
 }
 
+var light_theme = {
+  colors: {
+    "maincolor": "#b3b3b3",
+    "maincolor-light": "#d1d1d1",
+    "maincolor-lightest": "#ededed",
+    "gradient-left": "#2761FF",
+    "gradient-right": "#BB1CFF",
+    "button-color": "#2C5AD6",
+    "button-color-hover": "#3C70FF",
+    "button-text": "#ffffff",
+    "global-text": "#000000",
+    "logo-style": "normal"
+  },
+}
+
 module.exports = {
   plugins: [
     themeSwapper({
@@ -44,6 +59,11 @@ module.exports = {
           selectors: ['.legacy'],
           theme: legacy_theme,
         },
+        {
+          name: 'light',
+          selectors: ['.light'],
+          theme: light_theme,
+        }
       ]
     })
   ],
