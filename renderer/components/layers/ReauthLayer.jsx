@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import fs from 'fs';
 import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch';
+import L from '../../locales/translations/reauth.json';
+import LocalText from '../translation/LocalText';
 
 const card_base_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -156,12 +158,6 @@ export default function ReauthLayer() {
     }
   }, [ router ]);
 
-  React.useEffect(() => {
-    if(currentReauthStep > reauthQueue.length) {
-
-    }
-  }, [ currentReauthStep ]);
-
   return(
     <motion.div 
       className='absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-center items-center pointer-events-none z-50 bg-black bg-opacity-80'
@@ -179,9 +175,9 @@ export default function ReauthLayer() {
         animate={reauthShown && currentReauthStep === 0 ? "enter" : "exit"}
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
-        <h2 className='mb-2'>Error</h2>
-        <p className='font-normal text-base'>We failed to log in with <span className='font-bold text-val-red'>{reauthQueue.length}</span> of your accounts. Please click the button below and follow the instructions to log in again.</p>
-        <button className='w-full mt-8' onClick={() => { setCurrentReauthStep(currentReauthStep+1) }}>Proceed</button>
+        <h2 className='mb-2'>{LocalText(L, "first_card.header")}</h2>
+        <p className='font-normal text-base'>{LocalText(L, "first_card.desc", reauthQueue.length)}</p>
+        <button className='w-full mt-8' onClick={() => { setCurrentReauthStep(currentReauthStep+1) }}>{LocalText(L, "first_card.button_text")}</button>
       </motion.div>
       {
         reauthQueue.map((accountData, index) => {
@@ -197,8 +193,8 @@ export default function ReauthLayer() {
               animate={currentReauthStep === localReauthStep ? "enter" : "exit"}
               transition={{ type: 'ease-in', duration: 0.3, delay: (currentReauthStep === localReauthStep ? 0.35 : 0) }}
             >
-              <h2 className='mb-2'>Account {localReauthStep} - {user_data.playerName + '#' + user_data.playerTag}</h2>
-              <p>Click the button below to log in again with this account.</p>
+              <h2 className='mb-2'>{LocalText(L, "account_card.header", localReauthStep, (user_data.playerName + '#' + user_data.playerTag))}</h2>
+              <p>{LocalText(L, "account_card.desc")}</p>
               <button 
                 className='w-full mt-4' 
                 onClick={async () => {
@@ -206,7 +202,7 @@ export default function ReauthLayer() {
                   setCurrentReauthStep(currentReauthStep+1);
                 }}
               >
-                Log in
+                {LocalText(L, "account_card.button_text")}
               </button>
             </motion.div>
           )
@@ -220,9 +216,9 @@ export default function ReauthLayer() {
         animate={currentReauthStep > reauthQueue.length ? "enter" : "exit"}
         transition={{ type: 'ease-in', duration: 0.3, delay: 0.35 }}
       >
-        <h2 className='mb-2'>And that's it!</h2>
-        <p>Thanks for using VALTracker. You can restart the app using the button below.</p>
-        <button className='w-full mt-4' onClick={() => { restartAuthCycle() }}>Restart App</button>
+        <h2 className='mb-2'>{LocalText(L, "final_card.header")}</h2>
+        <p>{LocalText(L, "final_card.desc")}</p>
+        <button className='w-full mt-4' onClick={() => { restartAuthCycle() }}>{LocalText(L, "final_card.button_text")}</button>
       </motion.div>
     </motion.div>
   )

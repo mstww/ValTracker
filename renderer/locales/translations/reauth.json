@@ -1,0 +1,36 @@
+{
+  "en-US": {
+    "first_card": {
+      "header": "Error",
+      "desc": "We failed to log in with {{ val1 }} of your accounts. Please click the button below and follow the instructions to log in again.",
+      "button_text": "Proceed"
+    },
+    "account_card": {
+      "header": "Account {{ val1 }} - {{ val2 }}",
+      "desc": "Click the button below to log in again with this account.",
+      "button_text": "Log in"
+    },
+    "final_card": {
+      "header": "And that's it!",
+      "desc": "Thanks for using VALTracker. You can restart the app using the button below.",
+      "button_text": "Restart App"
+    }
+  },
+  "de-DE": {
+    "first_card": {
+      "header": "Fehler",
+      "desc": "Wir konnten {{ val1 }} deiner Konten nicht wieder einloggen. Folge den Anweisungen um deine Konten erneut einzuloggen.",
+      "button_text": "Weiter"
+    },
+    "account_card": {
+      "header": "Konto {{ val1 }} - {{ val2 }}",
+      "desc": "Klicke auf die Schaltfläche, um dich mit diesem Konto erneut anzumelden.",
+      "button_text": "Log in"
+    },
+    "final_card": {
+      "header": "Und das war's!",
+      "desc": "Danke, dass du VALTracker verwendest. Du kannst die App nun neu starten.",
+      "button_text": "App neu starten"
+    }
+  }
+}

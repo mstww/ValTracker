@@ -1368,3 +1368,22 @@ ol li {
 .setup-content {
   height: calc(100% - 2.75rem);
 }
+
+body[lang="de-DE"] #scoreboard-pos {
+  @apply ml-12;
+}
+
+body[lang="de-DE"] #scoreboard-pos {
+  @apply ml-10 h-auto text-center;
+}
+
+body[lang="de-DE"] #match-stats-1 {
+  width: 30%;
+  @apply ml-4;
+}
+
+body[lang="de-DE"] #rotated-side-text.awards {
+  font-size: 2.5rem;
+  line-height: 2.5rem;
+  @apply mb-2.5 relative right-4;
+}

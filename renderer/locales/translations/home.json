@@ -46,7 +46,7 @@
         "DRAW": "DRAW"
       },
       "bottom_text": {
-        "loaded_matches_count": "{{ val1 }} out of {{ num2 }} Matches shown",
+        "loaded_matches_count": "{{ val1 }} out of {{ val2 }} Matches shown",
         "load_more": "Load more Matches"
       },
       "match_pos": {
@@ -94,6 +94,104 @@
         "fl_5": "Replication",
         "fl_6": "Escalation",
         "fl_7": "Custom"
+      }
+    }
+  },
+  "de-DE": {
+    "component_err": {
+      "err_text": "Fehler beim Laden der Komponente.",
+      "button_text": "Neu laden"   
+    },
+    "top_l": {
+      "bundle_header": "Aktuelle Skinreihe",
+      "contracts": {
+        "level_text": "Level",
+        "xp_text": "VERBLEIBEND",
+        "battle_pass_header": "Battle-Pass Fortschritt",
+        "agent_contract_header": "Agenten-Vertrag Fortschritt"
+      }
+    },
+    "top_r": {
+      "headers": {
+        "h_1": "Headshot% der letzten 8 Matches",
+        "h_2": "Schaden/Runde der letzten 8 Matches",
+        "h_3": "KD der letzten 8 Matches"
+      },
+      "latest_text": "Letztes"
+    },
+    "bot_l": {
+      "errors": {
+        "no_matches_found": "Keine Matches gefunden.",
+        "err_while_fetching": "Irgendwas hat nicht geklappt. Versuch's nochmal!"
+      },
+      "loading_tooltip": "Suche nach neuen Matches...",
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Ungewertet",
+        "competitive": "Gewertet",
+        "unrated": "Ungewertet",
+        "spikerush": "Spike-Ansturm",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Eskalation",
+        "onefa": "Klon-Programm",
+        "snowball": "Schneeballschlacht", 
+        "custom": "Eigenes Spiel",
+        "": "Eigenes Spiel"
+      },
+      "match_outcomes": {
+        "VICTORY": "SIEG",
+        "DEFEAT": "VERLOREN",
+        "DRAW": "GLCHSTND"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val1 }} von {{ val2 }} Matches gezeigt.",
+        "load_more": "Lade mehr Matches"
+      },
+      "match_pos": {
+        "Match-MVP": "Match MVP",
+        "Team-MVP": "Team MVP",
+        "2nd": "2ter",
+        "3rd": "3ter",
+        "4th": "4ter",
+        "5th": "5ter",
+        "6th": "6ter",
+        "7th": "7ter",
+        "8th": "8ter",
+        "9th": "9ter",
+        "10th": "10ter"
+      }
+    },
+    "bot_r": {
+      "stats": {
+        "header": "Statistiken der letzten {{ val1 }} Matches",
+        "stat_1": "Kills/Match",
+        "stat_2": "Kills/Runde",
+        "stat_3": "Siegesrate",
+        "stat_4": "Headshot%"
+      },
+      "best_map": {
+        "header": "Beste Karte",
+        "stats": {
+          "stat_1": "Siegesrate",
+          "stat_2": "KD"
+        }
+      },
+      "best_agent": {
+        "header": "Bester Agent",
+        "stat_1": "Score/Match",
+        "stat_2": "KDA",
+        "stat_3": "Kills/Runde",
+        "stat_4": "Kills/Match"
+      },
+      "match_filter": {
+        "header": "Match-Filter",
+        "fl_1": "Ungewertet",
+        "fl_2": "Gewertet",
+        "fl_3": "Deathmatch",
+        "fl_4": "Spike-Ansturm",
+        "fl_5": "Klon-Programm",
+        "fl_6": "Eskalation",
+        "fl_7": "Eigenes Spiel"
       }
     }
   }

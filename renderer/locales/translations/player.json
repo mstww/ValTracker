@@ -40,7 +40,7 @@
         "DRAW": "DRAW"
       },
       "bottom_text": {
-        "loaded_matches_count": "{{ val1 }} out of {{ num2 }} Matches shown",
+        "loaded_matches_count": "{{ val1 }} out of {{ val2 }} Matches shown",
         "load_more": "Load more Matches"
       },
       "match_pos": {
@@ -55,6 +55,65 @@
         "8th": "8th",
         "9th": "9th",
         "10th": "10th"
+      }
+    }
+  },
+  "de-DE": {
+    "errorReasons": {
+      "400": "Da ist wohl irgendwas falsch gelaufen. Bitte versuche es erneut.",
+      "401": "Du hast nicht die Berechtigung, dieses Spielerprofil zu sehen.",
+      "403": "Wir konnten dich nicht mit Riot's Servern verbinden. Bitte versuche es erneut oder komm später zurück.",
+      "404": "Sorry, wir konnten diesen Spieler nicht finden.",
+      "405": "Da ist wohl irgendwas falsch gelaufen. Bitte versuche es erneut.",
+      "406": "Da ist wohl irgendwas falsch gelaufen. Bitte versuche es erneut.",
+      "408": "Da ist wohl irgendwas falsch gelaufen. Bitte versuche es erneut.",
+      "429": "Das Ratenlimit wurde erreicht. Bitte versuche es in 2 Minuten erneut.",
+      "500": "Der Server hatte Probleme, die Anfrage zu verarbeiten. Bitte versuche es später erneut.",
+      "501": "Der Server hatte Probleme, die Anfrage zu verarbeiten. Bitte versuche es später erneut.",
+      "502": "Der Server hatte Probleme, die Anfrage zu verarbeiten. Bitte versuche es später erneut.",
+      "503": "Der Server ist offline. Bitte versuche es später erneut.",
+      "504": "Der Server hatte Probleme, die Anfrage zu verarbeiten. Bitte versuche es später erneut."
+    },
+    "reload_button_text": "Neu laden",
+    "matches": {
+      "errors": {
+        "no_matches_found": "Keine Matches gefunden.",
+        "err_while_fetching": "Irgendwas hat nicht geklappt. Versuch's nochmal!"
+      },
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Ungewertet",
+        "competitive": "Gewertet",
+        "unrated": "Ungewertet",
+        "spikerush": "Spike-Ansturm",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Eskalation",
+        "onefa": "Klon-Programm",
+        "snowball": "Schneeballschlacht", 
+        "custom": "Eigenes Spiel",
+        "": "Eigenes Spiel"
+      },
+      "match_outcomes": {
+        "VICTORY": "SIEG",
+        "DEFEAT": "VERLOREN",
+        "DRAW": "GLCHSTND"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val1 }} von {{ val2 }} Matches gezeigt.",
+        "load_more": "Lade mehr Matches"
+      },
+      "match_pos": {
+        "Match-MVP": "Match MVP",
+        "Team-MVP": "Team MVP",
+        "2nd": "2ter",
+        "3rd": "3ter",
+        "4th": "4ter",
+        "5th": "5ter",
+        "6th": "6ter",
+        "7th": "7ter",
+        "8th": "8ter",
+        "9th": "9ter",
+        "10th": "10ter"
       }
     }
   }

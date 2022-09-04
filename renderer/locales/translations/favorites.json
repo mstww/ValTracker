@@ -64,5 +64,71 @@
     },
     "loading": "Loading",
     "matches_bottom": "That's it!"
+  },
+  "de-DE": {
+    "modals": {
+      "remove_match": {
+        "header": "Match entfernen?",
+        "desc": "Willst du dieses Match wirklich entfernen?",
+        "desc2": "Du kannst ins Hub gehen um es erneut zu favorisieren.",
+        "button_1": "Match entfernen",
+        "button_2": "Abbruch"
+      }
+    },
+    "matches": {
+      "gamemodes": {
+        "newmap": "Ungewertet",
+        "competitive": "Gewertet",
+        "unrated": "Ungewertet",
+        "spikerush": "Spike-Ansturm",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Eskalation",
+        "onefa": "Klon-Programm",
+        "snowball": "Schneeballschlacht", 
+        "custom": "Eigenes Spiel",
+        "": "Eigenes Spiel"
+      },
+      "match_outcomes": {
+        "VICTORY": "SIEG",
+        "DEFEAT": "VERLOREN",
+        "DRAW": "GLCHSTND"
+      },
+      "match_pos": {
+        "Match-MVP": "Match MVP",
+        "Team-MVP": "Team MVP",
+        "2nd": "2ter",
+        "3rd": "3ter",
+        "4th": "4ter",
+        "5th": "5ter",
+        "6th": "6ter",
+        "7th": "7ter",
+        "8th": "8ter",
+        "9th": "9ter",
+        "10th": "10ter"
+      }
+    },
+    "filters": {
+      "header": "Filter",
+      "modes": {
+        "header": "Mode",
+        "fm_1": "Alle",
+        "fm_2": "Ungewertet",
+        "fm_3": "Gewertet",
+        "fm_4": "Deathmatch",
+        "fm_5": "Spike-Ansturm",
+        "fm_6": "Klon-Programm",
+        "fm_7": "Eskalation",
+        "fm_8": "Eigenes Spiel"
+      },
+      "sort_by": {
+        "header": "Sortiere nach",
+        "fs_1": "Nichts",
+        "fs_2": "KD",
+        "fs_3": "HS%",
+        "fs_4": "ACS"
+      }
+    },
+    "loading": "Lade...",
+    "matches_bottom": "Das war's!"
   }
 }

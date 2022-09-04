@@ -17,5 +17,24 @@
     },
     "overlay_levels": "Levels",
     "add_to_wishlist": "Add to wishlist"
+  },
+  "de-DE": {
+    "bundle_header": "Aktuelle Skinreihe",
+    "daily_shop_header": "Täglicher Store",
+    "night_market_header": "Nachtmarkt",
+    "wallet_header": "Dein Geldbeutel",
+    "timer": {
+      "d_1": "Tag",
+      "d_2": "Tage",
+      "h_1": "Stunde",
+      "h_2": "Stunden",
+      "m_1": "Minute",
+      "m_2": "Minuten",
+      "s_1": "Sekunde",
+      "s_2": "Sekunden",
+      "rem": "verbleibend"
+    },
+    "overlay_levels": "Level",
+    "add_to_wishlist": "Zur Wunschliste hinzufügen"
   }
 }

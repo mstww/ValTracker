@@ -14,7 +14,7 @@ export default function LocalText(json, lang, path, num1replace, num2replace) {
 
   if(typeof res === "string") {
     res = res.replace("{{ val1 }}", num1replace);
-    res = res.replace("{{ num2 }}", num2replace);
+    res = res.replace("{{ val2 }}", num2replace);
   }
 
   return res;

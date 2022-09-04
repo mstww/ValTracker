@@ -1745,18 +1745,21 @@ function Home() {
                 <InfoChart
                   label={LocalText(L, "top_r.headers.h_1")}
                   data={headshotChartData}
+                  LocalLatest={LocalText(L, "top_r.latest_text")}
                 />
               </div>
               <div>
                 <InfoChart
                   label={LocalText(L, "top_r.headers.h_2")}
                   data={damageChartData}
+                  LocalLatest={LocalText(L, "top_r.latest_text")}
                 />
               </div>
               <div>
                 <InfoChart
                   label={LocalText(L, "top_r.headers.h_3")}
                   data={killsDeathsChartData}
+                  LocalLatest={LocalText(L, "top_r.latest_text")}
                 />
               </div>
             </AwesomeSlider>
@@ -1904,7 +1907,7 @@ function Home() {
                             </div>
                           </div>
                           <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                            <div id='scoreline' className='flex flex-col text-center w-1/3'>
+                            <div id='scoreline' className='flex flex-col text-center w-1/2'>
                               <span className={'text-xl ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
                               {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                             </div>
@@ -2020,8 +2023,8 @@ function Home() {
                 </div>
 
                 <div className='flex flex-row justify-between mt-1.5'>
-                  <SmallStatsCard number={winratePercent} desc={LocalText(L, "bot_r.stats.stat_3")} />
-                  <SmallStatsCard number={headshotPercent} desc={LocalText(L, "bot_r.stats.stat_4")} />
+                  <SmallStatsCard number={winratePercent + '%'} desc={LocalText(L, "bot_r.stats.stat_3")} />
+                  <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} />
                 </div>
 
                 <span className='mt-1'>{LocalText(L, "bot_r.best_map.header")}</span>

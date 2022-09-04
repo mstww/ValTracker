@@ -4,6 +4,8 @@ import fetch from 'node-fetch';
 import parser from 'showdown';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import L from '../../locales/translations/whats_new.json';
+import LocalText from '../translation/LocalText';
 
 const md_conv = new parser.Converter();
 
@@ -72,20 +74,21 @@ export default function WhatsNewLayer() {
         >
           <img src='/images/close.svg' className='w-8 p-1 shadow-img' />
         </div>
-        <h2 className='mb-0 pb-0'>VALTracker has been updated!</h2>
-        <p className='relative bottom-2 mt-0 pt-0 text-gray-500'>New Version: v{newVALTrackerVersion}</p>
-        <span>What's new</span>
+        <h2 className='mb-0 pb-0'>{LocalText(L, "header")}</h2>
+        <p className='relative bottom-2 mt-0 pt-0 text-gray-500'>{LocalText(L, "desc", newVALTrackerVersion)}</p>
+        <span>{LocalText(L, "additions_header")}</span>
         <hr id='whats-new-hr' />
         <div className='ml-4 mb-2' dangerouslySetInnerHTML={{ __html: whatsNewAdditions }}></div>
-        <span>New Fixes</span>
+        <span>{LocalText(L, "fixes_header")}</span>
         <hr id='whats-new-hr' />
         <div className='ml-4 mb-2' dangerouslySetInnerHTML={{ __html: whatsNewFixes }}></div>
         <span className='text-sm text-gray-500'>
-          Click 
-          <span className='cursor-pointer text-button-color hover:text-button-color-hover transition-all duration-100 ease-linear'>
-            <Link href={'/settings?tab=patchnotes&lang=' + router.query.lang}> here </Link>
-          </span>
-          to see all Patchnotes 
+          {LocalText(L, "bottom_text.text_1")}
+          <span 
+            className='cursor-pointer text-button-color hover:text-button-color-hover transition-all duration-100 ease-linear'
+            onClick={() => { router.push('/settings?tab=patchnotes&lang=' + router.query.lang) }}
+          > {LocalText(L, "bottom_text.link_text")} </span>
+          {LocalText(L, "bottom_text.text_2")}
         </span>
       </motion.div>
     </motion.div>

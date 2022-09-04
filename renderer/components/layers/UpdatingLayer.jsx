@@ -6,6 +6,8 @@ import { ipcRenderer } from 'electron';
 import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
 import fetch from 'node-fetch';
+import L from '../../locales/translations/updates.json';
+import LocalText from '../translation/LocalText';
 
 const update_card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -157,13 +159,13 @@ function UpdateWindow() {
           transition={{ type: 'ease-in', duration: 0.3 }}
         >
           <div className="mb-0">
-            <h2 className="mb-0">AN UPDATE IS AVAILABLE</h2>
+            <h2 className="mb-0">{LocalText(L, "info_card.header")}</h2>
             <p id="update-info" className='text-gray-500 m-0'>{ info }</p>
             <p className='mb-4 mt-2' id="update-desc">{ desc }</p>
           </div>
           <div id="update-buttons" className=''>
-            <button onClick={() => { fetchUpdate() }}>Download update</button>
-            <button className="text-button" onClick={() => { declineUpdate() }}>Not now</button>
+            <button onClick={() => { fetchUpdate() }}>{LocalText(L, "info_card.button_1")}</button>
+            <button className="text-button" onClick={() => { declineUpdate() }}>{LocalText(L, "info_card.button_2")}</button>
           </div>
         </motion.div>
       </motion.div>
@@ -177,12 +179,12 @@ function UpdateWindow() {
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <div>
-          <span className='mb-4 font-bold text-lg'>UPDATE DOWNLOADED</span>
-          <p className='text-gray-500'>Click to quit, install and then restart.</p>
+          <span className='mb-4 font-bold text-lg'>{LocalText(L, "finished_card.header")}</span>
+          <p className='text-gray-500'>{LocalText(L, "finished_card.desc")}</p>
         </div>
         <div className="progress-bar-wrapper">
-          <button onClick={() => { finishUpdate() }}>Restart App</button>
-          <button className="text-button" onClick={() => { restartLater() }}>Not now</button>
+          <button onClick={() => { finishUpdate() }}>{LocalText(L, "finished_card.button_1")}</button>
+          <button className="text-button" onClick={() => { restartLater() }}>{LocalText(L, "finished_card.button_2")}</button>
         </div>
       </motion.div>
 
@@ -195,7 +197,7 @@ function UpdateWindow() {
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <div>
-          <span className='mb-4 font-bold text-lg'>UPDATE DOWNLOADING</span>
+          <span className='mb-4 font-bold text-lg'>{LocalText(L, "download_card.header")}</span>
           <Progress value={downloadBarProgress} color="gradient" size={'sm'} className={'my-4 bg-maincolor-lightest rounded-sm'} />
         </div>
       </motion.div>

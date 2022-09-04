@@ -1,7 +1,44 @@
 {
   "en-US": {
+    "modals": {
+      "save_modal": {
+        "header": "Save current loadout",
+        "desc": "Enter a name to save this inventory to your Presets.",
+        "input_placeholder": "Preset Name",
+        "button_1_text": "Save Preset",
+        "button_2_text": "Cancel"
+      },
+      "remove_modal": {
+        "header": "Delete current preset",
+        "desc": "Do you really want to delete the current preset?",
+        "desc2": "You can restore it by saving your current inventory again.",
+        "button_1_text": "Delete Preset",
+        "button_2_text": "Cancel"
+      }
+    },
     "save_loadout_button_text": "Save current loadout",
     "delete_preset_button": "Delete current preset",
     "preset_select_placeholder": "Select Preset"
+  },
+  "de-DE": {
+    "modals": {
+      "save_modal": {
+        "header": "Aktuelles Inventar speichern",
+        "desc": "Gebe einen Namen ein, um das aktuelle Inventar als Voreinstellung zu speichern.",
+        "input_placeholder": "Name",
+        "button_1_text": "Voreinstellung speichern",
+        "button_2_text": "Abbruch"
+      },
+      "remove_modal": {
+        "header": "Aktuelle Voreinstellung löschen?",
+        "desc": "Willst du die aktuelle Inventar-Voreinstellung wirklich löschen?",
+        "desc2": "Du kannst sie wiederherstellen, in dem du dein aktueles Inventar erneut speicherst.",
+        "button_1_text": "Voreinstellung löschen",
+        "button_2_text": "Abbruch"
+      }
+    },
+    "save_loadout_button_text": "Aktuelles Inventar speichern",
+    "delete_preset_button": "Aktuelle Voreinstellung löschen",
+    "preset_select_placeholder": "Voreinstellung wählen"
   }
 }

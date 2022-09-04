@@ -9,6 +9,39 @@ import fetch from 'electron-fetch';
 import { Worker } from 'worker_threads';
 import RPC from 'discord-rpc';
 import notifier from 'node-notifier';
+import L from '../translation/main_process.json';
+
+function LocalText(json, path, num1replace, num2replace, num3replace) {
+  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json')) {
+    var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+      
+    if(on_load.appLang === undefined) var lang = 'en-US'
+    else var lang = on_load.appLang;
+  } else {
+    var lang = 'en-US';
+  }
+
+  var str = (lang + '.' + path);
+
+  var res = str.split('.').reduce(function(o, k) {
+    return o && o[k];
+  }, json);
+
+  if(res === undefined) {
+    var str = 'en-US.' + path;
+    var res = str.split('.').reduce(function(o, k) {
+      return o && o[k];
+    }, json);
+  }
+
+  if(typeof res === "string") {
+    res = res.replace("{{ val1 }}", num1replace);
+    res = res.replace("{{ val2 }}", num2replace);
+    res = res.replace("{{ val3 }}", num3replace);
+  }
+
+  return res;
+}
 
 const discord_rps = require("../modules/discord_rps.js");
 
@@ -738,18 +771,7 @@ async function checkForMatch() {
   return;
 }
 
-const gamemodes = {
-  "newmap": "Unrated",
-  "competitive": "Competitive",
-  "unrated": "Unrated",
-  "spikerush": "Spike Rush",
-  "deathmatch": "Deathmatch",
-  "ggteam": "Escalation",
-  "onefa": "Replication",
-  "snowball": "Snowball Fight",
-  "custom": "Custom",
-  "": "Custom"
-}
+const gamemodes = LocalText(L, 'gamemodes');
 
 async function decideRichPresenceData(data) {
   var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
@@ -781,14 +803,14 @@ async function decideRichPresenceData(data) {
         }
 
         if(config.showMode === true) {
-          var details = "Custom Game - In Match";
+          var details = `${gamemodes['custom']} - ${LocalText(L, 'val_rp_details.in_match')}`;
         } else {
-          var details =  "In Match";
+          var details = LocalText(L, 'val_rp_details.in_match');
         }
 
         if(config.showScore === true) {
           if(data.teamScore === null && data.enemyScore === null) {
-            var scores = "Waiting for next round to end...";
+            var scores = LocalText(L, 'val_rp_details.waiting_for_round');
           } else {
             var scores = data.teamScore + " - " + data.enemyScore;
           }
@@ -801,7 +823,7 @@ async function decideRichPresenceData(data) {
 
         setRichPresence(details, scores, map, agent, ingameTimestamp);
       } else if(data.isRange === true) {
-        var details = "The Range";
+        var details = LocalText(L, 'val_rp_details.the_range');
         var map = "range";
         var mode = 'unrated';
 
@@ -825,14 +847,14 @@ async function decideRichPresenceData(data) {
         }
 
         if(config.showMode === true) {
-          var details = gamemodes[data.gameMode] + " - In Match";
+          var details = gamemodes[data.gameMode] + ` - ${LocalText(L, 'val_rp_details.in_match')}`;
         } else {
-          var details =  "In Match";
+          var details = LocalText(L, 'val_rp_details.in_match');
         }
 
         if(config.showScore === true) {
           if(data.teamScore === null && data.enemyScore === null) {
-            var scores = "Waiting for next round to end...";
+            var scores = LocalText(L, 'val_rp_details.waiting_for_round');
           } else {
             var scores = data.teamScore + " - " + data.enemyScore;
           }
@@ -858,10 +880,10 @@ async function decideRichPresenceData(data) {
       var map = data.mapPath.split("/").pop().toLowerCase();
 
       if(config.showMode === true) {
-        var details = gamemodes[data.gameMode] + " - Agent Select";
+        var details = gamemodes[data.gameMode] + ` - ${LocalText(L, 'val_rp_details.agent_select')}`;
         var mode = data.gameMode;
       } else {
-        var details = "Agent Select";
+        var details = LocalText(L, 'val_rp_details.agent_select');
         var mode = null;
       }
 
@@ -881,7 +903,7 @@ async function decideRichPresenceData(data) {
 
       playerAgent = false;
 
-      var details = "Browsing Menus";
+      var details = LocalText(L, 'val_rp_details.menus');
       var image = 'valorant';
 
       setRichPresence(details, null, image, null, menusTimestamp);
@@ -895,7 +917,7 @@ async function decideRichPresenceData(data) {
 function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
   var obj = {
     assets: {
-      large_text: "Playing VALORANT",
+      large_text: LocalText(L, 'val_rp_details.playing_val'),
     },
     timestamps: {},
   };
@@ -946,14 +968,14 @@ async function checkStoreForWishlistItems() {
       var singleSkinsExpirationDate = now.setSeconds(now.getSeconds() + singleSkinsTime);
 
       var hoursLeft = (Math.abs(singleSkinsExpirationDate - Date.now()) / 36e5);
-      var hoursStr = 'hours';
+      var hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.h_1');
 
       if(hoursLeft < 1) {
         hoursLeft = (Math.abs(singleSkinsExpirationDate - Date.now()) / 60000).toFixed(0);
-        hoursStr = 'minutes';
+        hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.m');
       } else if(hoursLeft > 1 && hoursLeft < 2) {
         hoursLeft = '1';
-        hoursStr = 'hour';
+        hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.h_2');
       } else {
         hoursLeft = hoursLeft.toFixed(0);
       }
@@ -970,16 +992,16 @@ async function checkStoreForWishlistItems() {
 
       if(wishlistedSkinsInShop.length === 1) {
         notifier.notify({
-          title: "1 Wishlisted item in your shop!",
-          message: `The ${wishlistedSkinsInShop[0]} is in your daily shop! It will be gone in ${hoursLeft} ${hoursStr}.`,
+          title: LocalText(L, 'skin_wishlist_notifications.notif_1.header'),
+          message: LocalText(L, 'skin_wishlist_notifications.notif_1.desc', wishlistedSkinsInShop[0], hoursLeft, hoursStr),
           icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
           wait: 3,
           appID: 'VALTracker'
         });
       } else if(wishlistedSkinsInShop.length > 1) {
         notifier.notify({
-          title: "Multiple Wishlisted items in your shop!",
-          message: `Multiple wishlisted items are in your daily shop! They will be gone in ${hoursLeft} ${hoursStr}.`,
+          title: LocalText(L, 'skin_wishlist_notifications.notif_2.header'),
+          message: LocalText(L, 'skin_wishlist_notifications.notif_2.desc', hoursLeft, hoursStr),
           icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
           wait: 3,
           appID: 'VALTracker'
@@ -1213,16 +1235,26 @@ var reauth_interval;
     
       if(startedHidden !== undefined && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
         var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+
+        appIcon.on("click", function() {
+          RPState = 'app';
+          sendMessageToWindow('setDRPtoCurrentPage');
+          appIcon.destroy();
+          mainWindow.show();
+        });
+
         var contextMenu = Menu.buildFromTemplate([
           {
-            label: "Show",
+            label: LocalText(L, 'tray_menu.show'),
             click: function () {
+              RPState = 'app';
+              sendMessageToWindow('setDRPtoCurrentPage');
               appIcon.destroy();
               mainWindow.show();
             },
           },
           {
-            label: "Quit",
+            label: LocalText(L, 'tray_menu.quit'),
             click: function () {
               app.isQuiting = true;
               appIcon.destroy();
@@ -1276,9 +1308,17 @@ var reauth_interval;
           mainWindow.hide();
     
           var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+        
+          appIcon.on("click", function() {
+            RPState = 'app';
+            sendMessageToWindow('setDRPtoCurrentPage');
+            appIcon.destroy();
+            mainWindow.show();
+          });
+
           var contextMenu = Menu.buildFromTemplate([
             {
-              label: "Show",
+              label: LocalText(L, 'tray_menu.show'),
               click: function () {
                 RPState = 'app';
                 sendMessageToWindow('setDRPtoCurrentPage');
@@ -1287,7 +1327,7 @@ var reauth_interval;
               },
             },
             {
-              label: "Quit",
+              label: LocalText(L, 'tray_menu.quit'),
               click: function () {
                 app.isQuiting = true;
                 appIcon.destroy();
@@ -1454,7 +1494,7 @@ var reauth_interval;
     
     autoUpdater.on("update-not-available", () => {
       notifier.notify({
-        title: "VALTracker is currently disabled.",
+        title: LocalText(L, 'disabled_notifs.no_update.header'),
         message: appStatus.data.desc,
         icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
         wait: 3,
@@ -1466,7 +1506,7 @@ var reauth_interval;
     
     autoUpdater.on("error", (err) => {
       notifier.notify({
-        title: "VALTracker is currently disabled.",
+        title: LocalText(L, 'disabled_notifs.update_err.header'),
         message: appStatus.data.desc,
         icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
         wait: 3,
@@ -1478,8 +1518,8 @@ var reauth_interval;
     
     autoUpdater.on("update-downloaded", () => {
       notifier.notify({
-        title: "New Update downloaded!",
-        message: "VALTracker has just downloaded a new update. It will now restart.",
+        title: LocalText(L, 'disabled_notifs.update_downloaded.header'),
+        message: LocalText(L, 'disabled_notifs.update_downloaded.desc'),
         icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
         wait: 3,
         appID: 'VALTracker'
@@ -1558,6 +1598,7 @@ ipcMain.on("getSSIDCookie", async function (event, arg) {
     }
   }
 });
+
 ipcMain.on("changeDiscordRP", function (event, arg) {
   let onLoadData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
   let loadData = JSON.parse(onLoadData);

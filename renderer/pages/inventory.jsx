@@ -329,19 +329,19 @@ function Inventory() {
           animate={saveInvCardShown ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.3 }}
         >
-          <h1>Save current loadout</h1>
-          <p>Enter a name to save this inventory to your Presets.</p>
+          <h1>{LocalText(L, "modals.save_modal.header")}</h1>
+          <p>{LocalText(L, "modals.save_modal.desc")}</p>
           <input
             type='text'
             className='bg-button-color text-md font-light placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 shadow-lg hover:shadow-2xl rounded-sm cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
-            placeholder='Preset Name'
+            placeholder={LocalText(L, "modals.save_modal.input_placeholder")}
             autoCorrect='off'
             spellCheck='false'
             ref={loadoutNameRef}
           />
           <div className='mt-4'>
-            <button onClick={() => { saveInventory() }}>Save Preset</button>
-            <button className='text-button' onClick={() => { toggleSaveInvDialogue() }}>Cancel</button>
+            <button onClick={() => { saveInventory() }}>{LocalText(L, "modals.save_modal.button_1_text")}</button>
+            <button className='text-button' onClick={() => { toggleSaveInvDialogue() }}>{LocalText(L, "modals.save_modal.button_2_text")}</button>
           </div>
         </motion.div>
         <motion.div 
@@ -352,18 +352,18 @@ function Inventory() {
           animate={deletePresetCardShown ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.3 }}
         >
-          <h1>Delete current preset</h1>
+          <h1>{LocalText(L, "modals.remove_modal.header")}</h1>
           <p>
-            Do you really want to delete the current preset? 
+            {LocalText(L, "modals.remove_modal.desc")}
             <br />
             ({currentPresetName})
             <br />
-            You can restore it by saving your current inventory again.
+            {LocalText(L, "modals.remove_modal.desc2")}
           </p>
           
           <div className='mt-4'>
-            <button onClick={() => { deleteCurrentPreset() }}>Delete Preset</button>
-            <button className='text-button' onClick={() => { toggleDeleteCurrentPresetDialogue() }}>Cancel</button>
+            <button onClick={() => { deleteCurrentPreset() }}>{LocalText(L, "modals.remove_modal.button_1_text")}</button>
+            <button className='text-button' onClick={() => { toggleDeleteCurrentPresetDialogue() }}>{LocalText(L, "modals.remove_modal.button_2_text")}</button>
           </div>
         </motion.div>
       </motion.div>

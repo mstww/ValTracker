@@ -817,7 +817,7 @@ function FavouriteMatches() {
                                 </div>
                               </div>
                               <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                                <div id='scoreline' className='flex flex-col text-center w-1/3'>
+                                <div id='scoreline' className='flex flex-col text-center w-1/2'>
                                   <span className={'text-xl ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
                                   {match.matchInfo.queueID != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                                 </div>
@@ -990,7 +990,7 @@ function FavouriteMatches() {
                           </div>
                         </div>
                         <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                          <div id='scoreline' className='flex flex-col text-center w-1/3'>
+                          <div id='scoreline' className='flex flex-col text-center w-1/2'>
                             <span className={'text-xl ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
                             {match.matchInfo.queueID != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                           </div>

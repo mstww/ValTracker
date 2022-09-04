@@ -701,7 +701,7 @@ function PlayerInfo() {
                           </div>
                         </div>
                         <div id='match-score' className='w-1/4 flex flex-row items-center'>
-                          <div id='scoreline' className='flex flex-col text-center w-1/3'>
+                          <div id='scoreline' className='flex flex-col text-center w-1/2'>
                             <span className={'text-2xl ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
                             {activeQueueTab != 'deathmatch' ? (<span className='text-xl'>{matchScore}</span>) : ''}
                           </div>

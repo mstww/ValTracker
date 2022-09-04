@@ -21,7 +21,7 @@
         "s2": "Fetching Player Details...",
         "s3": "Fetching Player Rank...",
         "s4": "Writing to file...",
-        "err": "Error! Please contact the developer for help.",
+        "err": "Error! Please join our Discord Server for help.",
         "win_closed": "Login Window closed."
       },
       "button_1_text": "Continue",
@@ -35,6 +35,44 @@
     "page_4": {
       "header": "And that's it!",
       "finish_button_text": "Finish Setup"
+    }
+  },
+  "de-DE": {
+    "progress": {
+      "lang": "Sprache",
+      "riot": "Riot Login",
+      "confirm": "Bestätigung",
+      "finish": "Setup beenden"
+    },
+    "page_1": {
+      "header": "Wähle eine Sprache",
+      "info": "Du kannst sie später in den Einstellungen ändern.",
+      "button_1_text": "Weiter"
+    },
+    "page_2": {
+      "header": "Logge dich mit deinem Riot-Konto ein",
+      "login_button_text_1": "Login-Fenster öffnen",
+      "login_button_text_2": "Fertig!",
+      "loading_states": {
+        "s0": "Rufe Region ab...",
+        "s1": "Täglicher Shop wird abgerufen...",
+        "s2": "Abrufen von Spielerdetails...",
+        "s3": "Abrufen des Spielerrangs...",
+        "s4": "Schreibe zu Datei...",
+        "err": "Fehler! Bitte trete unserem Discord-Server für Hilfe bei.",
+        "win_closed": "Login-Fenster geschlossen."
+      },
+      "button_1_text": "Weiter",
+      "button_2_text": "Zurück"
+    },
+    "page_3": {
+      "header": "Bestätige die Detail",
+      "button_1_text": "Weiter",
+      "button_2_text": "Zurück"
+    },
+    "page_4": {
+      "header": "Und das war's!",
+      "finish_button_text": "Setup beenden"
     }
   }
 }

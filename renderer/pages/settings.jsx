@@ -140,6 +140,8 @@ function Settings() {
   } else {
     var initialActive = 'app';
   }
+  
+  var errors = LocalText(L, 'errors');
 
   const [ activeSettingsGroup, setActiveGroup ] = React.useState(initialActive);
 
@@ -453,7 +455,7 @@ function Settings() {
         var userAccounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
         for(var i = 0; i < userAccounts.length; i++) {
           if(userAccounts[i].split('.')[0] === puuid) {
-            ipcRenderer.send('relayTextbox', 'This account has already been added.');
+            ipcRenderer.send('relayTextbox', errors.acc_already_added);
             return false;
           }
         }
@@ -597,7 +599,7 @@ function Settings() {
       ipcRenderer.send('restartApp');
     } else {
       closePopup(setOther_applySettingsCode);
-      ipcRenderer.send('relayTextbox', 'Invalid Profile Code.');
+      ipcRenderer.send('relayTextbox', errors.invalid_settings_code);
     }
   }
 

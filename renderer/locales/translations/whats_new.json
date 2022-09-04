@@ -1,0 +1,24 @@
+{
+  "en-US": {
+    "header": "VALTracker has been updated!",
+    "desc": "New Version: v{{ val1 }}",
+    "additions_header": "What's new",
+    "fixes_header": "New Fixes",
+    "bottom_text": {
+      "text_1": "Click",
+      "link_text": "here",
+      "text_2": "to see all Patchnotes"
+    }
+  },
+  "de-DE": {
+    "header": "VALTracker wurde geupdatet!",
+    "desc": "Neue Version: v{{ val1 }}",
+    "additions_header": "Was gibt's neues?",
+    "fixes_header": "Neue Fehlerbehebungen",
+    "bottom_text": {
+      "text_1": "Klicke",
+      "link_text": "hier",
+      "text_2": "um die kompletten Patchnotes zu sehen."
+    }
+  }
+}

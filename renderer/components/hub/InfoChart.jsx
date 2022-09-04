@@ -1,7 +1,7 @@
 import React from 'react';
 import { VictoryChart, VictoryArea, VictoryTheme, VictoryAxis } from 'victory';
 
-export default function InfoChart({ label, data }) {
+export default function InfoChart({ label, data, LocalLatest }) {
   
   return(
     <>
@@ -32,7 +32,7 @@ export default function InfoChart({ label, data }) {
             }}
           />
           <VictoryAxis
-            tickFormat={(y) => y == 8 ? ('Latest') : (9 - (y))}
+            tickFormat={(y) => y == 8 ? (LocalLatest) : (9 - (y))}
             //tickFormat={["8", "7", "6", "5", "4", "3", "2", "Latest"]}
             style={{
               axis: {

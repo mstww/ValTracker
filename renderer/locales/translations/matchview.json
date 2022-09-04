@@ -5,6 +5,18 @@
       "DEFEAT": "DEFEAT",
       "DRAW": "DRAW"
     },
+    "gamemodes": {
+      "newmap": "Unrated",
+      "competitive": "Competitive",
+      "unrated": "Unrated",
+      "spikerush": "Spike Rush",
+      "deathmatch": "Deathmatch",
+      "ggteam": "Escalation",
+      "onefa": "Replication",
+      "snowball": "Snowball Fight", 
+      "custom": "Custom",
+      "": "Custom"
+    },
     "nav": {
       "overview": "Overview",
       "scoreboard": "Scoreboard"
@@ -88,6 +100,110 @@
         "fbs": "First Bloods",
         "dmg_round": "Damage/Round",
         "dmg": "Damage"
+      }
+    }
+  },
+  "de-DE": {
+    "match_outcomes": {
+      "VICTORY": "SIEG",
+      "DEFEAT": "VERLOREN",
+      "DRAW": "GLCHSTND"
+    },
+    "gamemodes": {
+      "newmap": "Ungewertet",
+      "competitive": "Gewertet",
+      "unrated": "Ungewertet",
+      "spikerush": "Spike-Ansturm",
+      "deathmatch": "Deathmatch",
+      "ggteam": "Eskalation",
+      "onefa": "Klon-Programm",
+      "snowball": "Schneeballschlacht", 
+      "custom": "Eigenes Spiel",
+      "": "Eigenes Spiel"
+    },
+    "nav": {
+      "overview": "Übersicht",
+      "scoreboard": "Scoreboard"
+    },
+    "match_info": {
+      "header": "MATCH-INFORMATIONEN",
+      "date_format": "D. MMMM YYYY, h:mm a",
+      "tooltips": {
+        "date": "Match-Datum",
+        "time": "Match-Länge",
+        "mode": "Modus",
+        "region_server": "Region // Server",
+        "patch": "Patch"
+      }
+    },
+    "awards": {
+      "rotated_text": "MEDAILLEN",
+      "most_money": {
+        "title": "Monopoly Mann",
+        "desc": "Du hast das meiste Geld ausgegeben."
+      },
+      "least_money": {
+        "title": "Geizhals",
+        "desc": "Du hast am wenigsten Geld ausgegeben."
+      },
+      "most_kills": {
+        "title": "Ratatatatata!",
+        "desc": "Du hattest die meisten Kills."
+      },
+      "most_assists": {
+        "title": "Pocket Sage",
+        "desc": "Du hattest die meisten Assists."
+      },
+      "most_acs": {
+        "title": "Maschine",
+        "desc_1": "Du hattest den höchsten ACS.",
+        "desc_2": "Du hattest den höchsten Score." 
+      },
+      "most_fbs": {
+        "title": "Need for Speed",
+        "desc": "Du hattest die meisten First-Bloods."
+      },
+      "most_dmg": {
+        "title": "Carglass repariert...",
+        "desc": "Du hast den meisten Schaden verursacht."
+      },
+      "best_hs": {
+        "title": "Der cheated!",
+        "desc": "Du hattest den höchsten Headshot%."
+      }
+    },
+    "round_results": {
+      "round_text": "Runde",
+      "tks": "Team-Kills",
+      "pks": "Spieler-Kills",
+      "tooltips": {
+        "Eliminated": "Eliminiert",
+        "Bomb-detonated": "Bombe explodiert",
+        "Bomb-defused": "Bomb entschärft",
+        "side-switch": "Seitenwechsel"
+      }
+    },
+    "player_stats": {
+      "header": "SPIELER-STATISTIKEN",
+      "stats": {
+        "dmg_round": "Schaden/Runde",
+        "dmg": "Schaden",
+        "fbs": "First-Bloods",
+        "hit_percent": "Hit-Prozente:"
+      },
+      "tooltips": {
+        "dmg_round": "Schaden/Runde",
+        "dmg": "Schaden",
+        "fbs": "First-Bloods",
+        "hit_percent": "Hit-Prozente"
+      }
+    },
+    "scoreboard": {
+      "headers": {
+        "agent_name": "Agent und Name",
+        "fbs": "First-Bloods",
+        "dmg_round": "Schaden/Runde",
+        "dmg": "Schaden"
       }
     }
   }

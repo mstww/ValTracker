@@ -1,5 +1,9 @@
 {
   "en-US": {
+    "errors": {
+      "acc_already_added": "This account has already been added.",
+      "invalid_settings_code": "Invalid Profile Code."
+    },
     "nav": {
       "el_1": "General",
       "el_2": "Rich Presences",
@@ -167,6 +171,10 @@
     }
   },
   "de-DE": {
+    "errors": {
+      "acc_already_added": "Dieses Konto wurde bereits hinzugefügt.",
+      "invalid_settings_code": "Der eingegebene Code ist kein Einstellungs-Profil."
+    },
     "nav": {
       "el_1": "Allgemein",
       "el_2": "Rich Presences",

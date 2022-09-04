@@ -26,5 +26,33 @@
       "video_button": "Show Video",
       "wishlist_button": "Add to wishlist"
     }
+  },
+  "de-DE": {
+    "cards": {
+      "search_placeholder": "Suche nach einer Karte",
+      "switch_label": "Zeige Karten die du nicht besitzt",
+      "equip_button": {
+        "state_1": "Karte ausrüsten",
+        "state_2": "Fertig"
+      }
+    },
+    "sprays": {
+      "search_placeholder": "Suche nach einem Spray",
+      "switch_label": "Zeige Sprays die du nicht besitzt",
+      "equip_button": {
+        "state_1": "Spray ausrüsten",
+        "state_2": "Fertig"
+      }
+    },
+    "skins": {
+      "search_placeholder": "Suche nach einem Skin",
+      "switch_label": "Zeige Skins die du nicht besitzt",
+      "equip_button": {
+        "state_1": "Skin ausrüsten",
+        "state_2": "Fertig"
+      },
+      "video_button": "Zeige Video",
+      "wishlist_button": "Zu Wunschliste hinzufügen"
+    }
   }
 }

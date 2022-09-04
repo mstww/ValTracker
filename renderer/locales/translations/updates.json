@@ -1,0 +1,34 @@
+{
+  "en-US": {
+    "info_card": {
+      "header": "AN UPDATE IS AVAILABLE",
+      "button_1": "Download update",
+      "button_2": "Not now"
+    },
+    "download_card": {
+      "header": "UPDATE DOWNLOADING"
+    },
+    "finished_card": {
+      "header": "UPDATE DOWNLOADED",
+      "desc": "Click to quit, install and then restart.",
+      "button_1": "Restart App",
+      "button_2": "Not now"
+    }
+  },
+  "de-DE": {
+    "info_card": {
+      "header": "UPDATE VERFÜGBAR",
+      "button_1": "Update herunterladen",
+      "button_2": "Abbruch"
+    },
+    "download_card": {
+      "header": "UPDATE LÄDT HERUNTER"
+    },
+    "finished_card": {
+      "header": "UPDATE HERUNTERGELADEN",
+      "desc": "Schließe die App, installiere das Update und starte dann neu.",
+      "button_1": "Neu starten",
+      "button_2": "Später"
+    }
+  }
+}
