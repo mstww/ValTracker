@@ -294,7 +294,7 @@ function Setup() {
             <div className='flex flex-row flex-wrap w-full mb-4 mt-2'>
               {Object.keys(Langs).map((lang, index) => {
                 return (
-                  <LanguageCheckbox locale={lang} selectedLang={currentSelectedLanguage} displayName={Langs[lang].displayName} click={() => { setCurrentSelectedLanguage(lang); setCurrentLanguageDisplayName(Langs[lang].displayName) }} />
+                  <LanguageCheckbox key={index} locale={lang} selectedLang={currentSelectedLanguage} displayName={Langs[lang].displayName} click={() => { setCurrentSelectedLanguage(lang); setCurrentLanguageDisplayName(Langs[lang].displayName) }} />
                 )
               })}
             </div>
@@ -326,7 +326,7 @@ function Setup() {
               <Progress value={progress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded-sm relative bottom-0 mt-0 w-2/6 ' + (isProgressShown ? '' : 'hidden')} />
               <div className={'relative bottom-3.5 font-thin text-gray-500 text-left w-2/6 ' + (isProgressShown ? 'text-left w-2/6' : 'text-center')}>{loadingState}</div>
             </div>
-            <div className='absolute bottom-0 left-2'>
+            <div className='absolute bottom-0.5 left-2'>
               {
                 isLoginCompleted ? 
                 (
@@ -337,7 +337,7 @@ function Setup() {
                       setCurrentPage("3");
                       setOverallProgress(62);
                     }}
-                    className={''}
+                    className={'bottom-0.5 relative'}
                   >
                     {LocalText(L, currentSelectedLanguage, "page_2.button_1_text")}
                   </button>
@@ -352,7 +352,7 @@ function Setup() {
                   setCurrentPage("1");
                   setOverallProgress(6);
                 }}
-                className={'text-button relative inline-flex flex-row items-center ' + (isLoginCompleted ? 'right-5 top-1' : ' right-10 top-3')}
+                className={'text-button relative inline-flex flex-row items-center ' + (isLoginCompleted ? 'right-5 top-0.5' : ' right-8 top-0.5')}
               >
                 <img src='/images/back_arrow.svg' className='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, "page_2.button_2_text")}
               </button>
