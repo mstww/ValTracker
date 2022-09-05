@@ -750,7 +750,7 @@ function Inventory() {
           <div id='inv_selector' className='flex items-center justify-center'>
             <div className={'w-full flex items-center justify-center ' + (showDeletePresetButton ? '' : 'hidden')}>
               <button className={'w-5/6 '} onClick={() => { toggleDeleteCurrentPresetDialogue() }}>
-                {LocalText(L, "save_loadout_button_text")}
+                {LocalText(L, "delete_preset_button")}
               </button>
             </div>
           </div>
