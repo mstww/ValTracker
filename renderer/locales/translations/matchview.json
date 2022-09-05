@@ -85,7 +85,8 @@
         "dmg_round": "Damage/Round",
         "dmg": "Damage",
         "fbs": "First Bloods",
-        "hit_percent": "Hit Percentages:"
+        "hit_percent": "Hit Percentages:",
+        "abilities_per_round": "Ability Usage/Round:"
       },
       "tooltips": {
         "dmg_round": "Damage/Round",
@@ -189,7 +190,8 @@
         "dmg_round": "Schaden/Runde",
         "dmg": "Schaden",
         "fbs": "First-Bloods",
-        "hit_percent": "Hit-Prozente:"
+        "hit_percent": "Hit-Prozente:",
+        "abilities_per_round": "Fähigkeiten/Runde:"
       },
       "tooltips": {
         "dmg_round": "Schaden/Runde",

@@ -582,7 +582,7 @@ function FavouriteMatches() {
   }, [ activeQueueTab ]);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
+    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query ? router.query.lang : 'en-US'))).json()
     setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
   }, []);
   

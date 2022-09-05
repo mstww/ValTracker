@@ -7,6 +7,8 @@ import { Tooltip, Spacer } from '@nextui-org/react'
 import AwardTile from '../components/matchview/AwardTile';
 import L from '../locales/translations/matchview.json';
 import LocalText from '../components/translation/LocalText';
+import fs from 'fs';
+import fetch from 'node-fetch';
 
 const overview_vars_first_load = {
   hidden: { opacity: 0, x: 0, y: 200, scale: 1, display: 'none' },
@@ -84,6 +86,9 @@ function Matchview() {
   const [ playerLsPercent, setPlayerLsPercent ] = React.useState('');
   const [ playerFBs, setPlayerFBs ] = React.useState('');
 
+  const [ playerAbilityUsagePerRound, setPlayerAbilityUsagePerRound ] = React.useState({});
+  const [ playerAgentAbilities, setPlayerAgentAbilities ] = React.useState([]);
+
   // -------------------- PLAYER ACHIEVEMENTS --------------------
 
   const [ hasPlayerSpentMost, setHasPlayerSpentMost ] = React.useState(false);
@@ -110,6 +115,7 @@ function Matchview() {
   
   React.useEffect(() => {
     if(sessionStorage.getItem("knownMatchData")) {
+      var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
       var knownMatchData = JSON.parse(sessionStorage.knownMatchData);
       var roundData = JSON.parse(sessionStorage.roundData);
       var teamData = JSON.parse(sessionStorage.teamData);
@@ -117,8 +123,16 @@ function Matchview() {
 
       if(knownMatchData.gameMode !== 'deathmatch' && knownMatchData.gameMode !== 'ggteam' && knownMatchData.gameMode !== 'onefa') {
         const allPlayerAwardStats = [];
+        var playerAbilityUsage = {};
   
         for(var i = 0; i < playerData.length; i++) {
+          if(playerData[i].subject === user_data.playerUUID) {
+            playerAbilityUsage.Ability1 = (playerData[i].stats.abilityCasts.ability1Casts / roundData.length).toFixed(1),
+            playerAbilityUsage.Ability2 = (playerData[i].stats.abilityCasts.ability2Casts / roundData.length).toFixed(1),
+            playerAbilityUsage.Grenade = (playerData[i].stats.abilityCasts.grenadeCasts / roundData.length).toFixed(1),
+            playerAbilityUsage.Ultimate = (playerData[i].stats.abilityCasts.ultimateCasts / roundData.length).toFixed(1)
+          }
+
           allPlayerAwardStats[playerData[i].subject] = {};
   
           allPlayerAwardStats[playerData[i].subject].subject = playerData[i].subject;
@@ -291,6 +305,8 @@ function Matchview() {
         setPlayerBsPercent(knownMatchData.bodyShotsPercentRounded);
         setPlayerLsPercent(knownMatchData.legShotsPercentRounded);
         setPlayerFBs(knownMatchData.playerFBs);
+
+        setPlayerAbilityUsagePerRound(playerAbilityUsage);
   
         setRounds(roundData);
       } else if(knownMatchData.gameMode === 'deathmatch') {
@@ -357,6 +373,15 @@ function Matchview() {
       } else if(knownMatchData.gameMode === 'onefa') {
         setIsEscalation(true);
       }
+    }
+  }, []);
+
+  React.useEffect(async () => {
+    if(sessionStorage.getItem("knownMatchData")) {
+      var knownMatchData = JSON.parse(sessionStorage.knownMatchData);
+      var agent_data = await(await fetch(`https://valorant-api.com/v1/agents/${knownMatchData.playerAgent}?language=${router.query.lang}`)).json();
+      console.log(agent_data);
+      setPlayerAgentAbilities(agent_data.data.abilities);
     }
   }, []);
 
@@ -597,7 +622,7 @@ function Matchview() {
                           }
                           <div className='ml-2.5 flex flex-col relative'>
                             <span className={'text-xl relative bottom-1.5 ' + (hasPlayerTeamWonRound ? 'text-val-blue' : 'text-val-red')}>
-                              {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : LocalText(L, "match_outcomes.VICTORY")}
+                              {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : LocalText(L, "match_outcomes.DEFEAT")}
                             </span>
                             <span className='absolute -bottom-2 left-px font-light text-sm'>{LocalText(L, "round_results.round_text")} {index+1}</span>
                           </div>
@@ -669,47 +694,60 @@ function Matchview() {
             </span>
           </div>
           <div id='matchview-gradient-overlay' className='absolute top-0 h-full w-full left-0 z-30'>
-            <div className='w-1/2 ml-auto p-4 relative h-full'>
+            <div className='2xl:w-1/2 w-2/3 ml-auto p-4 relative h-full overflow-auto'>
               <span className='text-xl'>{LocalText(L, "player_stats.header")}</span>
               <hr />
               <ul className='mt-4'>
-                <li className='flex flex-row items-center mb-6'>
+                <li className='flex flex-row items-center mb-4'>
                   <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded-sm'><img src='/images/signal_graph.svg' className='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerKD} ({playerKDA})</span>
                 </li>
-                <li className='flex flex-row items-center mb-6'>
+                <li className='flex flex-row items-center mb-4'>
                   <Tooltip content={'ACS'} color="error" placement={'left'} className='rounded-sm'><img src='/images/arrow_increase.svg' className='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerACS} {isEscalation === true ? 'Score' : 'ACS'}</span>
                 </li>
-                <li className='flex flex-row items-center mb-6'>
+                <li className='flex flex-row items-center mb-4'>
                   <Tooltip content={isEscalation === true ? LocalText(L, "player_stats.tooltips.dmg") : LocalText(L, "player_stats.tooltips.dmg_round")} color="error" placement={'left'} className='rounded-sm'><img src='/images/skull.svg' className='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerKillsPerRound} {isEscalation === true ? LocalText(L, "player_stats.stats.dmg") : LocalText(L, "player_stats.stats.dmg_round")}</span>
                 </li>
-                <li className={'flex flex-row items-center mb-6 ' + (isEscalation === true ? 'hidden' : '')}>
+                <li className={'flex flex-row items-center mb-4 ' + (isEscalation === true ? 'hidden' : '')}>
                   <Tooltip content={LocalText(L, "player_stats.stats.fbs")} color="error" placement={'left'} className='rounded-sm'><img src='/images/flash.svg' className='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2 '>{playerFBs} {LocalText(L, "player_stats.stats.fbs")}</span>
                 </li>
-                <li className='flex flex-row items-center mb-6'>
+                <li className='flex flex-row items-center mb-4'>
                   <Tooltip content={LocalText(L, "player_stats.stats.hit_percent")} color="error" placement={'left'} className='rounded-sm'><img src='/images/crosshair.svg' className='w-7 relative top-px transform rotate-45 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2.5'>{LocalText(L, "player_stats.stats.hit_percent")}</span>
                 </li>
-                <li className='flex flex-row items-center mb-6 h-56 ml-4'>
-                  <img src='/images/human_body_silhouette.svg' className='h-56 opacity-80 shadow-img' />
+                <li className='flex flex-row items-center mb-4 2xl:h-56 h-44 ml-4'>
+                  <img src='/images/human_body_silhouette.svg' className='2xl:h-56 h-44 opacity-80 shadow-img' />
                   <div className='flex flex-col justify-between h-full ml-6'>
                     <div className='relative top-1.5'>
-                      <div className='border-b w-16 absolute top-3 right-10' />
-                      <span className='text-lg'>{playerHsPercent}%</span>
+                      <div className='border-b 2xl:w-16 w-14 absolute 2xl:top-3 top-1.5 right-10' />
+                      <span className='relative 2xl:bottom-0 bottom-2 text-lg'>{playerHsPercent}%</span>
                     </div>
                     <div className='relative bottom-6'>
-                      <div className='border-b w-14 absolute top-3 right-10' />
+                      <div className='border-b 2xl:w-14 w-12 absolute top-3 right-10' />
                       <span className='text-lg'>{playerBsPercent}%</span>
                     </div>
                     <div className='relative bottom-8'>
-                      <div className='border-b w-12 absolute top-3 right-10' />
+                      <div className='border-b 2xl:w-12 w-10 absolute top-3 right-10' />
                       <span className='text-lg'>{playerLsPercent}%</span>
                     </div>
                   </div>
                 </li>
+                <li className='flex flex-row items-center mb-4'>
+                  <span className='relative text-lg top-0.5'>{LocalText(L, "player_stats.stats.abilities_per_round")}</span>
+                </li>
+                {
+                  playerAgentAbilities.map((ability, index) => {
+                    return (
+                      <li className='flex flex-row items-center mb-4 h-8 ml-4' key={index}>
+                        <img src={ability.displayIcon} className='h-full mr-2' />
+                        <span className='text-lg'>{ability.displayName} - {playerAbilityUsagePerRound[ability.slot]}</span>
+                      </li>
+                    )
+                  })
+                }
               </ul>
             </div>
           </div>
