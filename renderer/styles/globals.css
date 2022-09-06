@@ -762,6 +762,7 @@ h5 {
 }
 
 #inventory-card-wrapper {
+  position: relative;
   height: calc(60% - 0.2rem)
 }
 
@@ -1398,4 +1399,18 @@ body[lang="de-DE"] #rotated-side-text.awards {
   font-size: 2.5rem;
   line-height: 2.5rem;
   @apply mb-2.5 relative right-4;
+}
+
+#title-div {
+  width: calc(90%);
+}
+
+@media (min-width: 1536px) {
+  #title-div {
+    width: calc(76%);
+  }
+}
+
+#buddy-div {
+  pointer-events: none !important;
 }

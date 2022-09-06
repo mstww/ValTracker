@@ -174,6 +174,7 @@ function Skinchanger() {
 
   const [ showSetSkinButton, setShowSetSkinButton ] = React.useState(true);
   const [ showWishlistButton, setShowWishlistButton ] = React.useState(false);
+  const [ lockWishlistButton, setLockWishlistButton ] = React.useState(true);
 
   const [ showUnownedSkins, setShowUnownedSkins ] = React.useState(false);
 
@@ -686,7 +687,7 @@ function Skinchanger() {
               </div>
               <div className='flex flex-row w-full mt-2'>
                 <button 
-                  className={'w-2/3 mr-2 flex flex-row items-center justify-center ' + (showWishlistButton ? '' : 'hidden')}
+                  className={'w-2/3 mr-2 flex flex-row items-center justify-center ' + (showWishlistButton === true && lockWishlistButton === false ? '' : 'hidden')}
                   onClick={() => {
                     if(isWishlisted === true) {
                       delete wishlistedItems[wishlistPosition];
@@ -744,7 +745,7 @@ function Skinchanger() {
                 </button>
                 {
                   activeSkinPrice ? 
-                  <div className={'flex flex-row items-center text-center border-2 border-maincolor-lightest rounded-sm py-2 ' + (showWishlistButton ? 'w-1/3' : 'w-full')}>
+                  <div className={'flex flex-row items-center text-center border-2 border-maincolor-lightest rounded-sm py-2 ' + (showWishlistButton === true && lockWishlistButton === false ? 'w-1/3' : 'w-full')}>
                     <span className='flex flex-row w-full text-center items-center justify-center'>{activeSkinPrice} <img src='/images/vp_icon.png' className='w-6 ml-1' /></span>
                   </div>
                   :

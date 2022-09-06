@@ -929,6 +929,7 @@ function Home() {
         }
         return;
       } else if(new_matches_amount >= 4) {
+        setIsSilentLoading(false);
         fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false);
         return;
       }
@@ -1587,6 +1588,7 @@ function Home() {
 
   React.useEffect(() => {
     ipcRenderer.on("hub_smartLoadNewMatches", async function(event, args) {
+      fetchContractData();
       if(args !== 'newmap' || args !== 'snowball') {
         if(args === activeQueueTab) {
           await fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);

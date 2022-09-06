@@ -7,6 +7,7 @@ import { ipcRenderer } from 'electron';
 import { motion } from 'framer-motion';
 import L from '../locales/translations/inventory.json';
 import LocalText from '../components/translation/LocalText';
+import { useFirstRender } from '../components/useFirstRender';
 
 async function getPlayerLoadout(region, puuid, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -60,6 +61,7 @@ const backdrop_variants = {
 
 function Inventory() {
   const router = useRouter();
+  const firstRender = useFirstRender();
 
   const [ player_items, setPlayerItems ] = React.useState({});
   const [ player_loadout, setPlayerLoadout ] = React.useState({});
@@ -74,6 +76,8 @@ function Inventory() {
   const [ showDeletePresetButton, setShowDeletePresetButton ] = React.useState(false);
 
   const [ currentPresetName, setCurrentPresetName ] = React.useState('0');
+
+  const [ playerTitle, setPlayerTitle ] = React.useState('');
 
   const loadoutNameRef = React.useRef(null);
   const [ isClickable, setIsClickable ] = React.useState(false);
@@ -122,6 +126,13 @@ function Inventory() {
         img.setAttribute('data-skin', gun.SkinID);
         img.setAttribute('data-skinchroma', gun.ChromaID);
         img.setAttribute('data-skinlevel', gun.SkinLevelID);
+
+        if(gun.CharmID) {
+          console.log(gun.CharmID);
+          var img = document.querySelector(`img[data-weaponForBuddy="${gun.ID}"]`);
+          
+          img.setAttribute('src', `https://media.valorant-api.com/buddies/${gun.CharmID}/displayicon.png`);
+        }
       });
 
       player_loadout_data.Sprays.forEach(spray => {
@@ -179,7 +190,14 @@ function Inventory() {
     }
   }, []);
 
-  var tile_classes = 'bg-maincolor-lightest hover:bg-opacity-70 transition-all duration-100 ease-in rounded-sm relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
+  React.useEffect(async () => {
+    if(!firstRender) {
+      var title = await(await fetch(`https://valorant-api.com/v1/playertitles/${player_loadout.Identity.PlayerTitleID}`)).json();
+      setPlayerTitle(title.data.titleText);
+    }
+  }, [ player_loadout ]);
+
+  var tile_classes = 'weapon-tile bg-maincolor-lightest border-2 border-maincolor-lightest hover:bg-opacity-70 transition-all duration-100 ease-in rounded-sm relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
@@ -363,35 +381,41 @@ function Inventory() {
             <img 
               id='inventory-card'
               data-equipslot='playercard'
-              className='shadow-lg hover:shadow-2xl transition-all duration-100 ease-linear h-full mx-auto border-2 border-maincolor-lightest rounded-sm mb-4 cursor-pointer' 
+              className='shadow-lg hover:shadow-2xl transition-all duration-100 cursor-default ease-linear h-full mx-auto border-2 border-maincolor-lightest rounded-sm mb-4' 
               src='/invisible_weapons/large_card.png'
               onClick={(e) => { redirectToCardChanger(e.target.getAttribute('data-card')) }}
             />
+            <div 
+              id="title-div" 
+              className='relative bottom-40 mx-auto h-8 border-2 bg-black bg-opacity-70 border-maincolor-lightest flex items-center justify-center hover:bg-opacity-20 transition-all duration-100 ease-linear cursor-pointer'
+            >
+              <span>{playerTitle}</span>
+            </div>
           </div>
           <div className='h-2/5 mt-2' id='inventory-sprays'>
             <div 
-              className={'relative mx-auto w-4/5 h-1/3 ' + (tile_classes)}
+              className={'relative mx-auto w-5/6 2xl:w-4/5 h-1/3 ' + (tile_classes)}
               onClick={(e) => { 
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='0814b2fe-4512-60a4-5288-1fbdcec6ca48' className='h-5/6 pt-4 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='0814b2fe-4512-60a4-5288-1fbdcec6ca48' className='h-5/6 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
             </div> 
             <div 
-              className={'relative mx-auto w-4/5 h-1/3 ' + (tile_classes)}
+              className={'relative mx-auto w-5/6 2xl:w-4/5 h-1/3 ' + (tile_classes)}
               onClick={(e) => {
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='04af080a-4071-487b-61c0-5b9c0cfaac74' className='h-5/6 pt-4 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='04af080a-4071-487b-61c0-5b9c0cfaac74' className='h-5/6 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
             </div>
             <div 
-              className={'relative mx-auto w-4/5 h-1/3 ' + (tile_classes)}
+              className={'relative mx-auto w-5/6 2xl:w-4/5 h-1/3 ' + (tile_classes)}
               onClick={(e) => {
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='5863985e-43ac-b05d-cb2d-139e72970014' className='h-5/6 pt-4 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='5863985e-43ac-b05d-cb2d-139e72970014' className='h-5/6 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
             </div>
           </div>
         </div>
@@ -413,6 +437,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/classic.png' data-weapontype='29a0cfab-485b-f5d5-779a-b59f85e204a8' alt='Classic' className='pointer-events-none mx-auto w-4/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Classic</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10 pointer-events-none block'>
+              <img data-weaponForBuddy='29a0cfab-485b-f5d5-779a-b59f85e204a8' className='pointer-events-none block' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div
             id="shorty" 
@@ -431,6 +458,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/shorty.png' data-weapontype='42da8ccc-40d5-affc-beec-15aa47b42eda' alt='Shorty' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Shorty</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='42da8ccc-40d5-affc-beec-15aa47b42eda' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div id="frenzy" 
             className={ tile_classes } 
@@ -448,6 +478,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/frenzy.png' data-weapontype='44d4e95c-4157-0037-81b2-17841bf2e8e3' alt='Frenzy' className='pointer-events-none mx-auto w-3/5' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Frenzy</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='44d4e95c-4157-0037-81b2-17841bf2e8e3' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="ghost" 
@@ -466,6 +499,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/ghost.png' data-weapontype='1baa85b4-4c70-1284-64bb-6481dfc3bb4e' alt='Ghost' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Ghost</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='1baa85b4-4c70-1284-64bb-6481dfc3bb4e' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="sheriff" 
@@ -484,6 +520,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/sheriff.png' data-weapontype='e336c6b8-418d-9340-d77f-7a9e4cfe0702' alt='Sheriff' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Sheriff</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='e336c6b8-418d-9340-d77f-7a9e4cfe0702' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="stinger"
@@ -502,6 +541,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/stinger.png' data-weapontype='f7e1b454-4ad4-1063-ec0a-159e56b58941' alt='Stinger' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Stinger</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='f7e1b454-4ad4-1063-ec0a-159e56b58941' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="spectre" 
@@ -520,6 +562,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/spectre.png' data-weapontype='462080d1-4035-2937-7c09-27aa2a5c27a7' alt='Spectre' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Spectre</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='462080d1-4035-2937-7c09-27aa2a5c27a7' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="bucky" 
@@ -538,6 +583,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/bucky.png' data-weapontype='910be174-449b-c412-ab22-d0873436b21b' alt='Bucky' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Bucky</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='910be174-449b-c412-ab22-d0873436b21b' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="judge" 
@@ -556,6 +604,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/judge.png' data-weapontype='ec845bf4-4f79-ddda-a3da-0db3774b2794' alt='Judge' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Judge</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='ec845bf4-4f79-ddda-a3da-0db3774b2794' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="bulldog" 
@@ -571,6 +622,9 @@ function Inventory() {
             >
             <img src='/invisible_weapons/bulldog.png' data-weapontype='ae3de142-4d85-2547-dd26-4e90bed35cf7' alt='Bulldog' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Bulldog</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='ae3de142-4d85-2547-dd26-4e90bed35cf7' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="guardian" 
@@ -589,6 +643,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/guardian.png' data-weapontype='4ade7faa-4cf1-8376-95ef-39884480959b' alt='Guardian' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Guardian</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='4ade7faa-4cf1-8376-95ef-39884480959b' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="phantom" 
@@ -607,6 +664,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/phantom.png' data-weapontype='ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a' alt='Phantom' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Phantom</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="vandal" 
@@ -625,6 +685,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/vandal.png' data-weapontype='9c82e19d-4575-0200-1a81-3eacf00cf872' alt='Vandal' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Vandal</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='9c82e19d-4575-0200-1a81-3eacf00cf872' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="marshal" 
@@ -643,6 +706,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/marshal.png' data-weapontype='c4883e50-4494-202c-3ec3-6b8a9284f00b' alt='Marshal' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Marshal</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='c4883e50-4494-202c-3ec3-6b8a9284f00b' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="operator" 
@@ -661,6 +727,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/operator.png' data-weapontype='a03b24d3-4319-996d-0f8c-94bbfba1dfc7' alt='Operator' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Operator</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='a03b24d3-4319-996d-0f8c-94bbfba1dfc7' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="ares" 
@@ -679,6 +748,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/ares.png' data-weapontype='55d8a0f4-4274-ca67-fe2c-06ab45efdf58' alt='Ares' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Ares</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='55d8a0f4-4274-ca67-fe2c-06ab45efdf58' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="odin" 
@@ -697,6 +769,9 @@ function Inventory() {
           >
             <img src='/invisible_weapons/odin.png' data-weapontype='63e6c2b6-4a8e-869c-3d4c-e38355226584' alt='Odin' className='pointer-events-none mx-auto w-5/6' />
             <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Odin</span>
+            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
+              <img data-weaponForBuddy='63e6c2b6-4a8e-869c-3d4c-e38355226584' src='/invisible_weapons/melee.png' />
+            </div>
           </div>
           <div 
             id="melee" 
