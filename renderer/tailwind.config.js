@@ -89,4 +89,5 @@ module.exports = {
     "./components/**/*.jsx",
     "./js/**/*.js",
   ],
+  purge: false
 }
