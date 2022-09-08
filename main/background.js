@@ -154,7 +154,7 @@ function createThemes() {
   }
 
   let themesPointerFile = {
-    themeName: "normal",
+    themeName: "default",
   };
 
   fs.writeFileSync(app_data + "/user_data/themes/color_theme.json", JSON.stringify(themesPointerFile));

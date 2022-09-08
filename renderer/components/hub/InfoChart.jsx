@@ -26,7 +26,7 @@ export default function InfoChart({ label, data, LocalLatest }) {
       "stroke": "#000000",
       "text": "#000000"
     },
-    "": {
+    "normal": {
       "color_1": "#c80043",
       "color_2": "#6f00ff",
       "stroke": "#ffffff",
