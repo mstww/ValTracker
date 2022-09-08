@@ -111,7 +111,7 @@ export const Swap = ({ cls }) => {
 }
 
 export const Translate = ({ cls }) => {
-  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} viewBox="0 0 14 14"><g><polyline points="0.5 7 7 0.5 13.5 7" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></polyline><polyline points="2.5 8.5 2.5 13.5 11.5 13.5 11.5 8.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></polyline></g></svg>
+  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} viewBox="0 0 14 14"><g><g><path d="M6.5,13.5,9.64,6.17a.39.39,0,0,1,.72,0L13.5,13.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path><line x1="7.91" y1="10.21" x2="12.09" y2="10.21" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line></g><line x1="0.5" y1="2.5" x2="9.5" y2="2.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line><line x1="5" y1="0.5" x2="5" y2="2.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line><line x1="8" y1="2.5" x2="2" y2="9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2" y1="2.5" x2="5.94" y2="7.1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
 }
 
 export const Twitter = ({ cls }) => {
