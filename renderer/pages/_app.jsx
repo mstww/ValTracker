@@ -37,7 +37,6 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   fs.watchFile(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json", () => {
-    console.log("File changed!");
     var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
     if(data.themeName === "light") setLightTheme(true);
     else setLightTheme(false);

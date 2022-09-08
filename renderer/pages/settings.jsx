@@ -508,8 +508,6 @@ function Settings() {
   const validateSettingsCode = (settingsStates) => {
     var verificationState = true;
 
-    console.log(settingsStates);
-
     var themes = ["default","legacy","light"];
 
     if(settingsStates.length === 14) {
@@ -583,7 +581,6 @@ function Settings() {
 
   const changeAppTheme = (theme) => {
     if(theme !== currentTheme) {
-      console.log(theme)
       document.body.classList.remove(currentTheme);
       document.body.classList.add(theme);
       setCurrentTheme(theme);

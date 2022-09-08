@@ -382,7 +382,6 @@ function Matchview() {
     if(sessionStorage.getItem("knownMatchData")) {
       var knownMatchData = JSON.parse(sessionStorage.knownMatchData);
       var agent_data = await(await fetch(`https://valorant-api.com/v1/agents/${knownMatchData.playerAgent}?language=${router.query.lang}`)).json();
-      console.log(agent_data);
       setPlayerAgentAbilities(agent_data.data.abilities);
     }
   }, []);

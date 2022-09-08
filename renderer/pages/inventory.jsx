@@ -128,7 +128,6 @@ function Inventory() {
         img.setAttribute('data-skinlevel', gun.SkinLevelID);
 
         if(gun.CharmID) {
-          console.log(gun.CharmID);
           var img = document.querySelector(`img[data-weaponForBuddy="${gun.ID}"]`);
           
           img.setAttribute('src', `https://media.valorant-api.com/buddies/${gun.CharmID}/displayicon.png`);
