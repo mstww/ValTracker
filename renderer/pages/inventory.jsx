@@ -197,7 +197,7 @@ function Inventory() {
     }
   }, [ player_loadout ]);
 
-  var tile_classes = 'weapon-tile bg-maincolor-lightest border-2 border-maincolor-lightest hover:bg-opacity-70 transition-all duration-100 ease-in rounded-sm relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
+  var tile_classes = 'weapon-tile bg-maincolor-lightest border-2 border-maincolor-lightest hover:bg-opacity-70 transition-all duration-100 ease-in rounded relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
@@ -330,7 +330,7 @@ function Inventory() {
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <motion.div 
-          className="w-96 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+          className="w-96 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
           key={"SavePresetCard"}
           variants={card_variants}
           initial="hidden"
@@ -341,8 +341,9 @@ function Inventory() {
           <p>{LocalText(L, "modals.save_modal.desc")}</p>
           <input
             type='text'
-            className='bg-button-color text-md font-light placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 shadow-lg hover:shadow-2xl rounded-sm cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
+            className='bg-button-color text-md font-light hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 shadow-lg hover:shadow-2xl rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
             placeholder={LocalText(L, "modals.save_modal.input_placeholder")}
+            id='skin-search'
             autoCorrect='off'
             spellCheck='false'
             ref={loadoutNameRef}
@@ -353,7 +354,7 @@ function Inventory() {
           </div>
         </motion.div>
         <motion.div 
-          className="w-96 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+          className="w-96 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
           key={"DeletePresetCard"}
           variants={card_variants}
           initial="hidden"
@@ -381,15 +382,15 @@ function Inventory() {
             <img 
               id='inventory-card'
               data-equipslot='playercard'
-              className='shadow-lg hover:shadow-2xl transition-all duration-100 cursor-default ease-linear h-full mx-auto border-2 border-maincolor-lightest rounded-sm mb-4' 
+              className='shadow-lg hover:shadow-2xl transition-all duration-100 cursor-default ease-linear h-full mx-auto border-2 border-maincolor-lightest rounded mb-4' 
               src='/invisible_weapons/large_card.png'
               onClick={(e) => { redirectToCardChanger(e.target.getAttribute('data-card')) }}
             />
             <div 
               id="title-div" 
-              className='relative bottom-40 mx-auto h-8 border-2 bg-black bg-opacity-70 border-maincolor-lightest flex items-center justify-center hover:bg-opacity-20 transition-all duration-100 ease-linear cursor-pointer'
+              className='relative bottom-40 mx-auto text-global-text h-8 border-2 bg-maincolor bg-opacity-70 border-maincolor-lightest flex items-center justify-center hover:bg-opacity-20 transition-all duration-100 ease-linear cursor-pointer'
             >
-              <span>{playerTitle}</span>
+              <span className='text-global-text'>{playerTitle}</span>
             </div>
           </div>
           <div className='h-2/5 mt-2' id='inventory-sprays'>
@@ -808,7 +809,7 @@ function Inventory() {
                   setShowDeletePresetButton(false);
                 }
               }}
-              className='bg-button-color text-md font-light placeholder:text-white hover:bg-button-color-hover h-8 w-5/6 flex items-center px-2 py-1 shadow-lg hover:shadow-2xl rounded-sm cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mt-4'
+              className='bg-button-color text-md font-light hover:bg-button-color-hover h-8 w-5/6 flex items-center px-2 py-1 shadow-lg hover:shadow-2xl rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mt-4'
             >
               <option value='0' disabled>{LocalText(L, "preset_select_placeholder")}</option>
               {

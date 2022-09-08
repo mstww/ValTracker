@@ -11,6 +11,7 @@ import { motion } from 'framer-motion';
 import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
+import { BackArrow, Close, Search, Star, StarFilled } from '../components/SVGs';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -579,26 +580,26 @@ function Skinchanger() {
       <OverlayWrapper useRef={overlayRef} isShown={showVideo}>
         <motion.div 
           id='settings-overlay-card' 
-          className='w-2/3 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-2 pointer-events-auto shadow-lg relative'
+          className='w-2/3 rounded bg-maincolor mb-8 flex flex-col justify-between p-2 pointer-events-auto shadow-lg relative'
           variants={card_variants}
           initial="hidden"
           animate={ showVideo ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='absolute top-4 right-4 hover:bg-maincolor-lightest z-30 rounded-sm cursor-pointer transition-all duration-100 ease-linear'
+            className='absolute top-4 right-4 hover:bg-maincolor-lightest z-30 rounded cursor-pointer transition-all duration-100 ease-linear'
             onClick={() => { setShowVideo(false) }}
           >
-            <img src='/images/close.svg' className='w-8 p-1' />
+            <Close cls='w-8 p-1' />
           </div>
-          <video ref={videoRef} src={''} type="video/mp4" controls className='rounded-sm ml-px' />
+          <video ref={videoRef} src={''} type="video/mp4" controls className='rounded ml-px' />
         </motion.div>
       </OverlayWrapper>
       <div 
-        className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded-sm cursor-pointer transition-all duration-100 ease-linear' 
+        className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}
       >
-        <img src='/images/back_arrow.svg' className='w-8 p-1' />
+        <BackArrow cls='w-8 p-1' />
       </div>
       <div className='flex flex-row h-full'>
         <div id='skin-selector' className='h-full w-1/5 p-4 overflow-hidden'>
@@ -606,14 +607,14 @@ function Skinchanger() {
             <input 
               id='skin-search'
               type='text'
-              className='group bg-button-color text-sm font-light pl-8 placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-pointer my-2 transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
+              className='group bg-button-color text-sm font-light pl-8 hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded cursor-pointer my-2 transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
               placeholder={LocalText(L, "skins.search_placeholder")}
               onKeyUp={handlePlayerSearch}
               autoCorrect='off'
               spellCheck='false'
             >
             </input>
-            <img src='/images/search.svg' className='absolute top-2 left-2 ml-0.5 w-4' />
+            <Search cls='absolute top-2 left-2 ml-0.5 w-4' />
           </div>
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">
@@ -730,22 +731,17 @@ function Skinchanger() {
                     }
                   }}
                 >
-                  <img
-                    src={
-                      isWishlisted === true 
-                      ?
-                      '/images/star_white_filled.svg'
-                      :
-                      '/images/star_white.svg'
-                    }
-                    id='star-img'
-                    className='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear'
-                  />
+                  {
+                    isWishlisted === true ?
+                    <StarFilled cls='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear' />
+                    :
+                    <Star cls='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear' />
+                  }
                   {LocalText(L, "skins.wishlist_button")}
                 </button>
                 {
                   activeSkinPrice ? 
-                  <div className={'flex flex-row items-center text-center border-2 border-maincolor-lightest rounded-sm py-2 ' + (showWishlistButton === true && lockWishlistButton === false ? 'w-1/3' : 'w-full')}>
+                  <div className={'flex flex-row items-center text-center border-2 border-maincolor-lightest rounded py-2 ' + (showWishlistButton === true && lockWishlistButton === false ? 'w-1/3' : 'w-full')}>
                     <span className='flex flex-row w-full text-center items-center justify-center'>{activeSkinPrice} <img src='/images/vp_icon.png' className='w-6 ml-1' /></span>
                   </div>
                   :

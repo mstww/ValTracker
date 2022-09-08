@@ -6,28 +6,6 @@
   @apply px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600;
 }
 
-:root {
-  --app-color: #12171d;
-  --app-color-light: #1b222b;
-  --app-color-lightest: #242e3a;
-
-  /*DEFAULT COLORS*/
-  --gradient-left: #c80043;
-  --gradient-right: #6f00ff;
-
-  --button-color-var: #ffffff;
-
-  --box-shadow: 0 0 2.5px rgba(255, 0, 67, 0.7), 0 0 10px rgba(255, 0, 67, 0.7),
-    0 0 30px rgba(255, 0, 67, 0.7);
-
-  --text-shadow: 0 0 5px rgba(255, 0, 67, 0.6), 0 0 20px rgba(255, 0, 67, 0.6),
-    0 0 60px rgba(255, 0, 67, 0.6);
-
-  --button-color: #c80043;
-  --button-hover-color: #ff0055;
-  --global-textcolor: #fff;
-}
-
 * {
   font-family: Bahnschrift, sans-serif;
   user-select: none;
@@ -39,20 +17,20 @@
   width: 0.4rem;
   margin-right: 0.25rem;
   border-radius: 9999px;
-  background-color: #535353;
+  @apply bg-scrollbar-bg;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgb(194, 194, 194);
   margin: 10px;
   border-radius: 9999px;
   width: 10px;
   position: relative;
   right: 6px;
+  @apply bg-scrollbar-thumb-bg;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: rgb(138, 138, 138);
+  @apply bg-scrollbar-thumb-hover;
 }
 
 img {
@@ -294,7 +272,7 @@ img {
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.5);
 }
 
-#nav-items div:not([data-isactive=true]):not(.search-dropdown):not(.search-dropdown div):not(.search-container):hover {
+#nav-items div:not([data-isactive=true]):not(.search-dropdown):not(.search-dropdown div):not(.search-container):not(.search-dropdown div):hover {
   box-shadow: 0 5px 10px rgb(0 0 0 / 0.5);
 }
 
@@ -486,7 +464,7 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline;
-  @apply rounded-sm border-2 border-transparent;
+  @apply rounded border-2 border-transparent;
 }
 
 .settings-tile:hover {
@@ -518,7 +496,7 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline;
-  @apply rounded-sm border-2 border-transparent;
+  @apply rounded border-2 border-transparent;
 }
 
 .match-tile:hover {
@@ -550,7 +528,7 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline;
-  @apply rounded-sm border-2 border-transparent text-base;
+  @apply rounded border-2 border-transparent text-base;
 }
 
 .matchview-tile:hover {
@@ -669,7 +647,7 @@ h5 {
   bottom: 0;
   left: -1.2rem;
   margin-left: -3px;
-  @apply bg-white border-4 border-button-color z-10 rounded-sm;
+  @apply bg-white border-4 border-button-color z-10 rounded;
 }
 
 .day::before {
@@ -1355,7 +1333,7 @@ ol li {
 }
 
 .language-checkbox span {
-  @apply border-2 border-maincolor-lightest rounded-sm w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+  @apply border-2 border-maincolor-lightest rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
 }
 
 .language-checkbox span:hover {
@@ -1413,4 +1391,16 @@ body[lang="de-DE"] #rotated-side-text.awards {
 
 #buddy-div {
   pointer-events: none !important;
+}
+
+#skin-search::placeholder {
+  @apply text-global-text;
+} 
+
+svg {
+  @apply text-global-text;
+}
+
+option:disabled {
+  @apply text-gray-500;
 }

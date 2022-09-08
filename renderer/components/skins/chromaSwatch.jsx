@@ -1,4 +1,5 @@
 import React from "react";
+import { Lock } from "../SVGs";
 
 export default function ChromaSwatch({ image, onClick, chromaUUID, activeChroma, playerItemsAll, baseLevel, count }) {
   const [ playerItems, setPlayerItems ] = React.useState([]);
@@ -40,11 +41,12 @@ export default function ChromaSwatch({ image, onClick, chromaUUID, activeChroma,
     if(baseLevelOwned == true && count == 0) {
       setIsOwned(true);
     }
-  })
+  });
+
   return (
     <div 
       className={
-        "chroma-swatch w-1/5 border-2 border-button-color shadow-lg border-maincolor-lightest cursor-pointer relative rounded-sm " +
+        "chroma-swatch w-1/5 border-2 border-button-color shadow-lg cursor-pointer relative rounded " +
         (chromaUUID == activeChroma ? 'border-opacity-100' : 'border-opacity-0')
       }
         onClick={() => { onClick(chromaUUID, isOwned, isBaseColor) }}
@@ -54,8 +56,8 @@ export default function ChromaSwatch({ image, onClick, chromaUUID, activeChroma,
         isOwned ?
         ''
         :
-        <div className="chroma-swatch-not-owned-overlay absolute top-0 left-0 w-full h-full bg-black bg-opacity-70 items-center justify-center flex rounded-sm">
-          <img src="/images/lock.svg" className="w-2/4" />
+        <div className="chroma-swatch-not-owned-overlay absolute top-0 left-0 w-full h-full bg-black bg-opacity-70 items-center justify-center flex rounded">
+          <Lock cls='w-2/4' />
         </div>
       }
     </div>

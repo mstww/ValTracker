@@ -10,6 +10,7 @@ import L from '../locales/translations/setup.json';
 import LocalText from '../components/translation/SetupLocalText';
 import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
+import { Translate, BackArrow } from '../components/SVGs';
 
 const slides_first_load = {
   hidden: { opacity: 0, x: 0, y: 100, scale: 1, display: 'none' },
@@ -270,16 +271,16 @@ function Setup() {
   return (
     <Layout setup={true} classNames={'overflow-hidden'}>
       <div className='flex flex-col items-center p-4 h-full w-full'>
-        <div id='setup-timeline' className='border-2 border-maincolor-lightest w-full p-2 h-14 rounded-sm'>
+        <div id='setup-timeline' className='border-2 border-maincolor-lightest w-full p-2 h-14 rounded'>
           <div className='flex flex-row items-center mb-1 justify-between'>
             <span>{LocalText(L, currentSelectedLanguage, 'progress.lang')}</span>
             <span>{LocalText(L, currentSelectedLanguage, 'progress.riot')}</span>
             <span>{LocalText(L, currentSelectedLanguage, 'progress.confirm')}</span>
             <span>{LocalText(L, currentSelectedLanguage, 'progress.finish')}</span>
           </div>
-          <Progress value={overallProgress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded-sm relative bottom-0 mt-0 w-full'} />
+          <Progress value={overallProgress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-full'} />
         </div>
-        <div className='setup-content border-2 border-maincolor-lightest w-full mt-4 rounded-sm p-2 relative overflow-hidden'>
+        <div className='setup-content border-2 border-maincolor-lightest w-full mt-4 rounded p-2 relative overflow-hidden'>
           <motion.div 
             className='h-full relative'
             variants={lastPage === '0' ? slides_first_load : slides_vars}
@@ -323,7 +324,7 @@ function Setup() {
             <hr className='bg-maincolor-lightest h-0.5 border-none mb-4' />
             <div className='flex flex-col items-center justify-center h-4/6 w-full mb-4'>
               <button className={'flex flex-row items-center mb-6 ' + (isLoginCompleted ? 'disabled' : '')} disabled={isLoginCompleted} onClick={() => ( login() )}><img src='/images/riot_fist.png' className='w-6 mr-2' /> {isLoginCompleted ? LocalText(L, currentSelectedLanguage, "page_2.login_button_text_2") : LocalText(L, currentSelectedLanguage, "page_2.login_button_text_1")}</button>
-              <Progress value={progress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded-sm relative bottom-0 mt-0 w-2/6 ' + (isProgressShown ? '' : 'hidden')} />
+              <Progress value={progress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-2/6 ' + (isProgressShown ? '' : 'hidden')} />
               <div className={'relative bottom-3.5 font-thin text-gray-500 text-left w-2/6 ' + (isProgressShown ? 'text-left w-2/6' : 'text-center')}>{loadingState}</div>
             </div>
             <div className='absolute bottom-0.5 left-2'>
@@ -354,7 +355,7 @@ function Setup() {
                 }}
                 className={'text-button relative inline-flex flex-row items-center ' + (isLoginCompleted ? 'right-5 top-0.5' : ' right-8 top-0.5')}
               >
-                <img src='/images/back_arrow.svg' className='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, "page_2.button_2_text")}
+                <BackArrow cls='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, "page_2.button_2_text")}
               </button>
             </div>
           </motion.div>
@@ -371,12 +372,12 @@ function Setup() {
             <hr className='bg-maincolor-lightest h-0.5 border-none mb-2' />
             <div className='flex flex-col items-center'>
               <div className='flex flex-row items-center mb-4 mt-8'>
-                <img src='/images/translate.svg' className='w-6 mr-2 ml-1' />
+                <Translate cls='w-6 mr-2 ml-1' />
                 <span>{currentLanguageDisplayName}</span>
               </div>
               <div 
                 className={
-                  'flex flex-row items-center content-center w-52 mb-2 justify-start border rounded-sm transition-all ease-in duration-100 border-gradient-left active-riot-acc'
+                  'flex flex-row items-center content-center w-52 mb-2 justify-start border rounded transition-all ease-in duration-100 border-gradient-left active-riot-acc'
                 }
               >
                 <img 
@@ -412,7 +413,7 @@ function Setup() {
                 }}
                 className={'text-button relative inline-flex flex-row items-center right-5'}
               >
-                <img src='/images/back_arrow.svg' className='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, 'page_3.button_2_text')}
+                <BackArrow cls='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, 'page_3.button_2_text')}
               </button>
             </div>
           </motion.div>

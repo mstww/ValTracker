@@ -21,6 +21,7 @@ import LanguageCheckbox from '../components/settings/LanguageCheckbox';
 import AllLangs from '../locales/languages.json';
 import L from '../locales/translations/settings.json';
 import LocalText from '../components/translation/LocalText';
+import ThemeSelector from '../components/settings/ThemeSelector';
 
 const md_conv = new parser.Converter();
 
@@ -140,7 +141,6 @@ function Settings() {
   const [ skinWishlistNotifications, setSkinWishlistNotifications ] = React.useState(false);
   const [ minClose, setMinClose ] = React.useState(false);
   const [ hardwareAcceleration, setHardwareAcceleration ] = React.useState(false);
-  const [ legacyThemeToggle, setLegacyThemeToggle ] = React.useState(false);
 
   const [ appRP, setAppRP ] = React.useState(false);
   const [ appRPwhenHidden, setAppRPwhenHidden ] = React.useState(false);
@@ -175,6 +175,8 @@ function Settings() {
 
   const other_applySettingsCodePopup = React.useRef(null);
   const [ other_applySettingsCode, setOther_applySettingsCode ] = React.useState(false);
+
+  const [ currentTheme, setCurrentTheme ] = React.useState('default');
 
   async function fetchUserAccounts() {
     var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
@@ -229,9 +231,7 @@ function Settings() {
     var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
     var data = JSON.parse(raw);
 
-    if(data.themeName == 'legacy') {
-      setLegacyThemeToggle(true);
-    }
+    setCurrentTheme(data.themeName);
 
     if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json')) {
       var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
@@ -296,48 +296,6 @@ function Settings() {
     fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
 
     setHardwareAcceleration(!hardwareAcceleration);
-  }
-
-  const changeLegacyThemeToggle = (e) => {
-    if(typeof e === 'boolean') {
-      if(e === true) {
-        var data = {
-          themeName: 'legacy'
-        }
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
-        document.body.classList.add('legacy');
-      } else {
-        var data = {
-          themeName: 'default'
-        }
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
-  
-        var legacyClasses = document.getElementsByClassName('legacy ');
-        for(var i = 0; i < legacyClasses.length; i++) {
-          legacyClasses[i].classList.remove('legacy');
-        }
-      }
-    } else {
-      if(!legacyThemeToggle === true) {
-        var data = {
-          themeName: 'legacy'
-        }
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
-        document.body.classList.add('legacy');
-      } else {
-        var data = {
-          themeName: 'default'
-        }
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify(data));
-  
-        var legacyClasses = document.getElementsByClassName('legacy ');
-        for(var i = 0; i < legacyClasses.length; i++) {
-          legacyClasses[i].classList.remove('legacy');
-        }
-      }
-    }
-
-    setLegacyThemeToggle(!legacyThemeToggle);
   }
 
   const changeAppRP = (e) => {
@@ -523,22 +481,23 @@ function Settings() {
     0: false
   }
 
-  // TODO: Validate code, apply settings, restart app, check if code is corrupted or not a real code, then send textbox that tells the user.
   const generateSettingsCode = () => {
     var str = '';
-    str += (states[autoOpen]); // 0
-    str += (states[startHidden]); // 1
-    str += (states[skinWishlistNotifications]); // 2
-    str += (states[minClose]); // 3
-    str += (states[hardwareAcceleration]); // 4
-    str += (states[legacyThemeToggle]); // 5
-    str += (states[appRP]); // 6
-    str += (states[appRPwhenHidden]); // 7
-    str += (states[gameRP]); // 8
-    str += (states[gameRP_showMode]); // 9
-    str += (states[gameRP_showRank]); // 10
-    str += (states[gameRP_showTimer]); // 11
-    str += (states[gameRP_showScore]); // 12
+
+    str += states[autoOpen] + ':';
+    str += states[startHidden] + ':';
+    str += currentSelectedLanguage + ':';
+    str += states[skinWishlistNotifications] + ':';
+    str += states[minClose] + ':';
+    str += states[hardwareAcceleration] + ':';
+    str += currentTheme + ':';
+    str += states[appRP] + ':';
+    str += states[appRPwhenHidden] + ':';
+    str += states[gameRP] + ':';
+    str += states[gameRP_showMode] + ':';
+    str += states[gameRP_showRank] + ':';
+    str += states[gameRP_showTimer] + ':';
+    str += states[gameRP_showScore];
     
     var buff = Buffer.from(str);
     str = buff.toString('base64');
@@ -549,14 +508,31 @@ function Settings() {
   const validateSettingsCode = (settingsStates) => {
     var verificationState = true;
 
-    if(settingsStates.length === 13) {
+    console.log(settingsStates);
+
+    var themes = ["default","legacy","light"];
+
+    if(settingsStates.length === 14) {
       for(var i = 0; i < settingsStates.length; i++) {
-        if(settingsStates[i] !== '1' && settingsStates[i] !== '0') {
-          verificationState = false;
-          break;
+        if(i !== 2 && i !== 6 ) {
+          if(settingsStates[i] !== '1' && settingsStates[i] !== '0') {
+            verificationState = false;
+            break;
+          }
+        } else {
+          if(i === 2) {
+            if(Object.keys(AllLangs).find(x => x === settingsStates[i]) === undefined) {
+              verificationState = false;
+              break;
+            }
+          } else {
+            if(themes.find(x => x === settingsStates[i]) === undefined) {
+              verificationState = false;
+              break;
+            }
+          }
         }
       }
-
     } else {
       verificationState = false;
     }
@@ -568,7 +544,7 @@ function Settings() {
     let buff = Buffer.from(code, 'base64');
     code = buff.toString('ascii');
     
-    var settingsStates = code.split("");
+    var settingsStates = code.split(":");
 
     var isUseable = validateSettingsCode(settingsStates);
     
@@ -578,7 +554,6 @@ function Settings() {
       changeSkinWishlistNotifications(states[settingsStates[2]]);
       changeMinClose(states[settingsStates[3]]);
       changeHardwareAcceleration(states[settingsStates[4]]);
-      changeLegacyThemeToggle(states[settingsStates[5]]);
       changeAppRP(states[settingsStates[6]]);
       changeAppRPWhenHidden(states[settingsStates[7]]);
       changeGameRP(states[settingsStates[8]]);
@@ -606,6 +581,16 @@ function Settings() {
     ipcRenderer.send('resetApp');
   }
 
+  const changeAppTheme = (theme) => {
+    if(theme !== currentTheme) {
+      console.log(theme)
+      document.body.classList.remove(currentTheme);
+      document.body.classList.add(theme);
+      setCurrentTheme(theme);
+      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify({ themeName: theme }));
+    }
+  }
+
   React.useEffect(() => {
     fetchUserAccounts();
     fetchSettings();
@@ -616,7 +601,11 @@ function Settings() {
   React.useEffect(() => {
     var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
     setLoadData(data);
+    setCurrentSelectedLanguage(data.appLang);
   }, [ general_changeLangPopupOpen ]);
+
+  var s2_bt2 = LocalText(L, 'pg_5.grp_1.setting_2.button_text_2');
+  var s2_bt1 = LocalText(L, 'pg_5.grp_1.setting_2.button_text');
 
   return (
     <Layout>
@@ -698,7 +687,7 @@ function Settings() {
               return (
                 <div 
                   className={
-                    'flex flex-row items-center content-center h-1/6 mb-2 justify-start rounded-sm transition-all ease-in duration-100 border border-gray-500'
+                    'flex flex-row items-center content-center h-1/6 mb-2 justify-start rounded transition-all ease-in duration-100 border border-gray-500'
                     + (account.playerUUID == riot_activeAccountSelection ? ' border-gradient-left active-riot-acc' : ' hover:bg-maincolor-lightest border-maincolor-lightest cursor-pointer')
                   }
                   onClick={() => { setRiot_ActiveAccountSelection(account.playerUUID) }}
@@ -798,13 +787,7 @@ function Settings() {
             </SettingsGroup>
 
             <SettingsGroup header={LocalText(L, 'pg_1.grp_6.name')}>
-              <Setting 
-                title={LocalText(L, 'pg_1.grp_6.setting_1.name')} 
-                desc={LocalText(L, 'pg_1.grp_6.setting_1.desc')} 
-                inputType={'checkbox'}
-                isChecked={legacyThemeToggle}
-                onClick={changeLegacyThemeToggle}
-              />
+              <ThemeSelector currentTheme={currentTheme} setCurrentTheme={changeAppTheme} />
             </SettingsGroup>
 
           </SettingsWrapper>
@@ -934,9 +917,9 @@ function Settings() {
                 buttonText={other_copyCodeToClipButtonText}
                 onClick={() => { 
                   generateSettingsCode();
-                  setOther_CopyCodeToClipButtonText(LocalText(L, 'pg_5.grp_1.setting_2.button_text_2'));
+                  setOther_CopyCodeToClipButtonText(s2_bt2);
                   setTimeout(async () => {
-                    setOther_CopyCodeToClipButtonText(LocalText(L, 'pg_5.grp_1.setting_2.button_text'));
+                    setOther_CopyCodeToClipButtonText(s2_bt1);
                   }, 2000);
                 }}
               />

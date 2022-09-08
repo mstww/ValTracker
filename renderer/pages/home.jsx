@@ -18,6 +18,9 @@ import L from '../locales/translations/home.json';
 import LocalText from '../components/translation/LocalText';
 
 import APIi18n from '../components/translation/ValApiFormatter';
+import { StarFilled, Star } from '../components/SVGs';
+import ValIconHandler from '../components/ValIconHandler';
+
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
@@ -1614,21 +1617,21 @@ function Home() {
   return (
     <Layout>
       <div id='home-container' className='flex flex-row flex-wrap'>
-        <div id='top-left-container' className='relative bg-maincolor-lightest bg-opacity-60 rounded-sm p-1.5 flex flex-wrap'>
-          <div className='home-top-info-tile border-2 rounded-sm border-maincolor-lightest h-full p-1 relative'>
+        <div id='top-left-container' className='relative bg-maincolor-lightest bg-opacity-60 rounded p-1.5 flex flex-wrap'>
+          <div className='home-top-info-tile border-2 rounded border-maincolor-lightest h-full p-1 relative'>
             <div className='flex flex-col h-full px-1'>
               <div>
                 <span className='leading-none'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
                 <hr className='' />
               </div>
               <div className='flex w-full mt-2 relative h-full justify-center items-center'>
-                <div className='relative'>
-                  <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img border-2 border-maincolor-lightest' />
+                <div className='relative rounded'>
+                  <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img border-2 border-maincolor-lightest rounded' />
                   {
                     featuredBundlePrice ?
                     <div 
                       id='bundle-price'
-                      className='text-xl text-gray-300 flex flex-row items-center absolute bottom-2 left-2 bg-opacity-60 bg-black rounded-sm px-2 py-1'
+                      className='text-xl text-gray-300 flex flex-row items-center absolute bottom-2 left-2 bg-opacity-60 bg-black rounded px-2 py-1'
                     >
                       <span className='relative top-px'>{featuredBundlePrice}</span>
                       <img src="/images/vp_icon.png" className='w-6 ml-2 transition-opacity duration-100 ease-in shadow-img' />
@@ -1642,7 +1645,7 @@ function Home() {
               </div>
             </div>
           </div>
-          <div className='home-top-info-tile relative border-2 rounded-sm border-maincolor-lightest flex flex-col'>
+          <div className='home-top-info-tile relative border-2 rounded border-maincolor-lightest flex flex-col'>
             <div className={'flex flex-col h-full ' + (contractsLoading || contractsError ? 'hidden' : '')}>
               <ContractProgressCard 
                 title={LocalText(L, "top_l.contracts.battle_pass_header")} 
@@ -1697,10 +1700,10 @@ function Home() {
             </div>
           </div>
         </div>
-        <div id='top-right-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded-sm p-1.5'>
+        <div id='top-right-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded p-1.5'>
           <div className={'flex-row items-center justify-center h-full ' + (chartsLoading || chartsError ? 'hidden ' : 'flex') + (areChartsActive ? '' : ' hidden')}>
             <AwesomeSlider 
-              className={'AwesomeSliderMainContainer border-2 border-maincolor-lightest h-full z-10'}
+              className={'AwesomeSliderMainContainer border-2 border-maincolor-lightest rounded h-full z-10'}
             >
               <div>
                 <InfoChart
@@ -1749,7 +1752,7 @@ function Home() {
             <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
-        <div id='bottom-left-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded-sm p-2'>
+        <div id='bottom-left-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded p-2'>
           <div 
             id='match-timeline' 
             className={
@@ -1758,7 +1761,7 @@ function Home() {
               + (currentlyLoadedMatchCount <= 0 ? ' disabled ' : ' ')
             }
           >
-            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded-sm absolute top-2 right-7'>
+            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
@@ -1777,10 +1780,10 @@ function Home() {
                       return (
                         <div 
                           id='match'
-                          className='group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded-sm mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear' 
+                          className='group e relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
-                            if(e.target.id !== 'add-to-favs') {
+                            if(e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
                               var Blue = [];
                               var Red = [];
                               for(var i = 0; i < match.players.length; i++) {
@@ -1800,33 +1803,29 @@ function Home() {
                         >
                           <div className='matchview-gradient-overlay'>
                             <div className='absolute top-0 left-3 flex flex-row z-40 w-1/6 h-full items-center'>
-                              <img
-                                src={
-                                  favMatches.length > 0 ?
-                                    (favMatches.find(x => x.MatchID === match.matchInfo.matchId) !== undefined ?
-                                    '/images/star_filled.svg'
+                              {
+                                favMatches.length > 0 ?
+                                  (
+                                    favMatches.find(x => x.MatchID === match.matchInfo.matchId) !== undefined ?
+                                    <StarFilled 
+                                      color 
+                                      cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                      click={() => { toggleMatchInFavs(match.matchInfo.matchId, true) }} 
+                                    />
                                     :
-                                    '/images/star.svg')
-                                  :
-                                  '/images/star.svg'
-                                }
-                                className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
-                                id='add-to-favs'
-                                onClick={(e) => {
-                                  var src = e.target.src.split("/").pop();
-                                  var before_ = e.target.src.substring(0, e.target.src.lastIndexOf('/'));
-
-                                  if(src == 'star.svg') {
-                                    e.target.src = before_ + 'star_filled.svg';
-                              
-                                    toggleMatchInFavs(match.matchInfo.matchId, false);
-                                  } else {
-                                    e.target.src = before_ + 'star.svg';
-
-                                    toggleMatchInFavs(match.matchInfo.matchId, true);
-                                  }
-                                }}
-                              />
+                                    <Star 
+                                      color 
+                                      cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                      click={() => { toggleMatchInFavs(match.matchInfo.matchId, false) }} 
+                                    />
+                                  )
+                                :
+                                <Star 
+                                  color 
+                                  cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                  click={() => { toggleMatchInFavs(match.matchInfo.matchId, false) }} 
+                                />
+                              }
                             </div>
                           </div>
                           
@@ -1841,30 +1840,30 @@ function Home() {
                                   content={matchData.playerCurrentTier > 3 ? matchData.playerRankFixed : ''}
                                   color="error" 
                                   placement={'top'} 
-                                  className={'rounded-sm'}
+                                  className={'rounded'}
                                 >
-                                  <img 
-                                    src={
-                                      activeQueueTab == 'competitive' ? 
-                                      (matchData.playerCurrentTier ? 
+                                  {
+                                    activeQueueTab == 'competitive' ? 
+                                    <img 
+                                      src={
+                                        matchData.playerCurrentTier ? 
                                         `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
                                         :
                                         `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
-                                      )
-                                      :
-                                      'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
-                                    } 
-                                    className={
-                                      'w-7 transform scale-75 shadow-img '
-                                      +
-                                      (activeQueueTab == 'competitive' ?
-                                        `w-10`
-                                        :
-                                        ''
-                                      )
-                                    }
-                                  />
-                                  
+                                      } 
+                                      className={
+                                        'w-7 transform scale-75 shadow-img '
+                                        +
+                                        (activeQueueTab == 'competitive' ?
+                                          `w-10`
+                                          :
+                                          ''
+                                        )
+                                      }
+                                    />
+                                    :
+                                    <ValIconHandler icon={'/images/standard.png'} classes={'w-7 transform scale-75 shadow-img'} />
+                                  }
                                 </Tooltip>
                                 <span>{LocalText(L, "bot_l.gamemodes." + match.matchInfo.queueID)}</span>
                               </span>
@@ -1879,7 +1878,7 @@ function Home() {
                               (
                                 <div 
                                   id='scoreboard-pos' 
-                                  className={'rounded-sm text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
+                                  className={'rounded text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
                                 >
                                   {LocalText(L, "bot_l.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                 </div>
@@ -1911,11 +1910,11 @@ function Home() {
                                 <>
                                   <div className='w-1/2 flex flex-col items-center'>
                                     <span className='text-lg'>HS%</span>
-                                    <span className='text-lg font-light text-gray-400'>{matchData.headShotsPercentRounded}%</span>
+                                    <span className='text-lg font-light text-gray-500'>{matchData.headShotsPercentRounded}%</span>
                                   </div>
                                   <div className='w-1/2 flex flex-col items-center'>
                                     <span className='text-lg'>ACS</span>
-                                    <span className='text-lg font-light text-gray-400'>{matchData.playerACS}</span>
+                                    <span className='text-lg font-light text-gray-500'>{matchData.playerACS}</span>
                                   </div>
                                 </>
                               )
@@ -1976,7 +1975,7 @@ function Home() {
             <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
-        <div id='bottom-right-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded-sm p-2'>
+        <div id='bottom-right-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded p-2'>
           <div className={'overflow-y-auto ' + (loading || errored ? 'hidden' : '')}>
             {
               currentlyLoadedMatchCount > 0 ?
@@ -1988,7 +1987,7 @@ function Home() {
                   <SmallStatsCard number={avgKillsPerRound} desc={LocalText(L, "bot_r.stats.stat_2")} />
                 </div>
 
-                <div className='flex flex-row justify-between mt-1.5'>
+                <div className='flex flex-row justify-between mt-1.5 mb-4'>
                   <SmallStatsCard number={winratePercent + '%'} desc={LocalText(L, "bot_r.stats.stat_3")} />
                   <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} />
                 </div>

@@ -9,6 +9,7 @@ import { Collapse } from '@nextui-org/react';
 import L from '../locales/translations/shop.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
+import { BackArrow, Close } from '../components/SVGs';
 
 const slide_bottom = {
   hidden: { opacity: 0, x: 0, y: 50 },
@@ -199,14 +200,14 @@ function NightMarket() {
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <motion.div 
-          className='w-4/5 h-4/5 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
+          className='w-4/5 h-4/5 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
           variants={card_variants}
           initial="hidden"
           animate={showCard ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='z-20 absolute top-4 right-4 hover:bg-maincolor-lightest rounded-sm cursor-pointer transition-all duration-100 ease-linear'
+            className='z-20 absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear'
             onClick={() => {
               setShowBackground(false);
               setShowCard(false);
@@ -222,10 +223,10 @@ function NightMarket() {
               setActiveCardSkinLevel(0);
             }}
           >
-            <img src='/images/close.svg' className='w-8 p-1' />
+            <Close cls='w-8 p-1' />
           </div>
           <div 
-            className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded-sm px-4 py-2'
+            className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-4 py-2'
           >
             <span className='relative top-px'>{cardSkinPrice}</span>
             <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
@@ -295,8 +296,8 @@ function NightMarket() {
           </div>
         </motion.div>
       </motion.div>
-      <div id='back-arrow' className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded-sm cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
-        <img src='/images/back_arrow.svg' className='w-8 p-1' />
+      <div id='back-arrow' className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
+        <BackArrow cls='w-8 p-1' />
       </div>
       <div className='absolute top-4 left-4'>
         <h1 className='text-2xl'>{LocalText(L, "night_market_header")} - {nightMarketTimer}</h1>
@@ -311,7 +312,7 @@ function NightMarket() {
               exit="exit"
               transition={{ type: 'ease-in', duration: 0.05, delay: `0.${index}` }}
               key={index} 
-              className={'night-market-item relative bg-maincolor-lightest w-56 text-ellipsis h-80 p-2 rounded-sm shadow-lg hover:shadow-2xl transition-all duration-100 ease-linear flex items-center justify-center overflow-hidden'}
+              className={'night-market-item relative bg-maincolor-lightest w-56 text-ellipsis h-80 p-2 rounded shadow-lg hover:shadow-2xl transition-all duration-100 ease-linear flex items-center justify-center overflow-hidden'}
               onClick={() => {showShopSkin(item.uuid, item.name, item.price, item.image, index)}}
             > 
               <div className='absolute top-2 left-2 w-52 text-lg'>
@@ -324,7 +325,7 @@ function NightMarket() {
 
               <div 
                 id='item-price'
-                className='absolute right-2 bottom-2 text-xl text-gray-300 flex flex-row items-center bg-opacity-60 bg-black rounded-sm px-2 py-2'
+                className='absolute right-2 bottom-2 text-xl text-gray-300 flex flex-row items-center bg-opacity-60 bg-black rounded px-2 py-2'
               >
                 <span className='relative top-px'>{item.price}</span>
                 <img src="/images/vp_icon.png" className='w-6 ml-2' />

@@ -2,10 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import fetch from 'node-fetch';
 import parser from 'showdown';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import L from '../../locales/translations/whats_new.json';
 import LocalText from '../translation/LocalText';
+import { Close } from '../SVGs';
 
 const md_conv = new parser.Converter();
 
@@ -58,7 +58,7 @@ export default function WhatsNewLayer() {
       id={'whats-new-backdrop'}
     >
       <motion.div 
-        className='relative flex flex-col justify-center items-center w-1/2 bg-maincolor rounded-sm p-4 pointer-events-auto'
+        className='relative flex flex-col justify-center items-center w-1/2 bg-maincolor rounded p-4 pointer-events-auto'
         key={"WhatsNewCard"}
         variants={card_variants}
         initial="hidden"
@@ -67,12 +67,12 @@ export default function WhatsNewLayer() {
         id={'whats-new-card'}
       >
         <div 
-          className='absolute z-30 top-4 right-4 ml-auto hover:bg-maincolor-lightest rounded-sm cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
+          className='absolute z-30 top-4 right-4 ml-auto hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
           onClick={() => {
             setIsWhatsNewShown(false);
           }}
         >
-          <img src='/images/close.svg' className='w-8 p-1 shadow-img' />
+          <Close cls='w-8 p-1' />
         </div>
         <h2 className='mb-0 pb-0'>{LocalText(L, "header")}</h2>
         <p className='relative bottom-2 mt-0 pt-0 text-gray-500'>{LocalText(L, "desc", newVALTrackerVersion)}</p>

@@ -409,8 +409,8 @@ function PlayerInfo() {
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <div id='player-stats-header' className='flex flex-row w-5/6 mb-16'>
-          <div id='card-wrapper' className='rounded-sm relative'>
-            <img id='player-card' src={playerCard} className='rounded-sm shadow-img' />
+          <div id='card-wrapper' className='rounded relative'>
+            <img id='player-card' src={playerCard} className='rounded shadow-img' />
             <span id='player-level' className='absolute bottom-0 rounded-b-sm left-0 w-full text-center bg-black opacity-80'>{playerLevel}</span>
           </div>
           <div id='player-info' className='text-2xl flex flex-col ml-4 py-auto'>
@@ -627,7 +627,7 @@ function PlayerInfo() {
                     }
 
                     return (
-                      <div id='match' className='flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded-sm' key={index}>
+                      <div id='match' className='flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded' key={index}>
                         <div className='w-1/4 flex flex-row'>
                           <div id='agent-img'>
                             <img className='h-full shadow-img' src={playerAgent ? `https://media.valorant-api.com/agents/${playerAgent}/displayicon.png` : ''} />
@@ -639,7 +639,7 @@ function PlayerInfo() {
                                 content={playerCurrentTier > 3 ? playerRankFixed : ''}
                                 color="error" 
                                 placement={'top'} 
-                                className={'rounded-sm'}
+                                className={'rounded'}
                               >
                                 <img 
                                   src={
@@ -677,7 +677,7 @@ function PlayerInfo() {
                             (
                               <div 
                                 id='scoreboard-pos' 
-                                className={'rounded-sm h-9 py-1 px-2 ml-6 ' + playerPositionColor}
+                                className={'rounded h-9 py-1 px-2 ml-6 ' + playerPositionColor}
                               >
                                 {LocalText(L, "matches.match_pos." + (playerPositionText ? playerPositionText.replace(" ", "-") : ''))}
                               </div>
@@ -713,11 +713,11 @@ function PlayerInfo() {
                               <>
                                 <div className='w-1/3 flex flex-col items-center'>
                                   <span className='text-lg'>HS%</span>
-                                  <span className='text-base font-light text-gray-400'>{headShotsPercentRounded}%</span>
+                                  <span className='text-base font-light text-gray-500'>{headShotsPercentRounded}%</span>
                                 </div>
                                 <div className='w-1/3 flex flex-col items-center'>
                                   <span className='text-lg'>ACS</span>
-                                  <span className='text-base font-light text-gray-400'>{averageDamageRounded}</span>
+                                  <span className='text-base font-light text-gray-500'>{averageDamageRounded}</span>
                                 </div>
                               </>
                             )

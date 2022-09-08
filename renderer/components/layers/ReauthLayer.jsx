@@ -156,7 +156,7 @@ export default function ReauthLayer() {
       transition={{ type: 'ease-in', duration: 0.3 }}
     >
       <motion.div 
-        className='flex flex-col justify-center items-center w-96 bg-maincolor rounded-sm p-4 pointer-events-auto'
+        className='flex flex-col justify-center items-center w-96 bg-maincolor rounded p-4 pointer-events-auto'
         key={"InfoCard"}
         variants={card_base_variants}
         initial="hidden"
@@ -174,7 +174,7 @@ export default function ReauthLayer() {
 
           return(
             <motion.div 
-              className='flex flex-col justify-center items-center w-96 bg-maincolor rounded-sm p-4 pointer-events-auto'
+              className='flex flex-col justify-center items-center w-96 bg-maincolor rounded p-4 pointer-events-auto'
               key={"LoginCard_" + localReauthStep}
               variants={card_step_variants}
               initial="hidden"
@@ -197,7 +197,7 @@ export default function ReauthLayer() {
         })
       }
       <motion.div 
-        className='flex flex-col justify-center items-center w-96 bg-maincolor rounded-sm p-4 pointer-events-auto'
+        className='flex flex-col justify-center items-center w-96 bg-maincolor rounded p-4 pointer-events-auto'
         key={"FinalCard"}
         variants={card_step_variants}
         initial="hidden"

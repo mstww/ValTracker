@@ -7,6 +7,7 @@ import moment from "moment";
 import L from '../locales/translations/wishlist.json';
 import LocalText from "../components/translation/LocalText";
 import { useRouter } from "next/router";
+import { ArrowRoundUp, StarFilled } from "../components/SVGs";
 
 const scoreboard_vars_initial = {
   hidden: { opacity: 0, x: -200, y: 0, scale: 1, display: 'none' },
@@ -56,7 +57,7 @@ export default function Wishlist() {
                   <span className='cursor-pointer'>{LocalText(L, "headers.price")}</span>
                   {
                     currentSortStat === 'price' ?
-                    <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
+                    <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
                     :
                     null
                   }
@@ -73,7 +74,7 @@ export default function Wishlist() {
                   <span className='cursor-pointer'>{LocalText(L, "headers.wishlisted_on")}</span>
                   {
                     currentSortStat === 'wishedAt' ?
-                    <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
+                    <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
                     :
                     null
                   }
@@ -90,7 +91,7 @@ export default function Wishlist() {
                   <span className='cursor-pointer'>{LocalText(L, "headers.days_since")}</span>
                   {
                     currentSortStat === 'daysSince' ?
-                    <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
+                    <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
                     :
                     null
                   }
@@ -108,7 +109,7 @@ export default function Wishlist() {
                 return (
                   <>
                     <motion.tr 
-                      className={'border-2 border-maincolor-lightest rounded-sm'} key={index + 'tr'}
+                      className={'border-2 border-maincolor-lightest rounded'} key={index + 'tr'}
                       variants={scoreboard_vars_initial}
                       initial="hidden"
                       enter="enter"
@@ -152,7 +153,7 @@ export default function Wishlist() {
                             setUnsortedPlayerWishlistSkins(newArray2);
                           }}
                         >
-                          <img src="/images/star_white_filled.svg" className="w-5 relative bottom-px mr-1" />
+                          <StarFilled cls='w-5 relative bottom-px mr-1' />
                           {LocalText(L, "content.remove_button_text")}
                         </button>
                       </td>

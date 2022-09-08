@@ -9,6 +9,8 @@ import L from '../locales/translations/matchview.json';
 import LocalText from '../components/translation/LocalText';
 import fs from 'fs';
 import fetch from 'node-fetch';
+import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, HumanBody, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
+import ValIconHandler from '../components/ValIconHandler';
 
 const overview_vars_first_load = {
   hidden: { opacity: 0, x: 0, y: 200, scale: 1, display: 'none' },
@@ -388,10 +390,10 @@ function Matchview() {
   return (
     <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''}>
       <div 
-        className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded-sm cursor-pointer transition-all duration-100 ease-linear' 
+        className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}
       >
-        <img src='/images/back_arrow.svg' className='w-8 p-1 shadow-img' />
+        <BackArrow cls='w-8 p-1 shadow-img' />
       </div>
       <div id='matchview-header' className='w-full h-1/5 flex flex-col items-center drop-shadow-xl'>
         <h1 className='text-5xl mt-8'>
@@ -431,7 +433,7 @@ function Matchview() {
       >
         <div id='left' className='w-3/5 flex flex-col mr-4'>
           <motion.div 
-            className='h-3/5 border-2 border-maincolor-lightest p-2 relative w-full rounded-sm mb-4 shadow-xl'
+            className='h-3/5 border-2 border-maincolor-lightest p-2 relative w-full rounded mb-4 shadow-xl'
             variants={lastTab == '' ? overview_vars_first_load : overview_vars}
             initial="hidden"
             animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -449,25 +451,25 @@ function Matchview() {
                 <hr />
                 <ul className='mt-4'>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.date")} color="error" placement={'left'} className='rounded-sm'><img src='/images/calendar.svg' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.date")} color="error" placement={'left'} className='rounded'><Calendar cls='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>{matchDate}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.time")} color="error" placement={'left'} className='rounded-sm'><img src='/images/clock.svg' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.time")} color="error" placement={'left'} className='rounded'><Clock cls='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>{matchLenght}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.mode")} color="error" placement={'left'} className='rounded-sm'><img src='/images/standard.png' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.mode")} color="error" placement={'left'} className='rounded'><ValIconHandler icon={'/images/standard.png'} classes='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>{matchMode}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.region_server")} color="error" placement={'left'} className='rounded-sm'><img src='/images/globe.svg' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.region_server")} color="error" placement={'left'} className='rounded'><Globe cls='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>
                       {matchServer ? matchServer.split(".")[2].split("-")[0].toUpperCase() : ''} // {matchServer ? (matchServer.split("-")[4].charAt(0).toUpperCase() + matchServer.split("-")[4].slice(1)) : ''}
                     </span>
                   </li>
                   <li className='flex flex-row items-center mb-8'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.patch")} color="error" placement={'left'} className='rounded-sm'><img src='/images/valorant_v.svg' className='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.patch")} color="error" placement={'left'} className='rounded'><ValorantV cls='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>Patch {matchGameVersion ? (matchGameVersion.split("-")[1].startsWith('0') ? matchGameVersion.split("-")[1].slice(1) : matchGameVersion.split("-")[1]) : ''}</span>
                   </li>
                 </ul> 
@@ -479,7 +481,7 @@ function Matchview() {
             className='h-2/5 flex flex-row'
           >
             <motion.div 
-              className='w-1/2 border-2 border-maincolor-lightest p-1 rounded-sm shadow-xl mr-4 relative overflow-hidden'
+              className='w-1/2 border-2 border-maincolor-lightest p-1 rounded shadow-xl mr-4 relative overflow-hidden'
               variants={lastTab == '' ? overview_vars_first_load_noflex : overview_vars_noflex}
               initial="hidden"
               animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -570,7 +572,7 @@ function Matchview() {
             </motion.div>
 
             <motion.div 
-              className='w-1/2 border-2 border-maincolor-lightest p-1 rounded-sm shadow-xl overflow-auto'
+              className='w-1/2 border-2 border-maincolor-lightest p-1 rounded shadow-xl overflow-auto'
               variants={lastTab == '' ? overview_vars_first_load_noflex : overview_vars_noflex}
               initial="hidden"
               animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -607,17 +609,17 @@ function Matchview() {
                     <>
                       <div 
                         key={index}
-                        className='h-14 border-2 border-maincolor-lightest rounded-sm p-1 mb-1 flex flex-row items-center pl-2 relative overflow-hidden hover:bg-maincolor-lightest transition-all duration-100 ease-linear'
+                        className='h-14 border-2 border-maincolor-lightest rounded p-1 mb-1 flex flex-row items-center pl-2 relative overflow-hidden hover:bg-maincolor-lightest transition-all duration-100 ease-linear'
                       >
                         <div className='h-full flex flex-row items-center w-2/4'>
                           {
                             isSpikePlanted ? 
-                            <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
-                              <img src='/images/standard.png' className='h-4/6 shadow-img' />
+                            <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded h-full flex items-center'>
+                              <ValIconHandler icon={'/images/standard.png'} classes={'h-4/6 shadow-img'} />
                             </Tooltip>
                             :
-                            <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
-                              <img src='/images/skull.svg' className='h-4/6 shadow-img' />
+                            <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded h-full flex items-center'>
+                              <Skull cls='h-4/6 shadow-img' />
                             </Tooltip>
                           }
                           <div className='ml-2.5 flex flex-col relative'>
@@ -645,8 +647,8 @@ function Matchview() {
                         // Index to check when 12 rounds are over here has to be 11, because index starts at 0.
                         index === 11 ?
                         <div className='h-8 p-1 mb-1 flex flex-row items-center justify-center relative overflow-hidden'>
-                          <Tooltip content={LocalText(L, "round_results.tooltips.side-switch")} color="error" placement={'left'} className='rounded-sm h-full flex items-center'>
-                            <img src='/images/swap.svg' className='h-8 shadow-img' />
+                          <Tooltip content={LocalText(L, "round_results.tooltips.side-switch")} color="error" placement={'left'} className='rounded h-full flex items-center'>
+                            <Swap cls='h-8 shadow-img' />
                           </Tooltip>
                         </div>
                         :
@@ -699,23 +701,23 @@ function Matchview() {
               <hr />
               <ul className='mt-4'>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded-sm'><img src='/images/signal_graph.svg' className='w-7 shadow-img' /></Tooltip>
+                  <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded'><SignalGraph cls='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerKD} ({playerKDA})</span>
                 </li>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={'ACS'} color="error" placement={'left'} className='rounded-sm'><img src='/images/arrow_increase.svg' className='w-7 shadow-img' /></Tooltip>
+                  <Tooltip content={'ACS'} color="error" placement={'left'} className='rounded'><ArrowIncrease cls='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerACS} {isEscalation === true ? 'Score' : 'ACS'}</span>
                 </li>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={isEscalation === true ? LocalText(L, "player_stats.tooltips.dmg") : LocalText(L, "player_stats.tooltips.dmg_round")} color="error" placement={'left'} className='rounded-sm'><img src='/images/skull.svg' className='w-7 shadow-img' /></Tooltip>
+                  <Tooltip content={isEscalation === true ? LocalText(L, "player_stats.tooltips.dmg") : LocalText(L, "player_stats.tooltips.dmg_round")} color="error" placement={'left'} className='rounded'><Skull cls='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerKillsPerRound} {isEscalation === true ? LocalText(L, "player_stats.stats.dmg") : LocalText(L, "player_stats.stats.dmg_round")}</span>
                 </li>
                 <li className={'flex flex-row items-center mb-4 ' + (isEscalation === true ? 'hidden' : '')}>
-                  <Tooltip content={LocalText(L, "player_stats.stats.fbs")} color="error" placement={'left'} className='rounded-sm'><img src='/images/flash.svg' className='w-7 shadow-img' /></Tooltip>
+                  <Tooltip content={LocalText(L, "player_stats.stats.fbs")} color="error" placement={'left'} className='rounded'><Flash cls='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2 '>{playerFBs} {LocalText(L, "player_stats.stats.fbs")}</span>
                 </li>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={LocalText(L, "player_stats.stats.hit_percent")} color="error" placement={'left'} className='rounded-sm'><img src='/images/crosshair.svg' className='w-7 relative top-px transform rotate-45 shadow-img' /></Tooltip>
+                  <Tooltip content={LocalText(L, "player_stats.stats.hit_percent")} color="error" placement={'left'} className='rounded'><Crosshair cls='w-7 relative top-px transform rotate-45 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2.5'>{LocalText(L, "player_stats.stats.hit_percent")}</span>
                 </li>
                 <li className='flex flex-row items-center mb-4 2xl:h-56 h-44 ml-4'>
@@ -740,12 +742,14 @@ function Matchview() {
                 </li>
                 {
                   playerAgentAbilities.map((ability, index) => {
-                    return (
-                      <li className='flex flex-row items-center mb-4 h-8 ml-4' key={index}>
-                        <img src={ability.displayIcon} className='h-full mr-2' />
-                        <span className='text-lg'>{ability.displayName} - {playerAbilityUsagePerRound[ability.slot]}</span>
-                      </li>
-                    )
+                    if(ability.slot !== "Passive") {
+                      return (
+                        <li className='flex flex-row items-center mb-4 h-8 ml-4' key={index}>
+                          <img src={ability.displayIcon} className='h-full mr-2' />
+                          <span className='text-lg'>{ability.displayName} - {playerAbilityUsagePerRound[ability.slot]}</span>
+                        </li>
+                      )
+                    }
                   })
                 }
               </ul>
@@ -777,7 +781,7 @@ function Matchview() {
                 <span className='cursor-pointer'>{isEscalation === true ? 'Score' : 'ACS'}</span>
                 {
                   currentSortStat === 'acs' ?
-                  <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -794,7 +798,7 @@ function Matchview() {
                 <span className='cursor-pointer'>Score</span>
                 {
                   currentSortStat === 'score' ?
-                  <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -811,7 +815,7 @@ function Matchview() {
                 <span className='cursor-pointer'>K/D/A</span>
                 {
                   currentSortStat === 'kda' ?
-                  <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -828,7 +832,7 @@ function Matchview() {
                 <span className='cursor-pointer'>{LocalText(L, "scoreboard.headers.fbs")}</span>
                 {
                   currentSortStat === 'fbs' ?
-                  <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -845,7 +849,7 @@ function Matchview() {
                 <span className='cursor-pointer'>{isEscalation === true ? LocalText(L, "scoreboard.headers.dmg") : LocalText(L, "scoreboard.headers.dmg_round")}</span>
                 {
                   currentSortStat === 'round_dmg' ?
-                  <img src='/images/arrow_round_up.svg' className='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -856,7 +860,7 @@ function Matchview() {
               return(
                 <>
                   <motion.tr 
-                    className={'border-2 border-maincolor-lightest rounded-sm'} key={index + 'tr'}
+                    className={'border-2 border-maincolor-lightest rounded'} key={index + 'tr'}
                     variants={scoreboard_vars_initial}
                     initial="hidden"
                     animate={activeTab === 'scoreboard' ? "enter" : "exit"}
@@ -868,7 +872,7 @@ function Matchview() {
                         content={playerStats.subjectName + '#' + playerStats.subjectTag} 
                         color="error" 
                         placement={'right'} 
-                        className='rounded-sm'
+                        className='rounded'
                       >
                         <span 
                           className={'ml-4 text-xl text-val-' + (playerStats.subjectTeam.toLowerCase())} 

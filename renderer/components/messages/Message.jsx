@@ -5,6 +5,7 @@ import React from 'react';
 import fs from 'fs';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import { Close } from '../SVGs';
 
 const variants = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -55,7 +56,7 @@ export default function Message({ date, message, unix, delay }) {
 
   return(
     <motion.div 
-      className="message text-gray-400 w-80 p-2 min-h-40 h-auto mx-4 mb-4 rounded bg-maincolor-lightest pointer-events-auto shadow-xl relative"
+      className="message text-gray-500 w-80 p-2 min-h-40 h-auto mx-4 mb-4 rounded bg-maincolor-lightest pointer-events-auto shadow-xl relative"
       variants={variants}
       initial="hidden"
       animate={isMessageShown ? "enter" : "exit"}
@@ -63,10 +64,10 @@ export default function Message({ date, message, unix, delay }) {
     >
       <div
         ref={messageRef}
-        className='absolute top-2 right-2 cursor-pointer rounded-sm hover:bg-maincolor-light transition-all duration-100 ease-in p-1'
+        className='absolute top-2 right-2 cursor-pointer rounded hover:bg-maincolor-light transition-all duration-100 ease-in p-1'
         onClick={() => {closeMessage(messageRef)}}
       >
-        <img src='/images/close.svg' className='w-4' />
+        <Close cls='w-4' />
       </div>
       <span className='text-gray-500'>{ date }</span>
       <div className='messageContent' ref={contentRef} dangerouslySetInnerHTML={{ __html: message }} />

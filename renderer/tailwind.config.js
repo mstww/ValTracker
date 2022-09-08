@@ -10,8 +10,11 @@ var mainTheme = {
     "button-color": "#c80043", 
     "button-color-hover": "#ff0055", 
     "button-text": "#ffffff", 
-    "global-text": "#ffffff", 
-    "logo-style": "default", 
+    "global-text": "#ffffff",
+    "val-yellow": "#eaefb3",
+    "scrollbar-bg": "#535353",
+    "scrollbar-thumb-bg": "#c2c2c2",
+    "scrollbar-thumb-hover": "#8a8a8a"
   }
 };
 
@@ -26,7 +29,10 @@ var legacy_theme = {
     "button-color-hover": "#d61044",
     "button-text": "#ffffff",
     "global-text": "#ffffff",
-    "logo-style": "normal"
+    "val-yellow": "#eaefb3",
+    "scrollbar-bg": "#535353",
+    "scrollbar-thumb-bg": "#c2c2c2",
+    "scrollbar-thumb-hover": "#8a8a8a"
   },
 }
 
@@ -39,10 +45,13 @@ var light_theme = {
     "gradient-right": "#BB1CFF",
     "button-color": "#2C5AD6",
     "button-color-hover": "#3C70FF",
-    "button-text": "#ffffff",
+    "button-text": "#000000",
     "global-text": "#000000",
-    "logo-style": "normal"
-  },
+    "val-yellow": "#5e5e5d",
+    "scrollbar-bg": "#c2c2c2",
+    "scrollbar-thumb-bg": "#8a8a8a",
+    "scrollbar-thumb-hover": "#535353"
+  }
 }
 
 module.exports = {
@@ -71,8 +80,7 @@ module.exports = {
     extend: {
       colors: {
         'val-blue': '#67c2a8',
-        'val-red': '#f15c56',
-        'val-yellow': '#eaefb3',
+        'val-red': '#f15c56'
       }
     }
   },

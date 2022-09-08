@@ -1,7 +1,47 @@
 import React from 'react';
 import { VictoryChart, VictoryArea, VictoryTheme, VictoryAxis } from 'victory';
+import fs from 'fs';
 
 export default function InfoChart({ label, data, LocalLatest }) {
+  const [ theme, setTheme ] = React.useState('default');
+
+  const [ dataRelay, setDataRelay ] = React.useState([]);
+
+  const colors = {
+    "default": {
+      "color_1": "#c80043",
+      "color_2": "#6f00ff",
+      "stroke": "#ffffff",
+      "text": "#ffffff"
+    },
+    "legacy": {
+      "color_1": "#c80043",
+      "color_2": "#6f00ff",
+      "stroke": "#ffffff",
+      "text": "#ffffff"
+    },
+    "light": {
+      "color_1": "#2761FF",
+      "color_2": "#BB1CFF",
+      "stroke": "#000000",
+      "text": "#000000"
+    },
+    "": {
+      "color_1": "#c80043",
+      "color_2": "#6f00ff",
+      "stroke": "#ffffff",
+      "text": "#ffffff"
+    }
+  }
+
+  React.useEffect(() => {
+    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
+    setTheme(data.themeName)
+  }, []);
+  
+  React.useEffect(() => {
+    setDataRelay(data);
+  }, [ data ]);
   
   return(
     <>
@@ -10,8 +50,8 @@ export default function InfoChart({ label, data, LocalLatest }) {
         <svg style={{ height: 0 }}>
           <defs>
             <linearGradient id="myGradient" gradientTransform="rotate(90)">
-              <stop offset="0%" stopColor="#c80043" />
-              <stop offset="100%" stopColor="#6f00ff" />
+              <stop offset="0%" stopColor={colors[theme].color_1} />
+              <stop offset="100%" stopColor={colors[theme].color_2} />
             </linearGradient>
           </defs>
         </svg>
@@ -23,11 +63,11 @@ export default function InfoChart({ label, data, LocalLatest }) {
             dependentAxis
             style={{
               axis: {
-                stroke: 'white'
+                stroke: colors[theme].stroke
               },
               tickLabels: {
                 fontSize: 18,
-                fill: 'white'
+                fill: colors[theme].text
               }
             }}
           />
@@ -36,11 +76,11 @@ export default function InfoChart({ label, data, LocalLatest }) {
             //tickFormat={["8", "7", "6", "5", "4", "3", "2", "Latest"]}
             style={{
               axis: {
-                stroke: 'white'
+                stroke: colors[theme].stroke
               },
               tickLabels: {
                 fontSize: 18,
-                fill: 'white'
+                fill: colors[theme].text
               }, 
               grid: {
                 stroke: 'transparent'
@@ -53,11 +93,11 @@ export default function InfoChart({ label, data, LocalLatest }) {
               data: { 
                 fill: 'url(#myGradient)', 
                 fillOpacity: 0.7, 
-                stroke: '#ffffff', 
+                stroke: colors[theme].stroke, 
                 strokeWidth: 1
               }
             }}
-            data={data}
+            data={dataRelay}
             x="match"
             y="stat"
           />

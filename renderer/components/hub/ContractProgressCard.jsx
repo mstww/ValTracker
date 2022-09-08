@@ -1,6 +1,7 @@
 import { Progress } from "@nextui-org/react"
 import fetch from 'node-fetch';
 import React from "react";
+import ValIconHandler from "../ValIconHandler";
 
 export default function ContractProgressCard({ title, reward_1, level_1, progress_max, progress_value, reward_2, level_2, level_1_isTextReward, level_2_isTextReward, level_locale, xp_locale, isVisible }) {
   var color = 'gradient'
@@ -45,7 +46,12 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
               :
               <>
                 <div className='w-16 h-16 flex items-center justify-center'>
-                  <img src={reward_1 ? reward_1.image : null} className='object-cover shadow-img' />
+                  {
+                    reward_1.image === "/images/radianite_icon.png" ?
+                    <ValIconHandler icon={"/images/radianite_icon.png"} classes={'object-cover shadow-img'} />
+                    :
+                    <img src={reward_1 ? reward_1.image : null} className='object-cover shadow-img' />
+                  }
                 </div>
                 <span className='relative bottom-0 opacity-0 select-none'>{level_1}</span>
               </>
@@ -60,7 +66,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
               :
               null
             }
-            <p className='text-gray-400 mt-0'>{numberWithCommas(progress_max - progress_value)}<span className="ml-0.5 inline font-light">XP</span> {xp_locale}</p>
+            <p className='text-gray-500 mt-0'>{numberWithCommas(progress_max - progress_value)}<span className="ml-0.5 inline font-light">XP</span> {xp_locale}</p>
           </div>
 
           <div className='w-1/4 h-full flex flex-col text-center items-center justify-center'>

@@ -11,7 +11,7 @@ export default function PopupCard({ useRef, header, text, button_1, button_2, bu
     <motion.div 
       id='settings-overlay-card' 
       ref={useRef} 
-      className={(isWideCard ? 'w-2/5' : 'w-96') + ' rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg relative'}
+      className={(isWideCard ? 'w-2/5' : 'w-96') + ' rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg relative'}
       variants={update_card_variants}
       initial="hidden"
       animate={ isOpen ? "enter" : "exit"}
@@ -23,7 +23,7 @@ export default function PopupCard({ useRef, header, text, button_1, button_2, bu
       <div className='mt-4'>
         <button 
           onClick={ isButtonClickable ? button_1_onClick : null } 
-          className={isButtonClickable ? '' : 'cursor-not-allowed bg-gray-500 hover:bg-gray-400'}
+          className={isButtonClickable ? '' : 'cursor-not-allowed bg-gray-500 hover:bg-gray-500'}
         >
           { button_1 }
         </button>

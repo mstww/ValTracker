@@ -12,6 +12,8 @@ import fs from 'fs';
 import L from '../locales/translations/shop.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
+import { Close } from '../components/SVGs';
+import ValIconHandler from '../components/ValIconHandler';
 
 const slide_right = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -334,14 +336,14 @@ function Shop() {
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <motion.div 
-          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
+          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
           variants={card_variants}
           initial="hidden"
           animate={showCard ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='z-20 absolute top-4 right-4 hover:bg-maincolor-lightest rounded-sm cursor-pointer transition-all duration-100 ease-linear'
+            className='z-20 absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear'
             onClick={() => {
               setShowBackground(false);
               setShowCard(false);
@@ -359,10 +361,10 @@ function Shop() {
               setActiveCardSkinLevel(0);
             }}
           >
-            <img src='/images/close.svg' className='w-8 p-1' />
+            <Close cls='w-8 p-1' />
           </div>
           <div 
-            className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded-sm px-4 py-2'
+            className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-4 py-2'
           >
             <span className='relative top-px'>{cardSkinPrice}</span>
             <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
@@ -380,7 +382,7 @@ function Shop() {
                   <img 
                     key={index}
                     className={
-                      'w-1/5 chroma-swatch border-2 shadow-lg cursor-pointer relative rounded-sm '
+                      'w-1/5 chroma-swatch border-2 shadow-lg cursor-pointer relative rounded '
                       + (activeCardSkinChroma == index ? 'border-button-color' : 'border-maincolor')
                     }
                     src={chroma.swatch}
@@ -399,7 +401,7 @@ function Shop() {
                       <div 
                         id='level' 
                         className={
-                          "relative chroma-swatch w-full h-14 border-2 bg-maincolor-lightest shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-70 rounded-sm pl-1 transition-all duration-100 ease-linear "
+                          "relative chroma-swatch w-full h-14 border-2 bg-maincolor-lightest shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-70 rounded pl-1 transition-all duration-100 ease-linear "
                           + (activeCardSkinLevel == index ? 'border-button-color' : 'border-maincolor')
                         }
                         key={index}
@@ -440,7 +442,7 @@ function Shop() {
             <span id='bundle-timer' className='text-gray-500'>{bundleTimer}</span>
             <motion.div 
               id='bundle-img-wrapper' 
-              className='w-full relative rounded-sm'
+              className='w-full relative rounded'
               variants={pop_in}
               initial='hidden'
               animate='enter'
@@ -455,7 +457,7 @@ function Shop() {
               />
               <div 
                 id='bundle-price'
-                className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded-sm px-4 py-2'
+                className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-4 py-2'
               >
                 <span className='relative top-px'>{bundlePrice}</span>
                 <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
@@ -473,15 +475,15 @@ function Shop() {
           >
             <div 
               id='wallet'
-              className='bg-opacity-60 bg-black p-4 flex flex-col rounded-sm shadow-lg mb-4'
+              className='bg-maincolor-lightest p-4 flex flex-col rounded shadow-lg mb-4'
             >
               <h1 className='text-2xl mb-2'>{LocalText(L, "wallet_header")}</h1>
               <span className='flex flex-row text-center items-center mb-2'>
-                <img src="/images/vp_icon.png" className='w-8 mr-2' /> 
+                <ValIconHandler icon='/images/vp_icon.png' classes='w-8 mr-2' />
                 <span id="wallet-vp">{walletVP}</span>
               </span>
               <span className='flex flex-row text-center items-center'>
-                <img src="/images/radianite_icon.png" className='w-8 mr-2' />
+                <ValIconHandler icon='/images/radianite_icon.png' classes='w-8 mr-2' />
                 <span id="wallet-rp">{walletRP}</span>
               </span>
             </div>
@@ -489,7 +491,7 @@ function Shop() {
               onClick={() => { switchToNM() }}
               id='night-market'
               className={
-                'bg-opacity-60 bg-black p-4 py-8 flex-col rounded-sm shadow-lg justify-center items-center hover:shadow-2xl hover:bg-opacity-40 transition-all duration-100 ease-in cursor-pointer ' 
+                'bg-opacity-60 bg-black p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:shadow-2xl hover:bg-opacity-40 transition-all duration-100 ease-in cursor-pointer ' 
                 + 
                 (nightMarketShown ? 'flex' : 'hidden')
               }

@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import React from 'react';
 
 export default function LocalText(json, path, num1replace, num2replace) {
   const router = useRouter();

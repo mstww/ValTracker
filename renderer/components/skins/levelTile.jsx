@@ -1,4 +1,5 @@
 import React from "react";
+import { Lock } from "../SVGs";
 export default function LevelTile({ name, effect, onClick, levelUUID, activeLevel, playerItemsAll, count }) {
   const [ playerItems, setPlayerItems ] = React.useState([]);
   const [ isOwned, setIsOwned ] = React.useState(false);
@@ -22,7 +23,7 @@ export default function LevelTile({ name, effect, onClick, levelUUID, activeLeve
   return (
     <div 
       className={
-        "relative chroma-swatch w-full h-14 border-2 border-button-color bg-maincolor-lightest shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-70 rounded-sm pl-1 transition-all duration-100 ease-linear " +
+        "relative chroma-swatch w-full h-14 border-2 border-button-color bg-maincolor-lightest shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-70 rounded pl-1 transition-all duration-100 ease-linear " +
         (levelUUID == activeLevel ? 'border-opacity-100 ' : 'border-opacity-0 ')
         +
         (isOwned ? ' ' : 'text-gray-500')
@@ -36,7 +37,7 @@ export default function LevelTile({ name, effect, onClick, levelUUID, activeLeve
         ''
         :
         <div className="absolute top-0 bottom-0 right-0 flex justify-center items-center h-full mr-3">
-          <img src="/images/lock.svg" className="h-2/4 ml-auto shadow-img" />
+          <Lock cls='h-2/4 ml-auto' />
         </div>
       }
     </div>

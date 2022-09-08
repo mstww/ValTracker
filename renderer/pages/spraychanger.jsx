@@ -7,6 +7,7 @@ import fs from 'fs';
 import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
+import { BackArrow, Search } from '../components/SVGs';
 
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -259,8 +260,8 @@ function Spraychanger() {
 
   return ( 
     <Layout>
-      <div className='absolute z-10 top-4 right-4 hover:bg-maincolor-lightest rounded-sm cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
-        <img src='/images/back_arrow.svg' className='w-8 p-1' />
+      <div className='absolute z-10 top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
+        <BackArrow cls='w-8 p-1' />
       </div>
       <div className='flex flex-row h-full'>
         <div id='skin-selector' className='h-full w-1/5 p-4 overflow-hidden'>
@@ -268,14 +269,13 @@ function Spraychanger() {
             <input 
               id='skin-search'
               type='text'
-              className='group bg-button-color text-sm font-light pl-8 placeholder:text-white hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-pointer my-2 transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
+              className='group bg-button-color text-sm font-light pl-8 hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded cursor-pointer my-2 transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
               placeholder={LocalText(L, "sprays.search_placeholder")}
               onKeyUp={handlePlayerSearch}
               autoCorrect='off'
               spellCheck='false'
-            >
-            </input>
-            <img src='/images/search.svg' className='absolute top-2 left-2 ml-0.5 w-4' />
+            />
+            <Search cls='absolute top-2 left-2 ml-0.5 w-4' />
           </div>
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">

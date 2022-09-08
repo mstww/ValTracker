@@ -155,7 +155,7 @@ function UpdateWindow() {
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <motion.div 
-          className="w-96 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+          className="w-96 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
           key={"UpdateCard"}
           variants={update_card_variants}
           initial="hidden"
@@ -175,7 +175,7 @@ function UpdateWindow() {
       </motion.div>
 
       <motion.div 
-        className="w-96 absolute z-20 bottom-6 right-6 rounded-sm bg-maincolor border-2 border-maincolor-lightest flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+        className="w-96 absolute z-20 bottom-6 right-6 rounded bg-maincolor border-2 border-maincolor-lightest flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
         key={"FinishedCard"}
         variants={slider_card_variants}
         initial="hidden"
@@ -193,7 +193,7 @@ function UpdateWindow() {
       </motion.div>
 
       <motion.div 
-        className="w-96 absolute z-20 bottom-6 right-6 rounded-sm bg-maincolor border-2 border-maincolor-lightest flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+        className="w-96 absolute z-20 bottom-6 right-6 rounded bg-maincolor border-2 border-maincolor-lightest flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
         key={"DownloadCard"}
         variants={slider_card_variants}
         initial="hidden"
@@ -202,7 +202,7 @@ function UpdateWindow() {
       >
         <div>
           <span className='mb-4 font-bold text-lg'>{LocalText(L, "download_card.header")}</span>
-          <Progress value={downloadBarProgress} color="gradient" size={'sm'} className={'my-4 bg-maincolor-lightest rounded-sm'} />
+          <Progress value={downloadBarProgress} color="gradient" size={'sm'} className={'my-4 bg-maincolor-lightest rounded'} />
         </div>
       </motion.div>
     </>

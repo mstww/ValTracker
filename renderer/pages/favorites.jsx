@@ -11,6 +11,7 @@ import { useFirstRender } from '../components/useFirstRender';
 import L from '../locales/translations/favorites.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
+import { StarFilled } from '../components/SVGs';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -597,7 +598,7 @@ function FavouriteMatches() {
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <motion.div 
-          className="w-96 rounded-sm bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+          className="w-96 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
           key={"DeleteMatchCard"}
           variants={card_variants}
           initial="hidden"
@@ -609,7 +610,7 @@ function FavouriteMatches() {
             {LocalText(L, "modals.remove_match.desc")}
             <div 
               id='match'
-              className={'relative flex flex-row h-20 border-2 p-1.5 my-2 border-maincolor-lightest rounded-sm mr-2 cursor-default w-full'}
+              className={'relative flex flex-row h-20 border-2 p-1.5 my-2 border-maincolor-lightest rounded mr-2 cursor-default w-full'}
             >
               <div className='w-1/2 flex flex-row'>
                 <div id='agent-img'>
@@ -676,7 +677,7 @@ function FavouriteMatches() {
       <div className='flex flex-row h-full w-full p-4'>
         <div className='flex flex-col h-auto w-3/4'>
           <div id='match-timeline' className='relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1 after:transition-all after:duration-100 after:ease-linear'>
-            <Tooltip content={'Checking for new matches...'} color="error" placement={'left'} className='rounded-sm absolute top-2 right-7'>
+            <Tooltip content={'Checking for new matches...'} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isLoadingNewMatches ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
@@ -719,10 +720,10 @@ function FavouriteMatches() {
                           return (
                             <div 
                               id='match'
-                              className={'group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded-sm mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                              className={'group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                               key={index}
                               onClick={(e) => {
-                                if(e.target.id !== 'add-to-favs') {
+                                if(e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
                                   var Blue = [];
                                   var Red = [];
                                   for(var i = 0; i < match.players.length; i++) {
@@ -742,11 +743,10 @@ function FavouriteMatches() {
                             >
                               <div className='matchview-gradient-overlay'>
                                 <div className='absolute top-0 left-3 flex flex-row z-40 w-1/6 h-full items-center'>
-                                  <img
-                                    src={'/images/star_filled.svg'}
-                                    className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
-                                    id='add-to-favs'
-                                    onClick={() => {
+                                  <StarFilled 
+                                    color 
+                                    cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                    click={() => {
                                       toggleDeleteMatchDialogue();
                                       setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore });
                                     }}
@@ -765,7 +765,7 @@ function FavouriteMatches() {
                                       content={matchData.playerCurrentTier > 3 ? matchData.playerRankFixed : ''}
                                       color="error" 
                                       placement={'top'} 
-                                      className={'rounded-sm'}
+                                      className={'rounded'}
                                     >
                                       <img 
                                         src={
@@ -805,7 +805,7 @@ function FavouriteMatches() {
                                   (
                                     <div 
                                       id='scoreboard-pos' 
-                                      className={'rounded-sm text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
+                                      className={'rounded text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
                                     >
                                       {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                     </div>
@@ -837,11 +837,11 @@ function FavouriteMatches() {
                                     <>
                                       <div className='w-1/2 flex flex-col items-center'>
                                         <span className='text-lg'>HS%</span>
-                                        <span className='text-lg font-light text-gray-400'>{matchData.headShotsPercentRounded}%</span>
+                                        <span className='text-lg font-light text-gray-500'>{matchData.headShotsPercentRounded}%</span>
                                       </div>
                                       <div className='w-1/2 flex flex-col items-center'>
                                         <span className='text-lg'>ACS</span>
-                                        <span className='text-lg font-light text-gray-400'>{matchData.playerACS}</span>
+                                        <span className='text-lg font-light text-gray-500'>{matchData.playerACS}</span>
                                       </div>
                                     </>
                                   )
@@ -892,10 +892,10 @@ function FavouriteMatches() {
                     return (
                       <div 
                         id='match'
-                        className={'group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded-sm mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                        className={'group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                         key={index}
                         onClick={(e) => {
-                          if(e.target.id !== 'add-to-favs') {
+                          if(e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
                             var Blue = [];
                             var Red = [];
                             for(var i = 0; i < match.players.length; i++) {
@@ -915,11 +915,10 @@ function FavouriteMatches() {
                       >
                         <div className='matchview-gradient-overlay'>
                           <div className='absolute top-0 left-3 flex flex-row z-40 w-1/6 h-full items-center'>
-                            <img
-                              src={'/images/star_filled.svg'}
-                              className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
-                              id='add-to-favs'
-                              onClick={() => {
+                            <StarFilled 
+                              color 
+                              cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                              click={() => {
                                 toggleDeleteMatchDialogue();
                                 setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore });
                               }}
@@ -938,7 +937,7 @@ function FavouriteMatches() {
                                 content={matchData.playerCurrentTier > 3 ? matchData.playerRankFixed : ''}
                                 color="error" 
                                 placement={'top'} 
-                                className={'rounded-sm'}
+                                className={'rounded'}
                               >
                                 <img 
                                   src={
@@ -978,7 +977,7 @@ function FavouriteMatches() {
                             (
                               <div 
                                 id='scoreboard-pos' 
-                                className={'rounded-sm text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
+                                className={'rounded text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
                               >
                               {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                               </div>
@@ -1010,11 +1009,11 @@ function FavouriteMatches() {
                               <>
                                 <div className='w-1/2 flex flex-col items-center'>
                                   <span className='text-lg'>HS%</span>
-                                  <span className='text-lg font-light text-gray-400'>{matchData.headShotsPercentRounded}%</span>
+                                  <span className='text-lg font-light text-gray-500'>{matchData.headShotsPercentRounded}%</span>
                                 </div>
                                 <div className='w-1/2 flex flex-col items-center'>
                                   <span className='text-lg'>ACS</span>
-                                  <span className='text-lg font-light text-gray-400'>{matchData.playerACS}</span>
+                                  <span className='text-lg font-light text-gray-500'>{matchData.playerACS}</span>
                                 </div>
                               </>
                             )

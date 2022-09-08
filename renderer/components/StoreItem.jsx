@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import fs from 'fs';
 import React from "react";
+import { StarFilled, Star } from "./SVGs";
 
 const slide_bottom = {
   hidden: { opacity: 0, x: 0, y: 50 },
@@ -53,7 +54,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <motion.div 
-          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded-sm mb-8 flex flex-col justify-between p-4 pointer-events-none relative'
+          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded mb-8 flex flex-col justify-between p-4 pointer-events-none relative'
           variants={card_variants}
           initial="hidden"
           animate={isThisSkinsOverlayShown ? "enter" : "exit"}
@@ -99,17 +100,12 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                 }
               }}
             >
-              <img
-                src={
-                  isWishlisted === true 
-                  ?
-                  '/images/star_white_filled.svg'
-                  :
-                  '/images/star_white.svg'
-                }
-                id='star-img'
-                className='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear'
-              />
+              {
+                isWishlisted === true ?
+                <StarFilled cls='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-100 ease-linear' />
+                :
+                <Star cls='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-100 ease-linear' />
+              }
               {wishlistTextLocale}
             </button>
           </div>
@@ -121,26 +117,19 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         animate="enter"
         transition={{ type: 'ease', duration: 0.05, delay: delay }}
         id={'item-box'}
-        className='group z-10 h-full w-1/4 relative bg-maincolor-lightest mr-2 rounded-sm shadow-lg hover:shadow-2xl hover:bg-opacity-70 hover:z-0 transition-all duration-100 ease-in'
+        className='group z-10 h-full w-1/4 relative bg-maincolor-lightest mr-2 rounded shadow-lg hover:shadow-2xl hover:bg-opacity-70 hover:z-0 transition-all duration-100 ease-in'
         onClick={(e) => {
-          if(e.target.id !== 'star-img') {
+          if(e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
             clickHandler(item.uuid, item.name, item.price, item.image, item.skinTierImage, index);
           }
         }}
       >
         <div className='absolute bottom-4 left-4 flex flex-row items-center'>
-          <img
-            src={
-              isWishlisted === true 
-              ?
-              '/images/star_filled.svg'
-              :
-              '/images/star.svg'
-            }
-            id='star-img'
-            className='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear'
-            onClick={() => {
-              if(isWishlisted === true) {
+          {
+            isWishlisted === true ?
+            <StarFilled 
+              cls='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear' 
+              click={() => {
                 delete wishlistedItems[wishlistPosition];
                 var newArray = wishlistedItems.filter(value => Object.keys(value).length !== 0);
                 
@@ -152,7 +141,12 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                 setWishlistedItems(newArray);
                 setWishlistPosition(null);
                 setIsWishlisted(false);
-              } else {
+              }} 
+            />
+            :
+            <Star 
+              cls='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear'
+              click={() => {
                 var newItem = {
                   "uuid": item.uuid,
                   "displayName": item.name,
@@ -173,9 +167,9 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                 setWishlistedItems(wishlistedItems);
                 setWishlistPosition(wishlistedItems.length-1);
                 setIsWishlisted(true);
-              }
-            }}
-          />
+              }} 
+            />
+          }
         </div>
         <div className='absolute top-2 z-20 left-2 flex flex-row'>
           <img src={item.skinTierImage ? item.skinTierImage : '/invisible_weapons/spray.png'} className="w-6 h-6 relative top-px mr-2" />
@@ -186,7 +180,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         </div>
         <div 
           id='item-price'
-          className='text-xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded-sm px-2 py-1'
+          className='text-xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-2 py-1'
         >
           <span id="wallet-vp" className='relative top-px'>{ item.price }</span>
           <img src="/images/vp_icon.png" className='w-7 ml-2' />

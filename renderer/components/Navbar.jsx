@@ -12,6 +12,8 @@ import PlayerSearch from './navigation/PlayerSearch';
 import L from '../locales/translations/navbar.json';
 import LocalText from './translation/LocalText';
 
+import { Home, Store, User, Star, Clipboard, Settings } from './SVGs';
+
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
       duration: 0.2,
@@ -165,8 +167,8 @@ export default function Navbar({ page }) {
 
   var activeClasses = 'bg-button-color hover:bg-button-color-hover';
   var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer';
-  var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded-sm transition-all duration-100 ease-linear';
-  var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 placeholder:text-white h-8 w-full flex items-center px-2 py-1 rounded-sm cursor-default transition-all ease-in duration-100 outline-none';
+  var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
+  var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
 
   if(page == "home") var isHome = true;
   if(page == "shop") var isShop = true;
@@ -233,47 +235,47 @@ export default function Navbar({ page }) {
 
     	  <Link href={"/home"}>
           <div id='home-nav' 
-            className={(isHome ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px'}
+            className={(isHome ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px'}
             data-isactive={isHome}
           >
-            <img src='/images/home.svg' className='ml-0.5 w-5' />
+            <Home cls='ml-0.5 w-5' />
             <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'home')}</span>
           </div>
         </Link>
 
         <div id='shop-nav' 
-          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px') : disabledClasses}
+          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px') : disabledClasses}
           data-isactive={isShop}
           onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
         >
-          <img src='/images/store.svg' className='ml-0.5 w-5' />
+          <Store cls='ml-0.5 w-5' />
           <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'shop')}</span>
         </div>
 
         <div id='inv-nav' 
-          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isInv}
           onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
         >
-          <img src='/images/user.svg' className='ml-0.5 w-5' />
+          <User cls='ml-0.5 w-5' />
           <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'inventory')}</span>
         </div>
 
         <div id='fav-nav' 
-          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isFav}
           onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
         >
-          <img src='/images/star_white.svg' className='ml-0.5 w-5' />
+          <Star cls='ml-0.5 w-5' />
           <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'fav_matches')}</span>
         </div>
 
-        <div id='fav-nav' 
-          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded-sm transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+        <div id='wish-nav' 
+          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
           data-isactive={isWish}
           onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
         >
-          <img src='/images/clipboard.svg' className='ml-0.5 w-5' />
+          <Clipboard cls='ml-0.5 w-5' />
           <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'wishlist')}</span>
         </div>
       </div>
@@ -286,7 +288,7 @@ export default function Navbar({ page }) {
       <div id="nav-bottom" className='absolute bottom-0 left-0 w-full h-16 p-2 flex flex-row'>
         <motion.div 
           id='acc-switcher-popup' 
-          className={'h-auto max-h-64 w-60 absolute left-0 bottom-16 ml-2 rounded-sm bg-maincolor-light overflow-auto shadow-lg ' + showMenu}
+          className={'h-auto max-h-64 w-60 absolute left-0 bottom-16 ml-2 rounded bg-maincolor-light overflow-auto shadow-lg ' + showMenu}
           variants={account_switcher_variants}
           initial='closed'
           animate={open ? 'open' : 'closed'}
@@ -304,7 +306,7 @@ export default function Navbar({ page }) {
         </motion.div>
         <div 
           id="acc-switcher-tile" 
-          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded-sm overflow-hidden text-ellipsis ' + switcherActive}
+          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis ' + switcherActive}
           onClick={toggleSwitcherMenu}
         >
           <div className='flex flex-row items-center content-center h-full justify-start'>
@@ -330,7 +332,7 @@ export default function Navbar({ page }) {
                 (page == 'settings' ? 'border-2 border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
               }
             > 
-              <img src='/images/settings.svg' className='w-6' />
+              <Settings cls='w-6' />
             </div>
           </Link>
         </div>
