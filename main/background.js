@@ -1226,18 +1226,10 @@ var reauth_interval;
     } else {
       app.setAsDefaultProtocolClient("x-valtracker-client");
     }
-
-    var isLegacyTheme = false;
-
-    var bg = '#1b222b';
   
     if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/')) {
-      var theme_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json");
-      var theme = JSON.parse(theme_raw);
-      if(theme.themeName == "legacy") {
-        var bg = '#222222';
-        isLegacyTheme = true;
-      }
+      var theme_raw = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
+      var theme = theme_raw.themeName;
     }
   
     if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
@@ -1250,7 +1242,6 @@ var reauth_interval;
         maxWidth: 620,
         maxHeight: 400,
         frame: false,
-        backgroundColor: bg,
         webPreferences: {
           nodeIntegration: true,
           enableRemoteModule: false,
@@ -1321,7 +1312,6 @@ var reauth_interval;
         minWidth: 1400,
         minHeight: 840,
         frame: false,
-        backgroundColor: bg,
         webPreferences: {
           nodeIntegration: true,
           enableRemoteModule: false,
@@ -1565,17 +1555,17 @@ var reauth_interval;
             }
   
             if (isProd) {
-              await mainWindow.loadURL(`app://./home.html?isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
+              await mainWindow.loadURL(`app://./home.html?usedTheme=${theme}&lang=${appLang}`);
             } else {
               const port = process.argv[2];
-              await mainWindow.loadURL(`http://localhost:${port}/home?isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
+              await mainWindow.loadURL(`http://localhost:${port}/home?usedTheme=${theme}&lang=${appLang}`);
             } 
           } else {
             if (isProd) {
-              await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
+              await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&usedTheme=${theme}&lang=${appLang}`);
             } else {
               const port = process.argv[2];
-              await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&isLegacyTheme=${isLegacyTheme}&lang=${appLang}`);
+              await mainWindow.loadURL(`http://localhost:${port}/home?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&usedTheme=${theme}&lang=${appLang}`);
             } 
           }
       
