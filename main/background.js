@@ -348,12 +348,8 @@ async function noFilesFound() {
     fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json", JSON.stringify(data));
   }
     
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
-    download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
-  };
-    
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Icon_default.png")) {
-    download_image('https://valtracker.gg/img/VALTracker_Logo_beta.png', process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Icon_default.png");
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico")) {
+    download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
   };
 
   // Load Window with Setup Sequence
@@ -1322,7 +1318,7 @@ var reauth_interval;
       });
     
       if(startedHidden !== undefined && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
-        var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+        var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
 
         appIcon.on("click", function() {
           RPState = 'app';
@@ -1395,7 +1391,7 @@ var reauth_interval;
           }
           mainWindow.hide();
     
-          var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+          var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
         
           appIcon.on("click", function() {
             RPState = 'app';
@@ -1526,8 +1522,8 @@ var reauth_interval;
           fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json", JSON.stringify(data));
         }
         
-        if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico")) {
-          download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray_icon.ico");
+        if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico")) {
+          download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
         };
         
         if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
