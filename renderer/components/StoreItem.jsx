@@ -128,6 +128,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
           {
             isWishlisted === true ?
             <StarFilled 
+              color
               cls='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear' 
               click={() => {
                 delete wishlistedItems[wishlistPosition];
@@ -145,6 +146,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             />
             :
             <Star 
+              color
               cls='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear'
               click={() => {
                 var newItem = {
