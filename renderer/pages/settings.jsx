@@ -784,7 +784,11 @@ function Settings() {
             </SettingsGroup>
 
             <SettingsGroup header={LocalText(L, 'pg_1.grp_6.name')}>
-              <ThemeSelector currentTheme={currentTheme} setCurrentTheme={changeAppTheme} />
+              <ThemeSelector 
+                L={L}
+                currentTheme={currentTheme} 
+                setCurrentTheme={changeAppTheme} 
+              />
             </SettingsGroup>
 
           </SettingsWrapper>

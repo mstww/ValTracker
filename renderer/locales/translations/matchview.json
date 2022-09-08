@@ -108,7 +108,7 @@
     "match_outcomes": {
       "VICTORY": "SIEG",
       "DEFEAT": "VERLOREN",
-      "DRAW": "GLCHSTND"
+      "DRAW": "GLEICHST."
     },
     "gamemodes": {
       "newmap": "Ungewertet",

@@ -1,29 +1,14 @@
 import { Tooltip } from '@nextui-org/react';
+import LocalText from '../translation/LocalText';
 
-export default function ThemeSelector({ currentTheme, setCurrentTheme }) {
-  const themes = [
-    {
-      "displayName": "Default Theme",
-      "name": "default",
-      "color": "#12171d"
-    },
-    {
-      "displayName": "Legacy Theme",
-      "name": "legacy",
-      "color": "#2d2d2d"
-    },
-    {
-      "displayName": "Light Theme",
-      "name": "light",
-      "color": "#d1d1d1"
-    }
-  ];
+export default function ThemeSelector({ currentTheme, setCurrentTheme, L }) {
+  const themes = LocalText(L, "pg_1.grp_6.setting_1.themes");
 
   return (
     <div className="flex flex-row items-center ml-4 mt-2 mb-4">
       <div>
-        <span className="text-lg transition-all duration-100 ease-linear inline-block mb-2">Change Color Theme</span> <br />
-        <span className={"text-gray-500 mt-2"}>Select a color theme that would like the app to use!</span> 
+        <span className="text-lg transition-all duration-100 ease-linear inline-block mb-2">{LocalText(L,  "pg_1.grp_6.setting_1.name")}</span> <br />
+        <span className={"text-gray-500 mt-2"}>{LocalText(L,  "pg_1.grp_6.setting_1.desc")}</span> 
       </div>
       <div className="ml-auto relative mr-28 w-52 flex flex-row items-center justify-center">
         {

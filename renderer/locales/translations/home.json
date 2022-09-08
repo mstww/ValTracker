@@ -141,10 +141,10 @@
       "match_outcomes": {
         "VICTORY": "SIEG",
         "DEFEAT": "VERLOREN",
-        "DRAW": "GLCHSTND"
+        "DRAW": "GLEICHST."
       },
       "bottom_text": {
-        "loaded_matches_count": "{{ val1 }} von {{ val2 }} Matches gezeigt.",
+        "loaded_matches_count": "{{ val1 }} von {{ val2 }} Matches gezeigt",
         "load_more": "Lade mehr Matches"
       },
       "match_pos": {

@@ -1360,6 +1360,10 @@ body[lang="de-DE"] #scoreline span.text-xl.text-val-red {
   @apply relative right-4;
 }
 
+body[lang="de-DE"] #scoreline span.text-xl.text-val-yellow {
+  @apply relative right-4;
+}
+
 body[lang="de-DE"] #scoreboard-pos {
   @apply ml-12;
 }
@@ -1377,6 +1381,10 @@ body[lang="de-DE"] #rotated-side-text.awards {
   font-size: 2.5rem;
   line-height: 2.5rem;
   @apply mb-2.5 relative right-4;
+}
+
+body[lang="de-DE"] .german-won-round {
+  @apply w-20;
 }
 
 #title-div {

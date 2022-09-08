@@ -56,8 +56,25 @@
       "grp_6": {
         "name": "COLOR THEME",
         "setting_1": {
-          "name": "Legacy Theme",
-          "desc": "Toggle the App's Legacy Color Theme."
+          "name": "Change Color Theme",
+          "desc": "Select a color theme that you would like the app to use!",
+          "themes": [
+            {
+              "displayName": "Default Theme",
+              "name": "default",
+              "color": "#12171d"
+            },
+            {
+              "displayName": "Legacy Theme",
+              "name": "legacy",
+              "color": "#2d2d2d"
+            },
+            {
+              "displayName": "Light Theme",
+              "name": "light",
+              "color": "#d1d1d1"
+            }
+          ]
         }
       }
     },
@@ -227,8 +244,25 @@
       "grp_6": {
         "name": "FARBSCHEMA",
         "setting_1": {
-          "name": "Legacy Farbschema",
-          "desc": "Schalte das \"Legacy\" Farmthema ein oder aus."
+          "name": "Farbschema ändern",
+          "desc": "Wähle eine Farbe, die die App benutzen soll!",
+          "themes": [
+            {
+              "displayName": "Dunkeles Schema",
+              "name": "default",
+              "color": "#12171d"
+            },
+            {
+              "displayName": "Legacy-Farbschema",
+              "name": "legacy",
+              "color": "#2d2d2d"
+            },
+            {
+              "displayName": "Helles Schema",
+              "name": "light",
+              "color": "#d1d1d1"
+            }
+          ]
         }
       }
     },

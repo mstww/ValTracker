@@ -9,7 +9,7 @@ export default function SmallStatsCard({ img_src, header, win_percent, avg_kda, 
         <hr className="ml-2" />
         <div className="flex flex-row">
           <div className='w-1/2 ml-2'>
-            <h2 className='mt-1'>{win_percent}</h2>
+            <h2 className='mt-1'>{win_percent}%</h2>
             <p className='relative bottom-2 text-sm text-gray-500'>{stat_1_locale}</p>
           </div>
           <div className='w-1/2 ml-2'>

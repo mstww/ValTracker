@@ -622,10 +622,10 @@ function Matchview() {
                             </Tooltip>
                           }
                           <div className='ml-2.5 flex flex-col relative'>
-                            <span className={'text-xl relative bottom-1.5 ' + (hasPlayerTeamWonRound ? 'text-val-blue' : 'text-val-red')}>
-                              {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : LocalText(L, "match_outcomes.DEFEAT")}
+                            <span className={'text-xl relative bottom-1.5 ' + (hasPlayerTeamWonRound ? 'text-val-blue german-won-round' : 'text-val-red')}>
+                              {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : LocalText(L, "match_outcomes.DEFEAT").split("O")[0] + '.'}
                             </span>
-                            <span className='absolute -bottom-2 left-px font-light text-sm'>{LocalText(L, "round_results.round_text")} {index+1}</span>
+                            <span className='absolute -bottom-2 w-20 font-light text-sm'>{LocalText(L, "round_results.round_text")} {index+1}</span>
                           </div>
                         </div>
 
@@ -633,13 +633,13 @@ function Matchview() {
                           <span className='text-xl relative bottom-1.5 '>
                             <span className='text-val-blue'>{teamBlueRoundKills}</span> / <span className='text-val-red'>{teamRedRoundKills}</span>
                           </span>
-                          <span className='absolute -bottom-2 left-px font-light text-sm'>{LocalText(L, "round_results.tks")}</span>
+                          <span className='absolute -bottom-2 left-px font-light text-sm w-20'>{LocalText(L, "round_results.tks")}</span>
                         </div>
                         <div className='ml-2 flex flex-col relative w-1/3'>
                           <span className='text-xl relative bottom-1.5 '>
                             <span className='text-val-blue'>{playerKills}</span>
                           </span>
-                          <span className='absolute -bottom-2 left-px font-light text-sm'>{LocalText(L, "round_results.pks")}</span>
+                          <span className='absolute -bottom-2 left-px font-light text-sm text-ellipsis whitespace-nowrap'>{LocalText(L, "round_results.pks")}</span>
                         </div>
                       </div>
                       {

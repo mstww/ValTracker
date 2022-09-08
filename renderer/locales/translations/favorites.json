@@ -91,7 +91,7 @@
       "match_outcomes": {
         "VICTORY": "SIEG",
         "DEFEAT": "VERLOREN",
-        "DRAW": "GLCHSTND"
+        "DRAW": "GLEICHST."
       },
       "match_pos": {
         "Match-MVP": "Match MVP",
