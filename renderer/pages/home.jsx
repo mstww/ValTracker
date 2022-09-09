@@ -1592,7 +1592,7 @@ function Home() {
   React.useEffect(() => {
     ipcRenderer.on("hub_smartLoadNewMatches", async function(event, args) {
       fetchContractData();
-      if(args !== 'newmap' || args !== 'snowball') {
+      if(args !== 'newmap' && args !== 'snowball' && args !== '') {
         if(args === activeQueueTab) {
           await fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
         } else {
