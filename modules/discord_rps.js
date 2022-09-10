@@ -23,9 +23,7 @@ const hub_activity = {
     details: "Browsing Hub",
     assets: {
         large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "home",
-        small_text: "Hub",
+        large_text: "VALTracker.gg"
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -46,9 +44,7 @@ const skins_activity = {
     details: "Changing Skins",
     assets: {
         large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "user-square",
-        small_text: "Browsing Skins",
+        large_text: "VALTracker.gg"
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -69,9 +65,7 @@ const pprofile_acitivity = {
     details: "Browsing a player's profile",
     assets: {
         large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "search",
-        small_text: "Browsing a player's profile",
+        large_text: "VALTracker.gg"
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -93,8 +87,6 @@ const favmatches_activity = {
     assets: {
         large_image: "valtracker_logo",
         large_text: "VALTracker.gg",
-        small_image: "star",
-        small_text: "Browsing favourite matches",
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -115,9 +107,7 @@ const settings_acitivity = {
     details: "Editing settings",
     assets: {
         large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "settings",
-        small_text: "Editing settings",
+        large_text: "VALTracker.gg"
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -138,9 +128,7 @@ const matchview_activity = {
     details: "Looking at a Match",
     assets: {
         large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "clipboard",
-        small_text: "Looking at a Match",
+        large_text: "VALTracker.gg"
     },
     buttons: [{
             "label": "Download VALTracker",
@@ -161,9 +149,7 @@ const shop_activity = {
     details: "Checking the Store",
     assets: {
         large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-        small_image: "store",
-        small_text: "Checking the Store",
+        large_text: "VALTracker.gg"
     },
     buttons: [{
             "label": "Download VALTracker",

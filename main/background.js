@@ -1150,7 +1150,7 @@ var reauth_interval;
       if(featureStatus.data.app_discord_rp.enabled === true) {
         //Login with Discord client 
         discordClient.login({
-          clientId: "1005894948534616115",
+          clientId: "1018145263761764382",
         });
         
         // Set activity after client is finished loading
