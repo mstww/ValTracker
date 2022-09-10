@@ -27,7 +27,9 @@ export default function WhatsNewLayer() {
   const [ isWhatsNewShown, setIsWhatsNewShown ] = React.useState(false);
   const [ newVALTrackerVersion, setNewVALTrackerVersion ] = React.useState('');
   const [ whatsNewAdditions, setWhatsNewAdditions ] = React.useState('');
+  const [ isAdditionsShown, setIsAdditionsShown ] = React.useState(true);
   const [ whatsNewFixes, setWhatsNewFixes ] = React.useState('');
+  const [ isFixesShown, setIsFixesShown ] = React.useState(true);
 
   React.useEffect(async () => {
     if(localStorage.getItem('show-whats-new')) {
@@ -36,7 +38,9 @@ export default function WhatsNewLayer() {
       setNewVALTrackerVersion(whats_new_data.data.version.version);
       
       var newAdditions = md_conv.makeHtml(whats_new_data.data.whats_new.additions);
+      setIsAdditionsShown(!(whats_new_data.data.whats_new.additions === "- "));
       var newFixes = md_conv.makeHtml(whats_new_data.data.whats_new.fixes);
+      setIsFixesShown(!(whats_new_data.data.whats_new.fixes === "- "));
 
       setWhatsNewAdditions(newAdditions);
       setWhatsNewFixes(newFixes);
@@ -78,10 +82,10 @@ export default function WhatsNewLayer() {
         <p className='relative bottom-2 mt-0 pt-0 text-gray-500'>{LocalText(L, "desc", newVALTrackerVersion)}</p>
         <span>{LocalText(L, "additions_header")}</span>
         <hr id='whats-new-hr' />
-        <div className='ml-4 mb-2' dangerouslySetInnerHTML={{ __html: whatsNewAdditions }}></div>
+        <div className={'ml-4 mb-2 ' + (isAdditionsShown ? '' : 'hidden')} dangerouslySetInnerHTML={{ __html: whatsNewAdditions }}></div>
         <span>{LocalText(L, "fixes_header")}</span>
         <hr id='whats-new-hr' />
-        <div className='ml-4 mb-2' dangerouslySetInnerHTML={{ __html: whatsNewFixes }}></div>
+        <div className={'ml-4 mb-2 ' + (isFixesShown ? '' : 'hidden')} dangerouslySetInnerHTML={{ __html: whatsNewFixes }}></div>
         <span className='text-sm text-gray-500'>
           {LocalText(L, "bottom_text.text_1")}
           <span 

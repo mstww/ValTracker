@@ -853,7 +853,7 @@ function Home() {
         var newMatches = [];
   
         for(var i = 0; i < newMatchesArray.length; i++) {
-          var dateDiff = getDifferenceInDays(newMatches[i].matchInfo.gameStartMillis, Date.now());
+          var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
           moment.locale(lang);
           var startdate = moment();
           startdate = startdate.subtract(dateDiff, "days");
