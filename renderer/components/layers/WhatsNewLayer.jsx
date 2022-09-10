@@ -80,12 +80,26 @@ export default function WhatsNewLayer() {
         </div>
         <h2 className='mb-0 pb-0'>{LocalText(L, "header")}</h2>
         <p className='relative bottom-2 mt-0 pt-0 text-gray-500'>{LocalText(L, "desc", newVALTrackerVersion)}</p>
-        <span>{LocalText(L, "additions_header")}</span>
-        <hr id='whats-new-hr' />
-        <div className={'ml-4 mb-2 ' + (isAdditionsShown ? '' : 'hidden')} dangerouslySetInnerHTML={{ __html: whatsNewAdditions }}></div>
-        <span>{LocalText(L, "fixes_header")}</span>
-        <hr id='whats-new-hr' />
-        <div className={'ml-4 mb-2 ' + (isFixesShown ? '' : 'hidden')} dangerouslySetInnerHTML={{ __html: whatsNewFixes }}></div>
+        {
+          isAdditionsShown ? 
+          <>
+            <span>{LocalText(L, "additions_header")}</span>
+            <hr id='whats-new-hr' />
+            <div className='ml-4 mb-2' dangerouslySetInnerHTML={{ __html: whatsNewAdditions }}></div>
+          </>
+          :
+          null
+        }
+        {
+          isFixesShown ? 
+          <>
+            <span>{LocalText(L, "fixes_header")}</span>
+            <hr id='whats-new-hr' />
+            <div className='ml-4 mb-2' dangerouslySetInnerHTML={{ __html: whatsNewFixes }}></div>
+          </>
+          :
+          null
+        }
         <span className='text-sm text-gray-500'>
           {LocalText(L, "bottom_text.text_1")}
           <span 
