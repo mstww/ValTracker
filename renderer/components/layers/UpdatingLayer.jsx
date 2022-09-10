@@ -202,7 +202,7 @@ function UpdateWindow() {
       >
         <div>
           <span className='mb-4 font-bold text-lg'>{LocalText(L, "download_card.header")}</span>
-          <Progress value={downloadBarProgress} color="gradient" size={'sm'} className={'my-4 bg-maincolor-lightest rounded'} />
+          <Progress value={downloadBarProgress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded'} />
         </div>
       </motion.div>
     </>

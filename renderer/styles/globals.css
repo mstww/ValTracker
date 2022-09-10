@@ -745,7 +745,11 @@ h5 {
 }
 
 #inventory-sprays {
-  height: calc(40% - 0.3rem)
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: calc(40% - 0.3rem);
+  width: 100%;
 }
 
 #levels-collapse h3 {
