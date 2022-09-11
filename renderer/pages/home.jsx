@@ -853,7 +853,7 @@ function Home() {
         var newMatches = [];
   
         for(var i = 0; i < newMatchesArray.length; i++) {
-          var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+          var dateDiff = getDifferenceInDays(newMatchesArray[i].matchInfo.gameStartMillis, Date.now());
           moment.locale(lang);
           var startdate = moment();
           startdate = startdate.subtract(dateDiff, "days");
@@ -862,7 +862,7 @@ function Home() {
           // Create array if it doesn't exist
           if(!newMatches[matchDate]) newMatches[matchDate] = [];
     
-          newMatches[matchDate].push(matches[i]);
+          newMatches[matchDate].push(newMatchesArray[i]);
         }
   
         data.items.games = newMatches;
