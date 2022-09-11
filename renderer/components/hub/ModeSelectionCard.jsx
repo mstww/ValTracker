@@ -1,4 +1,4 @@
-export default function ModeSelectionCard({ mode_name, display_name, active, setActive, extraClasses }) {
+export default function ModeSelectionCard({ mode_name, display_name, active, setActive, extraClasses, id }) {
   return(
     <div 
       className={
@@ -6,6 +6,7 @@ export default function ModeSelectionCard({ mode_name, display_name, active, set
         + (extraClasses ? extraClasses : '') 
         + (active == mode_name ? ' border-button-color' : ' border-maincolor-lightest hover:button-border-color-hover cursor-pointer hover:bg-maincolor-lightest')
       }
+      id={id}
       onClick={() => { setActive(mode_name) }}
     >
       <span className='break-normal'>{display_name}</span>

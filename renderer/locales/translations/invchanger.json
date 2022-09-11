@@ -54,5 +54,33 @@
       "video_button": "Zeige Video",
       "wishlist_button": "Zu Wunschliste hinzufügen"
     }
+  },
+  "fr-FR": {
+    "cards": {
+      "search_placeholder": "Recherche d'une carte",
+      "switch_label": "Montrer les cartes que vous n'avez pas",
+      "equip_button": {
+        "state_1": "Equiper la carte",
+        "state_2": "Finit"
+      }
+    },
+    "sprays": {
+      "search_placeholder": "Recherche d'un graffiti",
+      "switch_label": "Montrer les graffitis que vous n'avez pas",
+      "equip_button": {
+        "state_1": "Equiper le Graffiti",
+        "state_2": "Finit"
+      }
+    },
+    "skins": {
+      "search_placeholder": "Recherche d'un revêtement",
+      "switch_label": "Montrer les revêtements que vous n'avez pas",
+      "equip_button": {
+        "state_1": "Equiper le Revêtement",
+        "state_2": "Finit"
+      },
+      "video_button": "Montrer la vidéo",
+      "wishlist_button": "Ajouter a la liste de souhaîts"
+    }
   }
 }

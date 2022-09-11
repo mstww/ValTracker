@@ -106,5 +106,59 @@
         "desc": "VALTracker hat gerade ein neues Update heruntergeladen. Es wird jetzt neu gestartet."
       }
     }
+  },
+  "fr-FR": {
+    "gamemodes": {
+      "newmap": "Non classé",
+      "competitive": "Competition",
+      "unrated": "Non classé",
+      "spikerush": "Spike Rush",
+      "deathmatch": "Combat à mort",
+      "ggteam": "Escalation",
+      "onefa": "Réplication",
+      "snowball": "Snowball Fight", 
+      "custom": "Partie Personalisée",
+      "": "Partie Personalisée"
+    },
+    "val_rp_details": {
+      "in_match": "En Match",
+      "waiting_for_round": "En attente que le prochain match se finisse...",
+      "agent_select": "Séléction D'agents",
+      "menus": "Navigation Dans Les Menus",
+      "playing_val": "Joue à VALORANT",
+      "the_range": "Entraînement"
+    },
+    "skin_wishlist_notifications": {
+      "timer": {
+        "h_1": "heur",
+        "h_2": "heurs",
+        "m": "minutes"
+      },
+      "notif_1": {
+        "header": "1 article en liste de souhaits dans votre boutique",
+        "desc": "Le {{ val1 }} est dans ta boutique! Il sera partit dans {{ val2 }} {{ val3 }}.",
+        "melee_desc": "Le {{ val1 }} est dans ta boutique quotidienne! Il sera partit dans {{ val2 }} {{ val3 }}."
+      },
+      "notif_2": {
+        "header": "Plusieurs articles en liste de souhaits sont dans votre boutique!",
+        "desc": "Plusieurs articles en liste de souhaits dans ta boutique quotidienne! Ils seront partit dans {{ val1 }} {{ val2 }}."
+      }
+    },
+    "tray_menu": {
+      "show": "Montre VALtracker",
+      "quit": "Quitte VALTracker"
+    },
+    "disabled_notifs": {
+      "no_update": {
+        "header": "VALTracker est désactiver."
+      },
+      "update_err": {
+        "header": "Nous avans rencontré une érreur pendant la mise à jour. Merci de réessayer plus tard."
+      },
+      "update_downloaded": {
+        "header": "Nouvelle mise à jour installer!",
+        "desc": "VALTracker viens d'installer une nouvelle mise à jour. Il va maintenant redémarer."
+      }
+    }
   }
 }

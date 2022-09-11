@@ -208,5 +208,110 @@
         "dmg": "Schaden"
       }
     }
+  },
+  "fr-FR": {
+    "match_outcomes": {
+      "VICTORY": "VICTOIRE",
+      "DEFEAT": "DEFAITE",
+      "DRAW": "EGALITE"
+    },
+    "gamemodes": {
+      "newmap": "Non classé",
+      "competitive": "Competition",
+      "unrated": "Non classé",
+      "spikerush": "Spike Rush",
+      "deathmatch": "Combat à mort",
+      "ggteam": "Intensification",
+      "onefa": "Réplication",
+      "snowball": "Snowball Fight", 
+      "custom": "Partie Personnalisée",
+      "": "Partie Personnalisée"
+    },
+    "nav": {
+      "overview": "Aperçu",
+      "scoreboard": "Tableau de score"
+    },
+    "match_info": {
+      "header": "INFORMATIONS SUR LE MATCH",
+      "date_format": "D. MMMM YYYY, h:mm a",
+      "tooltips": {
+        "date": "Date du match",
+        "time": "Longueur de match",
+        "mode": "Mode",
+        "region_server": "Région // Serveur",
+        "patch": "Patch"
+      }
+    },
+    "awards": {
+      "rotated_text": "PRIX",
+      "most_money": {
+        "title": "Homme de monopole",
+        "desc": "Vous avez dépensé le plus d'argent."
+      },
+      "least_money": {
+        "title": "Dépenseur intelligent",
+        "desc": "You spent the least money."
+      },
+      "most_kills": {
+        "title": "Shots fired!",
+        "desc": "Vous avez dépensé le moins d'argent."
+      },
+      "most_assists": {
+        "title": "Pocket Sage",
+        "desc": "Vous avez eu le plus de kill assistés."
+      },
+      "most_acs": {
+        "title": "Automate",
+        "desc_1": "Vous aviez le plus haut ACS.",
+        "desc_2": "Vous avez eu le score le plus élevé." 
+      },
+      "most_fbs": {
+        "title": "Besoin de vitesse",
+        "desc": "Vous avez eu le plus de premiers sangs."
+      },
+      "most_dmg": {
+        "title": "C'est beaucoup de dégâts!",
+        "desc": "Vous avez infligé le plus de dégâts."
+      },
+      "best_hs": {
+        "title": "Vérifiez-le PC!",
+        "desc": "Vous avez eu le pourcentage de Headshot le plus élevé."
+      }
+    },
+    "round_results": {
+      "round_text": "Match",
+      "tks": "Éliminations",
+      "pks": "Vos kills",
+      "tooltips": {
+        "Eliminated": "Éliminé",
+        "Bomb-detonated": "Bombe a explosé",
+        "Bomb-defused": "Bombe désamorcée",
+        "side-switch": "Changer de camp"
+      }
+    },
+    "player_stats": {
+      "header": "STATISTIQUES DU JOUEUR",
+      "stats": {
+        "dmg_round": "Dégâts du match",
+        "dmg": "Dégâts",
+        "fbs": "Premiers Sangs",
+        "hit_percent": "Pourcentages de succès:",
+        "abilities_per_round": "Utilisation de capacité/match:"
+      },
+      "tooltips": {
+        "dmg_round": "Dégâts du match",
+        "dmg": "Dégâts",
+        "fbs": "Premiers Sangs",
+        "hit_percent": "Pourcentages de succès"
+      }
+    },
+    "scoreboard": {
+      "headers": {
+        "agent_name": "Agent et nom",
+        "fbs": "Premiers Sangs",
+        "dmg_round": "Dégâts du match",
+        "dmg": "Dégâts"
+      }
+    }
   }
 }

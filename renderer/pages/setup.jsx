@@ -164,7 +164,9 @@ function Setup() {
   const [ isProgressShown, setIsProgressShown ] = React.useState(false);
   const [ progress, setProgress ] = React.useState(0);
 
-  const [ overallProgress, setOverallProgress ] = React.useState(6); //6, 33, 62, 100
+  var overallProgressValues = LocalText(L, currentSelectedLanguage, "progress.values");
+
+  const [ overallProgress, setOverallProgress ] = React.useState(overallProgressValues[0]); //6, 33, 62, 100
 
   const login = async () => {
     var data = await ipcRenderer.invoke('loginWindow');
@@ -304,7 +306,7 @@ function Setup() {
                 setIsPage2Shown(true);
                 setCurrentPage('2');
                 setLastPage('1');
-                setOverallProgress(33);
+                setOverallProgress(overallProgressValues[1]);
               }}
               className={'setup-button bottom-2 left-2'}
             >
@@ -336,7 +338,7 @@ function Setup() {
                       setIsPage2Shown(false);
                       setLastPage("2");
                       setCurrentPage("3");
-                      setOverallProgress(62);
+                      setOverallProgress(overallProgressValues[2]);
                     }}
                     className={'bottom-0.5 relative'}
                   >
@@ -351,7 +353,7 @@ function Setup() {
                   setIsPage2Shown(false);
                   setLastPage("2");
                   setCurrentPage("1");
-                  setOverallProgress(6);
+                  setOverallProgress(overallProgressValues[0]);
                 }}
                 className={'text-button relative inline-flex flex-row items-center ' + (isLoginCompleted ? 'right-5 top-0.5' : ' right-8 top-0.5')}
               >
@@ -396,7 +398,7 @@ function Setup() {
             <div className='absolute bottom-0 left-2 flex flex-row items-center'>
               <button 
                 onClick={() => {
-                  setOverallProgress(100);
+                  setOverallProgress(overallProgressValues[3]);
                   setLastPage("3");
                   setCurrentPage("4");
                 }}
@@ -406,7 +408,7 @@ function Setup() {
               </button>
               <button 
                 onClick={() => {
-                  setOverallProgress(33);
+                  setOverallProgress(overallProgressValues[1]);
                   setLastPage("3");
                   setCurrentPage("2");
                   setIsPage2Shown(true);

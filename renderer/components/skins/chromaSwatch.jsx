@@ -51,7 +51,7 @@ export default function ChromaSwatch({ image, onClick, chromaUUID, activeChroma,
       }
         onClick={() => { onClick(chromaUUID, isOwned, isBaseColor) }}
     >
-      <img src={image} />
+      <img src={image} className="rounded" />
       {
         isOwned ?
         ''

@@ -26,5 +26,19 @@
       "remove_button_text": "Entfernen",
       "empty_text": "Ist ja gar nix hier! Du kannst Skins entweder im Shop oder in deinem Inventar zur Wunschliste hinzufügen."
     }
+  },
+  "fr-FR": {
+    "headers": {
+      "skin": "Revêtement",
+      "price": "Prix",
+      "wishlisted_on": "Liste de souhaits ON",
+      "days_since": "Jours depuis",
+      "remove": "Supprimer de la liste de souhaits"
+    },
+    "content": {
+      "date_format": "MMMM Do, YYYY",
+      "remove_button_text": "Retirer",
+      "empty_text": "Rien à voir ici! Liste de souhaits un revêtement dans votre boutique ou dans votre inventaire."
+    }
   }
 }

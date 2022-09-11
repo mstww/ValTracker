@@ -194,5 +194,103 @@
         "fl_7": "Eigenes Spiel"
       }
     }
+  },
+  "fr-FR": {
+    "component_err": {
+      "err_text": "Erreur pendant le lancement des composants.",
+      "button_text": "Rechargement"   
+    },
+    "top_l": {
+      "bundle_header": "Pack en vedette",
+      "contracts": {
+        "level_text": "Niveaux",
+        "xp_text": "ALLER",
+        "battle_pass_header": "Progrès du Passe de Combat",
+        "agent_contract_header": "Progrès du contrat de l'agent"
+      }
+    },
+    "top_r": {
+      "headers": {
+        "h_1": "Headshot% des 8 derniers match",
+        "h_2": "Damage/Round des 8 derniers match",
+        "h_3": "KD des 8 derniers match"
+      },
+      "latest_text": "Dernier"
+    },
+    "bot_l": {
+      "errors": {
+        "no_matches_found": "Aucun match trouvés.",
+        "err_while_fetching": "Une erreur s'est produite lors de la récupération de nouveaux match. Réessayer!"
+      },
+      "date_format": "MMMM Faire",
+      "loading_tooltip": "Recherche de nouveaux match...",
+      "gamemodes": {
+        "newmap": "Non classé",
+        "competitive": "Competition",
+        "unrated": "Non classé",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Combat à mort",
+        "ggteam": "Intensification",
+        "onefa": "Réplication",
+        "snowball": "Snowball Fight", 
+        "custom": "Partie Personnalisée",
+        "": "Partie Personnalisée"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTOIRE",
+        "DEFEAT": "DEFAITE",
+        "DRAW": "EGALITE"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val1 }} des {{ val2 }} Match montrer",
+        "load_more": "Charge plus de match"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP du match",
+        "Team-MVP": "MVP de l'équipe",
+        "2nd": "2ème",
+        "3rd": "3ème",
+        "4th": "4ème",
+        "5th": "5ème",
+        "6th": "6ème",
+        "7th": "7ème",
+        "8th": "8ème",
+        "9th": "9ème",
+        "10th": "10ème"
+      }
+    },
+    "bot_r": {
+      "stats": {
+        "header": "Statistique des derniers {{ val1 }} Match",
+        "stat_1": "Avg Kills/Match",
+        "stat_2": "Avg Kills/Round",
+        "stat_3": "Victoire%",
+        "stat_4": "Avg Headshot%"
+      },
+      "best_map": {
+        "header": "Meilleure carte",
+        "stats": {
+          "stat_1": "Victoire%",
+          "stat_2": "Avg KD"
+        }
+      },
+      "best_agent": {
+        "header": "Meilleur agent",
+        "stat_1": "Avg Score/Match",
+        "stat_2": "Avg KDA",
+        "stat_3": "Avg Kills/Round",
+        "stat_4": "Avg Kills/Match"
+      },
+      "match_filter": {
+        "header": "Changement du Filtre de Match",
+        "fl_1": "Non classé",
+        "fl_2": "Competition",
+        "fl_3": "Combat à mort",
+        "fl_4": "Spike Rush",
+        "fl_5": "Réplication",
+        "fl_6": "Intensification",
+        "fl_7": "Partie Personnalisée"
+      }
+    }
   }
 }

@@ -16,5 +16,14 @@
     "inventory": "Inventar",
     "fav_matches": "Favorisierte Matches",
     "wishlist": "Deine Wunschliste"
+  },
+  "fr-FR": {
+    "search_placeholder": "Rechercher un joueur",
+    "history_close": "Fermer l'historique",
+    "home": "Home",
+    "shop": "Boutique",
+    "inventory": "Inventaire",
+    "fav_matches": "Match favoris",
+    "wishlist": "Votre liste de souhaits"
   }
 }

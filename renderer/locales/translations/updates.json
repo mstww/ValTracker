@@ -30,5 +30,21 @@
       "button_1": "Neu starten",
       "button_2": "Später"
     }
+  },
+  "fr-FR": {
+    "info_card": {
+      "header": "UNE MISE À JOUR EST DISPONIBLE",
+      "button_1": "Télécharger la mise à jour",
+      "button_2": "Pas maintenant"
+    },
+    "download_card": {
+      "header": "TÉLÉCHARGEMENT DE LA MISE À JOUR"
+    },
+    "finished_card": {
+      "header": "MISE À JOUR TÉLÉCHARGÉE",
+      "desc": "Cliquez pour quitter, installer puis redémarrer.",
+      "button_1": "Redémarrer l'application",
+      "button_2": "Pas maintenant"
+    }
   }
 }

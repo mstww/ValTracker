@@ -36,5 +36,24 @@
     },
     "overlay_levels": "Level",
     "add_to_wishlist": "Zur Wunschliste hinzufügen"
+  },
+  "fr-FR": {
+    "bundle_header": "Pack en vedette",
+    "daily_shop_header": "Boutique quotidienne",
+    "night_market_header": "Night Market",
+    "wallet_header": "Ton portefeuille",
+    "timer": {
+      "d_1": "journée",
+      "d_2": "journées",
+      "h_1": "heur",
+      "h_2": "heurs",
+      "m_1": "minute",
+      "m_2": "minutes",
+      "s_1": "second",
+      "s_2": "seconds",
+      "rem": "restant"
+    },
+    "overlay_levels": "Niveaux",
+    "add_to_wishlist": "Ajouter à la liste de souhaits"
   }
 }

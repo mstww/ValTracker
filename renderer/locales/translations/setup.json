@@ -4,7 +4,8 @@
       "lang": "Language",
       "riot": "Riot Login",
       "confirm": "Confirmation",
-      "finish": "Finish Setup"
+      "finish": "Finish Setup",
+      "values": [6, 33, 62, 100]
     },
     "page_1": {
       "header": "Choose a Language",
@@ -42,7 +43,8 @@
       "lang": "Sprache",
       "riot": "Riot Login",
       "confirm": "Bestätigung",
-      "finish": "Setup beenden"
+      "finish": "Setup beenden",
+      "values": [6, 31, 60, 100]
     },
     "page_1": {
       "header": "Wähle eine Sprache",
@@ -73,6 +75,45 @@
     "page_4": {
       "header": "Und das war's!",
       "finish_button_text": "Setup beenden"
+    }
+  },
+  "fr-FR": {
+    "progress": {
+      "lang": "Langue",
+      "riot": "Connectez-vous à Riot",
+      "confirm": "Confirmation",
+      "finish": "Terminer la configuration",
+      "values": [6, 29, 56, 100]
+    },
+    "page_1": {
+      "header": "Choisissez une langue",
+      "info": "Cela peut ensuite être modifié dans les paramètres.",
+      "button_1_text": "Continuer"
+    },
+    "page_2": {
+      "header": "Connectez-vous avec votre compte Riot",
+      "login_button_text_1": "Ouvrir la fenêtre de connexion",
+      "login_button_text_2": "Finir!",
+      "loading_states": {
+        "s0": "Récupération de la région...",
+        "s1": "Récupération du magasin du joueur...",
+        "s2": "Récupération des détails du joueur...",
+        "s3": "Récupération du classement du joueur...",
+        "s4": "Ecriture dans un fichier...",
+        "err": "Erreur! Veuillez rejoindre notre serveur Discord pour obtenir de l'aide.",
+        "win_closed": "Fenêtre de connexion fermée."
+      },
+      "button_1_text": "Continuer",
+      "button_2_text": "Annuler"
+    },
+    "page_3": {
+      "header": "Confirm Details",
+      "button_1_text": "Continuer",
+      "button_2_text": "Annuler"
+    },
+    "page_4": {
+      "header": "Et c'est tout!",
+      "finish_button_text": "Terminer la configuration"
     }
   }
 }

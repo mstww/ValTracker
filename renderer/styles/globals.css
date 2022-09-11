@@ -1416,3 +1416,59 @@ svg {
 option:disabled {
   @apply text-gray-500;
 }
+
+body[lang="fr-FR"] #scoreboard-pos {
+  @apply ml-6 relative right-1 h-auto text-center;
+}
+
+body[lang="fr-FR"] #scoreboard-pos {
+  @apply ml-8 h-auto text-center;
+}
+
+body[lang="fr-FR"] #scoreline .text-xl.text-val-red, body[lang="fr-FR"] #scoreline .text-xl.text-val-yellow {
+  @apply relative right-1;
+}
+
+body[lang="fr-FR"] #scoreline .text-xl.text-val-blue {
+  @apply relative right-2;
+}
+
+body[lang="fr-FR"] #hub-match-filter #unrated {
+  order: 1;
+}
+
+body[lang="fr-FR"] #hub-match-filter #competitive {
+  order: 2;
+}
+
+body[lang="fr-FR"] #hub-match-filter #deathmatch {
+  order: 4;
+  width: 49.5%;
+}
+
+body[lang="fr-FR"] #hub-match-filter #spikerush {
+  order: 3;
+}
+
+body[lang="fr-FR"] #hub-match-filter #onefa {
+  order: 5;
+  width: 49.5%;
+}
+
+body[lang="fr-FR"] #hub-match-filter #ggteam {
+  order: 6;
+  width: 49.5%;
+}
+
+body[lang="fr-FR"] #hub-match-filter #custom {
+  order: 7;
+  width: 49.5%;
+}
+
+body[lang="fr-FR"] #equip-skin-button {
+  @apply h-auto;
+}
+
+#chroma-swatch, .chroma-swatch, #chroma-swatch img, .chroma-swatch img {
+  @apply rounded;
+}

@@ -623,7 +623,7 @@ function Matchview() {
                           }
                           <div className='ml-2.5 flex flex-col relative'>
                             <span className={'text-xl relative bottom-1.5 ' + (hasPlayerTeamWonRound ? 'text-val-blue german-won-round' : 'text-val-red')}>
-                              {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : LocalText(L, "match_outcomes.DEFEAT").split("O")[0] + '.'}
+                              {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : (LocalText(L, "match_outcomes.DEFEAT") === "VERLOREN" ? LocalText(L, "match_outcomes.DEFEAT").split("O")[0] + '.' : LocalText(L, "match_outcomes.DEFEAT"))}
                             </span>
                             <span className='absolute -bottom-2 w-20 font-light text-sm'>{LocalText(L, "round_results.round_text")} {index+1}</span>
                           </div>

@@ -40,5 +40,26 @@
     "save_loadout_button_text": "Aktuelles Inventar speichern",
     "delete_preset_button": "Aktuelle Voreinstellung löschen",
     "preset_select_placeholder": "Voreinstellung wählen"
+  },
+  "fr-FR": {
+    "modals": {
+      "save_modal": {
+        "header": "Sauvegarder le chargement utilisé",
+        "desc": "Entrer un nom pour sauvegarder cet inventaire pour ton Presets.",
+        "input_placeholder": "Nom du Preset",
+        "button_1_text": "Savegarder du Preset",
+        "button_2_text": "Annuler"
+      },
+      "remove_modal": {
+        "header": "suprimmer le preset utilisé",
+        "desc": "Veux-tu vraiment supprimé le preset utilisé?",
+        "desc2": "Vous pouvez le recharger en le sauvegardant dans ton inventaire utilisé.",
+        "button_1_text": "Supprimer le Preset",
+        "button_2_text": "Annuler"
+      }
+    },
+    "save_loadout_button_text": "Sauvegarder le chargement",
+    "delete_preset_button": "Supprimer le preset utilisé",
+    "preset_select_placeholder": "Choisir ce preset"
   }
 }

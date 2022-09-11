@@ -32,5 +32,22 @@
       "desc": "Danke, dass du VALTracker verwendest. Du kannst die App nun neu starten.",
       "button_text": "App neu starten"
     }
+  },
+  "fr-FR": {
+    "first_card": {
+      "header": "Erreur",
+      "desc": "Nous n'avons pas réussi à nous connecter avec {{ val1 }} de vos comptes. Veuillez cliquer sur le bouton ci-dessous et suivre les instructions pour vous reconnecter.",
+      "button_text": "Procéder"
+    },
+    "account_card": {
+      "header": "Compte {{ val1 }} - {{ val2 }}",
+      "desc": "Cliquez sur le bouton ci-dessous pour vous reconnecter avec ce compte.",
+      "button_text": "Connexion"
+    },
+    "final_card": {
+      "header": "Et c'est tout!",
+      "desc": "Merci d'utiliser VALTracker. Vous pouvez redémarrer l'application en utilisant le bouton ci-dessous.",
+      "button_text": "Redémarrer l'application"
+    }
   }
 }

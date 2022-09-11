@@ -674,6 +674,7 @@ function Skinchanger() {
                   className={'w-full h-12 mt-2 block change-color-btn ' 
                   + (showSetSkinButton ? '' : 'hidden') 
                   + (setSkinSuccess ? ' bg-green-500 hover:bg-green-400 pointer-events-none cursor-default' : ' bg-button-color hover:bg-button-color-hover')}
+                  id='equip-skin-button'
                 >
                   {setSkinSuccess ? LocalText(L, "skins.equip_button.state_2") : LocalText(L, "skins.equip_button.state_1")}
                 </button>

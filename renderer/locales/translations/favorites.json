@@ -130,5 +130,71 @@
     },
     "loading": "Lade...",
     "matches_bottom": "Das war's!"
+  },
+  "fr-FR": {
+    "modals": {
+      "remove_match": {
+        "header": "Enlever le match?",
+        "desc": "Veux tu vraiment enlever ce match?",
+        "desc2": "Tu peux aller dans le lobby pour le sauvegarder en tant que favoris..",
+        "button_1": "Elever le match",
+        "button_2": "Annuler"
+      }
+    },
+    "matches": {
+      "gamemodes": {
+        "newmap": "Non classé",
+        "competitive": "Competition",
+        "unrated": "Non classé",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Combat à mort",
+        "ggteam": "Intensification",
+        "onefa": "Réplication",
+        "snowball": "Snowball Fight", 
+        "custom": "Partie Personnalisée",
+        "": "Partie Personnalisée"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTOIRE",
+        "DEFEAT": "DEFAITE",
+        "DRAW": "EGALITE"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP du match",
+        "Team-MVP": "MVP de l'équipe",
+        "2nd": "2ème",
+        "3rd": "3ème",
+        "4th": "4ème",
+        "5th": "5ème",
+        "6th": "6ème",
+        "7th": "7ème",
+        "8th": "8ème",
+        "9th": "9ème",
+        "10th": "10ème"
+      }
+    },
+    "filters": {
+      "header": "Filtres",
+      "modes": {
+        "header": "Mode",
+        "fm_1": "All",
+        "fm_2": "Non classé",
+        "fm_3": "Competition",
+        "fm_4": "Combat à mort",
+        "fm_5": "Spike Rush",
+        "fm_6": "Réplication",
+        "fm_7": "Intensification",
+        "fm_8": "Partie Personnalisée"
+      },
+      "sort_by": {
+        "header": "Trier par",
+        "fs_1": "Rien",
+        "fs_2": "KD",
+        "fs_3": "HS%",
+        "fs_4": "ACS"
+      }
+    },
+    "loading": "Chargement",
+    "matches_bottom": "C'est ça!"
   }
 }

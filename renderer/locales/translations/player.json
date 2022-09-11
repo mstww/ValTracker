@@ -3,12 +3,12 @@
     "errorReasons": {
       "400": "Something went wrong with the request. Please try again.",
       "401": "It seems you're not authorized to view this player.",
-      "403": "We had a problem connecting to Riots Servers. Please try again or come back later.",
+      "403": "We had a problem connecting to Riot's Servers. Please try again or come back later.",
       "404": "Sorry, we couldn't find that player.",
       "405": "Something went wrong with the request. Please try again.",
       "406": "Something went wrong with the request. Please try again.",
       "408": "Something went wrong with the request. Please try again.",
-      "429": "The Rate Limit as been hit. Please try again in 2 Minutes.",
+      "429": "The Rate Limit has been hit. Please try again in 2 Minutes.",
       "500": "It seems something went wrong on the Server. Please try again later.",
       "501": "It seems something went wrong on the Server. Please try again later.",
       "502": "It seems something went wrong on the Server. Please try again later.",
@@ -114,6 +114,65 @@
         "8th": "8ter",
         "9th": "9ter",
         "10th": "10ter"
+      }
+    }
+  },
+  "fr-FR": {
+    "errorReasons": {
+      "400": "Quelque chose s'est mal passé avec la demande. Veuillez réessayer.",
+      "401": "Il semble que vous n'êtes pas autorisé à voir ce lecteur.",
+      "403": "Nous avons eu un problème de connexion aux serveurs de Riot. Veuillez réessayer ou revenir plus tard.",
+      "404": "Désolé, nous n'avons pas trouvé ce joueur.",
+      "405": "Quelque chose s'est mal passé avec la demande. Veuillez réessayer.",
+      "406": "Quelque chose s'est mal passé avec la demande. Veuillez réessayer.",
+      "408": "Quelque chose s'est mal passé avec la demande. Veuillez réessayer.",
+      "429": "La limite de débit a été atteinte. Veuillez réessayer dans 2 minutes.",
+      "500": "Il semble que quelque chose s'est mal passé sur le serveur. Veuillez réessayer plus tard.",
+      "501": "Il semble que quelque chose s'est mal passé sur le serveur. Veuillez réessayer plus tard.",
+      "502": "Il semble que quelque chose s'est mal passé sur le serveur. Veuillez réessayer plus tard.",
+      "503": "Il semble que le serveur soit hors ligne. Veuillez réessayer plus tard.",
+      "504": "Il semble que quelque chose s'est mal passé sur le serveur. Veuillez réessayer plus tard."
+    },
+    "reload_button_text": "Recharger",
+    "matches": {
+      "errors": {
+        "no_matches_found": "Aucun résultat.",
+        "err_while_fetching": "Une erreur s'est produite lors de la récupération de nouveaux match. Réessayer!"
+      },
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Non classé",
+        "competitive": "Competition",
+        "unrated": "Non classé",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Combat à mort",
+        "ggteam": "Intensification",
+        "onefa": "Réplication",
+        "snowball": "Snowball Fight", 
+        "custom": "Partie Personnalisée",
+        "": "Partie Personnalisée"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTOIRE",
+        "DEFEAT": "DEFAITE",
+        "DRAW": "EGALITE"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val1 }} des {{ val2 }} Match montrer",
+        "load_more": "Charge plus de match"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP du match",
+        "Team-MVP": "MVP de l'équipe",
+        "2nd": "2ème",
+        "3rd": "3ème",
+        "4th": "4ème",
+        "5th": "5ème",
+        "6th": "6ème",
+        "7th": "7ème",
+        "8th": "8ème",
+        "9th": "9ème",
+        "10th": "10ème"
       }
     }
   }

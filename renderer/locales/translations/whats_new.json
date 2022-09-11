@@ -20,5 +20,16 @@
       "link_text": "hier",
       "text_2": "um die kompletten Patchnotes zu sehen."
     }
+  },
+  "fr-FR": {
+    "header": "VALTracker a été mis à jour!",
+    "desc": "Nouvelle version: {{ val1 }}",
+    "additions_header": "Quoi de neuf",
+    "fixes_header": "Nouveaux correctifs",
+    "bottom_text": {
+      "text_1": "Cliquez",
+      "link_text": "ici",
+      "text_2": "pour voir toutes les notes de mise à jour"
+    }
   }
 }

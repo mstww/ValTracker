@@ -298,6 +298,7 @@ function Spraychanger() {
               (showSetSkinButton ? '' : 'hidden')
               + 
               (setSkinSuccess ? ' bg-green-500 hover:bg-green-500 pointer-events-none cursor-default' : ' bg-button-color hover:bg-button-color-hover')}
+              id='equip-skin-button'
             >
               {setSkinSuccess ? LocalText(L, "sprays.equip_button.state_2") : LocalText(L, "sprays.equip_button.state_1")}
             </button>

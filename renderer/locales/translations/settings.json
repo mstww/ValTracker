@@ -83,7 +83,7 @@
         "name": "APP RICH PRESENCE",
         "setting_1": {
           "name": "VALTracker Rich Presence",
-          "desc": "Show your friends that your're using VALTracker with a custom Rich Presence!"
+          "desc": "Show your friends that you're using VALTracker with a custom Rich Presence!"
         },
         "setting_2": {
           "name": "Hide Rich Presence when minimized",
@@ -372,6 +372,194 @@
         "desc": "Wähle das Konto aus, dass du von VALTracker entfernen willst.",
         "button_1": "Bestätigen",
         "button_2": "Abbruch"
+      }
+    }
+  },
+  "fr-FR": {
+    "errors": {
+      "acc_already_added": "Ce compte a déjà été ajouté.",
+      "invalid_settings_code": "Code de profil invalide."
+    },
+    "nav": {
+      "el_1": "Général",
+      "el_2": "Présences riches",
+      "el_3": "Gestion du compte Riot",
+      "el_4": "Patchnotes",
+      "el_5": "Autre"
+    },
+    "pg_1": {
+      "grp_1": {
+        "name": "COMPORTEMENT DE L'APPLICATION",
+        "setting_1": {
+          "name": "Ouvrir VALTracker",
+          "desc": "Ouvrez VALTracker automatiquement dès le démarrage de votre PC."
+        },
+        "setting_2": {
+          "name": "Ouvrir VALTracker réduit",
+          "desc": "Ouvrez VALTracker réduit au démarrage automatique."
+        }
+      },
+      "grp_2": {
+        "name": "LANGUE",
+        "setting_1": {
+          "name": "Changer de langue",
+          "desc": "Changer la langue de VALTracker. Cela ouvrira une fenêtre contextuelle.",
+          "button_text": "Changer de langue"
+        }
+      },
+      "grp_3": {
+        "name": "LISTE DE SOUHAITS POUR LE REVÊTEMENT",
+        "setting_1": {
+          "name": "Skin Wishlist Notifications",
+          "desc": "Notifications de liste de souhaits de Revêtement.",
+          "desc2": "Astuce : Ouvrez VALTracker Minimized afin de ne pas être dérangé par l'apparition de la fenêtre."
+        }
+      },
+      "grp_4": {
+        "name": "BOUTON FERMER",
+        "setting_1": {
+          "name": "Réduire dans le bac",
+          "desc": "La fermeture de la fenêtre de l'application la réduira dans votre barre d'état système."
+        }
+      },
+      "grp_5": {
+        "name": "PERFORMANCE",
+        "setting_1": {
+          "name": "Accélération matérielle",
+          "desc": "Activez ou désactivez l'accélération matérielle. Nécessite un redémarrage pour que les modifications s'appliquent."
+        }
+      },
+      "grp_6": {
+        "name": "THÈME DE COULEUR",
+        "setting_1": {
+          "name": "Changer le thème de couleur",
+          "desc": "Sélectionnez un thème de couleur que vous souhaitez que l'application utilise!",
+          "themes": [
+            {
+              "displayName": "Thème par défaut",
+              "name": "default",
+              "color": "#12171d"
+            },
+            {
+              "displayName": "Thème légacy",
+              "name": "legacy",
+              "color": "#2d2d2d"
+            },
+            {
+              "displayName": "Thème Lumière",
+              "name": "light",
+              "color": "#d1d1d1"
+            }
+          ]
+        }
+      }
+    },
+    "pg_2": {
+      "grp_1": {
+        "name": "PRÉSENCE RICHE EN APPLICATIONS",
+        "setting_1": {
+          "name": "Présence enrichie VALTracker",
+          "desc": "Montrez à vos amis que vous utilisez VALTracker avec une présence riche personnalisée!"
+        },
+        "setting_2": {
+          "name": "Masquer la présence riche lorsqu'il est réduit",
+          "desc": "Masquez la présence riche de VALTracker chaque fois que l'application est réduite."
+        }
+      },
+      "grp_2": {
+        "name": "Présence riche de VALORANT",
+        "setting_1": {
+          "name": "Présence dans le jeu VALORANT",
+          "desc": "Définissez votre statut Discord sur une présence riche à propos de votre match actuel!"
+        },
+        "setting_2": {
+          "name": "Afficher le mode de correspondance",
+          "desc": "Décidez si vous voulez montrer le mode auquel vous jouez actuellement!",
+          "desc2": "La désactivation de ce paramètre désactivera la possibilité d'afficher votre classement lors d'un match compétitif."
+        },
+        "setting_3": {
+          "name": "Afficher le rang au lieu de l'agent",
+          "desc": "Changez la petite image en votre rang au lieu de votre agent si vous jouez en classé!"
+        },
+        "setting_4": {
+          "name": "Afficher la minuterie",
+          "desc": "Turn the timer for the Rich Presence on or off!"
+        },
+        "setting_5": {
+          "name": "Afficher le score",
+          "desc": "Activez ou désactivez le score pour la présence riche!"
+        }
+      }
+    },
+    "pg_3": {
+      "grp_1": {
+        "name": "GESTION DE COMPTE",
+        "setting_1": {
+          "name": "Ajouter un compte",
+          "desc": "Ouvrez une fenêtre de connexion pour ajouter un nouveau compte Riot.",
+          "button_text": "Ajouter un nouveau compte"
+        },
+        "setting_2": {
+          "name": "Supprimer un compte",
+          "desc": "Supprimer un compte Riot de VALTracker.",
+          "button_text": "Supprimer le compte"
+        }
+      }
+    },
+    "pg_4": {},
+    "pg_5": {
+      "grp_1": {
+        "name": "PROFIL DES RÉGLAGES",
+        "setting_1": {
+          "name": "Importer les configurations",
+          "desc": "Importez un profil de paramètres. Vous pouvez copier votre propre code ci-dessous.",
+          "extra_button_text": "Appliquer"
+        },
+        "setting_2": {
+          "name": "Paramètres d'exportation",
+          "desc": "Copiez votre code de partage de paramètres dans le presse-papiers.",
+          "button_text": "Copier dans le presse-papier",
+          "button_text_2": "Terminer!"
+        }
+      },
+      "grp_2": {
+        "name": "ZONE DANGEREUSE",
+        "setting_1": {
+          "name": "Réinitialiser VALTracker",
+          "desc": "Réinitialisez l'application. Cela inclut les données de compte, les paramètres et toutes les autres données.",
+          "button_text": "Réinitialiser VALTracker"
+        }
+      },
+      "about": {
+        "name": "À PROPOS DE L'APPLICATION",
+        "grp_1": "API UTILISÉES",
+        "grp_2": "ÉLÉMENTS D'UI"
+      }
+    },
+    "modals": {
+      "change_lang": {
+        "header": "Choisir la langue",
+        "desc": "Sélectionnez une langue et cliquez sur le bouton ci-dessous. L'application redémarrera pour appliquer les modifications.",
+        "button_1": "Confirmer",
+        "button_2": "Annuler"
+      },
+      "reset_app": {
+        "header": "Réinitialiser VALTracker?",
+        "desc": "Cela réinitialisera toutes les données enregistrées par l'application, y compris les données de compte, les données de la boutique, les match favoris et les paramètres. Cette action ne peut pas être annulée.",
+        "button_1": "Confirmer",
+        "button_2": "Annuler"
+      },
+      "apply_settings_profile": {
+        "header": "Appliquer le profil de paramètres?",
+        "desc": "Cela redémarrera l'application et modifiera éventuellement tous vos paramètres. Si vous souhaitez sauvegarder vos paramètres actuels, fermez cette fenêtre contextuelle et copiez le code de partage de vos paramètres.",
+        "button_1": "Confirmer",
+        "button_2": "Annuler"
+      },
+      "remove_riot_acc": {
+        "header": "Sélectionnez le compte à supprimer",
+        "desc": "Sélectionnez le compte que vous souhaitez supprimer de VALTracker.",
+        "button_1": "Confirmer",
+        "button_2": "Annuler"
       }
     }
   }
