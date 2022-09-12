@@ -137,7 +137,7 @@ async function getMatch(region, matchId, entitlement_token, bearer) {
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var matches = await getMatchHistory(region, puuid, 0, 1, 'competitive', entitlement_token, bearer);
   if(matches.History.length > 0) {
-    var match_data = await getMatch(matches.History[0].MatchID);
+    var match_data = await getMatch(region, matches.History[0].MatchID, entitlement_token, bearer);
     for(var i = 0; i < match_data.players.length; i++) {
       if(match_data.players[i].subject === puuid) {
         return match_data.players[i].competitiveTier;
