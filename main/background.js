@@ -91,6 +91,7 @@ if(!gotTheLock) {
     if(mainWindow) {
       if(mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
+      mainWindow.show();
     }
   });
 }

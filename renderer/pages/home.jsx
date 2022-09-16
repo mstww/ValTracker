@@ -598,10 +598,15 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     }
   } 
 
-  return {
+  var data = {
     agentContractProgress: agentContractProgression,
-    battlePassProgress: battlePassProgression
+    battlePassProgress: battlePassProgression,
+    date: Date.now()
   }
+  
+  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + puuid + '/current_contract_progress.json', JSON.stringify(data));
+
+  return data;
 }
 
 function Home() {
@@ -839,8 +844,11 @@ function Home() {
 
       if(new_matches_amount === 0) {
         setIsSilentLoading(false);
+        fetchContractData(false);
         return;
       } else if(new_matches_amount > 0 && new_matches_amount < 4) {
+        fetchContractData(true);
+    
         var new_old_matches = old_matches.slice(0, (15 - new_matches_amount));
         var new_new_matches = new_matches.slice(0, new_matches_amount);
 
@@ -932,6 +940,8 @@ function Home() {
         }
         return;
       } else if(new_matches_amount >= 4) {
+        fetchContractData(true);
+    
         setIsSilentLoading(false);
         fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false);
         return;
@@ -1124,22 +1134,26 @@ function Home() {
     }
   }
 
-  const fetchContractData = async () => {
+  const fetchContractData = async (refetch) => {
+    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+    var user_creds = JSON.parse(user_creds_raw);
+
     try {
-      var version_data = await (await fetch('https://valorant-api.com/v1/version')).json();
-
-      var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-      var user_creds = JSON.parse(user_creds_raw);
-
-      const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-      const tokenData = JSON.parse(rawTokenData);
+      if(refetch === false && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_contract_progress.json')) {
+        var contract_progress = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_contract_progress.json'));
+      } else {
+        var version_data = await (await fetch('https://valorant-api.com/v1/version')).json();
   
-      const bearer = tokenData.accessToken;
-
-      const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
-
-      var contract_progress = await calculateContractProgress(user_creds.playerRegion, user_creds.playerUUID, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
+        const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
+        const tokenData = JSON.parse(rawTokenData);
+    
+        const bearer = tokenData.accessToken;
   
+        const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+  
+        var contract_progress = await calculateContractProgress(user_creds.playerRegion, user_creds.playerUUID, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
+      }
+    
       setAgentContract_prevLevelNum(contract_progress.agentContractProgress.current_level.levelNum);
       setAgentContract_prevLevelReward(contract_progress.agentContractProgress.current_level.reward);
       setAgentContract_currentLevelNum(contract_progress.agentContractProgress.next_level.levelNum);
@@ -1523,8 +1537,6 @@ function Home() {
   }, [ activeQueueTab ]);
 
   React.useEffect(async () => {
-    await fetchContractData();
-
     return () => {
       setContractsLoading(true);
       setContractsError(false);
@@ -1591,7 +1603,7 @@ function Home() {
 
   React.useEffect(() => {
     ipcRenderer.on("hub_smartLoadNewMatches", async function(event, args) {
-      fetchContractData();
+      fetchContractData(true);
       if(args !== 'newmap' && args !== 'snowball' && args !== '') {
         if(args === activeQueueTab) {
           await fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
@@ -1686,7 +1698,7 @@ function Home() {
                 <button 
                   className='mt-2' 
                   onClick={async () => { 
-                    fetchContractData();
+                    fetchContractData(true);
                   }}
                 >
                   {LocalText(L, "component_err.button_text")}

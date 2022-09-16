@@ -23,7 +23,7 @@ export default function PopupCard({ useRef, header, text, button_1, button_2, bu
       <div className='mt-4'>
         <button 
           onClick={ isButtonClickable ? button_1_onClick : null } 
-          className={isButtonClickable ? '' : 'cursor-not-allowed bg-gray-500 hover:bg-gray-500'}
+          className={isButtonClickable ? '' : 'disabled'}
         >
           { button_1 }
         </button>

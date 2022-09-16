@@ -184,6 +184,12 @@
         "desc": "Select the account you wish to remove from VALTracker.",
         "button_1": "Confirm",
         "button_2": "Cancel"
+      },
+      "change_patchnotes_ver": {
+        "header": "Select a Version",
+        "desc": "Select a Version you would like to see the patchnotes from.",
+        "button_1": "Confirm",
+        "button_2": "Cancel"
       }
     }
   },
@@ -372,6 +378,12 @@
         "desc": "Wähle das Konto aus, dass du von VALTracker entfernen willst.",
         "button_1": "Bestätigen",
         "button_2": "Abbruch"
+      },
+      "change_patchnotes_ver": {
+        "header": "Wähle eine Version",
+        "desc": "Wähle die Version, von der du die Patchnotes sehen möchtest.",
+        "button_1": "Bestätigen",
+        "button_2": "Abbruch"
       }
     }
   },
@@ -558,6 +570,12 @@
       "remove_riot_acc": {
         "header": "Sélectionnez le compte à supprimer",
         "desc": "Sélectionnez le compte que vous souhaitez supprimer de VALTracker.",
+        "button_1": "Confirmer",
+        "button_2": "Annuler"
+      },
+      "change_patchnotes_ver": {
+        "header": "Sélectionnez une version",
+        "desc": "Choisissez la version pour laquelle vous souhaitez voir les patchnotes.",
         "button_1": "Confirmer",
         "button_2": "Annuler"
       }
