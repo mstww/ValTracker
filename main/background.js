@@ -92,6 +92,7 @@ if(!gotTheLock) {
       if(mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
       mainWindow.show();
+      appIcon.destroy();
     }
   });
 }
@@ -1127,7 +1128,7 @@ async function checkStoreForWishlistItems() {
 
 // Set global mainWindow variable
 let mainWindow;
-var reauth_interval;
+let appIcon;
  
 (async () => {
   var pjson = require('../package.json');
@@ -1319,7 +1320,7 @@ var reauth_interval;
       });
     
       if(startedHidden !== undefined && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
-        var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+        appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
 
         appIcon.on("click", function() {
           RPState = 'app';
@@ -1392,7 +1393,7 @@ var reauth_interval;
           }
           mainWindow.hide();
     
-          var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+          appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
         
           appIcon.on("click", function() {
             RPState = 'app';
