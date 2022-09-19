@@ -98,7 +98,7 @@ function NightMarket() {
     }, 1000);
 
     return () => clearInterval(timer);
-  })
+  }, []);
 
   async function fetchSkins() {
     if(router.query.store) {
