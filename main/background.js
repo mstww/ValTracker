@@ -97,8 +97,6 @@ if(!gotTheLock) {
   });
 }
 
-var app_data;
-
 function createFavMatches() {
   // Create /favourite_matches dir
   fs.mkdirSync(app_data + "/user_data/favourite_matches");
@@ -1547,8 +1545,8 @@ let appIcon;
             var ent_expiresIn = 25 * 60;
     
             if(items !== false) {
-              reauth_interval = setInterval(reauthAllAccounts, expiresIn * 1000); 
-              reauth_interval = setInterval(refreshAllEntitlementTokens, ent_expiresIn * 1000); 
+              setInterval(reauthAllAccounts, expiresIn * 1000); 
+              setInterval(refreshAllEntitlementTokens, ent_expiresIn * 1000); 
               console.log("All accounts will be reauthenticated in 55 Minutes.");
             }
   

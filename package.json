@@ -6,7 +6,7 @@
   "author": "Spirit <dev@codedotspirit.dev>",
   "main": "app/background.js",
   "scripts": {
-    "dev": "nextron",
+    "dev": "nextron -p 6969",
     "build": "nextron build",
     "publish": "nextron build --publish always",
     "postinstall": "electron-builder install-app-deps"
