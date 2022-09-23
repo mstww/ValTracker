@@ -263,9 +263,18 @@ img {
   height: calc(100vh - 29px);
 }
 
-#nav-items div:not(.search-dropdown):not(.search-dropdown div) {
+#nav-items div:not(.search-dropdown):not(.search-dropdown div):not(.nav-min) {
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
   width: 88%;
+}
+
+.nav-min {
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  width: 50%;
+}
+
+.nav-txt {
+  white-space: pre;
 }
 
 .search-dropdown {

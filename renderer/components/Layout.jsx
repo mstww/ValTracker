@@ -1,9 +1,7 @@
 import { motion } from "framer-motion"
 import { useRouter } from "next/router";
 import WindowControls from "./WindowControls";
-import Navbar from "./Navbar";
 import React from "react";
-import fs from "fs";
 import MessageLayer from "./layers/MessageLayer";
 import UpdatingLayer from "./layers/UpdatingLayer";
 import ReauthLayer from "./layers/ReauthLayer"; 
@@ -36,7 +34,7 @@ export default function Layout({ children, classNames, setup }) {
   }
   
   return( 
-    <div className={"flex flex-row bg-maincolor-light " + (legacy ? 'legacy' : '')}>
+    <div className={"ml-64 flex flex-row bg-maincolor-light " + (legacy ? 'legacy' : '')}>
       <WindowControls setup={setup} />
       <UpdatingLayer />
       {setup ? '' : <MessageLayer />}
@@ -44,7 +42,6 @@ export default function Layout({ children, classNames, setup }) {
       {setup ? '' : <TextboxLayer />}
       {setup ? '' : <WhatsNewLayer />}
       {setup ? '' : <IpcLayer />}
-      {setup ? '' : <Navbar page={path} />}
       <div className="bg-maincolor-light relative left-0 top-7 z-40">
         <motion.main
           key={"E"}

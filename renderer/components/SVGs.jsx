@@ -125,3 +125,11 @@ export const User = ({ cls }) => {
 export const ValorantV = ({ cls }) => {
   return <svg fill="currentColor" className={cls} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M 3.9960938 6 A 1.0001 1.0001 0 0 0 3 7 L 3 25 A 1.0001 1.0001 0 0 0 3.2285156 25.634766 L 17.228516 42.634766 A 1.0001 1.0001 0 0 0 18 43 L 32 43 A 1.0001 1.0001 0 0 0 32.78125 41.375 L 4.78125 6.375 A 1.0001 1.0001 0 0 0 3.9960938 6 z M 45.970703 7 A 1.0001 1.0001 0 0 0 45.226562 7.3671875 L 27.226562 29.367188 A 1.0001 1.0001 0 0 0 28 31 L 42 31 A 1.0001 1.0001 0 0 0 42.78125 30.625 L 46.78125 25.625 A 1.0001 1.0001 0 0 0 47 25 L 47 8 A 1.0001 1.0001 0 0 0 45.970703 7 z M 5 9.8515625 L 29.917969 41 L 18.472656 41 L 5 24.642578 L 5 9.8515625 z M 45 10.800781 L 45 24.648438 L 41.519531 29 L 30.109375 29 L 45 10.800781 z" fill="currentColor" /></svg>
 }
+
+export const RetractArrow = ({ cls, click }) => {
+  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} onClick={click} viewBox="0 0 14 14"><g><line x1="6.5" y1="7" x2="0.5" y2="7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line><polyline points="3 4.5 0.5 7 3 9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></polyline><rect x="9" y="0.5" width="4.5" height="13" rx="1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect></g></svg>
+}
+
+export const ExpandArrow = ({ cls, click }) => {
+  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} onClick={click} viewBox="0 0 14 14"><g><line x1="7.5" y1="7" x2="13.5" y2="7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line><polyline points="11 4.5 13.5 7 11 9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></polyline><rect x="0.5" y="0.5" width="4.5" height="13" rx="1" transform="translate(5.5 14) rotate(-180)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect></g></svg>
+}

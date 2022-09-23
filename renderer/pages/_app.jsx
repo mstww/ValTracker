@@ -3,6 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { NextUIProvider, createTheme } from '@nextui-org/react';
 import fs from 'fs';
+import Navbar from '../components/Navbar';
 
 import '../styles/globals.css';
 
@@ -31,6 +32,8 @@ function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const [ lightTheme, setLightTheme ] = React.useState(false);
 
+  var setup = router.pathname.split("/").pop() === "setup";
+
   React.useEffect(() => {
     var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
     if(data.themeName === "light") setLightTheme(true);
@@ -45,6 +48,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <NextUIProvider theme={lightTheme ? light_theme : valtracker_theme}>
+        {setup ? '' : <Navbar />}
         <AnimatePresence
           exitBeforeEnter={true}
           onExitComplete={() => window.scrollTo(0, 0)}

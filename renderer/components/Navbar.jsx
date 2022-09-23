@@ -12,7 +12,7 @@ import PlayerSearch from './navigation/PlayerSearch';
 import L from '../locales/translations/navbar.json';
 import LocalText from './translation/LocalText';
 
-import { Home, Store, User, Star, Clipboard, Settings } from './SVGs';
+import { Home, Store, User, Star, Clipboard, Settings, ExpandArrow, RetractArrow } from './SVGs';
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -46,14 +46,16 @@ const slide_left = {
   },
 }
 
-export default function Navbar({ page }) {
+export default function Navbar() {
   const router = useRouter();
+  var page = router.pathname.split("/").pop();
 
   const [ playerName, setPlayerName ] = React.useState('');
   const [ playerTag, setPlayerTag ] = React.useState('');
   const [ playerRank, setPlayerRank ] = React.useState(null);
 
   const [ open, setOpen ] = React.useState(false);
+  const [ isNavbarMinimized, setIsNavbarMinimized ] = React.useState(false);
 
   const [ isInvShown, setIsInvShown ] = React.useState(true);
   const [ isFavsShown, setIsFavsShown ] = React.useState(true);
@@ -70,6 +72,10 @@ export default function Navbar({ page }) {
   const [ wishlistHiddenDesc, setWishlistHiddenDesc ] = React.useState('');
   
   const playerSearchRef = React.useRef(null);
+
+  React.useEffect(() => {
+    console.log(isNavbarMinimized);
+  }, [isNavbarMinimized]);
 
   // Make a toggle menu using react
   var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
@@ -169,6 +175,8 @@ export default function Navbar({ page }) {
   var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer';
   var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
   var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
+  var navbarTileBaseClasses = ' h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
+  var navbarTileTextClasses = 'text-sm font-light relative top-px ml-2 nav-txt ' + (isNavbarMinimized ? 'hidden' : 'block');
 
   if(page == "home") var isHome = true;
   if(page == "shop") var isShop = true;
@@ -216,9 +224,26 @@ export default function Navbar({ page }) {
   }
 
   return (
-    <nav id='navbar' className='z-40 relative top-7 left-0 w-64 bg-maincolor'>
+    <nav 
+      id='navbar' 
+      className={'z-40 fixed top-7 left-0 bg-maincolor overflow-hidden transition-all duration-100 ease-linear ' + (isNavbarMinimized === true ? 'w-20': 'w-64')}
+    >
+      <div className='absolute top-5 right-4'>
+        {
+          isNavbarMinimized === true ? 
+          <ExpandArrow 
+            cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded'} 
+            click={() => { setIsNavbarMinimized(false) }}
+          />
+          :
+          <RetractArrow 
+            cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded'} 
+            click={() => { setIsNavbarMinimized(true) }}
+          />
+        }
+      </div>
       <div id='logo' className='flex flex-col justify-center items-center'>
-        <img src='/icons/VALTracker_Logo_default.png' className='h-36'/>
+        <img src='/icons/VALTracker_Logo_default.png' className={'w-36 mx-auto ' + (isNavbarMinimized ? 'ml-1' : 'mx-auto')}/>
         <h1 className='text-2xl relative bottom-2'>VALTracker</h1>
         <span className='relative text-sm bottom-3 text-gray-500'>v{pjson.version}</span>
       </div>
@@ -235,48 +260,48 @@ export default function Navbar({ page }) {
 
     	  <Link href={"/home"}>
           <div id='home-nav' 
-            className={(isHome ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px'}
+            className={(isHome ? activeClasses : inactiveClasses) + navbarTileBaseClasses}
             data-isactive={isHome}
           >
             <Home cls='ml-0.5 w-5' />
-            <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'home')}</span>
+            <span className={navbarTileTextClasses}>{LocalText(L, 'home')}</span>
           </div>
         </Link>
 
         <div id='shop-nav' 
-          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px') : disabledClasses}
+          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isShop}
           onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
         >
           <Store cls='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'shop')}</span>
+          <span className={navbarTileTextClasses}>{LocalText(L, 'shop')}</span>
         </div>
 
         <div id='inv-nav' 
-          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isInv}
           onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
         >
           <User cls='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'inventory')}</span>
+          <span className={navbarTileTextClasses}>{LocalText(L, 'inventory')}</span>
         </div>
 
         <div id='fav-nav' 
-          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isFav}
           onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
         >
           <Star cls='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'fav_matches')}</span>
+          <span className={navbarTileTextClasses}>{LocalText(L, 'fav_matches')}</span>
         </div>
 
         <div id='wish-nav' 
-          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isWish}
           onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
         >
           <Clipboard cls='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'wishlist')}</span>
+          <span className={navbarTileTextClasses}>{LocalText(L, 'wishlist')}</span>
         </div>
       </div>
       <div className='absolute bottom-16 w-full flex justify-around'>
