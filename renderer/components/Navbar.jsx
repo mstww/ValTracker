@@ -55,7 +55,6 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   const [ playerRank, setPlayerRank ] = React.useState(null);
 
   const [ open, setOpen ] = React.useState(false);
-  const [ isLogoShown, setIsLogoShown ] = React.useState(true);
 
   const [ isInvShown, setIsInvShown ] = React.useState(true);
   const [ isFavsShown, setIsFavsShown ] = React.useState(true);
@@ -73,11 +72,62 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   
   const playerSearchRef = React.useRef(null);
 
-  React.useEffect(() => {
-    setTimeout(() => {
-      setIsLogoShown(!isNavbarMinimized);
-    }, 150);
-  }, [isNavbarMinimized]);
+  const navbarVariants = {
+    tiles: {
+      initial: {
+        opacity: 1,
+        y: 0, 
+        x: 0
+      },
+      minimize: {
+        opacity: 1,
+        y: -150, 
+        x: 0
+      },
+      maximize: {
+        opacity: 1,
+        y: 0, 
+        x: 0
+      }
+    },
+    main: {
+      initial: {
+        opacity: 1,
+        width: "16rem"
+      },
+      minimize: {
+        opacity: 1,
+        width: "4rem",
+        x: 0,
+        transition: { 
+          type: 'ease-out', 
+          duration: 0.1
+        }
+      },
+      maximize: {
+        opacity: 1,
+        width: "16rem",
+        transition: { 
+          type: 'ease-in', 
+          duration: 0.1
+        }
+      }
+    },
+    logo: {
+      initial: {
+        opacity: 1,
+        x: 0
+      },
+      minimize: {
+        opacity: 1,
+        y: '-180px'
+      },
+      maximize: {
+        opacity: 1,
+        x: 0
+      }
+    }
+  }
 
   // Make a toggle menu using react
   var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
@@ -232,29 +282,69 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   }, [isNavbarMinimized]);
 
   return (
-    <nav 
+    <motion.nav 
       id='navbar' 
       className={'z-40 fixed top-7 left-0 bg-maincolor overflow-hidden transition-all duration-100 ease-linear ' + (isNavbarMinimized === true ? 'w-16': 'w-64')}
+      variants={navbarVariants.main}
+      initial="initial"
+      animate={isNavbarMinimized ? "minimize" : "maximize"}
     >
-      <div id='logo' className={'flex flex-col justify-center items-center transition-all duration-100 ease-linear transform w-36 mx-auto ' + (isNavbarMinimized ? '-translate-x-40 opacity-0 ' : 'translate-x-0 opacity-100 ')}>
-        <img 
+      <motion.div 
+        id='logo' 
+        className='flex flex-col justify-center items-center transition-all duration-100 ease-linear transform w-36 mx-auto'
+      >
+        <motion.img 
           src='/icons/VALTracker_Logo_default.png' 
           className={'w-36 h-26 mx-auto transition-all duration-100 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          variants={navbarVariants.logo}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0 : 0.92, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
         />
-        <h1 className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}>VALTracker</h1>
-        <span className={'relative text-sm text-gray-500 transition-all duration-75 ease-linear bottom-3 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}>v{pjson.version}</span>
-      </div>
+        <motion.h1 
+          className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          variants={navbarVariants.logo}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0 : 0.86, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
+        >
+          VALTracker
+          </motion.h1>
+        <motion.span 
+          className={'relative text-sm text-gray-500 transition-all duration-75 ease-linear bottom-3 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          variants={navbarVariants.logo}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0 : 0.8, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
+        >
+          v{pjson.version}
+        </motion.span>
+      </motion.div>
       {
         isNavbarMinimized === true ? 
-        <ExpandArrow 
-          cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto ' + (isNavbarMinimized ? 'bottom-3' : 'bottom-3')} 
-          click={() => { setIsNavbarMinimized(false) }}
-        />
+        <motion.div
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: 0.15, duration: 0.2, ease: "easeOut" }}
+        >
+          <ExpandArrow 
+            cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
+            click={() => { setIsNavbarMinimized(false) }}
+          />
+        </motion.div>
         :
-        <RetractArrow 
-          cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto ' + (isNavbarMinimized ? 'bottom-3' : 'bottom-3')} 
-          click={() => { setIsNavbarMinimized(true) }}
-        />
+        <motion.div
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: 0.55, duration: 0.2, ease: "easeIn" }}
+        >
+          <RetractArrow 
+            cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
+            click={() => { setIsNavbarMinimized(true) }}
+          />
+        </motion.div>
       }
       <div id='nav-items' className='flex flex-col justify-center items-center'>
         <PlayerSearch 
@@ -266,53 +356,79 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           searchHiddenDesc={searchHiddenDesc}
           placeholderText={LocalText(L, 'search_placeholder')}
           closeLocale={LocalText(L, 'history_close')}
+          variants={navbarVariants.tiles}
         />
 
     	  <Link href={"/home"}>
-          <div id='home-nav' 
+          <motion.div 
+            id='home-nav' 
             className={(isHome ? activeClasses : inactiveClasses) + navbarTileBaseClasses}
             data-isactive={isHome}
+            variants={navbarVariants.tiles}
+            initial="initial"
+            animate={isNavbarMinimized ? "minimize" : "maximize"}
+            transition={{ delay: isNavbarMinimized ? 0.25 : 0.35, duration: 0.2, ease: "easeOut" }}
           >
             <Home cls='ml-0.5 w-5 absolute' />
             <span className={navbarTileTextClasses}>{LocalText(L, 'home')}</span>
-          </div>
+          </motion.div>
         </Link>
 
-        <div id='shop-nav' 
+        <motion.div 
+          id='shop-nav' 
           className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isShop}
           onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.3 : 0.3, duration: 0.2, ease: "easeOut" }}
         >
           <Store cls='ml-0.5 w-5 absolute' />
           <span className={navbarTileTextClasses}>{LocalText(L, 'shop')}</span>
-        </div>
+        </motion.div>
 
-        <div id='inv-nav' 
+        <motion.div 
+          id='inv-nav' 
           className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isInv}
           onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.35 : 0.25, duration: 0.2, ease: "easeOut" }}
         >
           <User cls='ml-0.5 w-5 absolute' />
           <span className={navbarTileTextClasses}>{LocalText(L, 'inventory')}</span>
-        </div>
+        </motion.div>
 
-        <div id='fav-nav' 
+        <motion.div 
+          id='fav-nav' 
           className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isFav}
           onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.4 : 0.2, duration: 0.2, ease: "easeOut" }}
         >
           <Star cls='ml-0.5 w-5 absolute' />
           <span className={navbarTileTextClasses}>{LocalText(L, 'fav_matches')}</span>
-        </div>
+        </motion.div>
 
-        <div id='wish-nav' 
+        <motion.div 
+          id='wish-nav' 
           className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isWish}
           onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.45 : 0.15, duration: 0.2, ease: "easeOut" }}
         >
           <Clipboard cls='ml-0.5 w-5 absolute' />
           <span className={navbarTileTextClasses}>{LocalText(L, 'wishlist')}</span>
-        </div>
+        </motion.div>
       </div>
       <div className={'absolute bottom-16 w-full flex justify-around transform transition-all duration-100 ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
         <SocialsIcon icon={'/images/coffee.svg'} tooltip={'Ko-Fi'} href={'https://ko-fi.com/valtrackergg'} />
@@ -374,6 +490,6 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           </Link>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   )
 }

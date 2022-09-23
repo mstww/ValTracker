@@ -11,6 +11,7 @@ import { Tooltip } from '@nextui-org/react';
 import L from '../locales/translations/player.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
+import Layout from '../components/Layout';
 
 const variants = {
   hidden: { opacity: 0, x: -100, y: 0 },
@@ -218,7 +219,7 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
   }
 }
 
-function PlayerInfo() {
+function PlayerInfo({ isNavbarMinimized }) {
   const router = useRouter();
 
   var errorReasons = LocalText(L, "errorReasons");
@@ -803,11 +804,11 @@ function PlayerProfile() {
   });
 
   return (
-    <>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <div className={'w-full flex flex-row justify-center mt-16 h-auto relative'}>
         <PlayerInfo />
       </div>
-    </>
+    </Layout>
   );
 }
 

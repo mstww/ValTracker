@@ -9,6 +9,7 @@ import LocalText from '../components/translation/SetupLocalText';
 import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
 import { Translate, BackArrow } from '../components/SVGs';
+import Layout from '../components/Layout';
 
 const slides_first_load = {
   hidden: { opacity: 0, x: 0, y: 100, scale: 1, display: 'none' },
@@ -169,7 +170,7 @@ function Setup() {
   const login = async () => {
     var data = await ipcRenderer.invoke('loginWindow');
     
-    if(data !== false) {
+    if(data.tokenData) {
       try {
         setIsProgressShown(true);
         
@@ -239,6 +240,9 @@ function Setup() {
     
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(userData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + playerUUID + '.json', JSON.stringify(userData));
+
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json', JSON.stringify({ entitlement_token}));
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/entitlement.json', JSON.stringify({ entitlement_token}));
   
         setLoadingState('');
         setProgress(100);
@@ -269,7 +273,7 @@ function Setup() {
   }, []);
 
   return (
-    <>
+    <Layout setup={true} classNames={'overflow-hidden'}>
       <div className='flex flex-col items-center p-4 h-full w-full'>
         <div id='setup-timeline' className='border-2 border-maincolor-lightest w-full p-2 h-14 rounded'>
           <div className='flex flex-row items-center mb-1 justify-between'>
@@ -441,7 +445,7 @@ function Setup() {
           </motion.div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
 

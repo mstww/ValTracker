@@ -15,7 +15,7 @@ import InfoChart from '../components/hub/InfoChart';
 import { useRouter } from 'next/router';
 import L from '../locales/translations/home.json';
 import LocalText from '../components/translation/LocalText';
-
+import Layout from '../components/Layout';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled, Star } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
@@ -608,7 +608,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
   return data;
 }
 
-function Home() {
+function Home({ isNavbarMinimized }) {
   const firstRender = useFirstRender();
   const router = useRouter();
 
@@ -1626,7 +1626,7 @@ function Home() {
   }, [ router.query ]);
 
   return (
-    <>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <div id='home-container' className='flex flex-row flex-wrap'>
         <div id='top-left-container' className='relative bg-maincolor-lightest bg-opacity-60 rounded p-1.5 flex flex-wrap'>
           <div className='home-top-info-tile border-2 rounded border-maincolor-lightest h-full p-1 relative'>
@@ -1635,7 +1635,7 @@ function Home() {
                 <span className='leading-none px-1'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
                 <hr className='mb-1' />
               </div>
-              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border-2 border-maincolor-lightest rounded'>
+              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border-2 border-maincolor-lightest rounded shadow-img'>
                 <div className='relative'>
                   <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img rounded' />
                 </div>
@@ -2063,7 +2063,7 @@ function Home() {
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
 

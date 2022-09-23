@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import L from '../locales/translations/inventory.json';
 import LocalText from '../components/translation/LocalText';
 import { useFirstRender } from '../components/useFirstRender';
+import Layout from '../components/Layout';
 
 async function getPlayerLoadout(region, puuid, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -58,7 +59,7 @@ const backdrop_variants = {
   exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
 }
 
-function Inventory() {
+function Inventory({ isNavbarMinimized }) {
   const router = useRouter();
   const firstRender = useFirstRender();
 
@@ -318,7 +319,7 @@ function Inventory() {
   }
 
   return (
-    <>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
         key={"InventoryBackdrop"}
@@ -829,7 +830,7 @@ function Inventory() {
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
 

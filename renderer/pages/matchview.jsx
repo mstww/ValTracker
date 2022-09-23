@@ -8,8 +8,9 @@ import L from '../locales/translations/matchview.json';
 import LocalText from '../components/translation/LocalText';
 import fs from 'fs';
 import fetch from 'node-fetch';
-import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, HumanBody, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
+import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
+import Layout from '../components/Layout';
 
 const overview_vars_first_load = {
   hidden: { opacity: 0, x: 0, y: 200, scale: 1, display: 'none' },
@@ -45,7 +46,7 @@ const scoreboard_vars_initial = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
 
-function Matchview() {
+function Matchview({ isNavbarMinimized }) {
   const router = useRouter();
 
   var gamemodes = LocalText(L, 'gamemodes');
@@ -386,7 +387,7 @@ function Matchview() {
   }, []);
 
   return (
-    <>
+    <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''} isNavbarMinimized={isNavbarMinimized}>
       <div 
         className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}
@@ -896,7 +897,7 @@ function Matchview() {
           </tbody>
         </table>
       </motion.div>
-    </>
+    </Layout>
   );
 }
 

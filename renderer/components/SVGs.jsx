@@ -127,9 +127,9 @@ export const ValorantV = ({ cls }) => {
 }
 
 export const RetractArrow = ({ cls, click }) => {
-  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} onClick={click} viewBox="0 0 14 14"><g><line x1="6.5" y1="7" x2="0.5" y2="7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line><polyline points="3 4.5 0.5 7 3 9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></polyline><rect x="9" y="0.5" width="4.5" height="13" rx="1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect></g></svg>
+  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} onClick={click} viewBox="0 0 14 14"><g><line x1="6.5" y1="7" x2="0.5" y2="7" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></line><polyline points="3 4.5 0.5 7 3 9.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></polyline><rect x="9" y="0.5" width="4.5" height="13" rx="1" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></rect></g></svg>
 }
 
 export const ExpandArrow = ({ cls, click }) => {
-  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} onClick={click} viewBox="0 0 14 14"><g><line x1="7.5" y1="7" x2="13.5" y2="7" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></line><polyline points="11 4.5 13.5 7 11 9.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></polyline><rect x="0.5" y="0.5" width="4.5" height="13" rx="1" transform="translate(5.5 14) rotate(-180)" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect></g></svg>
+  return <svg xmlns="http://www.w3.org/2000/svg" className={cls} onClick={click} viewBox="0 0 14 14"><g><line x1="7.5" y1="7" x2="13.5" y2="7" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></line><polyline points="11 4.5 13.5 7 11 9.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></polyline><rect x="0.5" y="0.5" width="4.5" height="13" rx="1" transform="translate(5.5 14) rotate(-180)" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></rect></g></svg>
 }

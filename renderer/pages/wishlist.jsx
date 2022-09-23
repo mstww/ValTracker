@@ -7,6 +7,7 @@ import L from '../locales/translations/wishlist.json';
 import LocalText from "../components/translation/LocalText";
 import { useRouter } from "next/router";
 import { ArrowRoundUp, StarFilled } from "../components/SVGs";
+import Layout from '../components/Layout';
 
 const scoreboard_vars_initial = {
   hidden: { opacity: 0, x: -200, y: 0, scale: 1, display: 'none' },
@@ -14,7 +15,7 @@ const scoreboard_vars_initial = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
 
-export default function Wishlist() {
+export default function Wishlist({ isNavbarMinimized }) {
   const router = useRouter();
   
   const [ currentSortStat, setCurrentSortStat ] = React.useState('');
@@ -35,7 +36,7 @@ export default function Wishlist() {
   }, []);
   
   return (
-    <>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <div className="p-4">
         {
           playerWishlistSkins.length > 0 
@@ -167,6 +168,6 @@ export default function Wishlist() {
           <div className="w-full text-center">{LocalText(L, "content.empty_text")}</div>
         }
       </div>
-    </>
+    </Layout>
   )
 }

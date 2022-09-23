@@ -23,6 +23,7 @@ import LocalText from '../components/translation/LocalText';
 import ThemeSelector from '../components/settings/ThemeSelector';
 import VersionCheckbox from '../components/settings/VersionCheckbox';
 import { Loading } from '@nextui-org/react';
+import Layout from '../components/Layout';
 
 const md_conv = new parser.Converter();
 
@@ -153,7 +154,7 @@ function Patchnotes({ showVersionModal, shownPatchnotes }) {
   );
 }
 
-function Settings() {
+function Settings({ isNavbarMinimized, setTheme }) {
   const router = useRouter();
 
   if(router.query.tab) {
@@ -213,7 +214,7 @@ function Settings() {
   const other_applySettingsCodePopup = React.useRef(null);
   const [ other_applySettingsCode, setOther_applySettingsCode ] = React.useState(false);
 
-  const [ currentTheme, setCurrentTheme ] = React.useState('default');
+  const [ currentTheme, setCurrentTheme ] = React.useState('normal');
 
   const [ patchnoteVersions, setPatchnotesVersions ] = React.useState([]);
 
@@ -462,7 +463,7 @@ function Settings() {
         const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
     
         var currenttier = 0;
-        if(mmr_data.LatestCompetitiveUpdate.TierAfterUpdate != undefined) {
+        if(account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate != undefined) {
           var currenttier = account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate
         }
     
@@ -547,7 +548,7 @@ function Settings() {
   const validateSettingsCode = (settingsStates) => {
     var verificationState = true;
 
-    var themes = ["default","legacy","light"];
+    var themes = ["normal","legacy","light"];
 
     if(settingsStates.length === 14) {
       for(var i = 0; i < settingsStates.length; i++) {
@@ -623,6 +624,8 @@ function Settings() {
       document.body.classList.remove(currentTheme);
       document.body.classList.add(theme);
       setCurrentTheme(theme);
+      setTheme(theme);
+
       fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify({ themeName: theme }));
     }
   }
@@ -651,7 +654,7 @@ function Settings() {
   var s2_bt1 = LocalText(L, 'pg_5.grp_1.setting_2.button_text');
 
   return (
-    <>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <OverlayWrapper useRef={overlayWrapper} isShown={popupBackgroundShown}>
 
         <PopupCard
@@ -1029,7 +1032,7 @@ function Settings() {
           </SettingsWrapper>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
 

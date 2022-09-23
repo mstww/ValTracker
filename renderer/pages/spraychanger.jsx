@@ -7,6 +7,7 @@ import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Search } from '../components/SVGs';
+import Layout from '../components/Layout';
 
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -33,7 +34,7 @@ const fetchCards = async () => {
   }
 }
 
-function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
+function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, isNavbarMinimized }) {
   const router = useRouter();
   const weaponType = router.query.weaponType;
 
@@ -258,7 +259,7 @@ function Spraychanger() {
   }
 
   return ( 
-    <>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <div className='absolute z-10 top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
         <BackArrow cls='w-8 p-1' />
       </div>
@@ -307,7 +308,7 @@ function Spraychanger() {
           </div>
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
 

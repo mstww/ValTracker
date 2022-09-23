@@ -22,7 +22,7 @@ const account_switcher_variants = {
   }
 }
 
-export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText, closeLocale, isNavbarMinimized }) {
+export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText, closeLocale, isNavbarMinimized, variants }) {
   const router = useRouter();
 
   const [ isHistoryDropdownShown, setIsHistoryDropdownShown ] = React.useState(false);
@@ -64,34 +64,45 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
 
   return (
     <>
-      <div className={'relative mb-6 mt-4 w-full transition-all duration-100 ease-linear search-container ' + (isNavbarMinimized ? 'minimized' : '')}>
-        <input 
-          id='skin-search'
-          type='text'
-          className={(isSearchShown ? 'bg-button-color focus:outline-none text-sm z-40 font-light pl-9 hover:bg-button-color-hover hover:shadow-2xl flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto ' + (isNavbarMinimized ? 'rounded-full w-10 h-10 px-0' : 'w-full h-8 px-2') : searchDisabledClasses)}
-          placeholder={(isNavbarMinimized ? '' : placeholderText)}
-          onKeyDown={handlePlayerSearch}
-          autoCorrect='off'
-          spellCheck='false'
-          disabled={isNavbarMinimized ? true : !isSearchShown}
-          ref={playerSearchRef}
-          onFocus={() => {
-            if(searchHistory.length !== 0) {
+      <div 
+        className={'relative mb-6 mt-4 w-full transition-all duration-100 ease-linear search-container ' + (isNavbarMinimized ? 'minimized' : '')}
+      >
+        <motion.div 
+          className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover hover:shadow-2xl flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden ' + (isNavbarMinimized ? 'rounded-full w-10 h-10 px-0' : 'w-full h-8 px-2')}
+          onClick={() => { isNavbarMinimized ? ipcRenderer.send("relayOpenPlayerSearchModal", searchHistory) : (playerSearchRef.current ? playerSearchRef.current.focus() : null) }}
+          variants={variants}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.2 : 0.4, duration: 0.2, ease: "easeOut" }}
+        >
+          <Search cls={'transition-all duration-75 ease-linear cursor-pointer z-30 w-5 h-5 player-search-mgnfy ' + (isNavbarMinimized ? 'absolute' : 'relative')} />
+          <input 
+            id="skin-search"
+            type='text'
+            placeholder={placeholderText}
+            className={'bg-button-color focus:outline-none text-sm z-20 ml-1 font-light group-hover:bg-button-color-hover hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer outline-none mx-auto transition-all ease-in duration-100 ' + (isNavbarMinimized ? 'opacity-0' : 'w-full h-8 px-2')}
+            onKeyDown={handlePlayerSearch} 
+            autoCorrect='off'
+            spellCheck='false'
+            disabled={isNavbarMinimized ? true : !isSearchShown}
+            ref={playerSearchRef}
+            onFocus={() => {
+              if(searchHistory.length !== 0) {
+                setIsHistoryLocked(false);
+                setIsHistoryDropdownShown(true);
+              }
+            }}
+            onBlur={() => {
               setIsHistoryLocked(false);
-              setIsHistoryDropdownShown(true);
-            }
-          }}
-          onBlur={() => {
-            setIsHistoryLocked(false);
-          }}
-          onClick={() => { 
-            isSearchShown && searchHistory.length !== 0 ? 
-            (searchHistory.length > 0 ? setIsHistoryDropdownShown(true) : null)
-            : 
-            (isSearchShown === false ? ipcRenderer.send('relayTextbox', searchHiddenDesc) : null)
-          }}
-        />
-        <Search cls={'absolute transition-all duration-75 ease-linear cursor-pointer ' + (isNavbarMinimized ? 'top-2 mt-px left-4 ml-0.5 w-5' : 'top-2 left-2.5 w-4')} />
+            }}
+            onClick={() => { 
+              isSearchShown && searchHistory.length !== 0 ? 
+              (searchHistory.length > 0 ? setIsHistoryDropdownShown(true) : null)
+              : 
+              (isSearchShown === false ? ipcRenderer.send('relayTextbox', searchHiddenDesc) : null)
+            }}
+          />
+        </motion.div>
 
         <motion.div 
           className={"absolute top-8 mt-2 ml-px bg-button-color z-30 w-full rounded search-dropdown shadow-xl"}

@@ -154,7 +154,7 @@ function createThemes() {
   }
 
   let themesPointerFile = {
-    themeName: "default",
+    themeName: "normal",
   };
 
   fs.writeFileSync(app_data + "/user_data/themes/color_theme.json", JSON.stringify(themesPointerFile));
@@ -203,11 +203,11 @@ async function getAccessTokens(ssid) {
   return (await fetch("https://auth.riotgames.com/api/v1/authorization", {
     method: 'POST',
     headers: {
-      "User-Agent": "RiotClient/51.0.0.4429735.4381201 rso-auth (Windows;10;;Professional, x64)",
+      "User-Agent": "RiotClient/46.0.0.4265023.4253280 rso-auth (Windows;10;;Professional, x64)",
       'Content-Type': 'application/json',
       Cookie: ssid,
     },
-    body: JSON.stringify({"client_id":"play-valorant-web-prod","nonce":"1","redirect_uri":"https://playvalorant.com/opt_in","response_type":"token id_token","scope":"account openid"}),
+    body: JSON.stringify({"client_id":"riot-client","nonce":"1","redirect_uri":"http://localhost/redirect","response_type":"token id_token","scope":"openid link ban"}),
     keepalive: true
   }));
 }
@@ -333,7 +333,7 @@ async function noFilesFound() {
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/wishlists")) {
     fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/wishlists");
   }
-
+  
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
     fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
   }
@@ -472,6 +472,7 @@ async function reauthAllAccounts() {
         const { error, items, puuid } = await reauthAccount(uuid);
 
         if(error === true) {
+          console.log(items);
           reauth_array.push({ error, items, puuid });
         } else {
           data_array.push(items);
@@ -1776,7 +1777,7 @@ ipcMain.on("changeDiscordRP", function (event, arg) {
   }
 });
 
-var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
+var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&client_id=riot-client&response_type=token%20id_token&nonce=1&scope=openid%20link%20ban';
 
 function getTokenDataFromURL(url) {
   try {
@@ -1801,6 +1802,7 @@ async function showSignIn(writeToFile) {
     });
     let foundToken = false;
     loginWindow.webContents.on('will-redirect', (event, url) => {
+      console.log(url);
       // Login window redirecting...
       if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
         // Redirecting to url with tokens
@@ -1864,7 +1866,7 @@ ipcMain.on("reauthCurrentAccount", async function (event, arg) {
   
       //check if json is object or array
   
-      if(jsontype == true) {
+      if(jsontype === true) {
         for (var i = 0; i < bakedCookies.length; i++) {
           var str1 = bakedCookies.split("ssid=").pop();
           var str2 = str1.split(';')[0];
@@ -1880,7 +1882,7 @@ ipcMain.on("reauthCurrentAccount", async function (event, arg) {
       
       const access_tokens = await getAccessTokens(ssid);
 
-      if(access_tokens.data.response == undefined) {
+      if(access_tokens.data.response === undefined) {
         event.sender.send("reauthFail");
       } else {
         fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json", JSON.stringify(access_tokens.headers["set-cookie"]));
@@ -1954,4 +1956,8 @@ ipcMain.on('closeApp', function() {
 
 ipcMain.on('relayTextbox', function(event, args) {
   sendMessageToWindow('createTextbox', args);
+});
+
+ipcMain.on('relayOpenPlayerSearchModal', function(event, args) {
+  sendMessageToWindow('openPlayerSearchModal', args);
 });

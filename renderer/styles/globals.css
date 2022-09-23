@@ -245,7 +245,7 @@ img {
 }
 
 #navbar {
-  height: calc(100vh - 29px);
+  height: calc(100vh - 28px);
 }
 
 .maximized #Layout {
@@ -254,12 +254,12 @@ img {
 }
 
 #Layout {
-  height: calc(100vh - 29px);
+  height: calc(100vh - 28px);
   width: calc(100vw - 16rem);
 }
 
 #Layout.strech {
-  height: calc(100vh - 29px);
+  height: calc(100vh - 28px);
   width: calc(100vw - 4rem);
 }
 
@@ -1522,4 +1522,8 @@ body[lang="fr-FR"] #equip-skin-button {
 
 .version-selector span.active:hover {
   @apply bg-maincolor;
+}
+
+.player-search-mgnfy {
+  min-width: 1.25rem;
 }
