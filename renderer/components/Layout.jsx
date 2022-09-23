@@ -15,7 +15,7 @@ const variants = {
   exit: { opacity: 0, x: 0, y: 0 },
 }
 
-export default function Layout({ children, classNames, setup }) {
+export default function Layout({ children, classNames, setup, isNavbarMinimized }) {
   const router = useRouter();
 
   var legacy = false;
@@ -34,7 +34,7 @@ export default function Layout({ children, classNames, setup }) {
   }
   
   return( 
-    <div className={"ml-64 flex flex-row bg-maincolor-light " + (legacy ? 'legacy' : '')}>
+    <div className={"flex flex-row bg-maincolor-light transition-all duration-100 ease-linear " + (legacy ? 'legacy ' : '') + (isNavbarMinimized ? 'ml-16' : 'ml-64')}>
       <WindowControls setup={setup} />
       <UpdatingLayer />
       {setup ? '' : <MessageLayer />}
@@ -51,7 +51,7 @@ export default function Layout({ children, classNames, setup }) {
           exit="exit"
           transition={{ type: 'ease', duration: 0.3 }}
           id={setup ? 'layout-setup' : 'Layout'}
-          className={"bg-maincolor-light overflow-x-hidden " + (classNames ? classNames : '')}
+          className={"bg-maincolor-light overflow-x-hidden transition-all duration-100 ease-linear " + (classNames ? classNames : '') + (isNavbarMinimized ? ' strech' : '')}
         >
           {children}
         </motion.main>

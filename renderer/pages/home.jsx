@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch'
 import fs from 'fs';
@@ -1627,33 +1626,31 @@ function Home() {
   }, [ router.query ]);
 
   return (
-    <Layout>
+    <>
       <div id='home-container' className='flex flex-row flex-wrap'>
         <div id='top-left-container' className='relative bg-maincolor-lightest bg-opacity-60 rounded p-1.5 flex flex-wrap'>
           <div className='home-top-info-tile border-2 rounded border-maincolor-lightest h-full p-1 relative'>
-            <div className='flex flex-col h-full px-1'>
+            <div className='flex flex-col h-full'>
               <div>
-                <span className='leading-none'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
-                <hr className='' />
+                <span className='leading-none px-1'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
+                <hr className='mb-1' />
               </div>
-              <div className='flex w-full mt-2 relative h-full justify-center items-center'>
-                <div className='relative rounded'>
-                  <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img border-2 border-maincolor-lightest rounded' />
-                  {
-                    featuredBundlePrice ?
-                    <div 
-                      id='bundle-price'
-                      className='text-xl text-gray-300 flex flex-row items-center absolute bottom-2 left-2 bg-opacity-60 bg-black rounded px-2 py-1'
-                    >
-                      <span className='relative top-px'>{featuredBundlePrice}</span>
-                      <img src="/images/vp_icon.png" className='w-6 ml-2 transition-opacity duration-100 ease-in shadow-img' />
-                    </div>
-                    :
-                    null
-                  }
+              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border-2 border-maincolor-lightest rounded'>
+                <div className='relative'>
+                  <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img rounded' />
                 </div>
-              </div>
-              <div className='p-1 flex flex-row mt-0.5'>
+                {
+                  featuredBundlePrice ?
+                  <div 
+                    id='bundle-price'
+                    className='text-xl text-gray-300 flex flex-row items-center absolute bottom-2 left-2 bg-opacity-60 bg-black rounded px-2 py-1'
+                  >
+                    <span className='relative top-px'>{featuredBundlePrice}</span>
+                    <img src="/images/vp_icon.png" className='w-6 ml-2 transition-opacity duration-100 ease-in shadow-img' />
+                  </div>
+                  :
+                  null
+                }
               </div>
             </div>
           </div>
@@ -2066,7 +2063,7 @@ function Home() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

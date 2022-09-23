@@ -3,6 +3,7 @@ import fs from 'fs';
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { Close, Search } from "../SVGs";
+import { ipcRenderer } from "electron";
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -21,7 +22,7 @@ const account_switcher_variants = {
   }
 }
 
-export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText, closeLocale }) {
+export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText, closeLocale, isNavbarMinimized }) {
   const router = useRouter();
 
   const [ isHistoryDropdownShown, setIsHistoryDropdownShown ] = React.useState(false);
@@ -34,6 +35,13 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
       setSearchHistory(search_history.arr);
     }
   }, []);
+
+  React.useEffect(() => {
+    if(searchHistory.length === 0) {
+      setIsHistoryDropdownShown(false);
+      setIsHistoryLocked(false);
+    }
+  }, [searchHistory]);
 
   const handleHistoryClick = (name, tag, name_encoded) => {
     router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
@@ -56,32 +64,34 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
 
   return (
     <>
-      <div className='relative mb-6 mt-4 w-full mr-px search-container'>
+      <div className={'relative mb-6 mt-4 w-full transition-all duration-100 ease-linear search-container ' + (isNavbarMinimized ? 'minimized' : '')}>
         <input 
           id='skin-search'
           type='text'
-          className={(isSearchShown ? 'bg-button-color focus:outline-none text-sm z-40 font-light pl-9 hover:bg-button-color-hover hover:shadow-2xl h-8 ml-px w-full flex items-center px-2 py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none' : searchDisabledClasses)}
-          placeholder={placeholderText}
+          className={(isSearchShown ? 'bg-button-color focus:outline-none text-sm z-40 font-light pl-9 hover:bg-button-color-hover hover:shadow-2xl flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto ' + (isNavbarMinimized ? 'rounded-full w-10 h-10 px-0' : 'w-full h-8 px-2') : searchDisabledClasses)}
+          placeholder={(isNavbarMinimized ? '' : placeholderText)}
           onKeyDown={handlePlayerSearch}
           autoCorrect='off'
           spellCheck='false'
-          disabled={!isSearchShown}
+          disabled={isNavbarMinimized ? true : !isSearchShown}
           ref={playerSearchRef}
-          onFocus={() => { 
-            setIsHistoryLocked(false);
-            setIsHistoryDropdownShown(true);
+          onFocus={() => {
+            if(searchHistory.length !== 0) {
+              setIsHistoryLocked(false);
+              setIsHistoryDropdownShown(true);
+            }
           }}
           onBlur={() => {
             setIsHistoryLocked(false);
           }}
           onClick={() => { 
-            isSearchShown ? 
+            isSearchShown && searchHistory.length !== 0 ? 
             (searchHistory.length > 0 ? setIsHistoryDropdownShown(true) : null)
             : 
-            ipcRenderer.send('relayTextbox', searchHiddenDesc) 
+            (isSearchShown === false ? ipcRenderer.send('relayTextbox', searchHiddenDesc) : null)
           }}
         />
-        <Search cls='absolute top-2 left-2 ml-0.5 w-4' />
+        <Search cls={'absolute transition-all duration-75 ease-linear cursor-pointer ' + (isNavbarMinimized ? 'top-2 mt-px left-4 ml-0.5 w-5' : 'top-2 left-2.5 w-4')} />
 
         <motion.div 
           className={"absolute top-8 mt-2 ml-px bg-button-color z-30 w-full rounded search-dropdown shadow-xl"}
@@ -95,7 +105,7 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
               <div 
                 className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-100 border-b border-maincolor-lightest"}
                 onClick={(e) => {
-                  if(e.target.id !== "remove-el" && e.target.tagName !== "SVG" && e.target.tagName !== "SVG") {
+                  if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line") {
                     setIsHistoryLocked(false);
                     setIsHistoryDropdownShown(false);
                     handleHistoryClick(item.name, item.tag, item.encoded_user);

@@ -1,9 +1,7 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch';
 import fs from 'fs';
-import { useRouter } from 'next/router';
 import Langs from '../locales/languages.json';
 import LanguageCheckbox from '../components/settings/LanguageCheckbox';
 import L from '../locales/translations/setup.json';
@@ -271,7 +269,7 @@ function Setup() {
   }, []);
 
   return (
-    <Layout setup={true} classNames={'overflow-hidden'}>
+    <>
       <div className='flex flex-col items-center p-4 h-full w-full'>
         <div id='setup-timeline' className='border-2 border-maincolor-lightest w-full p-2 h-14 rounded'>
           <div className='flex flex-row items-center mb-1 justify-between'>
@@ -443,7 +441,7 @@ function Setup() {
           </motion.div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

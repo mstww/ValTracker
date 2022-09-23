@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch'
 import SkinTile from '../components/skins/SkinTile';
@@ -261,7 +260,7 @@ function Cardchanger() {
   }
 
   return ( 
-    <Layout>
+    <>
       <div className='absolute top-4 z-10 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
         <BackArrow cls='w-8 p-1 shadow-img' />
       </div>
@@ -313,7 +312,7 @@ function Cardchanger() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

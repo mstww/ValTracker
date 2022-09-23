@@ -1,4 +1,3 @@
-import Layout from "../components/Layout";
 import React from "react";
 import { Spacer } from "@nextui-org/react";
 import fs from 'fs';
@@ -36,7 +35,7 @@ export default function Wishlist() {
   }, []);
   
   return (
-    <Layout>
+    <>
       <div className="p-4">
         {
           playerWishlistSkins.length > 0 
@@ -168,6 +167,6 @@ export default function Wishlist() {
           <div className="w-full text-center">{LocalText(L, "content.empty_text")}</div>
         }
       </div>
-    </Layout>
+    </>
   )
 }

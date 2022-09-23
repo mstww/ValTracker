@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import moment from 'moment';
 import { motion } from "framer-motion"
 import { useRouter } from 'next/router';
@@ -191,7 +190,7 @@ function NightMarket() {
   }
 
   return (
-    <Layout>
+    <>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-30 bg-black bg-opacity-80 pointer-events-none'
         variants={backdrop_variants}
@@ -334,7 +333,7 @@ function NightMarket() {
           );
         })}
       </div>
-    </Layout>
+    </>
   );
 }
 

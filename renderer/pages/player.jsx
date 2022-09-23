@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { motion } from "framer-motion"
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch';
@@ -804,11 +803,11 @@ function PlayerProfile() {
   });
 
   return (
-    <Layout>
+    <>
       <div className={'w-full flex flex-row justify-center mt-16 h-auto relative'}>
         <PlayerInfo />
       </div>
-    </Layout>
+    </>
   );
 }
 

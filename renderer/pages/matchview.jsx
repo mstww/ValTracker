@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { motion } from "framer-motion"
 import { useRouter } from 'next/router';
 import moment from 'moment';
@@ -387,7 +386,7 @@ function Matchview() {
   }, []);
 
   return (
-    <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''}>
+    <>
       <div 
         className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}
@@ -695,7 +694,7 @@ function Matchview() {
             </span>
           </div>
           <div id='matchview-gradient-overlay' className='absolute top-0 h-full w-full left-0 z-30'>
-            <div className='2xl:w-1/2 w-2/3 ml-auto p-4 relative h-full overflow-auto'>
+            <div className='2xl:w-1/2 w-2/3 ml-auto p-4 h-full overflow-auto relative'>
               <span className='text-xl'>{LocalText(L, "player_stats.header")}</span>
               <hr />
               <ul className='mt-4'>
@@ -897,7 +896,7 @@ function Matchview() {
           </tbody>
         </table>
       </motion.div>
-    </Layout>
+    </>
   );
 }
 

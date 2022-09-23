@@ -46,7 +46,7 @@ const slide_left = {
   },
 }
 
-export default function Navbar() {
+export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   const router = useRouter();
   var page = router.pathname.split("/").pop();
 
@@ -55,7 +55,7 @@ export default function Navbar() {
   const [ playerRank, setPlayerRank ] = React.useState(null);
 
   const [ open, setOpen ] = React.useState(false);
-  const [ isNavbarMinimized, setIsNavbarMinimized ] = React.useState(false);
+  const [ isLogoShown, setIsLogoShown ] = React.useState(true);
 
   const [ isInvShown, setIsInvShown ] = React.useState(true);
   const [ isFavsShown, setIsFavsShown ] = React.useState(true);
@@ -74,7 +74,9 @@ export default function Navbar() {
   const playerSearchRef = React.useRef(null);
 
   React.useEffect(() => {
-    console.log(isNavbarMinimized);
+    setTimeout(() => {
+      setIsLogoShown(!isNavbarMinimized);
+    }, 150);
   }, [isNavbarMinimized]);
 
   // Make a toggle menu using react
@@ -175,8 +177,8 @@ export default function Navbar() {
   var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer';
   var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
   var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
-  var navbarTileBaseClasses = ' h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
-  var navbarTileTextClasses = 'text-sm font-light relative top-px ml-2 nav-txt ' + (isNavbarMinimized ? 'hidden' : 'block');
+  var navbarTileBaseClasses = ' h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
+  var navbarTileTextClasses = 'text-sm font-light relative top-px ml-2 nav-txt transition-all ease-in duration-75 ml-8 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100');
 
   if(page == "home") var isHome = true;
   if(page == "shop") var isShop = true;
@@ -223,32 +225,40 @@ export default function Navbar() {
     }
   }
 
+  React.useEffect(() => {
+    if(isNavbarMinimized === true) {
+      setOpen(false);
+    }
+  }, [isNavbarMinimized]);
+
   return (
     <nav 
       id='navbar' 
-      className={'z-40 fixed top-7 left-0 bg-maincolor overflow-hidden transition-all duration-100 ease-linear ' + (isNavbarMinimized === true ? 'w-20': 'w-64')}
+      className={'z-40 fixed top-7 left-0 bg-maincolor overflow-hidden transition-all duration-100 ease-linear ' + (isNavbarMinimized === true ? 'w-16': 'w-64')}
     >
-      <div className='absolute top-5 right-4'>
-        {
-          isNavbarMinimized === true ? 
-          <ExpandArrow 
-            cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded'} 
-            click={() => { setIsNavbarMinimized(false) }}
-          />
-          :
-          <RetractArrow 
-            cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded'} 
-            click={() => { setIsNavbarMinimized(true) }}
-          />
-        }
+      <div id='logo' className={'flex flex-col justify-center items-center transition-all duration-100 ease-linear transform w-36 mx-auto ' + (isNavbarMinimized ? '-translate-x-40 opacity-0 ' : 'translate-x-0 opacity-100 ')}>
+        <img 
+          src='/icons/VALTracker_Logo_default.png' 
+          className={'w-36 h-26 mx-auto transition-all duration-100 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+        />
+        <h1 className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}>VALTracker</h1>
+        <span className={'relative text-sm text-gray-500 transition-all duration-75 ease-linear bottom-3 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}>v{pjson.version}</span>
       </div>
-      <div id='logo' className='flex flex-col justify-center items-center'>
-        <img src='/icons/VALTracker_Logo_default.png' className={'w-36 mx-auto ' + (isNavbarMinimized ? 'ml-1' : 'mx-auto')}/>
-        <h1 className='text-2xl relative bottom-2'>VALTracker</h1>
-        <span className='relative text-sm bottom-3 text-gray-500'>v{pjson.version}</span>
-      </div>
+      {
+        isNavbarMinimized === true ? 
+        <ExpandArrow 
+          cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto ' + (isNavbarMinimized ? 'bottom-3' : 'bottom-3')} 
+          click={() => { setIsNavbarMinimized(false) }}
+        />
+        :
+        <RetractArrow 
+          cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto ' + (isNavbarMinimized ? 'bottom-3' : 'bottom-3')} 
+          click={() => { setIsNavbarMinimized(true) }}
+        />
+      }
       <div id='nav-items' className='flex flex-col justify-center items-center'>
         <PlayerSearch 
+          isNavbarMinimized={isNavbarMinimized}
           isSearchShown={isSearchShown} 
           searchDisabledClasses={searchDisabledClasses} 
           handlePlayerSearch={handlePlayerSearch}
@@ -263,7 +273,7 @@ export default function Navbar() {
             className={(isHome ? activeClasses : inactiveClasses) + navbarTileBaseClasses}
             data-isactive={isHome}
           >
-            <Home cls='ml-0.5 w-5' />
+            <Home cls='ml-0.5 w-5 absolute' />
             <span className={navbarTileTextClasses}>{LocalText(L, 'home')}</span>
           </div>
         </Link>
@@ -273,7 +283,7 @@ export default function Navbar() {
           data-isactive={isShop}
           onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
         >
-          <Store cls='ml-0.5 w-5' />
+          <Store cls='ml-0.5 w-5 absolute' />
           <span className={navbarTileTextClasses}>{LocalText(L, 'shop')}</span>
         </div>
 
@@ -282,7 +292,7 @@ export default function Navbar() {
           data-isactive={isInv}
           onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
         >
-          <User cls='ml-0.5 w-5' />
+          <User cls='ml-0.5 w-5 absolute' />
           <span className={navbarTileTextClasses}>{LocalText(L, 'inventory')}</span>
         </div>
 
@@ -291,7 +301,7 @@ export default function Navbar() {
           data-isactive={isFav}
           onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
         >
-          <Star cls='ml-0.5 w-5' />
+          <Star cls='ml-0.5 w-5 absolute' />
           <span className={navbarTileTextClasses}>{LocalText(L, 'fav_matches')}</span>
         </div>
 
@@ -300,11 +310,11 @@ export default function Navbar() {
           data-isactive={isWish}
           onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
         >
-          <Clipboard cls='ml-0.5 w-5' />
+          <Clipboard cls='ml-0.5 w-5 absolute' />
           <span className={navbarTileTextClasses}>{LocalText(L, 'wishlist')}</span>
         </div>
       </div>
-      <div className='absolute bottom-16 w-full flex justify-around'>
+      <div className={'absolute bottom-16 w-full flex justify-around transform transition-all duration-100 ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
         <SocialsIcon icon={'/images/coffee.svg'} tooltip={'Ko-Fi'} href={'https://ko-fi.com/valtrackergg'} />
         <SocialsIcon icon={'/images/discord.svg'} tooltip={'Discord'} href={'https://discord.gg/aJfQ4yHysG'} />
         <SocialsIcon icon={'/images/twitter.svg'} tooltip={'Twitter'} href={'https://twitter.com/valtracker_gg'} />
@@ -331,7 +341,7 @@ export default function Navbar() {
         </motion.div>
         <div 
           id="acc-switcher-tile" 
-          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis ' + switcherActive}
+          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis transform ' + switcherActive + (isNavbarMinimized ? ' -translate-x-40 opacity-0' : '  translate-x-0 opacity-100')}
           onClick={toggleSwitcherMenu}
         >
           <div className='flex flex-row items-center content-center h-full justify-start'>
@@ -355,6 +365,8 @@ export default function Navbar() {
                 'group transform transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor-light '
                 +
                 (page == 'settings' ? 'border-2 border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
+                +
+                (isNavbarMinimized ? ' -translate-x-4 mr-1' : '  translate-x-0 mr-0')
               }
             > 
               <Settings cls='w-6' />

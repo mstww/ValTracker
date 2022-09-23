@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch'
 import SkinTile from '../components/skins/SkinTile';
@@ -576,7 +575,7 @@ function Skinchanger() {
   }, [ activeSkinPrice ]);
 
   return ( 
-    <Layout>
+    <>
       <OverlayWrapper useRef={overlayRef} isShown={showVideo}>
         <motion.div 
           id='settings-overlay-card' 
@@ -756,7 +755,7 @@ function Skinchanger() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

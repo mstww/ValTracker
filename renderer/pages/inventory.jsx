@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import fs from 'fs'
 import fetch from 'node-fetch';
 import { useRouter } from 'next/router'
@@ -319,7 +318,7 @@ function Inventory() {
   }
 
   return (
-    <Layout>
+    <>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
         key={"InventoryBackdrop"}
@@ -830,7 +829,7 @@ function Inventory() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

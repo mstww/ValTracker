@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer } from 'electron';
 import { motion } from "framer-motion";
 import fs from 'fs';
@@ -588,7 +587,7 @@ function FavouriteMatches() {
   }, []);
   
   return (
-    <Layout>
+    <>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
         key={"FavMatchesBackdrop"}
@@ -1065,7 +1064,7 @@ function FavouriteMatches() {
 
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

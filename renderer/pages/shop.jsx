@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer } from 'electron';
 import { motion } from "framer-motion"
 import StoreItem from '../components/StoreItem';
@@ -327,7 +326,7 @@ function Shop() {
   }
 
   return (
-    <Layout classNames={'overflow-y-hidden'}>
+    <>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-30 bg-black bg-opacity-80 pointer-events-none'
         variants={backdrop_variants}
@@ -555,7 +554,7 @@ function Shop() {
           </div>
         </div>
       </div> 
-    </Layout>
+    </>
   );
 }
 

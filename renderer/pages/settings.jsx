@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer, shell } from 'electron';
 import SettingsTile from '../components/settings/SettingsTile';
 import SettingsWrapper from '../components/settings/SettingsWrapper';
@@ -652,7 +651,7 @@ function Settings() {
   var s2_bt1 = LocalText(L, 'pg_5.grp_1.setting_2.button_text');
 
   return (
-    <Layout>
+    <>
       <OverlayWrapper useRef={overlayWrapper} isShown={popupBackgroundShown}>
 
         <PopupCard
@@ -1030,7 +1029,7 @@ function Settings() {
           </SettingsWrapper>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 
