@@ -798,7 +798,7 @@ function PlayerInfo({ isNavbarMinimized }) {
   );
 }
 
-function PlayerProfile() {
+function PlayerProfile({ isNavbarMinimized }) {
   React.useEffect(() => {
     ipcRenderer.send('changeDiscordRP', 'pprofile_acitivity');
   });

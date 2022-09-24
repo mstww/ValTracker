@@ -103,7 +103,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, isNavbarMin
   );
 }
 
-function Spraychanger() {
+function Spraychanger({ isNavbarMinimized }) {
   const router = useRouter();
 
   const [ skinData, setSkinData ] = React.useState([]);

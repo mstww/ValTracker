@@ -72,22 +72,22 @@ function FavoriteMatches({ isNavbarMinimized }) {
 
   // ----------------------- END STATES -----------------------
 
-  var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-
-  if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')) {
-    var obj = {"favourites": []};
-    
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json', JSON.stringify(obj));
-  }
-
-  if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID)) {
-    fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID);
-  }
-
-  var favMatchesData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')).favourites;
-  var bearer = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json')).accessToken;
-
   const loadAllFavMatches = async () => {
+    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+
+    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')) {
+      var obj = {"favourites": []};
+      
+      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json', JSON.stringify(obj));
+    }
+
+    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID)) {
+      fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID);
+    }
+
+    var favMatchesData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')).favourites;
+    var bearer = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json')).accessToken;
+
     var allMatches = [];
 
     setFavMatchLength(favMatchesData.length);
@@ -181,6 +181,8 @@ function FavoriteMatches({ isNavbarMinimized }) {
   }
 
   const calculateMatchStats = (match) => {
+    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+
     var gameStartUnix = match.matchInfo.gameStartMillis;
     var gameLengthMS = match.matchInfo.gameLengthMillis;
     var gameMode = match.matchInfo.queueID;
@@ -396,6 +398,8 @@ function FavoriteMatches({ isNavbarMinimized }) {
   }
 
   const calculateSortStatsForMatch = (match) => {
+    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+    
     /* PLAYER STATS */
     for(var i = 0; i < match.players.length; i++) {
       var playerNameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
@@ -449,6 +453,8 @@ function FavoriteMatches({ isNavbarMinimized }) {
   }
 
   const sortMatchesAndSetActiveSort = (newValue) => {
+    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+    
     sortableFavMatches.forEach(match => {
       if(!match.statsData) {
         var stats_data = calculateSortStatsForMatch(match);
@@ -496,6 +502,9 @@ function FavoriteMatches({ isNavbarMinimized }) {
   }
 
   const removeFavMatch = (MatchID, key, index, fixedQueueName) => {
+    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+
     var favMatchesData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')).favourites;
                                       
     // WORKS
