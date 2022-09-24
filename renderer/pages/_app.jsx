@@ -59,8 +59,10 @@ function MyApp({ Component, pageProps }) {
   var setup = router.pathname.split("/").pop() === "setup";
 
   React.useEffect(() => {
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
-    setTheme(data.themeName);
+    if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json")) {
+      var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
+      if(data.themeName === "light") setLightTheme(true);
+    }
   }, []);
 
   React.useEffect(() => {
