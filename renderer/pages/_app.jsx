@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { NextUIProvider, createTheme } from '@nextui-org/react';
 import fs from 'fs';
 import Navbar from '../components/Navbar';
+import WindowControls from '../components/WindowControls';
 
 import '../styles/globals.css';
 
