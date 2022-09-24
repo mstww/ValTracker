@@ -69,6 +69,8 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   const [ searchHiddenDesc, setSearchHiddenDesc ] = React.useState('');
   const [ settingsHiddenDesc, setSettingsHiddenDesc ] = React.useState('');
   const [ wishlistHiddenDesc, setWishlistHiddenDesc ] = React.useState('');
+
+  const [ historyNotifSwitch, setHistoryNotifSwitch ] = React.useState(false);
   
   const playerSearchRef = React.useRef(null);
 
@@ -129,23 +131,17 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
     }
   }
 
-  // Make a toggle menu using react
-  var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
-  var data = JSON.parse(data_raw);
-
   React.useEffect(() => {
-    if(sessionStorage.getItem('navbar-rank') && sessionStorage.getItem('navbar-name') && sessionStorage.getItem('navbar-tag')) {
-      setPlayerRank(sessionStorage.getItem('navbar-rank'));
-      setPlayerName(sessionStorage.getItem('navbar-name'));
-      setPlayerTag(sessionStorage.getItem('navbar-tag'));
-    } else {
-      setPlayerRank(data.playerRank);
-      setPlayerName(data.playerName);
-      setPlayerTag(data.playerTag);
-      sessionStorage.setItem('navbar-rank', data.playerRank);
-      sessionStorage.setItem('navbar-name', data.playerName);
-      sessionStorage.setItem('navbar-tag', data.playerTag);
-    }
+    var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
+    var data = JSON.parse(data_raw);
+  
+    setPlayerRank(data.playerRank);
+    setPlayerName(data.playerName);
+    setPlayerTag(data.playerTag);
+    sessionStorage.setItem('navbar-rank', data.playerRank);
+    sessionStorage.setItem('navbar-name', data.playerName);
+    sessionStorage.setItem('navbar-tag', data.playerTag);
+
     if(router.query.searchvalue) {
       // Decode the search value
       var decoded = decodeURIComponent(router.query.searchvalue);
@@ -198,6 +194,9 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   }
 
   async function fetchUserAccounts() {
+    var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
+    var data = JSON.parse(data_raw);
+    
     var accounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
   
     accounts.forEach(accountFile => {
@@ -257,6 +256,8 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         }
       }
 
+      console.log(user_found);
+
       if(user_found === false) {
         if(search_history.arr.length >= 5) {
           delete search_history.arr[search_history.arr.length-1];
@@ -269,6 +270,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         }
       
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(search_history));
+        setHistoryNotifSwitch(!historyNotifSwitch);
       }
 
       router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
@@ -357,6 +359,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           placeholderText={LocalText(L, 'search_placeholder')}
           closeLocale={LocalText(L, 'history_close')}
           variants={navbarVariants.tiles}
+          historyNotifSwitch={historyNotifSwitch}
         />
 
     	  <Link href={"/home"}>

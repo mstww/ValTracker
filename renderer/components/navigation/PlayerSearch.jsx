@@ -22,7 +22,7 @@ const account_switcher_variants = {
   }
 }
 
-export default function PlayerSearch({ isSearchShown, searchDisabledClasses, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText, closeLocale, isNavbarMinimized, variants }) {
+export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText, closeLocale, isNavbarMinimized, variants }) {
   const router = useRouter();
 
   const [ isHistoryDropdownShown, setIsHistoryDropdownShown ] = React.useState(false);
@@ -37,6 +37,13 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
   }, []);
 
   React.useEffect(() => {
+    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json')) {
+      var search_history = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json'));
+      setSearchHistory(search_history.arr);
+    }
+  }, [historyNotifSwitch]);
+
+  React.useEffect(() => {
     if(searchHistory.length === 0) {
       setIsHistoryDropdownShown(false);
       setIsHistoryLocked(false);
@@ -48,11 +55,15 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
   }
 
   const removeItemFromHistory = (name_encoded) => {
+    console.log(searchHistory.length);
     for(var i = 0; i < searchHistory.length; i++) {
       if(searchHistory[i].encoded_user === name_encoded) {
         delete searchHistory[i];
         var newArray = searchHistory.filter(value => Object.keys(value).length !== 0);
         searchHistory = newArray;
+        if(newArray.length === 0) {
+          setIsHistoryDropdownShown(false);
+        }
 
         var data = { "arr": newArray }
 
@@ -69,7 +80,7 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
       >
         <motion.div 
           className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover hover:shadow-2xl flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden ' + (isNavbarMinimized ? 'rounded-full w-10 h-10 px-0' : 'w-full h-8 px-2')}
-          onClick={() => { isNavbarMinimized ? ipcRenderer.send("relayOpenPlayerSearchModal", searchHistory) : (playerSearchRef.current ? playerSearchRef.current.focus() : null) }}
+          onClick={() => { isNavbarMinimized ? ipcRenderer.send("relayOpenPlayerSearchModal", []) : (playerSearchRef.current ? playerSearchRef.current.focus() : null) }}
           variants={variants}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -128,8 +139,8 @@ export default function PlayerSearch({ isSearchShown, searchDisabledClasses, han
                   id='remove-el'
                   className="absolute top-1 left-1 cursor-pointer hover:bg-maincolor-lightest hover:bg-opacity-90 rounded p-1 transition-all ease-in duration-100"
                   onClick={() => {
-                    playerSearchRef.current.focus();
                     removeItemFromHistory(item.encoded_user);
+                    playerSearchRef.current.focus();
                   }}
                   onMouseEnter={() => {
                     setIsHistoryLocked(true);
