@@ -1804,10 +1804,12 @@ async function showSignIn(writeToFile) {
     loginWindow.webContents.on('will-redirect', (event, url) => {
       console.log(url);
       // Login window redirecting...
-      if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
+      if(!foundToken && url.startsWith('http://localhost/redirect')) {
         // Redirecting to url with tokens
         const tokenData = getTokenDataFromURL(url);
         foundToken = true;
+
+        console.log(tokenData);
 
         loginWindow.webContents.session.cookies.get({
           domain: 'auth.riotgames.com'
@@ -1829,6 +1831,33 @@ async function showSignIn(writeToFile) {
           }
         });
       }
+    });
+    loginWindow.webContents.on('did-fail-load', () => {
+      var url = loginWindow.webContents.getURL();
+      const tokenData = getTokenDataFromURL(url);
+      foundToken = true;
+
+      console.log(tokenData);
+
+      loginWindow.webContents.session.cookies.get({
+        domain: 'auth.riotgames.com'
+      }).then(async riotcookies => {
+        await Promise.all(riotcookies.map(cookie => loginWindow.webContents.session.cookies.remove(`https://${cookie.domain}${cookie.path}`, cookie.name)));
+        loginWindow.destroy();
+        resolve({
+          tokenData,
+          riotcookies,
+        });
+        for(var i = 0; i < riotcookies.length; i++) {
+          if(riotcookies[i].name == "ssid") {
+            var cookieString = riotcookies[i].value
+          }
+        }
+        if(writeToFile == true) {
+          fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(cookieString))
+          fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
+        }
+      });
     });
     loginWindow.once('ready-to-show', () => {
       loginWindow.show();
