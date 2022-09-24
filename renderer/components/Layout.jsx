@@ -81,7 +81,7 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized 
           exit="exit"
           transition={{ type: 'ease', duration: 0.3 }}
           id={setup ? 'layout-setup' : 'Layout'}
-          className={"bg-maincolor-light overflow-x-hidden  " + (classNames ? classNames : '') + (isNavbarMinimized ? ' strech' : '')}
+          className={"bg-maincolor-light overflow-x-hidden transition-all duration-100 ease-linear " + (classNames ? classNames : '') + (isNavbarMinimized ? ' strech' : '')}
         >
           {children}
         </motion.main>
