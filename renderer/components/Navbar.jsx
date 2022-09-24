@@ -131,18 +131,17 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
     }
   }
 
-  // Make a toggle menu using react
-
   React.useEffect(() => {
     var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
     var data = JSON.parse(data_raw);
+  
     setPlayerRank(data.playerRank);
     setPlayerName(data.playerName);
     setPlayerTag(data.playerTag);
     sessionStorage.setItem('navbar-rank', data.playerRank);
     sessionStorage.setItem('navbar-name', data.playerName);
     sessionStorage.setItem('navbar-tag', data.playerTag);
-    
+
     if(router.query.searchvalue) {
       // Decode the search value
       var decoded = decodeURIComponent(router.query.searchvalue);
@@ -195,6 +194,9 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   }
 
   async function fetchUserAccounts() {
+    var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
+    var data = JSON.parse(data_raw);
+    
     var accounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
   
     accounts.forEach(accountFile => {
