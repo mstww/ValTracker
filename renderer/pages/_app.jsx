@@ -32,8 +32,10 @@ function MyApp({ Component, pageProps }) {
   const [ lightTheme, setLightTheme ] = React.useState(false);
 
   React.useEffect(() => {
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
-    if(data.themeName === "light") setLightTheme(true);
+    if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json")) {
+      var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
+      if(data.themeName === "light") setLightTheme(true);
+    }
   }, []);
 
   fs.watchFile(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json", () => {

@@ -423,8 +423,8 @@ function Settings() {
         const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
     
         var currenttier = 0;
-        if(mmr_data.LatestCompetitiveUpdate.TierAfterUpdate != undefined) {
-          var currenttier = account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate
+        if(account_rank_data.LatestCompetitiveUpdate !== undefined) {
+          var currenttier = account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate;
         }
     
         var accObj = {

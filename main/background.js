@@ -203,11 +203,11 @@ async function getAccessTokens(ssid) {
   return (await fetch("https://auth.riotgames.com/api/v1/authorization", {
     method: 'POST',
     headers: {
-      "User-Agent": "RiotClient/51.0.0.4429735.4381201 rso-auth (Windows;10;;Professional, x64)",
+      "User-Agent": "RiotClient/46.0.0.4265023.4253280 rso-auth (Windows;10;;Professional, x64)",
       'Content-Type': 'application/json',
       Cookie: ssid,
     },
-    body: JSON.stringify({"client_id":"play-valorant-web-prod","nonce":"1","redirect_uri":"https://playvalorant.com/opt_in","response_type":"token id_token","scope":"account openid"}),
+    body: JSON.stringify({"client_id":"riot-client","nonce":"1","redirect_uri":"http://localhost/redirect","response_type":"token id_token","scope":"openid link ban"}),
     keepalive: true
   }));
 }
@@ -1776,7 +1776,7 @@ ipcMain.on("changeDiscordRP", function (event, arg) {
   }
 });
 
-var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid';
+var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&client_id=riot-client&response_type=token%20id_token&nonce=1&scope=openid%20link%20ban';
 
 function getTokenDataFromURL(url) {
   try {
@@ -1802,10 +1802,12 @@ async function showSignIn(writeToFile) {
     let foundToken = false;
     loginWindow.webContents.on('will-redirect', (event, url) => {
       // Login window redirecting...
-      if(!foundToken && url.startsWith('https://playvalorant.com/opt_in')) {
+      if(!foundToken && url.startsWith('http://localhost/redirect')) {
         // Redirecting to url with tokens
         const tokenData = getTokenDataFromURL(url);
         foundToken = true;
+
+        console.log(tokenData);
 
         loginWindow.webContents.session.cookies.get({
           domain: 'auth.riotgames.com'
@@ -1827,6 +1829,33 @@ async function showSignIn(writeToFile) {
           }
         });
       }
+    });
+    loginWindow.webContents.on('did-fail-load', () => {
+      var url = loginWindow.webContents.getURL();
+      const tokenData = getTokenDataFromURL(url);
+      foundToken = true;
+
+      console.log(tokenData);
+
+      loginWindow.webContents.session.cookies.get({
+        domain: 'auth.riotgames.com'
+      }).then(async riotcookies => {
+        await Promise.all(riotcookies.map(cookie => loginWindow.webContents.session.cookies.remove(`https://${cookie.domain}${cookie.path}`, cookie.name)));
+        loginWindow.destroy();
+        resolve({
+          tokenData,
+          riotcookies,
+        });
+        for(var i = 0; i < riotcookies.length; i++) {
+          if(riotcookies[i].name == "ssid") {
+            var cookieString = riotcookies[i].value
+          }
+        }
+        if(writeToFile == true) {
+          fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(cookieString))
+          fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
+        }
+      });
     });
     loginWindow.once('ready-to-show', () => {
       loginWindow.show();
