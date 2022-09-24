@@ -251,11 +251,13 @@ img {
 .maximized #Layout {
   height: calc(100vh - 28px);
   width: calc(100vw - 16rem);
+  margin-top: 28px;
 }
 
 #Layout {
   height: calc(100vh - 28px);
   width: calc(100vw - 16rem);
+  margin-top: 28px;
 }
 
 #Layout.strech {
