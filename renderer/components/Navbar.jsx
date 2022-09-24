@@ -69,6 +69,8 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   const [ searchHiddenDesc, setSearchHiddenDesc ] = React.useState('');
   const [ settingsHiddenDesc, setSettingsHiddenDesc ] = React.useState('');
   const [ wishlistHiddenDesc, setWishlistHiddenDesc ] = React.useState('');
+
+  const [ historyNotifSwitch, setHistoryNotifSwitch ] = React.useState(false);
   
   const playerSearchRef = React.useRef(null);
 
@@ -257,6 +259,8 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         }
       }
 
+      console.log(user_found);
+
       if(user_found === false) {
         if(search_history.arr.length >= 5) {
           delete search_history.arr[search_history.arr.length-1];
@@ -269,6 +273,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         }
       
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(search_history));
+        setHistoryNotifSwitch(!historyNotifSwitch);
       }
 
       router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
@@ -357,6 +362,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           placeholderText={LocalText(L, 'search_placeholder')}
           closeLocale={LocalText(L, 'history_close')}
           variants={navbarVariants.tiles}
+          historyNotifSwitch={historyNotifSwitch}
         />
 
     	  <Link href={"/home"}>

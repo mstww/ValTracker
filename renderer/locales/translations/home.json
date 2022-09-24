@@ -10,7 +10,8 @@
         "level_text": "Level",
         "xp_text": "TO GO",
         "battle_pass_header": "Battle Pass Progress",
-        "agent_contract_header": "Agent Contract Progress"
+        "agent_contract_header": "Agent Contract Progress",
+        "loading_tooltip": "Checking for updates..."
       }
     },
     "top_r": {
@@ -108,7 +109,8 @@
         "level_text": "Level",
         "xp_text": "VERBLEIBEND",
         "battle_pass_header": "Battle-Pass Fortschritt",
-        "agent_contract_header": "Agenten-Vertrag Fortschritt"
+        "agent_contract_header": "Agenten-Vertrag Fortschritt",
+        "loading_tooltip": "Suche nach aktuellem Stand..."
       }
     },
     "top_r": {
@@ -206,7 +208,8 @@
         "level_text": "Niveaux",
         "xp_text": "ALLER",
         "battle_pass_header": "Progrès du Passe de Combat",
-        "agent_contract_header": "Progrès du contrat de l'agent"
+        "agent_contract_header": "Progrès du contrat de l'agent",
+        "loading_tooltip": "Vérification des mises à jour."
       }
     },
     "top_r": {

@@ -843,7 +843,6 @@ function Home({ isNavbarMinimized }) {
 
       if(new_matches_amount === 0) {
         setIsSilentLoading(false);
-        fetchContractData(false);
         return;
       } else if(new_matches_amount > 0 && new_matches_amount < 4) {
         fetchContractData(true);
@@ -1623,6 +1622,7 @@ function Home({ isNavbarMinimized }) {
 
   React.useEffect(() => {
     document.body.setAttribute("lang", router.query.lang);
+    fetchContractData(false);
   }, [ router.query ]);
 
   return (
@@ -1655,6 +1655,11 @@ function Home({ isNavbarMinimized }) {
             </div>
           </div>
           <div className='home-top-info-tile relative border-2 rounded border-maincolor-lightest flex flex-col'>
+            <Tooltip content={LocalText(L, "top_l.contracts.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-4 right-7'>
+              <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
+                <Loading color={'error'} size={'sm'} />
+              </div>
+            </Tooltip>
             <div className={'flex flex-col h-full ' + (contractsLoading || contractsError ? 'hidden' : '')}>
               <ContractProgressCard 
                 title={LocalText(L, "top_l.contracts.battle_pass_header")} 
