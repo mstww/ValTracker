@@ -49,7 +49,7 @@ export default function WindowControls({ setup }) {
   });
 
   return(
-    <header id="titlebar" className='bg-maincolor'>
+    <header id="titlebar" className='bg-maincolor fixed top-0 left-0'>
       <div id="drag-region">
         <div id="window-title">
           <img className="titlebar-img" id="valtracker-logo" src="/icons/VALTracker_Logo_default.ico" />

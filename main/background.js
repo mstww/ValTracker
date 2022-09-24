@@ -91,11 +91,11 @@ if(!gotTheLock) {
     if(mainWindow) {
       if(mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
+      mainWindow.show();
+      appIcon.destroy();
     }
   });
 }
-
-var app_data;
 
 function createFavMatches() {
   // Create /favourite_matches dir
@@ -154,7 +154,7 @@ function createThemes() {
   }
 
   let themesPointerFile = {
-    themeName: "default",
+    themeName: "normal",
   };
 
   fs.writeFileSync(app_data + "/user_data/themes/color_theme.json", JSON.stringify(themesPointerFile));
@@ -333,7 +333,7 @@ async function noFilesFound() {
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/wishlists")) {
     fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/wishlists");
   }
-
+  
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
     fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
   }
@@ -472,6 +472,7 @@ async function reauthAllAccounts() {
         const { error, items, puuid } = await reauthAccount(uuid);
 
         if(error === true) {
+          console.log(items);
           reauth_array.push({ error, items, puuid });
         } else {
           data_array.push(items);
@@ -1126,7 +1127,7 @@ async function checkStoreForWishlistItems() {
 
 // Set global mainWindow variable
 let mainWindow;
-var reauth_interval;
+let appIcon;
  
 (async () => {
   var pjson = require('../package.json');
@@ -1318,7 +1319,7 @@ var reauth_interval;
       });
     
       if(startedHidden !== undefined && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
-        var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+        appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
 
         appIcon.on("click", function() {
           RPState = 'app';
@@ -1391,7 +1392,7 @@ var reauth_interval;
           }
           mainWindow.hide();
     
-          var appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+          appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
         
           appIcon.on("click", function() {
             RPState = 'app';
@@ -1545,8 +1546,8 @@ var reauth_interval;
             var ent_expiresIn = 25 * 60;
     
             if(items !== false) {
-              reauth_interval = setInterval(reauthAllAccounts, expiresIn * 1000); 
-              reauth_interval = setInterval(refreshAllEntitlementTokens, ent_expiresIn * 1000); 
+              setInterval(reauthAllAccounts, expiresIn * 1000); 
+              setInterval(refreshAllEntitlementTokens, ent_expiresIn * 1000); 
               console.log("All accounts will be reauthenticated in 55 Minutes.");
             }
   
@@ -1801,6 +1802,7 @@ async function showSignIn(writeToFile) {
     });
     let foundToken = false;
     loginWindow.webContents.on('will-redirect', (event, url) => {
+      console.log(url);
       // Login window redirecting...
       if(!foundToken && url.startsWith('http://localhost/redirect')) {
         // Redirecting to url with tokens
@@ -1893,7 +1895,7 @@ ipcMain.on("reauthCurrentAccount", async function (event, arg) {
   
       //check if json is object or array
   
-      if(jsontype == true) {
+      if(jsontype === true) {
         for (var i = 0; i < bakedCookies.length; i++) {
           var str1 = bakedCookies.split("ssid=").pop();
           var str2 = str1.split(';')[0];
@@ -1909,7 +1911,7 @@ ipcMain.on("reauthCurrentAccount", async function (event, arg) {
       
       const access_tokens = await getAccessTokens(ssid);
 
-      if(access_tokens.data.response == undefined) {
+      if(access_tokens.data.response === undefined) {
         event.sender.send("reauthFail");
       } else {
         fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json", JSON.stringify(access_tokens.headers["set-cookie"]));
@@ -1983,4 +1985,8 @@ ipcMain.on('closeApp', function() {
 
 ipcMain.on('relayTextbox', function(event, args) {
   sendMessageToWindow('createTextbox', args);
+});
+
+ipcMain.on('relayOpenPlayerSearchModal', function(event, args) {
+  sendMessageToWindow('openPlayerSearchModal', args);
 });

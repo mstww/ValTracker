@@ -78,10 +78,6 @@ export default function ReauthLayer() {
   const [ reauthShown, setReauthShown ] = React.useState(false);
   const [ currentReauthStep, setCurrentReauthStep ] = React.useState(0);
 
-  const closeApp = () => {
-    ipcRenderer.send('closeApp');
-  }
-
   const invokeLoginWindow = async () => {
     const data = await openLoginWindow();
     if(data) {
@@ -108,6 +104,7 @@ export default function ReauthLayer() {
       const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
   
       var currenttier = 0;
+      
       if(account_rank_data.LatestCompetitiveUpdate !== undefined) {
         var currenttier = account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate
       }

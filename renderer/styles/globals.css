@@ -245,7 +245,7 @@ img {
 }
 
 #navbar {
-  height: calc(100vh - 29px);
+  height: calc(100vh - 28px);
 }
 
 .maximized #Layout {
@@ -254,8 +254,13 @@ img {
 }
 
 #Layout {
-  height: calc(100vh - 29px);
+  height: calc(100vh - 28px);
   width: calc(100vw - 16rem);
+}
+
+#Layout.strech {
+  height: calc(100vh - 28px);
+  width: calc(100vw - 4rem);
 }
 
 #layout-setup {
@@ -263,16 +268,29 @@ img {
   height: calc(100vh - 29px);
 }
 
-#nav-items div:not(.search-dropdown):not(.search-dropdown div) {
+.search-container.minimized {
+  box-shadow: 0 0 0 rgb(0 0 0 / 0) !important;
+}
+
+#nav-items div:not(.search-dropdown):not(.search-dropdown div):not(.nav-min):not(.search-container div) {
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
   width: 88%;
+}
+
+.nav-min {
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  width: 2.5rem;
+}
+
+.nav-txt {
+  white-space: pre;
 }
 
 .search-dropdown {
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.5);
 }
 
-#nav-items div:not([data-isactive=true]):not(.search-dropdown):not(.search-dropdown div):not(.search-container):not(.search-dropdown div):hover {
+#nav-items div:not([data-isactive=true]):not(.search-dropdown):not(.search-dropdown div):not(.search-container):not(.search-dropdown div):not(.search-container div):hover {
   box-shadow: 0 5px 10px rgb(0 0 0 / 0.5);
 }
 
@@ -332,10 +350,6 @@ img {
 
 .light.shadow-img {
   filter: drop-shadow(0px 0px 3px #000000);
-}
-
-#skin-search::placeholder {
-  color: white;
 }
 
 /* The switch - the box around the slider */
@@ -565,7 +579,7 @@ button:not(button.text-button):not(button[aria-label='next']):not(button[aria-la
 }
 
 button.disabled {
-  @apply bg-gray-600 hover:bg-gray-600 cursor-default;
+  @apply bg-gray-600 hover:bg-gray-600 cursor-not-allowed text-sm;
   padding: 8px 25px;
   border-radius: 4px;
 }
@@ -1471,4 +1485,45 @@ body[lang="fr-FR"] #equip-skin-button {
 
 #chroma-swatch, .chroma-swatch, #chroma-swatch img, .chroma-swatch img {
   @apply rounded;
+}
+
+.maximized.version-selector {
+  display: inline-block;
+  width: 33%;
+}
+
+.version-selector {
+  display: inline-block;
+  width: 31%;
+}
+
+.version-selector.disabled {
+  cursor: initial;
+}
+
+/* Hide default HTML checkbox */
+.version-selector input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.version-selector span {
+  @apply border-2 border-maincolor-lightest h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+}
+
+.version-selector span:hover {
+  @apply bg-maincolor-lightest;
+}
+
+.version-selector span.active {
+  @apply border-2 border-button-color cursor-default;
+}
+
+.version-selector span.active:hover {
+  @apply bg-maincolor;
+}
+
+.player-search-mgnfy {
+  min-width: 1.25rem;
 }

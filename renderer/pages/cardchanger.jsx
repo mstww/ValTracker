@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch'
 import SkinTile from '../components/skins/SkinTile';
@@ -8,6 +7,7 @@ import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Search } from '../components/SVGs';
+import Layout from '../components/Layout';
 
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -103,7 +103,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
   );
 }
 
-function Cardchanger() {
+function Cardchanger({ isNavbarMinimized }) {
   const router = useRouter();
 
   const [ skinData, setSkinData ] = React.useState([]);
@@ -261,7 +261,7 @@ function Cardchanger() {
   }
 
   return ( 
-    <Layout>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <div className='absolute top-4 z-10 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
         <BackArrow cls='w-8 p-1 shadow-img' />
       </div>

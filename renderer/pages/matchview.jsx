@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { motion } from "framer-motion"
 import { useRouter } from 'next/router';
 import moment from 'moment';
@@ -9,8 +8,9 @@ import L from '../locales/translations/matchview.json';
 import LocalText from '../components/translation/LocalText';
 import fs from 'fs';
 import fetch from 'node-fetch';
-import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, HumanBody, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
+import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
+import Layout from '../components/Layout';
 
 const overview_vars_first_load = {
   hidden: { opacity: 0, x: 0, y: 200, scale: 1, display: 'none' },
@@ -46,7 +46,7 @@ const scoreboard_vars_initial = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
 
-function Matchview() {
+function Matchview({ isNavbarMinimized }) {
   const router = useRouter();
 
   var gamemodes = LocalText(L, 'gamemodes');
@@ -387,7 +387,7 @@ function Matchview() {
   }, []);
 
   return (
-    <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''}>
+    <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''} isNavbarMinimized={isNavbarMinimized}>
       <div 
         className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}
@@ -695,7 +695,7 @@ function Matchview() {
             </span>
           </div>
           <div id='matchview-gradient-overlay' className='absolute top-0 h-full w-full left-0 z-30'>
-            <div className='2xl:w-1/2 w-2/3 ml-auto p-4 relative h-full overflow-auto'>
+            <div className='2xl:w-1/2 w-2/3 ml-auto p-4 h-full overflow-auto relative'>
               <span className='text-xl'>{LocalText(L, "player_stats.header")}</span>
               <hr />
               <ul className='mt-4'>

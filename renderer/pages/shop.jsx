@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer } from 'electron';
 import { motion } from "framer-motion"
 import StoreItem from '../components/StoreItem';
@@ -14,6 +13,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { Close } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
+import Layout from '../components/Layout';
 
 const slide_right = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -91,7 +91,7 @@ function singleSkinsToHMS(n, o) {
   return str;
 }
 
-function Shop() {
+function Shop({ isNavbarMinimized }) {
   const router = useRouter();
   var timerInterval;
 
@@ -327,7 +327,7 @@ function Shop() {
   }
 
   return (
-    <Layout classNames={'overflow-y-hidden'}>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-30 bg-black bg-opacity-80 pointer-events-none'
         variants={backdrop_variants}
@@ -501,7 +501,7 @@ function Shop() {
             </div>
           </motion.div>
         </div>
-        <div id='daily-shop' className='mt-4'>
+        <div id='daily-shop' className='mt-4 pb-4'>
           <h1 className='text-2xl'>{LocalText(L, "daily_shop_header")}</h1>
           <span id='single-skin-timer' className='text-gray-500'>{dailyTimer}</span>
           <div 

@@ -12,7 +12,7 @@ import PlayerSearch from './navigation/PlayerSearch';
 import L from '../locales/translations/navbar.json';
 import LocalText from './translation/LocalText';
 
-import { Home, Store, User, Star, Clipboard, Settings } from './SVGs';
+import { Home, Store, User, Star, Clipboard, Settings, ExpandArrow, RetractArrow } from './SVGs';
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -46,8 +46,9 @@ const slide_left = {
   },
 }
 
-export default function Navbar({ page }) {
+export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   const router = useRouter();
+  var page = router.pathname.split("/").pop();
 
   const [ playerName, setPlayerName ] = React.useState('');
   const [ playerTag, setPlayerTag ] = React.useState('');
@@ -70,6 +71,63 @@ export default function Navbar({ page }) {
   const [ wishlistHiddenDesc, setWishlistHiddenDesc ] = React.useState('');
   
   const playerSearchRef = React.useRef(null);
+
+  const navbarVariants = {
+    tiles: {
+      initial: {
+        opacity: 1,
+        y: 0, 
+        x: 0
+      },
+      minimize: {
+        opacity: 1,
+        y: -150, 
+        x: 0
+      },
+      maximize: {
+        opacity: 1,
+        y: 0, 
+        x: 0
+      }
+    },
+    main: {
+      initial: {
+        opacity: 1,
+        width: "16rem"
+      },
+      minimize: {
+        opacity: 1,
+        width: "4rem",
+        x: 0,
+        transition: { 
+          type: 'ease-out', 
+          duration: 0.1
+        }
+      },
+      maximize: {
+        opacity: 1,
+        width: "16rem",
+        transition: { 
+          type: 'ease-in', 
+          duration: 0.1
+        }
+      }
+    },
+    logo: {
+      initial: {
+        opacity: 1,
+        x: 0
+      },
+      minimize: {
+        opacity: 1,
+        y: '-180px'
+      },
+      maximize: {
+        opacity: 1,
+        x: 0
+      }
+    }
+  }
 
   // Make a toggle menu using react
   var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
@@ -169,6 +227,8 @@ export default function Navbar({ page }) {
   var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer';
   var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
   var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
+  var navbarTileBaseClasses = ' h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
+  var navbarTileTextClasses = 'text-sm font-light relative top-px ml-2 nav-txt transition-all ease-in duration-75 ml-8 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100');
 
   if(page == "home") var isHome = true;
   if(page == "shop") var isShop = true;
@@ -215,15 +275,80 @@ export default function Navbar({ page }) {
     }
   }
 
+  React.useEffect(() => {
+    if(isNavbarMinimized === true) {
+      setOpen(false);
+    }
+  }, [isNavbarMinimized]);
+
   return (
-    <nav id='navbar' className='z-40 relative top-7 left-0 w-64 bg-maincolor'>
-      <div id='logo' className='flex flex-col justify-center items-center'>
-        <img src='/icons/VALTracker_Logo_default.png' className='h-36'/>
-        <h1 className='text-2xl relative bottom-2'>VALTracker</h1>
-        <span className='relative text-sm bottom-3 text-gray-500'>v{pjson.version}</span>
-      </div>
+    <motion.nav 
+      id='navbar' 
+      className={'z-40 fixed top-7 left-0 bg-maincolor overflow-hidden transition-all duration-100 ease-linear ' + (isNavbarMinimized === true ? 'w-16': 'w-64')}
+      variants={navbarVariants.main}
+      initial="initial"
+      animate={isNavbarMinimized ? "minimize" : "maximize"}
+    >
+      <motion.div 
+        id='logo' 
+        className='flex flex-col justify-center items-center transition-all duration-100 ease-linear transform w-36 mx-auto'
+      >
+        <motion.img 
+          src='/icons/VALTracker_Logo_default.png' 
+          className={'w-36 h-26 mx-auto transition-all duration-100 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          variants={navbarVariants.logo}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0 : 0.92, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
+        />
+        <motion.h1 
+          className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          variants={navbarVariants.logo}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0 : 0.86, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
+        >
+          VALTracker
+          </motion.h1>
+        <motion.span 
+          className={'relative text-sm text-gray-500 transition-all duration-75 ease-linear bottom-3 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          variants={navbarVariants.logo}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0 : 0.8, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
+        >
+          v{pjson.version}
+        </motion.span>
+      </motion.div>
+      {
+        isNavbarMinimized === true ? 
+        <motion.div
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: 0.15, duration: 0.2, ease: "easeOut" }}
+        >
+          <ExpandArrow 
+            cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
+            click={() => { setIsNavbarMinimized(false) }}
+          />
+        </motion.div>
+        :
+        <motion.div
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: 0.55, duration: 0.2, ease: "easeIn" }}
+        >
+          <RetractArrow 
+            cls={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
+            click={() => { setIsNavbarMinimized(true) }}
+          />
+        </motion.div>
+      }
       <div id='nav-items' className='flex flex-col justify-center items-center'>
         <PlayerSearch 
+          isNavbarMinimized={isNavbarMinimized}
           isSearchShown={isSearchShown} 
           searchDisabledClasses={searchDisabledClasses} 
           handlePlayerSearch={handlePlayerSearch}
@@ -231,55 +356,81 @@ export default function Navbar({ page }) {
           searchHiddenDesc={searchHiddenDesc}
           placeholderText={LocalText(L, 'search_placeholder')}
           closeLocale={LocalText(L, 'history_close')}
+          variants={navbarVariants.tiles}
         />
 
     	  <Link href={"/home"}>
-          <div id='home-nav' 
-            className={(isHome ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px'}
+          <motion.div 
+            id='home-nav' 
+            className={(isHome ? activeClasses : inactiveClasses) + navbarTileBaseClasses}
             data-isactive={isHome}
+            variants={navbarVariants.tiles}
+            initial="initial"
+            animate={isNavbarMinimized ? "minimize" : "maximize"}
+            transition={{ delay: isNavbarMinimized ? 0.25 : 0.35, duration: 0.2, ease: "easeOut" }}
           >
-            <Home cls='ml-0.5 w-5' />
-            <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'home')}</span>
-          </div>
+            <Home cls='ml-0.5 w-5 absolute' />
+            <span className={navbarTileTextClasses}>{LocalText(L, 'home')}</span>
+          </motion.div>
         </Link>
 
-        <div id='shop-nav' 
-          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px') : disabledClasses}
+        <motion.div 
+          id='shop-nav' 
+          className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isShop}
           onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.3 : 0.3, duration: 0.2, ease: "easeOut" }}
         >
-          <Store cls='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'shop')}</span>
-        </div>
+          <Store cls='ml-0.5 w-5 absolute' />
+          <span className={navbarTileTextClasses}>{LocalText(L, 'shop')}</span>
+        </motion.div>
 
-        <div id='inv-nav' 
-          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+        <motion.div 
+          id='inv-nav' 
+          className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isInv}
           onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.35 : 0.25, duration: 0.2, ease: "easeOut" }}
         >
-          <User cls='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'inventory')}</span>
-        </div>
+          <User cls='ml-0.5 w-5 absolute' />
+          <span className={navbarTileTextClasses}>{LocalText(L, 'inventory')}</span>
+        </motion.div>
 
-        <div id='fav-nav' 
-          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+        <motion.div 
+          id='fav-nav' 
+          className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isFav}
           onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.4 : 0.2, duration: 0.2, ease: "easeOut" }}
         >
-          <Star cls='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'fav_matches')}</span>
-        </div>
+          <Star cls='ml-0.5 w-5 absolute' />
+          <span className={navbarTileTextClasses}>{LocalText(L, 'fav_matches')}</span>
+        </motion.div>
 
-        <div id='wish-nav' 
-          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + ' h-10 w-5/6 flex items-center px-2 py-1 rounded transition-all ease-in duration-100 mb-2 ml-px ') : disabledClasses}
+        <motion.div 
+          id='wish-nav' 
+          className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isWish}
           onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
+          variants={navbarVariants.tiles}
+          initial="initial"
+          animate={isNavbarMinimized ? "minimize" : "maximize"}
+          transition={{ delay: isNavbarMinimized ? 0.45 : 0.15, duration: 0.2, ease: "easeOut" }}
         >
-          <Clipboard cls='ml-0.5 w-5' />
-          <span className='text-sm font-light relative top-px ml-2'>{LocalText(L, 'wishlist')}</span>
-        </div>
+          <Clipboard cls='ml-0.5 w-5 absolute' />
+          <span className={navbarTileTextClasses}>{LocalText(L, 'wishlist')}</span>
+        </motion.div>
       </div>
-      <div className='absolute bottom-16 w-full flex justify-around'>
+      <div className={'absolute bottom-16 w-full flex justify-around transform transition-all duration-100 ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
         <SocialsIcon icon={'/images/coffee.svg'} tooltip={'Ko-Fi'} href={'https://ko-fi.com/valtrackergg'} />
         <SocialsIcon icon={'/images/discord.svg'} tooltip={'Discord'} href={'https://discord.gg/aJfQ4yHysG'} />
         <SocialsIcon icon={'/images/twitter.svg'} tooltip={'Twitter'} href={'https://twitter.com/valtracker_gg'} />
@@ -306,7 +457,7 @@ export default function Navbar({ page }) {
         </motion.div>
         <div 
           id="acc-switcher-tile" 
-          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis ' + switcherActive}
+          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis transform ' + switcherActive + (isNavbarMinimized ? ' -translate-x-40 opacity-0' : '  translate-x-0 opacity-100')}
           onClick={toggleSwitcherMenu}
         >
           <div className='flex flex-row items-center content-center h-full justify-start'>
@@ -330,6 +481,8 @@ export default function Navbar({ page }) {
                 'group transform transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor-light '
                 +
                 (page == 'settings' ? 'border-2 border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
+                +
+                (isNavbarMinimized ? ' -translate-x-4 mr-1' : '  translate-x-0 mr-0')
               }
             > 
               <Settings cls='w-6' />
@@ -337,6 +490,6 @@ export default function Navbar({ page }) {
           </Link>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   )
 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer } from 'electron';
 import { motion } from "framer-motion";
 import fs from 'fs';
@@ -12,6 +11,7 @@ import L from '../locales/translations/favorites.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled } from '../components/SVGs';
+import Layout from '../components/Layout';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -46,7 +46,7 @@ function getDifferenceInDays(date1, date2) {
   return Math.round(diffInMs / (1000 * 60 * 60 * 24));
 }
 
-function FavouriteMatches() {
+function FavoriteMatches({ isNavbarMinimized }) {
   const router = useRouter();
   const firstRender = useFirstRender();
 
@@ -588,7 +588,7 @@ function FavouriteMatches() {
   }, []);
   
   return (
-    <Layout>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
         key={"FavMatchesBackdrop"}
@@ -1069,4 +1069,4 @@ function FavouriteMatches() {
   );
 }
 
-export default FavouriteMatches;
+export default FavoriteMatches;

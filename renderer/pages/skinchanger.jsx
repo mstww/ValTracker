@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch'
 import SkinTile from '../components/skins/SkinTile';
@@ -12,6 +11,7 @@ import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Close, Search, Star, StarFilled } from '../components/SVGs';
+import Layout from '../components/Layout';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -151,7 +151,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
   );
 }
 
-function Skinchanger() {
+function Skinchanger({ isNavbarMinimized }) {
   const router = useRouter();
 
   const [ skinData, setSkinData ] = React.useState([]);
@@ -576,7 +576,7 @@ function Skinchanger() {
   }, [ activeSkinPrice ]);
 
   return ( 
-    <Layout>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <OverlayWrapper useRef={overlayRef} isShown={showVideo}>
         <motion.div 
           id='settings-overlay-card' 

@@ -1,9 +1,7 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch';
 import fs from 'fs';
-import { useRouter } from 'next/router';
 import Langs from '../locales/languages.json';
 import LanguageCheckbox from '../components/settings/LanguageCheckbox';
 import L from '../locales/translations/setup.json';
@@ -11,6 +9,7 @@ import LocalText from '../components/translation/SetupLocalText';
 import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
 import { Translate, BackArrow } from '../components/SVGs';
+import Layout from '../components/Layout';
 
 const slides_first_load = {
   hidden: { opacity: 0, x: 0, y: 100, scale: 1, display: 'none' },
@@ -171,7 +170,7 @@ function Setup() {
   const login = async () => {
     var data = await ipcRenderer.invoke('loginWindow');
     
-    if(data !== false) {
+    if(data.tokenData) {
       try {
         setIsProgressShown(true);
         
@@ -241,6 +240,9 @@ function Setup() {
     
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(userData));
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + playerUUID + '.json', JSON.stringify(userData));
+
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json', JSON.stringify({ entitlement_token}));
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/entitlement.json', JSON.stringify({ entitlement_token}));
   
         setLoadingState('');
         setProgress(100);

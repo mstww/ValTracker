@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch'
 import fs from 'fs';
@@ -16,7 +15,7 @@ import InfoChart from '../components/hub/InfoChart';
 import { useRouter } from 'next/router';
 import L from '../locales/translations/home.json';
 import LocalText from '../components/translation/LocalText';
-
+import Layout from '../components/Layout';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled, Star } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
@@ -598,13 +597,18 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     }
   } 
 
-  return {
+  var data = {
     agentContractProgress: agentContractProgression,
-    battlePassProgress: battlePassProgression
+    battlePassProgress: battlePassProgression,
+    date: Date.now()
   }
+  
+  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + puuid + '/current_contract_progress.json', JSON.stringify(data));
+
+  return data;
 }
 
-function Home() {
+function Home({ isNavbarMinimized }) {
   const firstRender = useFirstRender();
   const router = useRouter();
 
@@ -839,8 +843,11 @@ function Home() {
 
       if(new_matches_amount === 0) {
         setIsSilentLoading(false);
+        fetchContractData(false);
         return;
       } else if(new_matches_amount > 0 && new_matches_amount < 4) {
+        fetchContractData(true);
+    
         var new_old_matches = old_matches.slice(0, (15 - new_matches_amount));
         var new_new_matches = new_matches.slice(0, new_matches_amount);
 
@@ -932,6 +939,8 @@ function Home() {
         }
         return;
       } else if(new_matches_amount >= 4) {
+        fetchContractData(true);
+    
         setIsSilentLoading(false);
         fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false);
         return;
@@ -1124,22 +1133,26 @@ function Home() {
     }
   }
 
-  const fetchContractData = async () => {
+  const fetchContractData = async (refetch) => {
+    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
+    var user_creds = JSON.parse(user_creds_raw);
+
     try {
-      var version_data = await (await fetch('https://valorant-api.com/v1/version')).json();
-
-      var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-      var user_creds = JSON.parse(user_creds_raw);
-
-      const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-      const tokenData = JSON.parse(rawTokenData);
+      if(refetch === false && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_contract_progress.json')) {
+        var contract_progress = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_contract_progress.json'));
+      } else {
+        var version_data = await (await fetch('https://valorant-api.com/v1/version')).json();
   
-      const bearer = tokenData.accessToken;
-
-      const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
-
-      var contract_progress = await calculateContractProgress(user_creds.playerRegion, user_creds.playerUUID, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
+        const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
+        const tokenData = JSON.parse(rawTokenData);
+    
+        const bearer = tokenData.accessToken;
   
+        const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+  
+        var contract_progress = await calculateContractProgress(user_creds.playerRegion, user_creds.playerUUID, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
+      }
+    
       setAgentContract_prevLevelNum(contract_progress.agentContractProgress.current_level.levelNum);
       setAgentContract_prevLevelReward(contract_progress.agentContractProgress.current_level.reward);
       setAgentContract_currentLevelNum(contract_progress.agentContractProgress.next_level.levelNum);
@@ -1523,8 +1536,6 @@ function Home() {
   }, [ activeQueueTab ]);
 
   React.useEffect(async () => {
-    await fetchContractData();
-
     return () => {
       setContractsLoading(true);
       setContractsError(false);
@@ -1591,7 +1602,7 @@ function Home() {
 
   React.useEffect(() => {
     ipcRenderer.on("hub_smartLoadNewMatches", async function(event, args) {
-      fetchContractData();
+      fetchContractData(true);
       if(args !== 'newmap' && args !== 'snowball' && args !== '') {
         if(args === activeQueueTab) {
           await fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
@@ -1615,33 +1626,31 @@ function Home() {
   }, [ router.query ]);
 
   return (
-    <Layout>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <div id='home-container' className='flex flex-row flex-wrap'>
         <div id='top-left-container' className='relative bg-maincolor-lightest bg-opacity-60 rounded p-1.5 flex flex-wrap'>
           <div className='home-top-info-tile border-2 rounded border-maincolor-lightest h-full p-1 relative'>
-            <div className='flex flex-col h-full px-1'>
+            <div className='flex flex-col h-full'>
               <div>
-                <span className='leading-none'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
-                <hr className='' />
+                <span className='leading-none px-1'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
+                <hr className='mb-1' />
               </div>
-              <div className='flex w-full mt-2 relative h-full justify-center items-center'>
-                <div className='relative rounded'>
-                  <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img border-2 border-maincolor-lightest rounded' />
-                  {
-                    featuredBundlePrice ?
-                    <div 
-                      id='bundle-price'
-                      className='text-xl text-gray-300 flex flex-row items-center absolute bottom-2 left-2 bg-opacity-60 bg-black rounded px-2 py-1'
-                    >
-                      <span className='relative top-px'>{featuredBundlePrice}</span>
-                      <img src="/images/vp_icon.png" className='w-6 ml-2 transition-opacity duration-100 ease-in shadow-img' />
-                    </div>
-                    :
-                    null
-                  }
+              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border-2 border-maincolor-lightest rounded shadow-img'>
+                <div className='relative'>
+                  <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img rounded' />
                 </div>
-              </div>
-              <div className='p-1 flex flex-row mt-0.5'>
+                {
+                  featuredBundlePrice ?
+                  <div 
+                    id='bundle-price'
+                    className='text-xl text-gray-300 flex flex-row items-center absolute bottom-2 left-2 bg-opacity-60 bg-black rounded px-2 py-1'
+                  >
+                    <span className='relative top-px'>{featuredBundlePrice}</span>
+                    <img src="/images/vp_icon.png" className='w-6 ml-2 transition-opacity duration-100 ease-in shadow-img' />
+                  </div>
+                  :
+                  null
+                }
               </div>
             </div>
           </div>
@@ -1686,7 +1695,7 @@ function Home() {
                 <button 
                   className='mt-2' 
                   onClick={async () => { 
-                    fetchContractData();
+                    fetchContractData(true);
                   }}
                 >
                   {LocalText(L, "component_err.button_text")}

@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import moment from 'moment';
 import { motion } from "framer-motion"
 import { useRouter } from 'next/router';
@@ -10,6 +9,7 @@ import L from '../locales/translations/shop.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Close } from '../components/SVGs';
+import Layout from '../components/Layout';
 
 const slide_bottom = {
   hidden: { opacity: 0, x: 0, y: 50 },
@@ -49,7 +49,7 @@ function bundleTimeToHMS(n, o) {
   return str;
 }
 
-function NightMarket() {
+function NightMarket({ isNavbarMinimized }) {
   const router = useRouter();
 
   const [ nightMarket, setNightMarket ] = React.useState([]);
@@ -98,7 +98,7 @@ function NightMarket() {
     }, 1000);
 
     return () => clearInterval(timer);
-  })
+  }, []);
 
   async function fetchSkins() {
     if(router.query.store) {
@@ -191,7 +191,7 @@ function NightMarket() {
   }
 
   return (
-    <Layout>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-30 bg-black bg-opacity-80 pointer-events-none'
         variants={backdrop_variants}

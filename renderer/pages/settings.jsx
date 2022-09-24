@@ -1,5 +1,4 @@
 import React from 'react';
-import Layout from '../components/Layout';
 import { ipcRenderer, shell } from 'electron';
 import SettingsTile from '../components/settings/SettingsTile';
 import SettingsWrapper from '../components/settings/SettingsWrapper';
@@ -22,6 +21,9 @@ import AllLangs from '../locales/languages.json';
 import L from '../locales/translations/settings.json';
 import LocalText from '../components/translation/LocalText';
 import ThemeSelector from '../components/settings/ThemeSelector';
+import VersionCheckbox from '../components/settings/VersionCheckbox';
+import { Loading } from '@nextui-org/react';
+import Layout from '../components/Layout';
 
 const md_conv = new parser.Converter();
 
@@ -71,9 +73,9 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
-const fetchPatchnotes = async (lang) => {
+const fetchPatchnotes = async (lang, version) => {
   try {
-    const response = await fetch(`https://api.valtracker.gg/patchnotes/v${pjson.version}`, { keepalive: true });
+    const response = await fetch(`https://api.valtracker.gg/patchnotes/${version}`, { keepalive: true });
     const json = await response.json();
 
     const patchnotes = md_conv.makeHtml(json.data.patchnotes);
@@ -86,32 +88,58 @@ const fetchPatchnotes = async (lang) => {
   }
 }
 
-function Patchnotes() {
+function Patchnotes({ showVersionModal, shownPatchnotes }) {
   const router = useRouter();
   const [ patchnotes, setPatchnotes ] = React.useState([]);
   const [ releaseDate, setReleaseDate ] = React.useState(null);
   const [ version, setVersion ] = React.useState(null);
+  const [ patchnotesLoading, setPatchnotesLoading ] = React.useState(false);
 
   React.useEffect(() => {
     const fetchApi = async () => {
-      const { errored, patchnotes, releaseDate, version } = await fetchPatchnotes(router.query.lang);
+      setPatchnotesLoading(true);
+      const { errored, patchnotes, releaseDate, version } = await fetchPatchnotes(router.query.lang, "v" + pjson.version);
 
-      if(!errored)
+      if(!errored) {
         setPatchnotes(patchnotes);
         setReleaseDate(releaseDate);
         setVersion(version);
+        setPatchnotesLoading(false);
+        console.log(patchnotes);
+      }
     }
 
     setPatchnotes([]);
     fetchApi();
   }, []);
 
+  React.useEffect(async () => {
+    if(shownPatchnotes !== "") {
+      setPatchnotesLoading(true);
+      const { errored, patchnotes, releaseDate, version } = await fetchPatchnotes(router.query.lang, shownPatchnotes);
+
+      if(!errored) {
+        setPatchnotes(patchnotes);
+        setReleaseDate(releaseDate);
+        setVersion(version);
+        setPatchnotesLoading(false);
+        console.log(patchnotes);
+      }
+    }
+  }, [shownPatchnotes]);
+
+  React.useEffect(() => {
+    console.log(patchnotesLoading);
+  }, [patchnotesLoading]);
+
   return (
     <div className='patchnotes prose'>
       <h1>Patchnotes for { version }</h1>
-      <p className='text-gray-500'>Released {releaseDate}</p>
+      <p className='text-gray-500'>
+        Released {releaseDate} | <span onClick={showVersionModal} className='text-button-color text-opacity-70 cursor-pointer hover:underline'>Change Version</span>
+      </p>
       <div 
-        className='ml-4 mt-4 w-5/6' 
+        className={'ml-4 mt-4 w-5/6 ' + (patchnotesLoading === true ? 'hidden' : '')}
         onClick={(e) => {
           if(e.target.tagName === 'a' || e.target.tagName === 'A') {
             shell.openExternal(e.target.href);
@@ -119,11 +147,14 @@ function Patchnotes() {
         }} 
         dangerouslySetInnerHTML={{ __html: patchnotes }} 
       />
+      <div className={'w-5/6 h-96 flex flex-row items-center justify-center ' + (patchnotesLoading === true ? '' : 'hidden')}>
+        <Loading color={'error'} size={'md'} />
+      </div>
     </div>
   );
 }
 
-function Settings() {
+function Settings({ isNavbarMinimized, setTheme }) {
   const router = useRouter();
 
   if(router.query.tab) {
@@ -151,6 +182,10 @@ function Settings() {
   const [ gameRP_showTimer, setGameRP_showTimer ] = React.useState(true);
   const [ gameRP_showScore, setGameRP_showScore ] = React.useState(true);
 
+  const [ patchnotes_versionSwitcherSelectedPatchnotesVersion, setPatchnotes_versionSwitcherSelectedPatchnotesVersion ] = React.useState('');
+  const [ patchnotes_versionSwitcherFallback, setPatchnotes_versionSwitcherFallback ] = React.useState('');
+  const [ patchnotes_selectedPatchnotesVersion, setPatchnotes_selectedPatchnotesVersion ] = React.useState('');
+
   const general_changeLang = React.useRef(null);
   const [ general_changeLangPopupOpen, setGeneral_changeLangPopupOpen ] = React.useState(false);
 
@@ -162,6 +197,9 @@ function Settings() {
 
   const [ riot_accountList, setRiot_AccountList ] = React.useState([]);
   const [ riot_activeAccountSelection, setRiot_ActiveAccountSelection ] = React.useState(null);
+
+  const pathchnotes_versionSwitcher = React.useRef(null);
+  const [ patchnotes_versionSwitcherOpen, setPatchnotes_versionSwitcherOpen ] = React.useState(false);
 
   const [ other_copyCodeToClipButtonText, setOther_CopyCodeToClipButtonText ] = React.useState(LocalText(L, 'pg_5.grp_1.setting_2.button_text'));
 
@@ -176,7 +214,9 @@ function Settings() {
   const other_applySettingsCodePopup = React.useRef(null);
   const [ other_applySettingsCode, setOther_applySettingsCode ] = React.useState(false);
 
-  const [ currentTheme, setCurrentTheme ] = React.useState('default');
+  const [ currentTheme, setCurrentTheme ] = React.useState('normal');
+
+  const [ patchnoteVersions, setPatchnotesVersions ] = React.useState([]);
 
   async function fetchUserAccounts() {
     var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
@@ -423,6 +463,7 @@ function Settings() {
         const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
     
         var currenttier = 0;
+        
         if(account_rank_data.LatestCompetitiveUpdate !== undefined) {
           var currenttier = account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate;
         }
@@ -508,7 +549,7 @@ function Settings() {
   const validateSettingsCode = (settingsStates) => {
     var verificationState = true;
 
-    var themes = ["default","legacy","light"];
+    var themes = ["normal","legacy","light"];
 
     if(settingsStates.length === 14) {
       for(var i = 0; i < settingsStates.length; i++) {
@@ -584,6 +625,8 @@ function Settings() {
       document.body.classList.remove(currentTheme);
       document.body.classList.add(theme);
       setCurrentTheme(theme);
+      setTheme(theme);
+
       fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify({ themeName: theme }));
     }
   }
@@ -601,11 +644,18 @@ function Settings() {
     setCurrentSelectedLanguage(data.appLang);
   }, [ general_changeLangPopupOpen ]);
 
+  React.useEffect(async () => {
+    var versionsData = await(await fetch('https://api.valtracker.gg/all-versions')).json();
+    setPatchnotes_versionSwitcherSelectedPatchnotesVersion(versionsData.data[0]);
+    setPatchnotes_versionSwitcherFallback(versionsData.data[0]);
+    setPatchnotesVersions(versionsData.data.splice(0, 15));
+  }, []);
+
   var s2_bt2 = LocalText(L, 'pg_5.grp_1.setting_2.button_text_2');
   var s2_bt1 = LocalText(L, 'pg_5.grp_1.setting_2.button_text');
 
   return (
-    <Layout>
+    <Layout isNavbarMinimized={isNavbarMinimized}>
       <OverlayWrapper useRef={overlayWrapper} isShown={popupBackgroundShown}>
 
         <PopupCard
@@ -702,6 +752,33 @@ function Settings() {
                   </div>
                   <span className='ml-auto mr-4 pointer-events-none'>{ account.playerRegion.toUpperCase() }</span>
                 </div>
+              )
+            })}
+          </div>
+        </PopupCard>
+
+        <PopupCard
+          useRef={pathchnotes_versionSwitcher}
+          header={LocalText(L, "modals.change_patchnotes_ver.header")}
+          text={LocalText(L, "modals.change_patchnotes_ver.desc")}
+          button_1={LocalText(L, "modals.change_patchnotes_ver.button_1")}
+          button_2={LocalText(L, "modals.change_patchnotes_ver.button_2")}
+          button_1_onClick={() => { 
+            closePopup(setPatchnotes_versionSwitcherOpen);
+            setPatchnotes_selectedPatchnotesVersion(patchnotes_versionSwitcherSelectedPatchnotesVersion);
+          }}
+          button_2_onClick={() => { 
+            closePopup(setPatchnotes_versionSwitcherOpen);
+            setPatchnotes_versionSwitcherSelectedPatchnotesVersion(patchnotes_versionSwitcherFallback);
+          }}
+          isOpen={patchnotes_versionSwitcherOpen}
+          isButtonClickable={patchnotes_versionSwitcherSelectedPatchnotesVersion !== ""}
+          isWideCard
+        >
+          <div className="w-full mt-4 flex flex-row flex-wrap items-center">
+            {patchnoteVersions.map((version, index) => {
+              return (
+                <VersionCheckbox version={version} selectedVersion={patchnotes_versionSwitcherSelectedPatchnotesVersion} click={() => { setPatchnotes_versionSwitcherSelectedPatchnotesVersion(version) }} />
               )
             })}
           </div>
@@ -891,7 +968,7 @@ function Settings() {
 
           <SettingsWrapper type='patchnotes' activeWrapper={activeSettingsGroup}>
 
-            <Patchnotes />
+            <Patchnotes shownPatchnotes={patchnotes_selectedPatchnotesVersion} showVersionModal={() => { openPopup(setPatchnotes_versionSwitcherOpen) }} />
 
           </SettingsWrapper>
 

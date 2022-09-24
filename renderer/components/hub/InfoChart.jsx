@@ -3,12 +3,12 @@ import { VictoryChart, VictoryArea, VictoryTheme, VictoryAxis } from 'victory';
 import fs from 'fs';
 
 export default function InfoChart({ label, data, LocalLatest }) {
-  const [ theme, setTheme ] = React.useState('default');
+  const [ theme, setTheme ] = React.useState('normal');
 
   const [ dataRelay, setDataRelay ] = React.useState([]);
 
   const colors = {
-    "default": {
+    "normal": {
       "color_1": "#c80043",
       "color_2": "#6f00ff",
       "stroke": "#ffffff",
@@ -25,12 +25,6 @@ export default function InfoChart({ label, data, LocalLatest }) {
       "color_2": "#BB1CFF",
       "stroke": "#000000",
       "text": "#000000"
-    },
-    "normal": {
-      "color_1": "#c80043",
-      "color_2": "#6f00ff",
-      "stroke": "#ffffff",
-      "text": "#ffffff"
     }
   }
 
