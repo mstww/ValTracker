@@ -72,6 +72,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <NextUIProvider theme={theme ? themes[theme] : themes['normal']}>
+        <WindowControls setup={setup} />
         {setup ? '' : <Navbar isNavbarMinimized={isNavbarMinimized} setIsNavbarMinimized={setIsNavbarMinimized} />}
         <AnimatePresence
           exitBeforeEnter={true}

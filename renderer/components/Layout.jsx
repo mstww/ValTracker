@@ -66,7 +66,6 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized 
       initial="initial"
       animate={isNavbarMinimized ? "minimize" : "maximize"}
     >
-      <WindowControls setup={setup} />
       <UpdatingLayer />
       {setup ? '' : <MessageLayer />}
       {setup ? '' : <ReauthLayer />}
