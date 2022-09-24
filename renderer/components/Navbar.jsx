@@ -132,22 +132,17 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   }
 
   // Make a toggle menu using react
-  var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
-  var data = JSON.parse(data_raw);
 
   React.useEffect(() => {
-    if(sessionStorage.getItem('navbar-rank') && sessionStorage.getItem('navbar-name') && sessionStorage.getItem('navbar-tag')) {
-      setPlayerRank(sessionStorage.getItem('navbar-rank'));
-      setPlayerName(sessionStorage.getItem('navbar-name'));
-      setPlayerTag(sessionStorage.getItem('navbar-tag'));
-    } else {
-      setPlayerRank(data.playerRank);
-      setPlayerName(data.playerName);
-      setPlayerTag(data.playerTag);
-      sessionStorage.setItem('navbar-rank', data.playerRank);
-      sessionStorage.setItem('navbar-name', data.playerName);
-      sessionStorage.setItem('navbar-tag', data.playerTag);
-    }
+    var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
+    var data = JSON.parse(data_raw);
+    setPlayerRank(data.playerRank);
+    setPlayerName(data.playerName);
+    setPlayerTag(data.playerTag);
+    sessionStorage.setItem('navbar-rank', data.playerRank);
+    sessionStorage.setItem('navbar-name', data.playerName);
+    sessionStorage.setItem('navbar-tag', data.playerTag);
+    
     if(router.query.searchvalue) {
       // Decode the search value
       var decoded = decodeURIComponent(router.query.searchvalue);
