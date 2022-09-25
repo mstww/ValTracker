@@ -274,6 +274,7 @@ img {
 #layout-setup {
   width: 100vw;
   height: calc(100vh - 29px);
+  margin-top: 28px;
 }
 
 .search-container.minimized {

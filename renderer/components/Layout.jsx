@@ -72,7 +72,7 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized 
       {setup ? '' : <WhatsNewLayer />}
       {setup ? '' : <IpcLayer />}
       {setup ? '' : <PlayerSearchModal />}
-      <div className={"bg-maincolor-light relative left-0 z-40 overflow-auto " + (isNavbarMinimized ? ' strech' : ' no-strech')} id="Layout">
+      <div className={"bg-maincolor-light relative left-0 z-40 overflow-auto " + (isNavbarMinimized ? ' strech' : ' no-strech')} id={setup ? 'layout-setup' : "Layout"}>
         <motion.main
           key={"E"}
           variants={contentVariants}

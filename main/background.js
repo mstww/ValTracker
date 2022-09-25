@@ -92,7 +92,9 @@ if(!gotTheLock) {
       if(mainWindow.isMinimized()) mainWindow.restore();
       mainWindow.focus();
       mainWindow.show();
-      appIcon.destroy();
+      if(appIcon) {
+        appIcon.destroy();
+      }
     }
   });
 }
@@ -1804,7 +1806,7 @@ async function showSignIn(writeToFile) {
     loginWindow.webContents.on('will-redirect', (event, url) => {
       console.log(url);
       // Login window redirecting...
-      if(!foundToken && url.startsWith('http://localhost/redirect')) {
+      if(!foundToken && url.startsWith('http://localhost:42069/redirect')) {
         // Redirecting to url with tokens
         const tokenData = getTokenDataFromURL(url);
         foundToken = true;
