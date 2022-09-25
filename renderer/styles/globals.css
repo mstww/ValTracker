@@ -256,13 +256,19 @@ img {
 
 #Layout {
   height: calc(100vh - 28px);
-  width: calc(100vw - 16rem);
+  width: calc(100vw - 4rem);
   margin-top: 28px;
 }
 
 #Layout.strech {
   height: calc(100vh - 28px);
   width: calc(100vw - 4rem);
+}
+
+#Layout.no-strech {
+  height: calc(100vh - 28px);
+  width: calc(100vw - 4rem);
+  margin-top: 28px;
 }
 
 #layout-setup {

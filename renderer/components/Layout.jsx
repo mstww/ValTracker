@@ -72,7 +72,7 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized 
       {setup ? '' : <WhatsNewLayer />}
       {setup ? '' : <IpcLayer />}
       {setup ? '' : <PlayerSearchModal />}
-      <div className="bg-maincolor-light relative left-0 z-40">
+      <div className={"bg-maincolor-light relative left-0 z-40 overflow-auto " + (isNavbarMinimized ? ' strech' : ' no-strech')} id="Layout">
         <motion.main
           key={"E"}
           variants={contentVariants}
@@ -80,8 +80,7 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized 
           animate="enter"
           exit="exit"
           transition={{ type: 'ease', duration: 0.3 }}
-          id={setup ? 'layout-setup' : 'Layout'}
-          className={"bg-maincolor-light overflow-x-hidden transition-all duration-100 ease-linear " + (classNames ? classNames : '') + (isNavbarMinimized ? ' strech' : '')}
+          className={"bg-maincolor-light overflow-x-hidden h-full w-full overflow-auto absolute top-0 left-0 transition-all duration-100 ease-linear " + (classNames ? classNames : '')}
         >
           {children}
         </motion.main>
