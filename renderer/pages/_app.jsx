@@ -66,10 +66,6 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  React.useEffect(() => {
-    console.log(theme);
-  }, [theme]);
-
   return (
     <>
       <NextUIProvider theme={theme ? themes[theme] : themes['normal']}>

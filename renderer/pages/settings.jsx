@@ -105,7 +105,6 @@ function Patchnotes({ showVersionModal, shownPatchnotes }) {
         setReleaseDate(releaseDate);
         setVersion(version);
         setPatchnotesLoading(false);
-        console.log(patchnotes);
       }
     }
 
@@ -123,14 +122,9 @@ function Patchnotes({ showVersionModal, shownPatchnotes }) {
         setReleaseDate(releaseDate);
         setVersion(version);
         setPatchnotesLoading(false);
-        console.log(patchnotes);
       }
     }
   }, [shownPatchnotes]);
-
-  React.useEffect(() => {
-    console.log(patchnotesLoading);
-  }, [patchnotesLoading]);
 
   return (
     <div className='patchnotes prose'>

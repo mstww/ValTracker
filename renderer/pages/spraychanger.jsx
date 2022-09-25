@@ -34,11 +34,10 @@ const fetchCards = async () => {
   }
 }
 
-function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, isNavbarMinimized }) {
+function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, sprays }) {
   const router = useRouter();
   const weaponType = router.query.weaponType;
 
-  const [ weapons, setWeapons ] = React.useState([]);
   const [ playerItems, setPlayerItems ] = React.useState([]);
 
   if(router.query.playerItems) {
@@ -55,45 +54,35 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, isNavbarMin
         setPlayerItems(playerItemsAll.EntitlementsByTypes[i].Entitlements);
       }
     }
-
-    const fetchApi = async () => {
-      const { errored, items } = await fetchCards();
-
-      if(!errored)
-        setWeapons(items);
-    }
-
-    setWeapons([]);
-    fetchApi();
   }, [ weaponType ]);
 
-  for(var i = 0; i < weapons.length; i++) {
-    if(weapons[i].uuid == router.query.usedSpray) {
-      weapons.unshift(weapons[i]);
-      weapons.splice(i+1, 1);
+  for(var i = 0; i < sprays.length; i++) {
+    if(sprays[i].uuid == router.query.usedSpray) {
+      sprays.unshift(sprays[i]);
+      sprays.splice(i+1, 1);
     }
   }
 
   return (
     <div ref={useRef}>
-      {weapons.map(weapon => {
+      {sprays.map(sprays => {
         var isOwned = false;
         for(var i = 0; i < playerItems.length; i++) {
-          if(playerItems[i].ItemID == weapon.uuid) {
+          if(playerItems[i].ItemID == sprays.uuid) {
             isOwned = true;
             break;
           }
         }
         return (
           <SkinTile
-            key={weapon.displayName.replace(" ", "-")}
+            key={sprays.displayName.replace(" ", "-")}
             skinImage={
-              weapon.fullTransparentIcon
+              sprays.fullTransparentIcon
             }
-            skinName={weapon.displayName}
-            extraClasses={(activeSkin == weapon.uuid && isOwned ? ' border-button-color border-2 ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
+            skinName={sprays.displayName}
+            extraClasses={(activeSkin == sprays.uuid && isOwned ? ' border-button-color border-2 ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
             onClick={
-              () => {setActiveSkin(weapon.uuid)}
+              () => {setActiveSkin(sprays.uuid)}
             }
             isOwned={isOwned}
           />
@@ -131,7 +120,6 @@ function Spraychanger({ isNavbarMinimized }) {
     };
   }
 
-
   // Fetch data for ALL skins once, then load from cache
 
   React.useEffect(async () => {
@@ -140,6 +128,7 @@ function Spraychanger({ isNavbarMinimized }) {
     setSkinData(skin_data.data);
     setIngameSkin(router.query.usedSpray);
     setShownSkin(router.query.usedSpray);
+    setActiveSkinImage(`https://media.valorant-api.com/sprays/${router.query.usedSpray}/fulltransparenticon.png`);
     setIngameSkinImage(`https://media.valorant-api.com/sprays/${router.query.usedSpray}/fulltransparenticon.png`);
     setShowSetSkinButton(false);
   }, [ router.query ]);
@@ -285,7 +274,7 @@ function Spraychanger({ isNavbarMinimized }) {
             <span className='ml-2 text-sm'>{LocalText(L, "sprays.switch_label")}</span>
           </div>
           <div id='skin-list' className='mt-4 overflow-y-auto pr-1'>
-            <SkinTiles setActiveSkin={setShownSkin} activeSkin={shownSkin} useRef={skinTilesRef} showUnowned={showUnownedSkins} />
+            <SkinTiles setActiveSkin={setShownSkin} activeSkin={shownSkin} useRef={skinTilesRef} showUnowned={showUnownedSkins} sprays={skinData} />
           </div>
         </div>
         <div id='skin-viewer' className='relative h-full w-full flex flex-row items-center justify-center'>

@@ -40,7 +40,6 @@ export default function PlayerSearchModal() {
   }
 
   const removeItemFromHistory = (e, name_encoded) => {
-    console.log(name_encoded);
     for(var i = 0; i < searchHistory.length; i++) {
       if(searchHistory[i].encoded_user === name_encoded) {
         delete searchHistory[i];

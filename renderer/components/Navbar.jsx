@@ -256,8 +256,6 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         }
       }
 
-      console.log(user_found);
-
       if(user_found === false) {
         if(search_history.arr.length >= 5) {
           delete search_history.arr[search_history.arr.length-1];

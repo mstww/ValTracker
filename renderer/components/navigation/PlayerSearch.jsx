@@ -55,7 +55,6 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
   }
 
   const removeItemFromHistory = (name_encoded) => {
-    console.log(searchHistory.length);
     for(var i = 0; i < searchHistory.length; i++) {
       if(searchHistory[i].encoded_user === name_encoded) {
         delete searchHistory[i];
