@@ -410,7 +410,7 @@ async function reauthAccount(puuid) {
         var bearer = token_data.accessToken;
         var ent = await getEntitlement(bearer);
         
-        var currenttier = await getPlayerMMR(user_creds.playerRegion, user_creds.playerUUID, ent, bearer);
+        var currenttier = await getPlayerMMR(user_data.playerRegion, user_data.playerUUID, ent, bearer);
   
         user_data.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
   
