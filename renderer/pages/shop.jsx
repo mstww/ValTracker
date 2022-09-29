@@ -91,7 +91,7 @@ function singleSkinsToHMS(n, o) {
   return str;
 }
 
-function Shop({ isNavbarMinimized }) {
+function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
   var timerInterval;
 
@@ -302,6 +302,7 @@ function Shop({ isNavbarMinimized }) {
       setCardSkinLevels(skin.levels.reverse());
   
       setShowBackground(true);
+      setIsOverlayShown(true);
       setShowCard(true);
     } if(!skin) {
       if(shopSkins[index]) {
@@ -309,6 +310,7 @@ function Shop({ isNavbarMinimized }) {
         setCardSkinLevels(shopSkins[index].levels);
   
         setShowBackground(true);
+        setIsOverlayShown(true);
         setShowCard(true);
       }
     }
@@ -327,7 +329,7 @@ function Shop({ isNavbarMinimized }) {
   }
 
   return (
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-30 bg-black bg-opacity-80 pointer-events-none'
         variants={backdrop_variants}

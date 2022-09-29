@@ -103,7 +103,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
   );
 }
 
-function Cardchanger({ isNavbarMinimized }) {
+function Cardchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
   const [ skinData, setSkinData ] = React.useState([]);
@@ -261,7 +261,7 @@ function Cardchanger({ isNavbarMinimized }) {
   }
 
   return ( 
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className='absolute top-4 z-10 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
         <BackArrow cls='w-8 p-1 shadow-img' />
       </div>

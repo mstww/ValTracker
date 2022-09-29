@@ -59,7 +59,7 @@ const backdrop_variants = {
   exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
 }
 
-function Inventory({ isNavbarMinimized }) {
+function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
   const firstRender = useFirstRender();
 
@@ -200,11 +200,13 @@ function Inventory({ isNavbarMinimized }) {
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
+    setIsOverlayShown(!isOverlayShown)
     setSaveInvCardShown(!saveInvCardShown);
   }
 
   const toggleDeleteCurrentPresetDialogue = () => {
     setBackdropShown(!backdropShown);
+    setIsOverlayShown(!isOverlayShown);
     setDeletePresetCardShown(!deletePresetCardShown);
   }
 
@@ -319,7 +321,7 @@ function Inventory({ isNavbarMinimized }) {
   }
 
   return (
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
         key={"InventoryBackdrop"}

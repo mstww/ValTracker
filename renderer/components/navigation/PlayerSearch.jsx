@@ -126,7 +126,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
               <div 
                 className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-100 border-b border-maincolor-lightest"}
                 onClick={(e) => {
-                  if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line") {
+                  if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                     setIsHistoryLocked(false);
                     setIsHistoryDropdownShown(false);
                     handleHistoryClick(item.name, item.tag, item.encoded_user);

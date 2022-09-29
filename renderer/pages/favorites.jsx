@@ -46,7 +46,7 @@ function getDifferenceInDays(date1, date2) {
   return Math.round(diffInMs / (1000 * 60 * 60 * 24));
 }
 
-function FavoriteMatches({ isNavbarMinimized }) {
+function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
   const firstRender = useFirstRender();
 
@@ -447,8 +447,6 @@ function FavoriteMatches({ isNavbarMinimized }) {
       var headShotsPercentRounded = headShotsPercent.toFixed(0);
     }
 
-
-
     return { KD: parseFloat(playerKD), hsPercent: parseFloat(headShotsPercentRounded), ACS: parseFloat(playerACS) };
   }
 
@@ -552,6 +550,7 @@ function FavoriteMatches({ isNavbarMinimized }) {
 
   const toggleDeleteMatchDialogue = () => {
     setBackdropShown(!backdropShown);
+    setIsOverlayShown(!isOverlayShown);
     setDeleteMatchCardShown(!deleteMatchCardShown);
   }
   
@@ -595,7 +594,7 @@ function FavoriteMatches({ isNavbarMinimized }) {
   }, []);
   
   return (
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <motion.div 
         className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
         key={"FavMatchesBackdrop"}
@@ -730,7 +729,7 @@ function FavoriteMatches({ isNavbarMinimized }) {
                               className={'group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                               key={index}
                               onClick={(e) => {
-                                if(e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
+                                if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                                   var Blue = [];
                                   var Red = [];
                                   for(var i = 0; i < match.players.length; i++) {
@@ -902,7 +901,7 @@ function FavoriteMatches({ isNavbarMinimized }) {
                         className={'group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                         key={index}
                         onClick={(e) => {
-                          if(e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
+                          if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                             var Blue = [];
                             var Red = [];
                             for(var i = 0; i < match.players.length; i++) {

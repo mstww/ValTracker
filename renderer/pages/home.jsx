@@ -608,7 +608,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
   return data;
 }
 
-function Home({ isNavbarMinimized }) {
+function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const firstRender = useFirstRender();
   const router = useRouter();
 
@@ -1626,7 +1626,7 @@ function Home({ isNavbarMinimized }) {
   }, [ router.query ]);
 
   return (
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div id='home-container' className='flex flex-row flex-wrap'>
         <div id='top-left-container' className='relative bg-maincolor-lightest bg-opacity-60 rounded p-1.5 flex flex-wrap'>
           <div className='home-top-info-tile border-2 rounded border-maincolor-lightest h-full p-1 relative'>
@@ -1797,7 +1797,8 @@ function Home({ isNavbarMinimized }) {
                           className='group e relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
-                            if(e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
+                            console.log(e.target.tagName);
+                            if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                               var Blue = [];
                               var Red = [];
                               for(var i = 0; i < match.players.length; i++) {

@@ -53,6 +53,10 @@ function MyApp({ Component, pageProps }) {
   
   const [ theme, setTheme ] = React.useState('normal');
   pageProps.setTheme = setTheme;
+  
+  const [ isOverlayShown, setIsOverlayShown ] = React.useState(false);
+  pageProps.setIsOverlayShown = setIsOverlayShown;
+  pageProps.isOverlayShown = isOverlayShown;
 
   const [ isNavbarMinimized, setIsNavbarMinimized ] = React.useState(false);
   pageProps.isNavbarMinimized = isNavbarMinimized;
@@ -65,6 +69,10 @@ function MyApp({ Component, pageProps }) {
       if(data.themeName === "light") setLightTheme(true);
     }
   }, []);
+
+  React.useEffect(() => {
+    console.log(isOverlayShown);
+  }, [isOverlayShown]);
 
   return (
     <>

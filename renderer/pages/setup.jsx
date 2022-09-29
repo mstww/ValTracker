@@ -147,7 +147,7 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   }
 }
 
-function Setup() {
+function Setup({ isOverlayShown, setIsOverlayShown }) {
   const [ currentSelectedLanguage, setCurrentSelectedLanguage ] = React.useState('en-US');
   const [ currentLanguageDisplayName, setCurrentLanguageDisplayName ] = React.useState('English');
 
@@ -273,7 +273,7 @@ function Setup() {
   }, []);
 
   return (
-    <Layout setup={true} classNames={'overflow-hidden'}>
+    <Layout setup={true} classNames={'overflow-hidden'} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className='flex flex-col items-center p-4 h-full w-full'>
         <div id='setup-timeline' className='border-2 border-maincolor-lightest w-full p-2 h-14 rounded'>
           <div className='flex flex-row items-center mb-1 justify-between'>

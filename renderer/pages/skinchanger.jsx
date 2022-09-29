@@ -151,7 +151,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
   );
 }
 
-function Skinchanger({ isNavbarMinimized }) {
+function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
   const [ skinData, setSkinData ] = React.useState([]);
@@ -576,7 +576,7 @@ function Skinchanger({ isNavbarMinimized }) {
   }, [ activeSkinPrice ]);
 
   return ( 
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <OverlayWrapper useRef={overlayRef} isShown={showVideo}>
         <motion.div 
           id='settings-overlay-card' 

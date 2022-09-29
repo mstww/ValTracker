@@ -119,7 +119,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         id={'item-box'}
         className='group z-10 h-full w-1/4 relative bg-maincolor-lightest mr-2 rounded shadow-lg hover:shadow-2xl hover:bg-opacity-70 hover:z-0 transition-all duration-100 ease-in'
         onClick={(e) => {
-          if(e.target.tagName !== 'SVG' && e.target.tagName !== 'PATH') {
+          if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
             clickHandler(item.uuid, item.name, item.price, item.image, item.skinTierImage, index);
           }
         }}

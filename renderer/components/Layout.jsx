@@ -15,7 +15,7 @@ const contentVariants = {
   exit: { opacity: 0, x: 0, y: 0 },
 }
 
-export default function Layout({ children, classNames, setup, isNavbarMinimized }) {
+export default function Layout({ children, classNames, setup, isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
   var theme = false;
@@ -57,6 +57,10 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized 
       }
     }
   }
+
+  React.useEffect(() => {
+    console.log(isOverlayShown);
+  }, [isOverlayShown]);
   
   return( 
     <motion.div 
@@ -65,13 +69,13 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized 
       initial="initial"
       animate={isNavbarMinimized ? "minimize" : "maximize"}
     >
-      <UpdatingLayer />
+      <UpdatingLayer setIsOverlayShown={setIsOverlayShown} />
       {setup ? '' : <MessageLayer />}
-      {setup ? '' : <ReauthLayer />}
+      {setup ? '' : <ReauthLayer setIsOverlayShown={setIsOverlayShown} />}
       {setup ? '' : <TextboxLayer />}
-      {setup ? '' : <WhatsNewLayer />}
+      {setup ? '' : <WhatsNewLayer setIsOverlayShown={setIsOverlayShown} />}
       {setup ? '' : <IpcLayer />}
-      {setup ? '' : <PlayerSearchModal />}
+      {setup ? '' : <PlayerSearchModal setIsOverlayShown={setIsOverlayShown} />}
       <div className={"bg-maincolor-light relative left-0 z-40 overflow-auto " + (isNavbarMinimized ? ' strech' : ' no-strech')} id={setup ? 'layout-setup' : "Layout"}>
         <motion.main
           key={"E"}
@@ -80,7 +84,7 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized 
           animate="enter"
           exit="exit"
           transition={{ type: 'ease', duration: 0.3 }}
-          className={"bg-maincolor-light overflow-x-hidden h-full w-full overflow-auto absolute top-0 left-0 transition-all duration-100 ease-linear " + (classNames ? classNames : '')}
+          className={"bg-maincolor-light overflow-x-hidden h-full w-full overflow-auto absolute top-0 left-0 transition-all duration-100 ease-linear " + (isOverlayShown === true ? 'overflow-hidden pointer-events-none ' : '') + (classNames ? classNames : '')}
         >
           {children}
         </motion.main>

@@ -21,7 +21,7 @@ const backdrop_variants = {
   exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
 }
 
-export default function WhatsNewLayer() {
+export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
   
   const [ isWhatsNewShown, setIsWhatsNewShown ] = React.useState(false);
@@ -46,6 +46,7 @@ export default function WhatsNewLayer() {
       setWhatsNewFixes(newFixes);
 
       setIsWhatsNewShown(true);
+      setIsOverlayShown(false);
 
       localStorage.removeItem('show-whats-new');
     }
@@ -74,6 +75,7 @@ export default function WhatsNewLayer() {
           className='absolute z-30 top-4 right-4 ml-auto hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
           onClick={() => {
             setIsWhatsNewShown(false);
+            setIsOverlayShown(false);
           }}
         >
           <Close cls='w-8 p-1' />

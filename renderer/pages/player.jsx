@@ -798,13 +798,13 @@ function PlayerInfo({ isNavbarMinimized }) {
   );
 }
 
-function PlayerProfile({ isNavbarMinimized }) {
+function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   React.useEffect(() => {
     ipcRenderer.send('changeDiscordRP', 'pprofile_acitivity');
   });
 
   return (
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className={'w-full flex flex-row justify-center mt-16 h-auto relative'}>
         <PlayerInfo />
       </div>

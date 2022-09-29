@@ -15,7 +15,7 @@ const scoreboard_vars_initial = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
 
-export default function Wishlist({ isNavbarMinimized }) {
+export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
   
   const [ currentSortStat, setCurrentSortStat ] = React.useState('');
@@ -36,7 +36,7 @@ export default function Wishlist({ isNavbarMinimized }) {
   }, []);
   
   return (
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className="p-4">
         {
           playerWishlistSkins.length > 0 

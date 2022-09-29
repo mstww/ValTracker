@@ -90,6 +90,7 @@ const fetchPatchnotes = async (lang, version) => {
 
 function Patchnotes({ showVersionModal, shownPatchnotes }) {
   const router = useRouter();
+
   const [ patchnotes, setPatchnotes ] = React.useState([]);
   const [ releaseDate, setReleaseDate ] = React.useState(null);
   const [ version, setVersion ] = React.useState(null);
@@ -133,9 +134,10 @@ function Patchnotes({ showVersionModal, shownPatchnotes }) {
         Released {releaseDate} | <span onClick={showVersionModal} className='text-button-color text-opacity-70 cursor-pointer hover:underline'>Change Version</span>
       </p>
       <div 
-        className={'ml-4 mt-4 w-5/6 ' + (patchnotesLoading === true ? 'hidden' : '')}
+        className={'ml-4 mt-4 w-5/6 patchnotes ' + (patchnotesLoading === true ? 'hidden' : '')}
         onClick={(e) => {
           if(e.target.tagName === 'a' || e.target.tagName === 'A') {
+            e.preventDefault();
             shell.openExternal(e.target.href);
           }
         }} 
@@ -148,7 +150,7 @@ function Patchnotes({ showVersionModal, shownPatchnotes }) {
   );
 }
 
-function Settings({ isNavbarMinimized, setTheme }) {
+function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
   if(router.query.tab) {
@@ -498,13 +500,16 @@ function Settings({ isNavbarMinimized, setTheme }) {
   }
 
   const openPopup = (setPopupOpen) => {
+    console.log(setPopupOpen);
     setPopupOpen(true);
     setPopupBackgroundShown(true);
+    setIsOverlayShown(true);
   }
   
   const closePopup = (setPopupOpen) => {
     setPopupBackgroundShown(false);
     setPopupOpen(false);
+    setIsOverlayShown(false);
   }
 
   const states = {
@@ -649,7 +654,7 @@ function Settings({ isNavbarMinimized, setTheme }) {
   var s2_bt1 = LocalText(L, 'pg_5.grp_1.setting_2.button_text');
 
   return (
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <OverlayWrapper useRef={overlayWrapper} isShown={popupBackgroundShown}>
 
         <PopupCard

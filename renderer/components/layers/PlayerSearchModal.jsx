@@ -19,7 +19,7 @@ const backdrop_variants = {
   exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
 }
 
-export default function PlayerSearchModal() {
+export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
   
   const [ searchShown, setSearchShown ] = React.useState(false);
@@ -60,6 +60,7 @@ export default function PlayerSearchModal() {
         setSearchHistory(args);
       }
       setSearchShown(true);
+      setIsOverlayShown(true);
     });
   }, []);
 
@@ -73,6 +74,7 @@ export default function PlayerSearchModal() {
   const handlePlayerSearch = (event) => {
     if(event.key === 'Enter') {
       setSearchShown(false);
+      setIsOverlayShown(false);
       var name = event.target.value.split('#')[0];
       var tag = event.target.value.split('#')[1];
       var name_encoded = encodeURIComponent(name + '#' + tag);
@@ -130,6 +132,7 @@ export default function PlayerSearchModal() {
           className='absolute z-30 top-4 right-4 ml-auto hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
           onClick={() => {
             setSearchShown(false);
+            setIsOverlayShown(false);
           }}
         >
           <Close cls='w-8 p-1' />
@@ -160,10 +163,11 @@ export default function PlayerSearchModal() {
                 <li 
                   className='w-full flex items-center p-2 border-2 border-maincolor-lightest rounded hover:bg-maincolor-light transition-all duration-100 ease-linear cursor-pointer'
                   onClick={(e) => {
-                    if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line") {
+                    if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                       handleHistoryClick(searchValue.name, searchValue.tag, searchValue.encoded_user);
                     }
                   }}
+                  key={index}
                 >
                   {searchValue.name}#{searchValue.tag}
                   <div 
@@ -181,8 +185,8 @@ export default function PlayerSearchModal() {
           </ul>
         </div>
         <div className='mt-4'>
-          <button className='' onClick={() => { setSearchShown(false); handlePlayerSearch({key: "Enter", target: inputRef.current}) }}>{LocalText(L, "search_modal.button_1")}</button>
-          <button className='text-button' onClick={() => { setSearchShown(false) }}>{LocalText(L, "search_modal.button_2")}</button>
+          <button className='' onClick={() => { setSearchShown(false); setIsOverlayShown(false); handlePlayerSearch({key: "Enter", target: inputRef.current}); }}>{LocalText(L, "search_modal.button_1")}</button>
+          <button className='text-button' onClick={() => { setSearchShown(false); setIsOverlayShown(false); }}>{LocalText(L, "search_modal.button_2")}</button>
         </div>
       </motion.div>
     </motion.div>

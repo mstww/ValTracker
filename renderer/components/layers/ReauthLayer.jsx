@@ -71,7 +71,7 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
-export default function ReauthLayer() {
+export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
   
   const [ reauthQueue, setReauthQueue ] = React.useState([]);
@@ -140,6 +140,7 @@ export default function ReauthLayer() {
       setReauthQueue(reauthArray);
 
       setReauthShown(true);
+      setIsOverlayShown(true);
     }
   }, [ router ]);
 

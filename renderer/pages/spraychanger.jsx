@@ -92,7 +92,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, sprays }) {
   );
 }
 
-function Spraychanger({ isNavbarMinimized }) {
+function Spraychanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
   const [ skinData, setSkinData ] = React.useState([]);
@@ -248,7 +248,7 @@ function Spraychanger({ isNavbarMinimized }) {
   }
 
   return ( 
-    <Layout isNavbarMinimized={isNavbarMinimized}>
+    <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className='absolute z-10 top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
         <BackArrow cls='w-8 p-1' />
       </div>

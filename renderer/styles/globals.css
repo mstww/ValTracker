@@ -630,7 +630,7 @@ h5 {
   @apply text-base;
 }
 
-.message a {
+.message a, .patchnotes a {
   @apply text-button-color hover:text-button-color-hover hover:underline transition-all duration-100 ease-in bg-opacity-100;
 }
 

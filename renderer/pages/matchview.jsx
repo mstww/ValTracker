@@ -46,7 +46,7 @@ const scoreboard_vars_initial = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
 
-function Matchview({ isNavbarMinimized }) {
+function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
   var gamemodes = LocalText(L, 'gamemodes');
@@ -387,7 +387,7 @@ function Matchview({ isNavbarMinimized }) {
   }, []);
 
   return (
-    <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''} isNavbarMinimized={isNavbarMinimized}>
+    <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''} isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div 
         className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}

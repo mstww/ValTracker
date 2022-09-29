@@ -67,7 +67,7 @@ const fetchPatchnotes = async (lang) => {
   return { errored: true, items: 'denied' };
 }
 
-function UpdateWindow() {
+function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
   const [ info, setInfo ] = React.useState('');
@@ -85,6 +85,7 @@ function UpdateWindow() {
     
     setUpdateCardShown(false);
     setBackgroundShown(false);
+    setIsOverlayShown(false);
 
     sessionStorage.setItem('update-denied', false);
   }
@@ -92,6 +93,7 @@ function UpdateWindow() {
   const declineUpdate = () => {
     setUpdateCardShown(false);
     setBackgroundShown(false);
+    setIsOverlayShown(false);
 
     sessionStorage.setItem('update-denied', true);
   }
@@ -114,9 +116,11 @@ function UpdateWindow() {
         
         setUpdateCardShown(true);
         setBackgroundShown(true);
+        setIsOverlayShown(true);
       } else {
         setUpdateCardShown(false);
         setBackgroundShown(false);
+        setIsOverlayShown(false);
       }
     }
     if(!sessionStorage.getItem('update-denied')) {
@@ -209,10 +213,10 @@ function UpdateWindow() {
   );
 }
 
-export default function UpdateLayer() {
+export default function UpdatingLayer({ isOverlayShown, setIsOverlayShown }) {
   return(
     <div className="absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-center items-center pointer-events-none z-50">
-      <UpdateWindow />
+      <UpdateWindow setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown} />
     </div>
   )  
 }
