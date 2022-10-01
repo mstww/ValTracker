@@ -16,7 +16,7 @@ export default function SettingsGroup({ header, important, children }) {
       exit="exit"
       transition={{ type: 'ease-in', duration: 0.2 }}
     >
-      <span className={important ? 'text-red-500' : "text-gray-500"}>{ header ? header.toUpperCase() : '' }</span>
+      <span className={"text-lg font-bold relative right-2 " + (important ? 'text-red-500' : "text-gray-500")}>{ header ? header.toUpperCase() : '' }</span>
       {children}
     </motion.div>
   )

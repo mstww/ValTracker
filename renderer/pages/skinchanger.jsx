@@ -138,7 +138,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
               'https://media.valorant-api.com/weapons/' + weaponType + '/displayicon.png' : weapon.levels[0].displayIcon
             }
             skinName={weapon.displayName}
-            extraClasses={(activeSkin == weapon.uuid && isOwned ? ' border-button-color border-2 ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
+            extraClasses={(activeSkin == weapon.uuid && isOwned ? ' button-border ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
             onClick={() => {
               setActiveSkin(weapon.uuid);
             }}
@@ -587,7 +587,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='absolute top-4 right-4 hover:bg-maincolor-lightest z-30 rounded cursor-pointer transition-all duration-100 ease-linear'
+            className='absolute top-4 right-4 hover:bg-black z-30 rounded cursor-pointer transition-all duration-100 ease-linear'
             onClick={() => { setShowVideo(false) }}
           >
             <Close cls='w-8 p-1' />

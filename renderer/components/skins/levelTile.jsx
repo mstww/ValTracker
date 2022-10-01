@@ -23,8 +23,8 @@ export default function LevelTile({ name, effect, onClick, levelUUID, activeLeve
   return (
     <div 
       className={
-        "relative chroma-swatch w-full h-14 border-2 border-button-color bg-maincolor-lightest shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-70 rounded pl-1 transition-all duration-100 ease-linear " +
-        (levelUUID == activeLevel ? 'border-opacity-100 ' : 'border-opacity-0 ')
+        "relative chroma-swatch w-full h-14 border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-100 rounded pl-1 transition-all duration-100 ease-linear " +
+        (levelUUID == activeLevel ? 'border-button-color ' : 'border-maincolor-lightest ')
         +
         (isOwned ? ' ' : 'text-gray-500')
       }

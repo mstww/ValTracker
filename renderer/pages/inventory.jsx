@@ -196,7 +196,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
   }, [ player_loadout ]);
 
-  var tile_classes = 'weapon-tile bg-maincolor-lightest border-2 border-maincolor-lightest hover:bg-opacity-70 transition-all duration-100 ease-in rounded relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
+  var tile_classes = 'weapon-tile bg-maincolor-lightest bg-opacity-60 border-2 border-maincolor-lightest hover:bg-opacity-100 transition-all duration-100 ease-in rounded relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
@@ -379,7 +379,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       </motion.div>
       <div className='w-full h-full flex flex-row items-center justify-center'>
         <div className='w-1/6 h-4/5 m-4 relative'>
-          <div id='inventory-card-wrapper' className='group overflow-hidden border-2 border-maincolor-lightest rounded mb-4 shadow-lg hover:shadow-2xl bg-maincolor-lightest transition-all duration-100 ease-linear'>
+          <div id='inventory-card-wrapper' className='bg-black group overflow-hidden border-2 border-maincolor-lightest rounded mb-4 shadow-lg hover:shadow-2xl transition-all duration-100 ease-linear'>
             <img 
               id='inventory-card'
               data-equipslot='playercard'
@@ -388,35 +388,35 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               onClick={(e) => { redirectToCardChanger(e.target.getAttribute('data-card')) }}
             />
             <div 
-              className='absolute bottom-20 bg-maincolor hover:bg-maincolor-lightest w-full mx-auto text-global-text h-8 border-t-2 border-b-2 bg-opacity-70 border-maincolor-lightest flex items-center justify-center hover:bg-opacity-90 transition-all duration-100 ease-linear cursor-pointer'
+              className='absolute bottom-20 bg-maincolor-lightest bg-opacity-60 hover:bg-opacity-100 w-full mx-auto text-global-text h-8 border-t-2 border-b-2 border-maincolor-lightest flex items-center justify-center transition-all duration-100 ease-linear cursor-pointer'
             >
               <span className='text-global-text'>{playerTitle}</span>
             </div>
           </div>
-          <div className='h-2/5 mt-2 flex flex-col justify-between' id='inventory-sprays'>
+          <div className='h-2/5 mt-2 flex flex-col justify-around items-center' id='inventory-sprays'>
             <div 
-              className={'relative mx-auto w-full h-1/3 ' + (tile_classes)}
+              className={'relative mx-auto w-full inv-spray h-1/3 mb-1.5 bottom-0.5 ' + (tile_classes)}
               onClick={(e) => { 
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='0814b2fe-4512-60a4-5288-1fbdcec6ca48' className='h-5/6 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='0814b2fe-4512-60a4-5288-1fbdcec6ca48' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/invisible_weapons/spray.png' />
             </div> 
             <div 
-              className={'relative mx-auto w-full h-1/3 ' + (tile_classes)}
+              className={'relative mx-auto w-full inv-spray h-1/3 mb-1.5 ' + (tile_classes)}
               onClick={(e) => {
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='04af080a-4071-487b-61c0-5b9c0cfaac74' className='h-5/6 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='04af080a-4071-487b-61c0-5b9c0cfaac74' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/invisible_weapons/spray.png' />
             </div>
             <div 
-              className={'relative mx-auto w-full h-1/3 ' + (tile_classes)}
+              className={'relative mx-auto w-full inv-spray h-1/3 top-px ' + (tile_classes)}
               onClick={(e) => {
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='5863985e-43ac-b05d-cb2d-139e72970014' className='h-5/6 mx-auto pointer-events-none' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='5863985e-43ac-b05d-cb2d-139e72970014' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/invisible_weapons/spray.png' />
             </div>
           </div>
         </div>

@@ -726,7 +726,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                           return (
                             <div 
                               id='match'
-                              className={'group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                              className={'group relative flex flex-row h-20 bg-maincolor-lightest bg-opacity-60 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-opacity-100 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                               key={index}
                               onClick={(e) => {
                                 if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -898,7 +898,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                     return (
                       <div 
                         id='match'
-                        className={'group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                        className={'group relative flex flex-row h-20 bg-maincolor-lightest bg-opacity-60 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-opacity-100 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                         key={index}
                         onClick={(e) => {
                           if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -1038,7 +1038,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
           </div>
           <span className='text-center text-lg'>{isLoadingNewMatches ? LocalText(L, "loading") : LocalText(L, "matches_bottom")}</span>
         </div>
-        <div className='w-1/4 favs-right border-2 border-maincolor-lightest p-4 mt-7'>
+        <div className='w-1/4 favs-right border-2 border-maincolor-lightest p-4 mt-7 rounded'>
           <span className='text-lg'>{LocalText(L, "filters.header")}</span>
           <hr />
           <span className='text-gray-500 mb-0 relative top-4 text-lg'>{LocalText(L, "filters.filters.header")}</span>

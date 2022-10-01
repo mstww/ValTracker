@@ -8,7 +8,7 @@ const slide_bottom = {
   enter: { opacity: 1, x: 0, y: 0 },
 }
 
-export default function StoreItem({ item, delay, index, clickHandler, shownOverlayUUID, wishlistedItems, setWishlistedItems, userData, wishlistTextLocale }) {
+export default function StoreItem({ item, delay, index, clickHandler, shownOverlayUUID, wishlistedItems, setWishlistedItems, userData, wishlistTextLocale, nightMarket, nmDiscount }) {
   const [ isWishlisted, setIsWishlisted ] = React.useState(false);
   const [ wishlistPosition, setWishlistPosition ] = React.useState(null);
 
@@ -117,7 +117,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         animate="enter"
         transition={{ type: 'ease', duration: 0.05, delay: delay }}
         id={'item-box'}
-        className='group z-10 h-full w-1/4 relative bg-maincolor-lightest mr-2 rounded shadow-lg hover:shadow-2xl hover:bg-opacity-70 hover:z-0 transition-all duration-100 ease-in'
+        className={'group z-10 h-full relative border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 bg-maincolor-light rounded shadow-lg hover:shadow-2xl hover:bg-opacity-100 hover:z-0 transition-all duration-100 ease-in ' + (item ? '' : 'pointer-events-none ') + (nightMarket ? 'w-5/6 mx-auto mb-4' : 'w-1/4 mr-2')}
         onClick={(e) => {
           if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
             clickHandler(item.uuid, item.name, item.price, item.image, item.skinTierImage, index);
@@ -184,6 +184,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
           id='item-price'
           className='text-xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-2 py-1'
         >
+          {nmDiscount ? <span className="text-val-red mr-1.5 relative top-px">{`(${nmDiscount})`}</span> : ''}
           <span id="wallet-vp" className='relative top-px'>{ item.price }</span>
           <img src="/images/vp_icon.png" className='w-7 ml-2' />
         </div>

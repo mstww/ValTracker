@@ -136,7 +136,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
                 <span className="text-sm font-light">{item.name + '#' + item.tag}</span>
                 <div
                   id='remove-el'
-                  className="absolute top-1 left-1 cursor-pointer hover:bg-maincolor-lightest hover:bg-opacity-90 rounded p-1 transition-all ease-in duration-100"
+                  className="absolute top-1 left-1 cursor-pointer hover:bg-black rounded p-1 transition-all ease-in duration-100"
                   onClick={() => {
                     removeItemFromHistory(item.encoded_user);
                     playerSearchRef.current.focus();

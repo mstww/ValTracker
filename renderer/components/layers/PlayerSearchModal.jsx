@@ -129,7 +129,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <div 
-          className='absolute z-30 top-4 right-4 ml-auto hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
+          className='absolute z-30 top-4 right-4 ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
           onClick={() => {
             setSearchShown(false);
             setIsOverlayShown(false);
@@ -161,7 +161,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
             {searchHistory.map((searchValue, index) => {
               return(
                 <li 
-                  className='w-full flex items-center p-2 border-2 border-maincolor-lightest rounded hover:bg-maincolor-light transition-all duration-100 ease-linear cursor-pointer'
+                  className='w-full flex items-center p-2 border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 rounded hover:bg-opacity-100 transition-all duration-100 ease-linear'
                   onClick={(e) => {
                     if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                       handleHistoryClick(searchValue.name, searchValue.tag, searchValue.encoded_user);
@@ -172,7 +172,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
                   {searchValue.name}#{searchValue.tag}
                   <div 
                     id='remove-el'
-                    className='ml-auto hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
+                    className='ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
                     onClick={() => {
                       removeItemFromHistory(e, searchValue.encoded_user);
                     }}

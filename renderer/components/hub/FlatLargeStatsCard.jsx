@@ -1,6 +1,6 @@
 export default function FLatLargeStatsCard({ extraClasses, img_src, header, top_num, top_desc, stat_1_num, stat_1_desc, stat_2_num, stat_2_desc, stat_3_num, stat_3_desc }) {
   return(
-    <div className={'border-2 rounded border-maincolor-lightest p-2 flex flex-row mb-4 ' + (extraClasses ? extraClasses : '')}>
+    <div className={'border-2 rounded border-maincolor-lightest p-2 flex flex-row mb-3 ' + (extraClasses ? extraClasses : '')}>
       <div className="w-full">
         <div className="flex flex-row items-center mb-1 relative">
           <img src={img_src} className="h-12 shadow-img" />

@@ -91,7 +91,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
               weapon.wideArt
             }
             skinName={weapon.displayName}
-            extraClasses={(activeSkin == weapon.uuid && isOwned ? ' border-button-color border-2 ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
+            extraClasses={(activeSkin == weapon.uuid && isOwned ? ' button-border ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
             onClick={
               () => {setActiveSkin(weapon.uuid)}
             }

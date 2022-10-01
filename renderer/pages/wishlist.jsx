@@ -109,7 +109,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                 return (
                   <>
                     <motion.tr 
-                      className={'border-2 border-maincolor-lightest rounded'} key={index + 'tr'}
+                      className={'border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 rounded'} key={index + 'tr'}
                       variants={scoreboard_vars_initial}
                       initial="hidden"
                       enter="enter"

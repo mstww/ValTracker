@@ -48,7 +48,7 @@ function Textboxes() {
             >
               <span className='mr-9 h-full flex items-center'>{textbox}</span>
               <div 
-                className='absolute pointer-events-auto z-30 top-2 right-2 ml-auto hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear w-8 h-8 flex items-center justify-center'
+                className='absolute pointer-events-auto z-30 top-2 right-2 ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-8 h-8 flex items-center justify-center'
                 onClick={() => {
                   var newArray = removeItemOnce(textboxes, textbox);
                   var newArray = newArray.filter(value => Object.keys(value).length !== 0);

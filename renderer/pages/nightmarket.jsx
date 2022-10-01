@@ -10,6 +10,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Close } from '../components/SVGs';
 import Layout from '../components/Layout';
+import StoreItem from '../components/StoreItem';
 
 const slide_bottom = {
   hidden: { opacity: 0, x: 0, y: 50 },
@@ -59,6 +60,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ showBackground, setShowBackground ] = React.useState(false);
   const [ showCard, setShowCard ] = React.useState(false);
 
+  const [ cardSkinUUID, setCardSkinUUID ] = React.useState('');
   const [ cardSkinName, setCardSkinName ] = React.useState('');
   const [ cardSkinImage, setCardSkinImage ] = React.useState('');
   const [ cardSkinPrice, setCardSkinPrice ] = React.useState('');
@@ -70,6 +72,17 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   const [ shopSkins, setShopSkins ] = React.useState({'0': {}, '1': {}, '2': {}, '3': {}, '4': {}, '5': {}});
   const [ skinList, setSkinList ] = React.useState([]);
+
+  const [ wishlistedItems, setWishlistedItems ] = React.useState([]);
+  const [ userData, setUserData ] = React.useState({});
+
+  React.useEffect(() => {
+    var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+    var user_wishlist = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.playerUUID + '.json'));
+
+    setUserData(user_data);
+    setWishlistedItems(user_wishlist.skins);
+  }, []);
 
   var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
   var user_creds = JSON.parse(user_creds_raw);
@@ -102,12 +115,34 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   async function fetchSkins() {
     if(router.query.store) {
+      var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+
+      var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
+      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(on_load.appLang)}`)).json();
+
       var data = JSON.parse(router.query.store);
       var skins = [];
-      
+
       for(var i = 0; i < data.nightMarket.offers.length; i++) {
+        var skinUUID = data.nightMarket.offers[i].Offer.Rewards[0].ItemID;
+        console.log(skinUUID);
+
         var raw = await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${data.nightMarket.offers[i].Offer.Rewards[0].ItemID}?language=${APIi18n(router.query.lang)}`, { keepalive: true });
         var skin = await raw.json();
+
+        for(var j = 0; j < allSkins.data.length; j++) {
+          if(skinUUID === allSkins.data[j].levels[0].uuid) {
+            var tierUUID = allSkins.data[j].contentTierUuid;
+            var isMelee = (allSkins.data[j].assetPath.split("/")[3] === 'Melee');
+          }
+        }
+        
+        for(var j = 0; j < skinTiers.data.length; j++) {
+          if(tierUUID === skinTiers.data[j].uuid && skinTiers.data[j].displayIcon !== null) {
+            var skinTierImage = skinTiers.data[j].displayIcon;
+          }
+        }
+
         var skin_data = {
           uuid: skin.data.uuid,
           name: skin.data.displayName,
@@ -115,6 +150,8 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           price: data.nightMarket.offers[i].DiscountCosts[Object.keys(data.nightMarket.offers[i].DiscountCosts)[0]],
           discount: data.nightMarket.offers[i].DiscountPercent,
           seen: data.nightMarket.offers[i].IsSeen,
+          isMelee: isMelee,
+          skinTierImage: skinTierImage,
         }
 
         skins.push(skin_data);
@@ -150,6 +187,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     setActiveCardSkinLevel(0);
     
     setCardSkinName(name);
+    setCardSkinUUID(uuid);
     setCardSkinImage(image);
     setCardSkinPrice(price);
 
@@ -202,18 +240,21 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <motion.div 
-          className='w-4/5 h-4/5 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
+          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
           variants={card_variants}
           initial="hidden"
           animate={showCard ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='z-20 absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear'
+            className='z-20 absolute top-4 right-4 hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear'
             onClick={() => {
               setShowBackground(false);
+              setIsOverlayShown(false);
               setShowCard(false);
 
+              
+              setCardSkinUUID('');
               setCardSkinName('');
               setCardSkinImage('');
               setCardSkinPrice('');
@@ -237,7 +278,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           <div id='skin-image' className='z-10 bottom-0 left-0 absolute w-full h-full flex justify-center items-center'>
             <img src={ cardSkinImage } className='shadow-img' />
           </div>
-          <div id='levels-chromas' className='absolute bottom-4 left-4 w-64 text-white z-20'>
+          <div id='levels-chromas' className='absolute bottom-16 left-4 w-64 text-white z-20'>
             <div id='chromas' className='flex flex-row justify-between mb-4'>
               {
                 cardSkinChromas.length > 1 ? 
@@ -304,37 +345,29 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       <div className='absolute top-4 left-4'>
         <h1 className='text-2xl'>{LocalText(L, "night_market_header")} - {nightMarketTimer}</h1>
       </div>
-      <div className='night-market-items flex flex-row w-2/3 mx-auto items-center justify-around flex-wrap overflow-hidden'>
-        {nightMarket.map((item, index) => {
-          return (
-            <motion.div 
-              variants={slide_bottom}
-              initial="hidden"
-              animate="enter"
-              exit="exit"
-              transition={{ type: 'ease-in', duration: 0.05, delay: `0.${index}` }}
-              key={index} 
-              className={'night-market-item relative bg-maincolor-lightest w-56 text-ellipsis h-80 p-2 rounded shadow-lg hover:shadow-2xl transition-all duration-100 ease-linear flex items-center justify-center overflow-hidden'}
-              onClick={() => {showShopSkin(item.uuid, item.name, item.price, item.image, index)}}
-            > 
-              <div className='absolute top-2 left-2 w-52 text-lg'>
-                <span className=''>{item.name}</span>
+      <div className='night-market-items flex flex-row w-full mx-auto items-center justify-around flex-wrap overflow-hidden'>
+        <div className='w-full h-2/3 flex flex-row items-center flex-wrap justify-around'>
+          {nightMarket.map((item, index) => {
+            console.log(item);
+            return (
+              <div className='h-64 mb-4 w-1/3'>
+                <StoreItem
+                  item={item}
+                  delay={`0.${index}`}
+                  index={index}
+                  clickHandler={() => {showShopSkin(item.uuid, item.name, item.price, item.image, index)}}
+                  shownOverlayUUID={cardSkinUUID}
+                  wishlistedItems={wishlistedItems}
+                  setWishlistedItems={setWishlistedItems}
+                  userData={userData}
+                  wishlistTextLocale={LocalText(L, "add_to_wishlist")}
+                  nightMarket
+                  nmDiscount={`${item.discount}%`}
+                />
               </div>
-
-              <img src={item.image} className='transform shadow-img' />
-
-              <span className='absolute left-3.5 bottom-3.5 text-right text-lg mr-2 text-val-red'>-{item.discount}%</span>
-
-              <div 
-                id='item-price'
-                className='absolute right-2 bottom-2 text-xl text-gray-300 flex flex-row items-center bg-opacity-60 bg-black rounded px-2 py-2'
-              >
-                <span className='relative top-px'>{item.price}</span>
-                <img src="/images/vp_icon.png" className='w-6 ml-2' />
-              </div>
-            </motion.div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </Layout>
   );

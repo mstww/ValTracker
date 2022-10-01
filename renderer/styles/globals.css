@@ -451,7 +451,15 @@ input:checked + .slider:before {
 #skin-tile {
   min-height: 6rem;
   height: auto;
-  max-height: 7rem
+  max-height: 7rem;
+  @apply border-maincolor-lightest;
+}
+
+#skin-tile.button-border {
+  min-height: 6rem;
+  height: auto;
+  max-height: 7rem;
+  @apply border-button-color;
 }
 
 .maximized #skin-list {
@@ -1535,4 +1543,8 @@ body[lang="fr-FR"] #equip-skin-button {
 
 .player-search-mgnfy {
   min-width: 1.25rem;
+}
+
+.inv-spray {
+  height: calc(33.3333% - 0.5rem)
 }

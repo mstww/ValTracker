@@ -66,13 +66,13 @@ function MyApp({ Component, pageProps }) {
   React.useEffect(() => {
     if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json")) {
       var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
-      if(data.themeName === "light") setLightTheme(true);
+      setTheme(data.themeName);
     }
   }, []);
 
   React.useEffect(() => {
-    console.log(isOverlayShown);
-  }, [isOverlayShown]);
+    document.body.setAttribute("data-theme", theme)
+  }, [theme]);
 
   return (
     <>

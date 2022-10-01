@@ -109,7 +109,7 @@ export default function AccountTile({ currenttier, puuid, username, usertag, use
   return (
     <li 
       className={
-        'flex flex-row items-center content-center h-1/6 mb-2 justify-start border rounded transition-all ease-in duration-100'
+        'flex flex-row items-center content-center h-1/6 mb-2 justify-start border rounded transition-all ease-in duration-100 border-maincolor-lightest'
         + (active_account ? ' border-gradient-left active-riot-acc' : ' hover:bg-maincolor-lightest border-maincolor-lightest cursor-pointer')
       }
       id={ puuid }

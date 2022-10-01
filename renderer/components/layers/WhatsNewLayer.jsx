@@ -72,7 +72,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
         id={'whats-new-card'}
       >
         <div 
-          className='absolute z-30 top-4 right-4 ml-auto hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
+          className='absolute z-30 top-4 right-4 ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
           onClick={() => {
             setIsWhatsNewShown(false);
             setIsOverlayShown(false);

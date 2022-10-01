@@ -80,7 +80,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, sprays }) {
               sprays.fullTransparentIcon
             }
             skinName={sprays.displayName}
-            extraClasses={(activeSkin == sprays.uuid && isOwned ? ' border-button-color border-2 ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
+            extraClasses={(activeSkin == sprays.uuid && isOwned ? ' button-border ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
             onClick={
               () => {setActiveSkin(sprays.uuid)}
             }

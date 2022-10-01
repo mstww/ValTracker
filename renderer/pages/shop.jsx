@@ -345,9 +345,10 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='z-20 absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear'
+            className='z-20 absolute top-4 right-4 hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear'
             onClick={() => {
               setShowBackground(false);
+              setIsOverlayShown(false);
               setShowCard(false);
 
               setCardSkinUUID('');
@@ -403,8 +404,8 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       <div 
                         id='level' 
                         className={
-                          "relative chroma-swatch w-full h-14 border-2 bg-maincolor-lightest shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-70 rounded pl-1 transition-all duration-100 ease-linear "
-                          + (activeCardSkinLevel == index ? 'border-button-color' : 'border-maincolor')
+                          "relative chroma-swatch w-full h-14 border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-100 rounded pl-1 transition-all duration-100 ease-linear "
+                          + (activeCardSkinLevel == index ? 'border-button-color' : 'border-maincolor-lightest')
                         }
                         key={index}
                         onClick={() => {
@@ -444,7 +445,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <span id='bundle-timer' className='text-gray-500'>{bundleTimer}</span>
             <motion.div 
               id='bundle-img-wrapper' 
-              className='w-full relative rounded'
+              className='w-full relative rounded border-2 border-maincolor-lightest'
               variants={pop_in}
               initial='hidden'
               animate='enter'
@@ -477,7 +478,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           >
             <div 
               id='wallet'
-              className='bg-maincolor-lightest p-4 flex flex-col rounded shadow-lg mb-4'
+              className='bg-maincolor-lightest bg-opacity-60 border-2 border-maincolor-lightest p-4 flex flex-col rounded shadow-lg mb-4'
             >
               <h1 className='text-2xl mb-2'>{LocalText(L, "wallet_header")}</h1>
               <span className='flex flex-row text-center items-center mb-2'>
@@ -493,7 +494,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               onClick={() => { switchToNM() }}
               id='night-market'
               className={
-                'bg-opacity-60 bg-black p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:shadow-2xl hover:bg-opacity-40 transition-all duration-100 ease-in cursor-pointer ' 
+                'bg-opacity-60 bg-maincolor-lightest border-2 border-maincolor-lightest p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:shadow-2xl hover:bg-opacity-100 transition-all duration-100 ease-in cursor-pointer ' 
                 + 
                 (nightMarketShown ? 'flex' : 'hidden')
               }

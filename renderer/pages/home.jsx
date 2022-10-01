@@ -1794,7 +1794,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       return (
                         <div 
                           id='match'
-                          className='group e relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear' 
+                          className='group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
                             console.log(e.target.tagName);
@@ -2002,12 +2002,13 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   <SmallStatsCard number={avgKillsPerRound} desc={LocalText(L, "bot_r.stats.stat_2")} />
                 </div>
 
-                <div className='flex flex-row justify-between mt-1.5 mb-4'>
+                <div className='flex flex-row justify-between mt-1.5 mb-3'>
                   <SmallStatsCard number={winratePercent + '%'} desc={LocalText(L, "bot_r.stats.stat_3")} />
                   <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} />
                 </div>
 
                 <span className='mt-1'>{LocalText(L, "bot_r.best_map.header")}</span>
+                <hr className='mb-2' />
                 <LargeStatsCard 
                   header={bestMapName}
                   stat_1_locale={LocalText(L, "bot_r.best_map.stats.stat_1")}
@@ -2015,10 +2016,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   img_src={bestMapImage} 
                   win_percent={bestMapWinPercent}
                   avg_kda={bestMapKdaRatio}
-                  extraClasses={''} 
+                  extraClasses={'mb-3'} 
                 />
 
                 <span className='mt-1'>{LocalText(L, "bot_r.best_agent.header")}</span>
+                <hr className='mb-2' />
                 <FlatLargeStatsCard
                   img_src={bestAgentImage}
                   header={bestAgentName}
