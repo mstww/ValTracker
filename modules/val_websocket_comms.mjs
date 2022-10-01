@@ -74,10 +74,15 @@ async function runValorantPresence() {
       try {
         lockData = await getLockfileData();
         parentPort.postMessage({"channel": "message", "data": "Waiting for game to be opened..."});
+
+        parentPort.postMessage({"channel": "message", "data": lockData});
       } catch (e) {
+        parentPort.postMessage({"channel": "message", "data": "No Lockfile found. Starting Watcher..."});
         await waitForLockfile();
       }
     } while (lockData === null);
+
+    parentPort.postMessage({"channel": "message", "data": "Game opened."});
   
     do {
       try {
@@ -95,6 +100,8 @@ async function runValorantPresence() {
         }
       }
     } while(sessionData === null);
+
+    parentPort.postMessage({"channel": "message", "data": "Got Session Data."});
     
     let helpData = null;
     do {
@@ -103,6 +110,8 @@ async function runValorantPresence() {
         helpData = null;
         await asyncTimeout(1500);
       }
+
+      parentPort.postMessage({"channel": "message", "data": "Waiting for WebSocket to open..."});
     } while(helpData === null);
     
     const ws = new WebSocket(`wss://riot:${lockData.password}@localhost:${lockData.port}`, {

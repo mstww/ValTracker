@@ -65,21 +65,52 @@ const sendMessageToWindow = (channel, args) => {
   mainWindow.webContents.send(channel, args);
 }
 
+async function asyncTimeout(delay) {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay);
+  });
+}
+
 if (isProd) {
   serve({ directory: 'app' });
 } else {
   app.setPath('userData', `${app.getPath('userData')}`);
 }
 
-// Initialize new RPC client
-const discordVALPresence = new RPC.Client({
-  transport: "ipc",
-});
+var discordVALPresence;
+var discordClient;
 
-// Initialize new RPC client
-const discordClient = new RPC.Client({
-  transport: "ipc",
-});
+async function connectGamePresence() {
+  try {
+    // Initialize new RPC client
+    discordVALPresence = new RPC.Client({
+      transport: "ipc",
+    });
+    console.log("Game Presence connected.");
+  } catch(e) {
+    console.log("Error while starting Game Presence. Retrying...");
+    await asyncTimeout(5000);
+    connectGamePresence();
+  }
+}
+
+connectGamePresence();
+
+async function connectAppPresence() {
+  try {
+    // Initialize new RPC client
+    discordClient = new RPC.Client({
+      transport: "ipc",
+    });
+    console.log("App Presence connected.");
+  } catch(e) {
+    console.log("Error while starting App Presence. Retrying...");
+    await asyncTimeout(5000);
+    connectAppPresence();
+  }
+}
+
+connectAppPresence();
 
 // Get instance lock
 const gotTheLock = app.requestSingleInstanceLock(); 
@@ -585,7 +616,9 @@ async function getDataFromWebSocketEvent(eventData) {
     return;
   }
 
-  eventData = JSON.parse(eventData);
+  try {
+    eventData = JSON.parse(eventData);
+  } catch(e) {}
 
   if(eventData[1] !== "OnJsonApiEvent_chat_v4_presences") {
     return;
@@ -1182,6 +1215,8 @@ let appIcon;
             case("message"): {
               if(msg.data === "fetchPlayerData") {
                 var data = await checkForMatch();
+              } else {
+                console.log(msg.data);
               }
             }
             case("WS_Event"): {
