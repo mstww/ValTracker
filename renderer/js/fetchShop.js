@@ -91,11 +91,11 @@ async function fetchShop() {
           if(skinUUID === allSkins.data[j].levels[0].uuid) {
             var skinName = allSkins.data[j].displayName;
             
-            if(allSkins.data[j].displayIcon !== null) var skinIcon = allSkins.data[j].displayIcon;
-            else var skinIcon = allSkins.data[j].levels[0].displayIcon;
+            if(allSkins.data[j].levels[0].displayIcon !== null) var skinIcon = allSkins.data[j].levels[0].displayIcon;
+            else var skinIcon = allSkins.data[j].displayIcon;
             
             var tierUUID = allSkins.data[j].contentTierUuid;
-            var isMelee = (allSkins.data[j].assetPath.split("/")[3] === 'Melee')
+            var isMelee = (allSkins.data[j].assetPath.split("/")[3] === 'Melee');
           }
         }
   
