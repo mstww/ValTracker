@@ -11,6 +11,7 @@ import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Close } from '../components/SVGs';
 import Layout from '../components/Layout';
 import StoreItem from '../components/StoreItem';
+import { useFirstRender } from '../components/useFirstRender';
 
 const slide_bottom = {
   hidden: { opacity: 0, x: 0, y: 50 },
@@ -52,6 +53,7 @@ function bundleTimeToHMS(n, o) {
 
 function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
+  const firstRender = useFirstRender();
 
   const [ nightMarket, setNightMarket ] = React.useState([]);
   const [ nightMarketTimer, setNightMarketTimer ] = React.useState(null);
@@ -99,19 +101,26 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   React.useEffect(() => {
     if(router.query.nm_end) {
       var nmTimer = Math.abs(moment().diff(parseInt(router.query.nm_end), 'seconds'));
-      var initialNM = bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
-      setNightMarketTimerNum(nmTimer);
+      setNightMarketTimerNum(nmTimer-1);
+      var initialNM = bundleTimeToHMS(nmTimer-1, localTimerObj) + " " + localTimerObj.rem;
       setNightMarketTimer(initialNM);
     }
-
-    var timer = setInterval(() => {
-      var new_nm_timer = nightMarketTimerNum - 1;
-      setNightMarketTimerNum(new_nm_timer);
-      setNightMarketTimer(bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem);
-    }, 1000);
-
-    return () => clearInterval(timer);
   }, []);
+
+  React.useEffect
+
+  React.useEffect(() => {
+    if(!firstRender) {
+      var timer = setInterval(async () => {
+        var new_nm_timer = nightMarketTimerNum - 1;
+        setNightMarketTimerNum(new_nm_timer);
+        setNightMarketTimer(bundleTimeToHMS(new_nm_timer, localTimerObj) + " " + localTimerObj.rem);
+        console.log("TIMER UPDATE", new_nm_timer);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [nightMarketTimerNum]);
 
   async function fetchSkins() {
     if(router.query.store) {
@@ -125,7 +134,6 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
       for(var i = 0; i < data.nightMarket.offers.length; i++) {
         var skinUUID = data.nightMarket.offers[i].Offer.Rewards[0].ItemID;
-        console.log(skinUUID);
 
         var raw = await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${data.nightMarket.offers[i].Offer.Rewards[0].ItemID}?language=${APIi18n(router.query.lang)}`, { keepalive: true });
         var skin = await raw.json();
@@ -348,7 +356,6 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       <div className='night-market-items flex flex-row w-full mx-auto items-center justify-around flex-wrap overflow-hidden'>
         <div className='w-full h-2/3 flex flex-row items-center flex-wrap justify-around'>
           {nightMarket.map((item, index) => {
-            console.log(item);
             return (
               <div className='h-64 mb-4 w-1/3'>
                 <StoreItem
@@ -363,6 +370,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   wishlistTextLocale={LocalText(L, "add_to_wishlist")}
                   nightMarket
                   nmDiscount={`${item.discount}%`}
+                  key={index}
                 />
               </div>
             );

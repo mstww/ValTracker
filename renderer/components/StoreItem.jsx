@@ -117,7 +117,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         animate="enter"
         transition={{ type: 'ease', duration: 0.05, delay: delay }}
         id={'item-box'}
-        className={'group z-10 h-full relative border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 bg-maincolor-light rounded shadow-lg hover:shadow-2xl hover:bg-opacity-100 hover:z-0 transition-all duration-100 ease-in ' + (item ? '' : 'pointer-events-none ') + (nightMarket ? 'w-5/6 mx-auto mb-4' : 'w-1/4 mr-2')}
+        className={'group z-10 h-full relative border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 rounded shadow-lg hover:shadow-2xl hover:bg-opacity-100 hover:z-0 transition-all duration-100 ease-in ' + (item ? '' : 'pointer-events-none ') + (nightMarket ? 'w-5/6 mx-auto mb-4' : 'w-1/4 mr-2')}
         onClick={(e) => {
           if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
             clickHandler(item.uuid, item.name, item.price, item.image, item.skinTierImage, index);
@@ -173,7 +173,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             />
           }
         </div>
-        <div className='absolute top-2 z-20 left-2 flex flex-row'>
+        <div className='absolute top-2 z-20 left-2 flex flex-row pr-2'>
           <img src={item.skinTierImage ? item.skinTierImage : '/invisible_weapons/spray.png'} className="w-6 h-6 relative top-px mr-2" />
           <span className="text-lg">{ item.name }</span>
         </div>

@@ -500,7 +500,6 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   }
 
   const openPopup = (setPopupOpen) => {
-    console.log(setPopupOpen);
     setPopupOpen(true);
     setPopupBackgroundShown(true);
     setIsOverlayShown(true);

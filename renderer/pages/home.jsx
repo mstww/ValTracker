@@ -1797,7 +1797,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           className='group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
-                            console.log(e.target.tagName);
                             if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                               var Blue = [];
                               var Red = [];

@@ -5,6 +5,7 @@ import { NextUIProvider, createTheme } from '@nextui-org/react';
 import fs from 'fs';
 import Navbar from '../components/Navbar';
 import WindowControls from '../components/WindowControls';
+import Head from 'next/head'
 
 import '../styles/globals.css';
 
@@ -76,6 +77,9 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <>
+      <Head>
+        <title>VALTracker</title>
+      </Head>
       <NextUIProvider theme={theme ? themes[theme] : themes['normal']}>
         <WindowControls setup={setup} />
         {setup ? '' : <Navbar isNavbarMinimized={isNavbarMinimized} setIsNavbarMinimized={setIsNavbarMinimized} />}

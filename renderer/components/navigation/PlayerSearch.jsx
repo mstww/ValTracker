@@ -132,6 +132,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
                     handleHistoryClick(item.name, item.tag, item.encoded_user);
                   }
                 }}
+                key={index}
               >
                 <span className="text-sm font-light">{item.name + '#' + item.tag}</span>
                 <div

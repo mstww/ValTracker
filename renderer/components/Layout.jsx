@@ -57,10 +57,6 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized,
       }
     }
   }
-
-  React.useEffect(() => {
-    console.log(isOverlayShown);
-  }, [isOverlayShown]);
   
   return( 
     <motion.div 
