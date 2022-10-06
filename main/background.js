@@ -1358,6 +1358,8 @@ let appIcon;
       if(startedHidden !== undefined && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
         appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
 
+        appIcon.setToolTip("VALTracker");
+
         appIcon.on("click", function() {
           RPState = 'app';
           sendMessageToWindow('setDRPtoCurrentPage');
@@ -1430,6 +1432,8 @@ let appIcon;
           mainWindow.hide();
     
           appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+
+          appIcon.setToolTip("VALTracker");
         
           appIcon.on("click", function() {
             RPState = 'app';
