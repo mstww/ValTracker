@@ -38,9 +38,9 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
       setNewVALTrackerVersion(whats_new_data.data.version.version);
       
       var newAdditions = md_conv.makeHtml(whats_new_data.data.whats_new.additions);
-      setIsAdditionsShown(!(whats_new_data.data.whats_new.additions === "- "));
+      setIsAdditionsShown(!(whats_new_data.data.whats_new.additions === "- " || whats_new_data.data.whats_new.additions === null));
       var newFixes = md_conv.makeHtml(whats_new_data.data.whats_new.fixes);
-      setIsFixesShown(!(whats_new_data.data.whats_new.fixes === "- "));
+      setIsFixesShown(!(whats_new_data.data.whats_new.fixes === "- " || whats_new_data.data.whats_new.fixes === null));
 
       setWhatsNewAdditions(newAdditions);
       setWhatsNewFixes(newFixes);
