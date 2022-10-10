@@ -2,14 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-.btn-blue {
-  @apply px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600;
-}
-
 * {
   font-family: Bahnschrift, sans-serif;
   user-select: none;
-  @apply text-global-text
+  @apply text-global-text;
 }
 
 *::-webkit-scrollbar {
@@ -84,7 +80,7 @@ img {
   align-items: center;
   margin-left: 8px;
   overflow: hidden;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Bahnschrift", sans-serif;
   font-size: 12px;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -281,7 +277,7 @@ img {
   box-shadow: 0 0 0 rgb(0 0 0 / 0) !important;
 }
 
-#nav-items div:not(.search-dropdown):not(.search-dropdown div):not(.nav-min):not(.search-container div) {
+#nav-items div:not(.search-dropdown):not(.search-dropdown div):not(.nav-min):not(.search-container div):not(#search-history-tile) {
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
   width: 88%;
 }
@@ -452,7 +448,7 @@ input:checked + .slider:before {
   min-height: 6rem;
   height: auto;
   max-height: 7rem;
-  @apply border-maincolor-lightest;
+  @apply border-tile-color;
 }
 
 #skin-tile.button-border {
@@ -499,14 +495,14 @@ input:checked + .slider:before {
 }
 
 .settings-tile:hover {
-  @apply border-2 border-maincolor-lightest;
+  @apply border-2 border-tile-color;
 }
 
 .match-tile.active {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
-  @apply bg-maincolor-lightest;
+  @apply bg-tile-color;
   width: fit-content;
 }
 
@@ -531,14 +527,14 @@ input:checked + .slider:before {
 }
 
 .match-tile:hover {
-  @apply border-2 border-maincolor-lightest;
+  @apply border-2 border-tile-color;
 }
 
 .matchview-tile.active {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
-  @apply bg-maincolor-lightest;
+  @apply bg-tile-color;
   width: fit-content;
 }
 
@@ -563,7 +559,7 @@ input:checked + .slider:before {
 }
 
 .matchview-tile:hover {
-  @apply border-2 border-maincolor-lightest;
+  @apply border-2 border-tile-color;
 }
 
 button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button):not(.change-color-btn):not(.setup-button):not(.disabled) {
@@ -1368,11 +1364,11 @@ ol li {
 }
 
 .language-checkbox span {
-  @apply border-2 border-maincolor-lightest rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+  @apply border-2 border-tile-color rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
 }
 
 .language-checkbox span:hover {
-  @apply bg-maincolor-lightest;
+  @apply bg-tile-color;
 }
 
 .language-checkbox span.active {
@@ -1526,11 +1522,11 @@ body[lang="fr-FR"] #equip-skin-button {
 }
 
 .version-selector span {
-  @apply border-2 border-maincolor-lightest h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+  @apply border-2 border-tile-color h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
 }
 
 .version-selector span:hover {
-  @apply bg-maincolor-lightest;
+  @apply bg-tile-color;
 }
 
 .version-selector span.active {
@@ -1547,4 +1543,12 @@ body[lang="fr-FR"] #equip-skin-button {
 
 .inv-spray {
   height: calc(33.3333% - 0.5rem)
+}
+
+tr td:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+tr td:last-child {
+  border-radius: 0 4px 4px 0;
 }

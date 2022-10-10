@@ -196,7 +196,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
   }, [ player_loadout ]);
 
-  var tile_classes = 'weapon-tile bg-maincolor-lightest bg-opacity-60 border-2 border-maincolor-lightest hover:bg-opacity-100 transition-all duration-100 ease-in rounded relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
+  var tile_classes = 'weapon-tile bg-tile-color bg-opacity-60 border-2 border-tile-color hover:bg-opacity-100 transition-all duration-100 ease-in rounded relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
@@ -379,7 +379,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       </motion.div>
       <div className='w-full h-full flex flex-row items-center justify-center'>
         <div className='w-1/6 h-4/5 m-4 relative'>
-          <div id='inventory-card-wrapper' className='bg-black group overflow-hidden border-2 border-maincolor-lightest rounded mb-4 shadow-lg hover:shadow-2xl transition-all duration-100 ease-linear'>
+          <div id='inventory-card-wrapper' className='bg-black group overflow-hidden border-2 border-tile-color rounded mb-4 shadow-lg hover:shadow-2xl transition-all duration-100 ease-linear'>
             <img 
               id='inventory-card'
               data-equipslot='playercard'
@@ -388,7 +388,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               onClick={(e) => { redirectToCardChanger(e.target.getAttribute('data-card')) }}
             />
             <div 
-              className='absolute bottom-20 bg-maincolor-lightest bg-opacity-60 hover:bg-opacity-100 w-full mx-auto text-global-text h-8 border-t-2 border-b-2 border-maincolor-lightest flex items-center justify-center transition-all duration-100 ease-linear cursor-pointer'
+              className='absolute bottom-20 bg-tile-color bg-opacity-60 hover:bg-opacity-100 w-full mx-auto text-global-text h-8 border-t-2 border-b-2 border-tile-color flex items-center justify-center transition-all duration-100 ease-linear cursor-pointer'
             >
               <span className='text-global-text'>{playerTitle}</span>
             </div>

@@ -43,10 +43,22 @@ const light = createTheme({
   }
 });
 
+const experimental = createTheme({
+  type: "dark",
+  theme: {
+    colors: {
+      background: '#363636',
+      gradient: 'linear-gradient(to right, #FF047E, #832CFF)',
+      text: '#ffffff',
+    },
+  }
+});
+
 const themes = {
   normal,
   legacy,
-  light
+  light,
+  experimental
 }
 
 function MyApp({ Component, pageProps }) {
@@ -80,7 +92,7 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>VALTracker</title>
       </Head>
-      <NextUIProvider theme={theme ? themes[theme] : themes['normal']}>
+      <NextUIProvider theme={theme ? themes['experimental'] : themes['experimental']}>
         <WindowControls setup={setup} />
         {setup ? '' : <Navbar isNavbarMinimized={isNavbarMinimized} setIsNavbarMinimized={setIsNavbarMinimized} />}
         <AnimatePresence

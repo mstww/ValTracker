@@ -1,5 +1,6 @@
 import React from "react";
 import { Lock } from "../SVGs";
+
 export default function LevelTile({ name, effect, onClick, levelUUID, activeLevel, playerItemsAll, count }) {
   const [ playerItems, setPlayerItems ] = React.useState([]);
   const [ isOwned, setIsOwned ] = React.useState(false);
@@ -23,8 +24,8 @@ export default function LevelTile({ name, effect, onClick, levelUUID, activeLeve
   return (
     <div 
       className={
-        "relative chroma-swatch w-full h-14 border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-100 rounded pl-1 transition-all duration-100 ease-linear " +
-        (levelUUID == activeLevel ? 'border-button-color ' : 'border-maincolor-lightest ')
+        "relative chroma-swatch w-full h-14 border-2 border-tile-color bg-tile-color bg-opacity-60 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-100 rounded pl-1 transition-all duration-100 ease-linear " +
+        (levelUUID == activeLevel ? 'border-button-color ' : 'border-tile-color ')
         +
         (isOwned ? ' ' : 'text-gray-500')
       }

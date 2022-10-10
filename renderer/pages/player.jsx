@@ -555,7 +555,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                           var playerPositionText = 'Team MVP';
                         } else {
                           // Player is not Team MVP
-                          var playerPositionColor = 'bg-maincolor-lightest bg-opacity-30 border-2 border-maincolor-lightest border-opacity-30';
+                          var playerPositionColor = 'bg-tile-color bg-opacity-60 border-2 border-tile-color border-opacity-60';
 
                           if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
                           else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
@@ -627,7 +627,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                     }
 
                     return (
-                      <div id='match' className='flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded' key={index}>
+                      <div id='match' className='relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
                         <div className='w-1/4 flex flex-row'>
                           <div id='agent-img'>
                             <img className='h-full shadow-img' src={playerAgent ? `https://media.valorant-api.com/agents/${playerAgent}/displayicon.png` : ''} />

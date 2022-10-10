@@ -41,96 +41,99 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
         {
           playerWishlistSkins.length > 0 
           ?
-          <table className="w-full" id="scoreboard-table">
-            <tbody id="test-scoreboard">
-              <tr className="scoreboard-header">
-                <td className="w-1/6 relative left-1">{LocalText(L, "headers.skin")}</td>
-                <td className={"w-10%"} onClick={() => {
-                  setCurrentSortStat('price');
+          <>
+            <table className="w-full" id="scoreboard-table">
+              <tbody id="test-scoreboard" className="w-full">
+                <tr className="scoreboard-header">
+                  <td className="w-1/6 relative left-1">{LocalText(L, "headers.skin")}</td>
+                  <td className={"w-10%"} onClick={() => {
+                    setCurrentSortStat('price');
 
-                  var newArray = playerWishlistSkins.sort(function(a, b) {
-                    return b.price - a.price;
-                  });
+                    var newArray = playerWishlistSkins.sort(function(a, b) {
+                      return b.price - a.price;
+                    });
 
-                  setPlayerWishlistSkins(newArray);
-                }}>
-                  <span className='cursor-pointer'>{LocalText(L, "headers.price")}</span>
-                  {
-                    currentSortStat === 'price' ?
-                    <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
-                    :
-                    null
-                  }
-                </td>
-                <td className={"w-1/6"} onClick={() => {
-                  setCurrentSortStat('wishedAt');
+                    setPlayerWishlistSkins(newArray);
+                  }}>
+                    <span className='cursor-pointer'>{LocalText(L, "headers.price")}</span>
+                    {
+                      currentSortStat === 'price' ?
+                      <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                      :
+                      null
+                    }
+                  </td>
+                  <td className={"w-1/6"} onClick={() => {
+                    setCurrentSortStat('wishedAt');
 
-                  var newArray = playerWishlistSkins.sort(function(a, b) {
-                    return b.wishlistedAt - a.wishlistedAt;
-                  });
+                    var newArray = playerWishlistSkins.sort(function(a, b) {
+                      return b.wishlistedAt - a.wishlistedAt;
+                    });
 
-                  setPlayerWishlistSkins(newArray);
-                }}>
-                  <span className='cursor-pointer'>{LocalText(L, "headers.wishlisted_on")}</span>
-                  {
-                    currentSortStat === 'wishedAt' ?
-                    <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
-                    :
-                    null
-                  }
-                </td>
-                <td className={"w-10%"} onClick={() => {
-                  setCurrentSortStat('daysSince');
+                    setPlayerWishlistSkins(newArray);
+                  }}>
+                    <span className='cursor-pointer'>{LocalText(L, "headers.wishlisted_on")}</span>
+                    {
+                      currentSortStat === 'wishedAt' ?
+                      <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                      :
+                      null
+                    }
+                  </td>
+                  <td className={"w-10%"} onClick={() => {
+                    setCurrentSortStat('daysSince');
 
-                  var newArray = playerWishlistSkins.sort(function(a, b) {
-                    return a.wishlistedAt - b.wishlistedAt;
-                  });
+                    var newArray = playerWishlistSkins.sort(function(a, b) {
+                      return a.wishlistedAt - b.wishlistedAt;
+                    });
 
-                  setPlayerWishlistSkins(newArray);
-                }}>
-                  <span className='cursor-pointer'>{LocalText(L, "headers.days_since")}</span>
-                  {
-                    currentSortStat === 'daysSince' ?
-                    <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
-                    :
-                    null
-                  }
-                </td>
-                <td className={"w-10%"}>
-                  <span className=''>{LocalText(L, "headers.remove")}</span>
-                </td>
-              </tr>
-              <Spacer y={0.5} />
-
+                    setPlayerWishlistSkins(newArray);
+                  }}>
+                    <span className='cursor-pointer'>{LocalText(L, "headers.days_since")}</span>
+                    {
+                      currentSortStat === 'daysSince' ?
+                      <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                      :
+                      null
+                    }
+                  </td>
+                  <td className={"w-10%"}>
+                    <span className=''>{LocalText(L, "headers.remove")}</span>
+                  </td>
+                </tr>
+                <Spacer y={0.5} />
+              </tbody>
+            </table>
+            <>
               {playerWishlistSkins.map((skin, index) => {
                 moment.locale(router.query.lang);
                 var dateAdded = moment(skin.wishlistedAt).format('D. MMMM, YYYY');
                 var daysSinceAdded = Math.abs(moment().diff(parseInt(skin.wishlistedAt), 'days'));
                 return (
                   <>
-                    <motion.tr 
-                      className={'border-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 rounded'} key={index + 'tr'}
+                    <motion.div
+                      className={'flex flex-row items-center w-full h-24'} key={index + 'tr'}
                       variants={scoreboard_vars_initial}
                       initial="hidden"
                       enter="enter"
                       exir="exit"
                       transition={{ type: 'linear', duration: 0.5, delay: (index / 100) }}
                     >
-                      <td className='py-1 pl-1 flex flex-col items-center min-h-20'>
+                      <div className='py-1 pl-1 flex flex-col items-center border-l-2 border-t-2 border-b-2 border-tile-color bg-tile-color bg-opacity-60 w-1/4 h-full rounded-l'>
                         <div className="w-full flex items-center justify-center h-12 relative top-0 right-5">
                           <img src={skin.displayIcon} className='shadow-img max-h-full transform scale-90' />
                         </div>
                         <span className={'ml-4 text-lg font-light relative right-5 text-center'}>{skin.displayName}</span>
-                      </td>
-                      <td className={'py-1 text-xl'}>
+                      </div>
+                      <div className={'py-1 pl-1 border-t-2 border-b-2 border-tile-color bg-tile-color bg-opacity-60 w-1/5 h-full'}>
                         <div className="inline-flex flex-row items-center w-full">
                           <span className="w-10 text-right relative top-px">{skin.price}</span>
                           <img src="/images/vp_icon.png" className="w-6 ml-2 mr-auto" />
                         </div>
-                        </td>
-                      <td className={'py-1 text-xl'}><span>{dateAdded}</span></td>
-                      <td className={'py-1 text-xl'}><span>{daysSinceAdded}</span></td>
-                      <td className={'py-1 text-xl'}>
+                      </div>
+                      <div className={'py-1 text-xl border-t-2 border-b-2 border-tile-color bg-tile-color bg-opacity-60 w-1/5 h-full'}><span>{dateAdded}</span></div>
+                      <div className={'py-1 text-xl border-t-2 border-b-2 border-tile-color bg-tile-color bg-opacity-60 w-1/5 h-full'}><span>{daysSinceAdded}</span></div>
+                      <div className={'py-1 text-xl border-t-2 border-b-2 border-r-2 rounded-r border-tile-color bg-tile-color bg-opacity-60 w-1/5 h-full'}>
                         <button 
                           className="flex items-center"
                           onClick={() => {
@@ -156,14 +159,24 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                           <StarFilled cls='w-5 relative bottom-px mr-1' />
                           {LocalText(L, "content.remove_button_text")}
                         </button>
-                      </td>
+                      </div>
+                    </motion.div>
+                    <motion.tr 
+                      className={''} key={index + 'tr'}
+                      variants={scoreboard_vars_initial}
+                      initial="hidden"
+                      enter="enter"
+                      exir="exit"
+                      transition={{ type: 'linear', duration: 0.5, delay: (index / 100) }}
+                    >
                     </motion.tr>
                     <Spacer y={0.2} key={index + 'spacer'} />
                   </>
                 )
               })}
-            </tbody>
-          </table>
+            </>
+          </>
+          
           : 
           <div className="w-full text-center">{LocalText(L, "content.empty_text")}</div>
         }

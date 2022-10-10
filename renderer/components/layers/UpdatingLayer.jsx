@@ -197,7 +197,7 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
       </motion.div>
 
       <motion.div 
-        className="w-96 absolute z-20 bottom-6 right-6 rounded bg-maincolor border-2 border-maincolor-lightest flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+        className="w-96 absolute z-20 bottom-6 right-6 rounded bg-maincolor border-2 border-tile-color flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
         key={"DownloadCard"}
         variants={slider_card_variants}
         initial="hidden"

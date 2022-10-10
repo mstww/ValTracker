@@ -1297,7 +1297,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           var playerPositionText = 'Team MVP';
         } else {
           // Player is not Team MVP
-          var playerPositionColor = 'bg-maincolor-lightest bg-opacity-30 border-2 border-maincolor-lightest border-opacity-30';
+          var playerPositionColor = 'bg-tile-color bg-opacity-60 border-2 border-tile-color border-opacity-60';
 
           if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
           else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
@@ -1635,7 +1635,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <span className='leading-none px-1'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
                 <hr className='mb-1' />
               </div>
-              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border-2 border-maincolor-lightest rounded shadow-img'>
+              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border-2 border-tile-color rounded shadow-img'>
                 <div className='relative'>
                   <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img rounded' />
                 </div>
@@ -1794,7 +1794,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       return (
                         <div 
                           id='match'
-                          className='group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 hover:bg-maincolor-lightest cursor-default transition-all duration-100 ease-linear' 
+                          className='group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-tile-color cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
                             if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
