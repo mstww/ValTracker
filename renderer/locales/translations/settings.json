@@ -73,6 +73,11 @@
               "displayName": "Light Theme",
               "name": "light",
               "color": "#d1d1d1"
+            },
+            {
+              "displayName": "Dark Theme",
+              "name": "dark",
+              "color": "#090909"
             }
           ]
         }
@@ -187,7 +192,7 @@
       },
       "change_patchnotes_ver": {
         "header": "Select a Version",
-        "desc": "Select a Version you would like to see the patchnotes from.",
+        "desc": "Select a Version you would like to see the patchnotes of.",
         "button_1": "Confirm",
         "button_2": "Cancel"
       }
@@ -254,19 +259,24 @@
           "desc": "Wähle eine Farbe, die die App benutzen soll!",
           "themes": [
             {
-              "displayName": "Dunkeles Schema",
+              "displayName": "Normal",
               "name": "normal",
               "color": "#12171d"
             },
             {
-              "displayName": "Legacy-Farbschema",
+              "displayName": "Legacy",
               "name": "legacy",
               "color": "#2d2d2d"
             },
             {
-              "displayName": "Helles Schema",
+              "displayName": "Hell",
               "name": "light",
               "color": "#d1d1d1"
+            },
+            {
+              "displayName": "Dunkel",
+              "name": "dark",
+              "color": "#090909"
             }
           ]
         }
@@ -458,9 +468,14 @@
               "color": "#2d2d2d"
             },
             {
-              "displayName": "Thème Lumière",
+              "displayName": "Thème lumière",
               "name": "light",
               "color": "#d1d1d1"
+            },
+            {
+              "displayName": "Thème noir",
+              "name": "dark",
+              "color": "#090909"
             }
           ]
         }

@@ -470,8 +470,18 @@ input:checked + .slider:before {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
-  @apply bg-maincolor-lightest;
+  @apply bg-opacity-100 cursor-default;
   width: fit-content;
+  transition: all 0.2s ease;
+}
+
+.settings-tile.active:hover {
+  position: relative;
+  padding: 0.5rem 1rem;
+  transition: 0s;
+  @apply bg-opacity-100;
+  width: fit-content;
+  transition: all 0.2s ease;
 }
 
 .settings-tile.active::after {
@@ -481,7 +491,7 @@ input:checked + .slider:before {
   left: 0;
   width: auto;
   height: 50%;
-  @apply border-b-2 border-gradient-left rounded-b-sm;
+  @apply border-b-2 border-gradient-right rounded-b-sm;
   padding: 0.5rem 50%;
 }
 
@@ -491,19 +501,29 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline;
-  @apply rounded border-2 border-transparent;
+  @apply rounded border-2 border-tile-color bg-maincolor-lightest bg-opacity-0;
 }
 
 .settings-tile:hover {
-  @apply border-2 border-tile-color;
+  @apply border-2 bg-opacity-60;
 }
 
 .match-tile.active {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
-  @apply bg-tile-color;
+  @apply bg-opacity-100 cursor-default;
   width: fit-content;
+  transition: all 0.2s ease;
+}
+
+.match-tile.active:hover {
+  position: relative;
+  padding: 0.5rem 1rem;
+  transition: 0s;
+  @apply bg-opacity-100;
+  width: fit-content;
+  transition: all 0.2s ease;
 }
 
 .match-tile.active::after {
@@ -513,7 +533,7 @@ input:checked + .slider:before {
   left: 0;
   width: auto;
   height: 50%;
-  @apply border-b-2 border-gradient-left rounded-b-sm;
+  @apply border-b-2 border-gradient-right rounded-b-sm;
   padding: 0.5rem 50%;
 }
 
@@ -523,19 +543,29 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline;
-  @apply rounded border-2 border-transparent;
+  @apply rounded border-2 border-tile-color bg-maincolor-lightest bg-opacity-0;
 }
 
 .match-tile:hover {
-  @apply border-2 border-tile-color;
+  @apply border-2 bg-opacity-60;
 }
 
 .matchview-tile.active {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
-  @apply bg-tile-color;
+  @apply bg-opacity-100 cursor-default;
   width: fit-content;
+  transition: all 0.2s ease;
+}
+
+.match-tile.active:hover {
+  position: relative;
+  padding: 0.5rem 1rem;
+  transition: 0s;
+  @apply bg-opacity-100;
+  width: fit-content;
+  transition: all 0.2s ease;
 }
 
 .matchview-tile.active::after {
@@ -545,7 +575,7 @@ input:checked + .slider:before {
   left: 0;
   width: auto;
   height: 50%;
-  @apply border-b-2 border-gradient-left rounded-b-sm;
+  @apply border-b-2 border-gradient-right rounded-b-sm;
   padding: 0.5rem 50%;
 }
 
@@ -555,11 +585,11 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline;
-  @apply rounded border-2 border-transparent text-base;
+  @apply rounded border-2 border-tile-color bg-maincolor-lightest bg-opacity-0;
 }
 
 .matchview-tile:hover {
-  @apply border-2 border-tile-color;
+  @apply border-2 bg-opacity-60;
 }
 
 button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button):not(.change-color-btn):not(.setup-button):not(.disabled) {
@@ -1522,11 +1552,11 @@ body[lang="fr-FR"] #equip-skin-button {
 }
 
 .version-selector span {
-  @apply border-2 border-tile-color h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+  @apply border-2 border-tile-color bg-tile-color bg-opacity-60 h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
 }
 
 .version-selector span:hover {
-  @apply bg-tile-color;
+  @apply bg-opacity-100;
 }
 
 .version-selector span.active {
@@ -1534,7 +1564,7 @@ body[lang="fr-FR"] #equip-skin-button {
 }
 
 .version-selector span.active:hover {
-  @apply bg-maincolor;
+  @apply bg-opacity-60;
 }
 
 .player-search-mgnfy {

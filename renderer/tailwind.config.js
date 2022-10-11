@@ -57,7 +57,7 @@ var light_theme = {
   }
 }
 
-var experimental_theme = {
+var dark_theme = {
   colors: {
     "maincolor": "#090909",
     "maincolor-light": "#141414",
@@ -70,9 +70,9 @@ var experimental_theme = {
     "button-text": "#ffffff",
     "global-text": "#ffffff",
     "val-yellow": "#eaefb3",
-    "scrollbar-bg": "#c2c2c2",
-    "scrollbar-thumb-bg": "#8a8a8a",
-    "scrollbar-thumb-hover": "#535353"
+    "scrollbar-bg": "#535353",
+    "scrollbar-thumb-bg": "#c2c2c2",
+    "scrollbar-thumb-hover": "#8a8a8a"
   }
 }
 
@@ -96,9 +96,9 @@ module.exports = {
           theme: light_theme,
         },
         {
-          name: 'experimental',
-          selectors: ['.experimental'],
-          theme: experimental_theme,
+          name: 'dark',
+          selectors: ['.dark'],
+          theme: dark_theme,
         }
       ]
     })

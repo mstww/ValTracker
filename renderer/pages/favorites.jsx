@@ -202,7 +202,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
       }
     }
 
-    if(!winningTeamScore || !losingTeamScore) {
+    if((!winningTeamScore && winningTeamScore !== 0) || (!losingTeamScore && losingTeamScore !== 0)) {
       var winning_team = 'draw';
     }
 

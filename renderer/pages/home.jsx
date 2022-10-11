@@ -1198,7 +1198,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       }
     }
 
-    if(!winningTeamScore || !losingTeamScore) {
+    console.log(winningTeamScore, losingTeamScore);
+
+    if((!winningTeamScore && winningTeamScore !== 0) || (!losingTeamScore && losingTeamScore !== 0)) {
       var winning_team = 'draw';
     }
 
