@@ -1198,8 +1198,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       }
     }
 
-    console.log(winningTeamScore, losingTeamScore);
-
     if((!winningTeamScore && winningTeamScore !== 0) || (!losingTeamScore && losingTeamScore !== 0)) {
       var winning_team = 'draw';
     }

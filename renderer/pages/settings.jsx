@@ -499,7 +499,11 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
     closePopup(popupToClose);
   }
 
-  const openPopup = (setPopupOpen) => {
+  const openPopup = (setPopupOpen, info) => {
+    if(info === "riot_rm_account" && riot_accountList.length === 0) {
+      ipcRenderer.send("relayTextbox", "You cannot remove the account that the app is using.");
+      return;
+    }
     setPopupOpen(true);
     setPopupBackgroundShown(true);
     setIsOverlayShown(true);
@@ -958,7 +962,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
                 desc={LocalText(L, 'pg_3.grp_1.setting_2.desc')}
                 inputType={'button'}
                 buttonText={LocalText(L, 'pg_3.grp_1.setting_2.button_text')}
-                onClick={() => { openPopup(setRiot_RemoveAccountPopupOpen) }}
+                onClick={() => { openPopup(setRiot_RemoveAccountPopupOpen, "riot_rm_account") }}
               />
             </SettingsGroup>
 
