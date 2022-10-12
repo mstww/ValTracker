@@ -188,19 +188,11 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s1"));
         var regiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
         var region = regiondata.affinities.live;
-        var shopData = await getShopData(region, puuid, entitlement_token, bearer);
         setProgress(50);
-    
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData));
     
         Date.prototype.addSeconds = function (s) {
           var copiedDate = new Date(this.getTime());
           return new Date(copiedDate.getTime() + s * 1000);
-        }
-    
-        var dateData = {
-          lastCheckedDate: new Date().getTime(),
-          willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
         }
     
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s2"));
@@ -226,7 +218,6 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
         setPlayerData(userData);
     
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s4"));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData));
     
         if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid)) {
           fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid);

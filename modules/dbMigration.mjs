@@ -1,10 +1,11 @@
 import fs from 'fs';
+import notifier from 'node-notifier';
 
-const basePath = process.env.APPDATA * '/VALTracker/user_data/';
+const basePath = process.env.APPDATA + '/VALTracker/user_data/';
 
-var allSettings = {};
-
-(async () => {
+export async function migrateDataToDB() {
+  var allSettings = {};
+  
   allSettings.user_data = JSON.parse(fs.readFileSync(basePath + 'user_creds.json')); // Actual data of current user.
   
   allSettings.favMatchConfig = {};
@@ -37,8 +38,8 @@ var allSettings = {};
 
   homeConfigDir.forEach(folder => {
     if(folder.split(".").pop() !== "json") {
-      allSettings.hubConfig.contractProgress[folder] = JSON.parse(fs.readdirSync(basePath + 'home_settings/' + folder + '/current_contract_progress.json'));
-      allSettings.hubConfig.currentMatches[folder] = JSON.parse(fs.readdirSync(basePath + 'home_settings/' + folder + '/current_matches.json'));
+      allSettings.hubConfig.contractProgress[folder] = JSON.parse(fs.readFileSync(basePath + 'home_settings/' + folder + '/current_contract_progress.json'));
+      allSettings.hubConfig.currentMatches[folder] = JSON.parse(fs.readFileSync(basePath + 'home_settings/' + folder + '/current_matches.json'));
     }
   });
 
@@ -53,26 +54,70 @@ var allSettings = {};
   allSettings.inventoryConfig.currentInv = JSON.parse(fs.readFileSync(basePath + 'player_inventory/current_inventory.json'));
 
   allSettings.inventoryConfig.presets = {};
-  const presetsDir = fs.readdirSync(basePath + 'playerInventory/presets');
+  const presetsDir = fs.readdirSync(basePath + 'player_inventory/presets');
   presetsDir.forEach(folderUUID => {
-    const allPresets = fs.readdirSync(basePath + 'playerInventory/presets/' + folderUUID);
+    const allPresets = fs.readdirSync(basePath + 'player_inventory/presets/' + folderUUID);
 
     allPresets.forEach(presetFile => {
       const presetName = presetFile.split(".")[0].replace(" ", "-").toLowerCase();
-      allSettings.inventoryConfig.presets[presetName] = JSON.parse(fs.readFileSync(basePath + 'playerInventory/presets/' + folderUUID + '/' + presetFile));
+      allSettings.inventoryConfig.presets[presetName] = JSON.parse(fs.readFileSync(basePath + 'player_inventory/presets/' + folderUUID + '/' + presetFile));
     });
   });
 
   allSettings.riotData = {};
-
-  // TODO: riot_games_data/settings file (Add to either appConfig or mainProcessConfig)
+  allSettings.gamePresenceConfig = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/settings.json'));
 
   allSettings.riotData.cookies = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/cookies.json'));
   allSettings.riotData.entitlement = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/entitlement.json'));
   allSettings.riotData.tokens = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/token_data.json'));
 
-  allSettings.searchHistory = JSON.parse(fs.readFileSync(basePath + 'search_history/history.json'));
+  allSettings.searchHistory = (JSON.parse(fs.readFileSync(basePath + 'search_history/history.json'))).arr;
 
   allSettings.playerStoreConfig = {};
-  // TODO: /shop_data, /themes, /user_accounts, /wishlists, other TODOs in this file
-})();
+  allSettings.playerStoreConfig.featuredBundle = JSON.parse(fs.readFileSync(basePath + 'shop_data/featured_bundle.json'));
+
+  allSettings.playerStoreConfig.savedStores = {};
+
+  const allPlayerStoreDataDirs = fs.readdirSync(basePath + 'shop_data');
+  allPlayerStoreDataDirs.forEach(folderUUID => {
+    if(folderUUID.split(".").pop() !== "json") {
+      allSettings.playerStoreConfig.savedStores[folderUUID] = JSON.parse(fs.readFileSync(basePath + 'shop_data/' + folderUUID + '/daily_shop.json'));
+    }
+  });
+
+  allSettings.themeConfig = {};
+  allSettings.themeConfig.usedTheme = (JSON.parse(fs.readFileSync(basePath + 'themes/color_theme.json'))).themeName;
+
+  allSettings.userAccounts = {};
+
+  const allUserAccountFilesDir = fs.readdirSync(basePath + 'user_accounts');
+  allUserAccountFilesDir.forEach(fileUUID => {
+    const userUUID = fileUUID.split(".")[0];
+
+    allSettings.userAccounts[userUUID] = JSON.parse(fs.readFileSync(basePath + 'user_accounts/' + fileUUID));
+  });
+
+  allSettings.wishlists = {};
+
+  const allWishlistFilesDir = fs.readdirSync(basePath + 'wishlists');
+  allWishlistFilesDir.forEach(fileUUID => {
+    const userUUID = fileUUID.split(".")[0];
+
+    allSettings.wishlists[userUUID] = JSON.parse(fs.readFileSync(basePath + 'wishlists/' + fileUUID));
+  });
+
+  notifier.notify({
+    title: "Done",
+    message: "Done Migrating Boss",
+    icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
+    wait: 3,
+    appID: 'VALTracker'
+  }, function (err, response, metadata) {
+    if(response === undefined && err === null && JSON.stringify(metadata) === JSON.stringify({})) {
+      mainWindow.show();
+    }
+  });
+
+  fs.writeFileSync('C:/Users/reali/Desktop/allVALTrackerSettings.json', JSON.stringify(allSettings));
+  return allSettings;
+}

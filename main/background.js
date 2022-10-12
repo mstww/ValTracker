@@ -11,6 +11,7 @@ import RPC from 'discord-rpc';
 import notifier from 'node-notifier';
 import L from '../translation/main_process.json';
 import { spawn } from 'child_process';
+import { migrateDataToDB } from '../modules/dbMigration.mjs';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -142,6 +143,16 @@ async function connectAppPresence() {
 }
 
 connectAppPresence();
+
+console.log("EEEEEEEEEEEEEEEEEEE");
+
+async function migWaitThing() {
+  var mig = await migrateDataToDB();
+  console.log("---------------------------------------------");
+  console.log(mig);
+  console.log("---------------------------------------------");
+}
+migWaitThing();
 
 // Get instance lock
 const gotTheLock = app.requestSingleInstanceLock(); 

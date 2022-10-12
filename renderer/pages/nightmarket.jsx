@@ -13,12 +13,6 @@ import Layout from '../components/Layout';
 import StoreItem from '../components/StoreItem';
 import { useFirstRender } from '../components/useFirstRender';
 
-const slide_bottom = {
-  hidden: { opacity: 0, x: 0, y: 50 },
-  enter: { opacity: 1, x: 0, y: 0 },
-  exit: { opacity: 0, x: 0, y: 50 },
-}
-
 const backdrop_variants = {
   hidden: { opacity: 0, x: 0, y: 0, display: 'none' },
   enter: { opacity: 1, x: 0, y: 0, display: 'flex' },

@@ -80,24 +80,10 @@ export default function AccountTile({ currenttier, puuid, username, usertag, use
     try {
       puuid = await switcher_getPlayerUUID(bearer);
   
-      var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
-  
-      var region = newUserCreds.playerRegion
-  
-      var shopData = await switcher_getShopData(region, puuid, entitlement_token, bearer);
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/current_shop.json', JSON.stringify(shopData))
-  
       Date.prototype.addSeconds = function (seconds) {
         var copiedDate = new Date(this.getTime());
         return new Date(copiedDate.getTime() + seconds * 1000);
       }
-  
-      var dateData = {
-        lastCkeckedDate: new Date().getTime(),
-        willLastFor: new Date().addSeconds(shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds)
-      }
-  
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/last_checked_date.json', JSON.stringify(dateData))
 
       router.push(router.route + '?account=' + puuidToBeSwitchedTo + `&lang=${router.query.lang}`);
     } catch(err) {
