@@ -1,9 +1,17 @@
 import fs from 'fs';
 import notifier from 'node-notifier';
+import Surreal from 'surrealdb.js';
+import { v5 as uuidv5 } from 'uuid';
 
 const basePath = process.env.APPDATA + '/VALTracker/user_data/';
+const db = new Surreal(process.env.DB_URL);
 
 export async function migrateDataToDB() {
+  await db.signin({
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASS
+  });
+
   var allSettings = {};
   
   allSettings.user_data = JSON.parse(fs.readFileSync(basePath + 'user_creds.json')); // Actual data of current user.
@@ -67,9 +75,15 @@ export async function migrateDataToDB() {
   allSettings.riotData = {};
   allSettings.gamePresenceConfig = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/settings.json'));
 
-  allSettings.riotData.cookies = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/cookies.json'));
-  allSettings.riotData.entitlement = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/entitlement.json'));
-  allSettings.riotData.tokens = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/token_data.json'));
+  const riotDataDir = fs.readdirSync(basePath + 'user_data/riot_games_data');
+  riotDataDir.forEach(folderUUID => {
+    if(folder.split(".").pop() !== "json") {
+      allSettings.riotData[folderUUID] = {};
+      allSettings.riotData[folderUUID].cookies = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/' + folderUUID + '/cookies.json'));
+      allSettings.riotData[folderUUID].entitlement = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/' + folderUUID + '/entitlement.json'));
+      allSettings.riotData[folderUUID].tokens = JSON.parse(fs.readFileSync(basePath + 'riot_games_data/' + folderUUID + '/token_data.json'));
+    }
+  })
 
   allSettings.searchHistory = (JSON.parse(fs.readFileSync(basePath + 'search_history/history.json'))).arr;
 
@@ -106,18 +120,95 @@ export async function migrateDataToDB() {
     allSettings.wishlists[userUUID] = JSON.parse(fs.readFileSync(basePath + 'wishlists/' + fileUUID));
   });
 
-  notifier.notify({
-    title: "Done",
-    message: "Done Migrating Boss",
-    icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
-    wait: 3,
-    appID: 'VALTracker'
-  }, function (err, response, metadata) {
-    if(response === undefined && err === null && JSON.stringify(metadata) === JSON.stringify({})) {
-      mainWindow.show();
+  //fs.writeFileSync('C:/Users/reali/Desktop/allVALTrackerSettings.json', JSON.stringify(allSettings));
+
+  await db.use("app", "test");
+
+  const allPUUIDs = Object.keys(allSettings.userAccounts);
+
+  var allFavMatches = [];
+  for(var i = 0; i < allPUUIDs.length; i++) {
+    for(var j = 0; j < allSettings.favMatchConfig[allPUUIDs[i]].matches.length; j++) {
+      var result = await db.create(`match:⟨${allSettings.favMatchConfig[allPUUIDs[i]].matches[j].matchInfo.matchId}⟩`, allSettings.favMatchConfig[allPUUIDs[i]].matches[j]);
+      allFavMatches.push(allSettings.favMatchConfig[allPUUIDs[i]].matches[j].matchInfo.matchId);
     }
+  }
+
+  var favMatchConfigs = {};
+
+  for(var i = 0; i < allPUUIDs.length; i++) {
+    favMatchConfigs[allPUUIDs[i]] = (await db.create(`favMatchConfig:⟨${allPUUIDs[i]}⟩`, {})).id;
+    await db.create(`matchIDCollection:⟨favMatches::${allPUUIDs[i]}⟩`, {
+      "matchIDs": allFavMatches
+    });
+
+    await db.query(`RELATE favMatchConfig:⟨${allPUUIDs[i]}⟩->cache:⟨favMatches::${allPUUIDs[i]}⟩->matchIDCollection:⟨favMatches::${allPUUIDs[i]}⟩`);
+  }
+
+  var allHubMatches = [];
+  for(var i = 0; i < allPUUIDs.length; i++) {
+    for(var j = 0; j < Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]]).length; j++) {
+      var key_1 = Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]])[j];
+      for(var k = 0; k < Object.keys(allSettings.hubConfig.currentMatches[key_1].items.games).length; k++) {
+        var key_2 = Object.keys(allSettings.hubConfig.currentMatches[key_1].items.games)[k];
+        var match = allSettings.hubConfig.currentMatches[key_1].items.games[key_2];
+        await db.create(`match:⟨${match.matchInfo.matchId}⟩`, match);
+
+        allHubMatches.push(match.matchInfo.matchId);
+      }
+    }
+  }
+
+  var hubConfigs = {};
+
+  for(var i = 0; i < allPUUIDs.length; i++) {
+    hubConfigs[allPUUIDs[i]] = (await db.create(`hubConfig:⟨${allPUUIDs[i]}⟩`, {})).id;
+    await db.create(`matchIDCollection:⟨hub::${allPUUIDs[i]}⟩`, {
+      "matchIDs": allHubMatches
+    });
+
+    await db.query(`RELATE hubConfig:⟨${allPUUIDs[i]}⟩->cache:⟨hub::${allPUUIDs[i]}⟩->matchIDCollection:⟨hub::${allPUUIDs[i]}⟩`);
+  }
+
+  var allPlayerConfigs = {};
+
+  for(var i = 0; i < allPUUIDs.length; i++) {
+    let result = await db.create(`playerConfig:⟨${allPUUIDs[i]}⟩`, {
+      "favMatchConfig": favMatchConfigs[allPUUIDs[i]],
+      "hubConfig": hubConfigs[allPUUIDs[i]]
+    });
+    allPlayerConfigs[allPUUIDs[i]] = result.id;
+  }
+
+  var allPlayerDataIDs = [];
+  for(var i = 0; i < allPUUIDs.length; i++) {
+    var result = await db.create(`player:⟨${allPUUIDs[i]}⟩`, {
+      "name": allSettings.userAccounts[allPUUIDs[i]].playerName,
+      "tag": allSettings.userAccounts[allPUUIDs[i]].playerTag,
+      "region": allSettings.userAccounts[allPUUIDs[i]].playerRegion,
+      "uuid": allSettings.userAccounts[allPUUIDs[i]].playerUUID,
+      "rank": allSettings.userAccounts[allPUUIDs[i]].playerRank,
+      "playerConfig": allPlayerConfigs[allPUUIDs[i]]
+    });
+
+    allPlayerDataIDs.push(result.id);
+  }
+
+  var result = await db.create(`playerCollection:⟨app⟩`, {
+    "players": allPlayerDataIDs
   });
 
-  fs.writeFileSync('C:/Users/reali/Desktop/allVALTrackerSettings.json', JSON.stringify(allSettings));
+  for(var i = 0; i < allPUUIDs.length; i++) {
+    await db.create(`rgConfig:⟨${allPUUIDs[i]}⟩`, {
+      "accesstoken": allSettings.riotData[allPUUIDs[i]].tokens.accessToken,
+      "idtoken": allSettings.riotData[allPUUIDs[i]].tokens.id_token,
+      "ssid": "ssid=" + allSettings.riotData[allPUUIDs[i]].cookies.split("ssid=").pop().split(";")[0],
+      "tdid": "tdid=" + allSettings.riotData[allPUUIDs[i]].cookies.split("tdid=").pop().split(";")[0],
+      "entitlement": allSettings.riotData[allPUUIDs[i]].entitlement.entitlement_token
+    });
+  }
+
+  await db.query(`RELATE playerCollection:⟨app⟩->cache:⟨currentPlayer⟩->player:⟨${allSettings.user_data.playerUUID}⟩`);
+
   return allSettings;
 }
