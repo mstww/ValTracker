@@ -144,13 +144,9 @@ async function connectAppPresence() {
 
 connectAppPresence();
 
-console.log("EEEEEEEEEEEEEEEEEEE");
-
 async function migWaitThing() {
   var mig = await migrateDataToDB();
-  console.log("---------------------------------------------");
   console.log(mig);
-  console.log("---------------------------------------------");
 }
 migWaitThing();
 
