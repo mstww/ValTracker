@@ -89,8 +89,10 @@ const execFilePath = path.join(
   "VALTrackerDB.exe"
 ).replace("app.asar", "app.asar.unpacked");
 
+var child;
+
 if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
-  const child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
+  child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
 
   child.stdout.on('data', function (data) {
     process.stdout.write(data);
@@ -1360,6 +1362,19 @@ var isInSetup = false;
     });
 
     isInSetup = true;
+
+    ipcMain.on("finishedSetup", function () {
+      isInSetup = false;
+    });
+
+    app.on("before-quit", () => {
+      if(child) {
+        child.kill();
+      }
+      if(isInSetup == true) {
+        fs.rmSync(process.env.APPDATA + "/VALTracker/user_data", { recursive: true, force: true });
+      }
+    });
 
     noFilesFound();
   } else {

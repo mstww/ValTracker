@@ -259,10 +259,6 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
     ipcRenderer.send('finishedSetup');
   }
 
-  React.useEffect(() => {
-    ipcRenderer.send('isInSetup');
-  }, []);
-
   return (
     <Layout setup={true} classNames={'overflow-hidden'} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className='flex flex-col items-center p-4 h-full w-full'>
