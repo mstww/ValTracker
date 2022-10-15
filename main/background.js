@@ -150,8 +150,7 @@ connectAppPresence();
 
 async function migWaitThing() {
   if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
-    var mig = await migrateDataToDB();
-    console.log(mig);
+    await migrateDataToDB();
   }
 }
 migWaitThing();
@@ -549,7 +548,6 @@ async function reauthAllAccounts() {
         const { error, items, puuid } = await reauthAccount(uuid);
 
         if(error === true) {
-          console.log(items);
           reauth_array.push({ error, items, puuid });
         } else {
           data_array.push(items);
@@ -1341,8 +1339,6 @@ var isInSetup = false;
     var theme = theme_raw.themeName;
   }
 
-  console.log(fs.existsSync(app_data + "/user_data"));
-
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
     mainWindow = createWindow('setup-win', {
       width: 620,
@@ -1610,7 +1606,7 @@ var isInSetup = false;
     download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
   };
   
-  if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json" && isInSetup === false)) {
+  if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json") && isInSetup === false) {
     var { error, items, reauthArray } = await reauthAllAccounts();
     var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
 
@@ -1633,7 +1629,6 @@ var isInSetup = false;
         setInterval(refreshAllEntitlementTokens, ent_expiresIn * 1000); 
         console.log("All accounts will be reauthenticated in 55 Minutes.");
       }
-
       if (isProd) {
         await mainWindow.loadURL(`app://./home.html?usedTheme=${theme}&lang=${appLang}`);
       } else {
@@ -1815,14 +1810,11 @@ async function showSignIn(writeToFile) {
     });
     let foundToken = false;
     loginWindow.webContents.on('will-redirect', (event, url) => {
-      console.log(url);
       // Login window redirecting...
       if(!foundToken && url.startsWith('http://localhost:42069/redirect')) {
         // Redirecting to url with tokens
         const tokenData = getTokenDataFromURL(url);
         foundToken = true;
-
-        console.log(tokenData);
 
         loginWindow.webContents.session.cookies.get({
           domain: 'auth.riotgames.com'
@@ -1849,8 +1841,6 @@ async function showSignIn(writeToFile) {
       var url = loginWindow.webContents.getURL();
       const tokenData = getTokenDataFromURL(url);
       foundToken = true;
-
-      console.log(tokenData);
 
       loginWindow.webContents.session.cookies.get({
         domain: 'auth.riotgames.com'
