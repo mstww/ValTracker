@@ -725,7 +725,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
       for(var i = 0; i < new_matches.length; i++) {
         var dateDiff = getDifferenceInDays(newMatches[i].matchInfo.gameStartMillis, Date.now());
-        moment.locale(lang);
+        moment.locale(router.query.lang);
         var startdate = moment();
         startdate = startdate.subtract(dateDiff, "days");
         var matchDate = startdate.format("D. MMMM");
@@ -860,7 +860,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   
         for(var i = 0; i < newMatchesArray.length; i++) {
           var dateDiff = getDifferenceInDays(newMatchesArray[i].matchInfo.gameStartMillis, Date.now());
-          moment.locale(lang);
+          moment.locale(router.query.lang);
           var startdate = moment();
           startdate = startdate.subtract(dateDiff, "days");
           var matchDate = startdate.format("D. MMMM");

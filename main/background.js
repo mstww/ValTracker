@@ -89,14 +89,16 @@ const execFilePath = path.join(
   "VALTrackerDB.exe"
 ).replace("app.asar", "app.asar.unpacked");
 
-const child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
+if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
+  const child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
 
-child.stdout.on('data', function (data) {
-  process.stdout.write(data);
-});
-child.stderr.on('data', function (data) {
-  process.stderr.write(data);
-});
+  child.stdout.on('data', function (data) {
+    process.stdout.write(data);
+  });
+  child.stderr.on('data', function (data) {
+    process.stderr.write(data);
+  });
+}
 
 // Set custom Protocol to start App
 if(process.defaultApp) {
@@ -145,8 +147,10 @@ async function connectAppPresence() {
 connectAppPresence();
 
 async function migWaitThing() {
-  var mig = await migrateDataToDB();
-  console.log(mig);
+  if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
+    var mig = await migrateDataToDB();
+    console.log(mig);
+  }
 }
 migWaitThing();
 
@@ -1199,8 +1203,9 @@ async function checkStoreForWishlistItems() {
 }
 
 // Set global mainWindow variable
-let mainWindow;
-let appIcon;
+var mainWindow;
+var appIcon;
+var isInSetup = false;
 
 (async () => {
   var pjson = require('../package.json');
@@ -1334,6 +1339,8 @@ let appIcon;
     var theme = theme_raw.themeName;
   }
 
+  console.log(fs.existsSync(app_data + "/user_data"));
+
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
     mainWindow = createWindow('setup-win', {
       width: 620,
@@ -1351,6 +1358,8 @@ let appIcon;
       },
       show: startedHidden === undefined,
     });
+
+    isInSetup = true;
 
     noFilesFound();
   } else {
@@ -1543,7 +1552,7 @@ let appIcon;
     createInventoryData();
   }
 
-  if(fs.existsSync(app_data + "/user_data/user_creds.json")) {
+  if(fs.existsSync(app_data + "/user_data/user_creds.json") && isInSetup === false) {
     await checkUserData(); 
 
     var raw = fs.readFileSync(app_data + "/user_data/user_creds.json");
@@ -1586,7 +1595,7 @@ let appIcon;
     download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
   };
   
-  if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
+  if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json" && isInSetup === false)) {
     var { error, items, reauthArray } = await reauthAllAccounts();
     var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
 

@@ -175,7 +175,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   const [ showSetSkinButton, setShowSetSkinButton ] = React.useState(true);
   const [ showWishlistButton, setShowWishlistButton ] = React.useState(false);
-  const [ lockWishlistButton, setLockWishlistButton ] = React.useState(true);
+  const [ lockWishlistButton, setLockWishlistButton ] = React.useState(false);
 
   const [ showUnownedSkins, setShowUnownedSkins ] = React.useState(false);
 
