@@ -27,7 +27,7 @@ export default function IpcLayer() {
           break;
         }
         case("settings"): {
-          ipcRenderer.send('changeDiscordRP', 'settings_acitivity');
+          ipcRenderer.send('changeDiscordRP', 'settings_activity');
           break;
         }
         case("matchview"): {

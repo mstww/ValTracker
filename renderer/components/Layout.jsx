@@ -26,7 +26,7 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized,
   }
   
   React.useEffect(() => {
-    document.body.classList.add(router.query.usedTheme);
+    if(router.query.usedTheme) document.body.classList.add(router.query.usedTheme);
   }, [ router.query ]);
 
   if(router.query.usedTheme) {

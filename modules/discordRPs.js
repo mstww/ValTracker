@@ -61,7 +61,7 @@ const skins_activity = {
     instance: true
 }
 
-const pprofile_acitivity = {
+const pprofile_activity = {
     details: "Browsing a player's profile",
     assets: {
         large_image: "valtracker_logo",
@@ -103,7 +103,7 @@ const favmatches_activity = {
     instance: true
 }
 
-const settings_acitivity = {
+const settings_activity = {
     details: "Editing settings",
     assets: {
         large_image: "valtracker_logo",
@@ -170,9 +170,9 @@ export {
     starting_activity,
     hub_activity,
     skins_activity,
-    pprofile_acitivity,
+    pprofile_activity,
     favmatches_activity,
-    settings_acitivity,
+    settings_activity,
     matchview_activity,
     shop_activity
 }

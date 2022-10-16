@@ -123,9 +123,7 @@ export async function migrateDataToDB() {
       allSettings.wishlists[userUUID] = JSON.parse(fs.readFileSync(basePath + 'wishlists/' + fileUUID));
     });
 
-    //fs.writeFileSync('C:/Users/reali/Desktop/allVALTrackerSettings.json', JSON.stringify(allSettings.hubConfig));
-
-    await db.use("app", "test");
+    await db.use("app", "main");
 
     const allPUUIDs = Object.keys(allSettings.userAccounts);
 

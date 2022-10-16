@@ -39,28 +39,22 @@ img {
   position: fixed;
   height: 28px;
   width: 100%;
+  padding: 4px;
+  padding-right: 0;
+  z-index: 10000 !important;
+  top: -1px;
+  margin-top: 1px;
+  @apply text-global-text;
 }
 
 .maximized #titlebar {
   width: 100%;
 }
 
-#titlebar {
-  padding: 4px;
-  padding-right: 0;
-  z-index: 10000 !important;
-  top: -1px;
-  margin-top: 1px;
-  @apply text-global-text
-}
-
 #titlebar #drag-region {
   width: 100%;
   height: 100%;
   -webkit-app-region: drag;
-}
-
-#titlebar #drag-region {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: auto 138px;
@@ -116,10 +110,6 @@ img {
   margin-right: 0rem;
 }
 
-#window-controls {
-  -webkit-app-region: no-drag;
-}
-
 .maximized #window-title {
   height: 22px;
 }
@@ -137,6 +127,7 @@ img {
   top: 0;
   right: 0;
   height: 28px;
+  -webkit-app-region: no-drag;
 }
 
 #window-controls .button {
@@ -153,6 +144,10 @@ img {
   align-items: center;
   width: 100%;
   height: 100%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 @media (-webkit-device-pixel-ratio: 1.5),
@@ -165,13 +160,6 @@ img {
     width: 10px;
     height: 10px;
   }
-}
-
-#window-controls .button {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
 #window-controls .button:hover {
@@ -353,11 +341,9 @@ img {
   filter: drop-shadow(0px 0px 5px #000000);
 }
 
-.light.shadow-img {
-  filter: drop-shadow(0px 0px 3px #000000);
+.light .shadow-img {
+  filter: drop-shadow(0px 0px 3px #616161);
 }
-
-/* The switch - the box around the slider */
 .switch {
   display: inline-block;
   min-width: 50px;
@@ -369,14 +355,12 @@ img {
   cursor: initial;
 }
 
-/* Hide default HTML checkbox */
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* The slider */
 .slider {
   max-width: 50px;
   max-height: 24px;
@@ -435,7 +419,6 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* Rounded sliders */
 .slider.round {
   border-radius: 32px;
 }
@@ -466,7 +449,7 @@ input:checked + .slider:before {
   height: 85%;
 }
 
-.settings-tile.active {
+.tab-tile.active {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
@@ -475,7 +458,7 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
 }
 
-.settings-tile.active:hover {
+.tab-tile.active:hover {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
@@ -484,7 +467,7 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
 }
 
-.settings-tile.active::after {
+.tab-tile.active::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -495,7 +478,7 @@ input:checked + .slider:before {
   padding: 0.5rem 50%;
 }
 
-.settings-tile {
+.tab-tile {
   padding: 0.5rem 1rem;
   border-radius: 0px;
   transition: all 0.2s ease;
@@ -504,92 +487,34 @@ input:checked + .slider:before {
   @apply rounded border-2 border-tile-color bg-maincolor-lightest bg-opacity-0;
 }
 
-.settings-tile:hover {
+.tab-tile:hover {
   @apply border-2 bg-opacity-60;
 }
 
-.match-tile.active {
-  position: relative;
-  padding: 0.5rem 1rem;
-  transition: 0s;
-  @apply bg-opacity-100 cursor-default;
-  width: fit-content;
-  transition: all 0.2s ease;
-}
-
-.match-tile.active:hover {
-  position: relative;
-  padding: 0.5rem 1rem;
-  transition: 0s;
-  @apply bg-opacity-100;
-  width: fit-content;
-  transition: all 0.2s ease;
-}
-
-.match-tile.active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: auto;
-  height: 50%;
-  @apply border-b-2 border-gradient-right rounded-b-sm;
-  padding: 0.5rem 50%;
-}
-
-.match-tile {
-  padding: 0.5rem 1rem;
-  border-radius: 0px;
-  transition: all 0.2s ease;
+.text-button {
+  background-color: none;
+  background: none;
   cursor: pointer;
-  display: inline;
-  @apply rounded border-2 border-tile-color bg-maincolor-lightest bg-opacity-0;
+  margin: 15px 40px;
+  padding: 0;
+  padding-left: 0rem;
+  padding-right: 0rem;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+  @apply bg-transparent text-sm;
 }
 
-.match-tile:hover {
-  @apply border-2 bg-opacity-60;
-}
-
-.matchview-tile.active {
-  position: relative;
-  padding: 0.5rem 1rem;
-  transition: 0s;
-  @apply bg-opacity-100 cursor-default;
-  width: fit-content;
-  transition: all 0.2s ease;
-}
-
-.match-tile.active:hover {
-  position: relative;
-  padding: 0.5rem 1rem;
-  transition: 0s;
-  @apply bg-opacity-100;
-  width: fit-content;
-  transition: all 0.2s ease;
-}
-
-.matchview-tile.active::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: auto;
-  height: 50%;
-  @apply border-b-2 border-gradient-right rounded-b-sm;
-  padding: 0.5rem 50%;
-}
-
-.matchview-tile {
-  padding: 0.5rem 1rem;
-  border-radius: 0px;
-  transition: all 0.2s ease;
+.text-button:hover {
+  text-decoration: underline;
+  background-color: none;
+  background: none;
   cursor: pointer;
-  display: inline;
-  @apply rounded border-2 border-tile-color bg-maincolor-lightest bg-opacity-0;
-}
-
-.matchview-tile:hover {
-  @apply border-2 bg-opacity-60;
+  margin: 15px 40px;
+  padding: 0;
+  padding-left: 0rem;
+  padding-right: 0rem;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
 }
 
 button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button):not(.change-color-btn):not(.setup-button):not(.disabled) {
@@ -747,32 +672,6 @@ h5 {
 
 .day-header::first-letter {
   text-transform: capitalize;
-}
-
-.text-button {
-  background-color: none;
-  background: none;
-  cursor: pointer;
-  margin: 15px 40px;
-  padding: 0;
-  padding-left: 0rem;
-  padding-right: 0rem;
-  padding-top: 0rem;
-  padding-bottom: 0rem;
-  @apply bg-transparent text-sm;
-}
-
-.text-button:hover {
-  text-decoration: underline;
-  background-color: none;
-  background: none;
-  cursor: pointer;
-  margin: 15px 40px;
-  padding: 0;
-  padding-left: 0rem;
-  padding-right: 0rem;
-  padding-top: 0rem;
-  padding-bottom: 0rem;
 }
 
 .unowned-skin {
@@ -1340,10 +1239,6 @@ h5 {
   transform-origin: left;
 }
 
-.flip-img {
-  transform: scaleX(-1);
-}
-
 .favs-right {
   height: calc(100% - 1.75rem);
 }
@@ -1366,16 +1261,6 @@ h5 {
   -webkit-text-fill-color: transparent;
 }
 
-ol {
-  margin-left: 1.2rem;
-}
-
-ol li {
-  list-style: decimal;
-  margin-left: 1rem;
-}
-
-/* The switch - the box around the slider */
 .language-checkbox {
   display: inline-block;
   width: 48%;
@@ -1386,7 +1271,6 @@ ol li {
   cursor: initial;
 }
 
-/* Hide default HTML checkbox */
 .language-checkbox input {
   opacity: 0;
   width: 0;
@@ -1544,7 +1428,6 @@ body[lang="fr-FR"] #equip-skin-button {
   cursor: initial;
 }
 
-/* Hide default HTML checkbox */
 .version-selector input {
   opacity: 0;
   width: 0;

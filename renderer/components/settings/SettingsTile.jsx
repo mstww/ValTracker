@@ -9,7 +9,7 @@ const variants = {
 export default function SettingsTile({ type, text, delay, active, onClick }) {
   return (
     <motion.div 
-      className={"settings-tile " + (active == type ? "active" : "")}
+      className={"tab-tile " + (active == type ? "active" : "")}
       variants={variants}
       initial="hidden"
       animate="enter"

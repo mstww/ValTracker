@@ -800,7 +800,7 @@ function PlayerInfo({ isNavbarMinimized }) {
 
 function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   React.useEffect(() => {
-    ipcRenderer.send('changeDiscordRP', 'pprofile_acitivity');
+    ipcRenderer.send('changeDiscordRP', 'pprofile_activity');
   });
 
   return (

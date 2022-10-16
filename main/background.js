@@ -1,6 +1,5 @@
 import { app, ipcMain, Menu, Tray, session } from 'electron';
 import serve from 'electron-serve';
-import { createWindow } from './helpers';
 import fs from 'fs';
 import path from 'path';
 import { autoUpdater } from 'electron-updater';
@@ -9,62 +8,19 @@ import fetch from 'electron-fetch';
 import { Worker } from 'worker_threads';
 import RPC from 'discord-rpc';
 import notifier from 'node-notifier';
-import L from '../translation/main_process.json';
 import { spawn } from 'child_process';
+
+import { createWindow } from './helpers';
 import { migrateDataToDB } from '../modules/dbMigration.mjs';
+
+import L from '../translation/main_process.json';
+import LocalText from './helpers/localization.mjs';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-function LocalText(json, path, num1replace, num2replace, num3replace) {
-  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json')) {
-    var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-      
-    if(on_load.appLang === undefined) var lang = 'en-US'
-    else var lang = on_load.appLang;
-  } else {
-    var lang = 'en-US';
-  }
-
-  var str = (lang + '.' + path);
-
-  var res = str.split('.').reduce(function(o, k) {
-    return o && o[k];
-  }, json);
-
-  if(res === undefined) {
-    var str = 'en-US.' + path;
-    var res = str.split('.').reduce(function(o, k) {
-      return o && o[k];
-    }, json);
-  }
-
-  if(typeof res === "string") {
-    res = res.replace("{{ val1 }}", num1replace);
-    res = res.replace("{{ val2 }}", num2replace);
-    res = res.replace("{{ val3 }}", num3replace);
-  }
-
-  return res;
-}
-
 const discord_rps = require("../modules/discordRPs.js");
-
-// Change Discord RP if App requests it
-var RPState = "app";
-    
-var app_data = app.getPath("userData");
-
-if(fs.existsSync(process.env.APPDATA + "/user_data/load_files/on_load.json")) {
-  let onLoadData2 = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-  let loadData2 = JSON.parse(onLoadData2);
-  
-  if(loadData2.enableHardwareAcceleration == false) {
-    app.disableHardwareAcceleration();
-  }
-}
-
-const isProd = process.env.NODE_ENV === 'production';
+const pjson = require('../package.json');
 
 const sendMessageToWindow = (channel, args) => {
   mainWindow.webContents.send(channel, args);
@@ -76,10 +32,54 @@ async function asyncTimeout(delay) {
   });
 }
 
+const isProd = process.env.NODE_ENV === 'production';
+var app_data = app.getPath("userData");
+
+var RPState = "app";
+var child;
+
+var discordVALPresence;
+var discordClient;
+
+const gotTheLock = app.requestSingleInstanceLock(); 
+
+if(!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", (event, CommandLine, workingDirectory) => {
+    if(mainWindow) {
+      if(mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+      mainWindow.show();
+      if(appIcon) {
+        appIcon.destroy();
+      }
+    }
+  });
+}
+
 if (isProd) {
   serve({ directory: 'app' });
 } else {
   app.setPath('userData', `${app.getPath('userData')}`);
+}
+
+if(fs.existsSync(process.env.APPDATA + "/user_data/load_files/on_load.json")) {
+  let loadData = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json"));
+  
+  if(loadData.enableHardwareAcceleration == false) {
+    app.disableHardwareAcceleration();
+  }
+}
+
+if(process.defaultApp) {
+  if(process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient("x-valtracker-client", process.execPath, [
+      path.resolve(process.argv[1]),
+    ]);
+  }
+} else {
+  app.setAsDefaultProtocolClient("x-valtracker-client");
 }
 
 const execFilePath = path.join(
@@ -88,8 +88,6 @@ const execFilePath = path.join(
   "lib",
   "VALTrackerDB.exe"
 ).replace("app.asar", "app.asar.unpacked");
-
-var child;
 
 if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
   child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
@@ -101,20 +99,6 @@ if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
     process.stderr.write(data);
   });
 }
-
-// Set custom Protocol to start App
-if(process.defaultApp) {
-  if(process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient("x-valtracker-client", process.execPath, [
-      path.resolve(process.argv[1]),
-    ]);
-  }
-} else {
-  app.setAsDefaultProtocolClient("x-valtracker-client");
-}
-
-var discordVALPresence;
-var discordClient;
 
 async function connectGamePresence() {
   try {
@@ -153,25 +137,8 @@ async function migWaitThing() {
     await migrateDataToDB();
   }
 }
+
 migWaitThing();
-
-// Get instance lock
-const gotTheLock = app.requestSingleInstanceLock(); 
-
-if(!gotTheLock) {
-  app.quit();
-} else {
-  app.on("second-instance", (event, CommandLine, workingDirectory) => {
-    if(mainWindow) {
-      if(mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-      mainWindow.show();
-      if(appIcon) {
-        appIcon.destroy();
-      }
-    }
-  });
-}
 
 function createFavMatches() {
   // Create /favourite_matches dir
@@ -266,15 +233,6 @@ function createInventoryData() {
   fs.writeFileSync(app_data + "/user_data/player_inventory/current_inventory.json", JSON.stringify(inventoryData));
 }
 
-async function getUserData(region) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch("https://pd." + region + ".a.pvp.net/name-service/v2/players", {
-    method: 'PUT',
-    body: "[\"" + user_creds.playerUUID + "\"]",
-    keepalive: true
-  })).json());
-}
-
 async function getAccessTokens(ssid) {
   return (await fetch("https://auth.riotgames.com/api/v1/authorization", {
     method: 'POST',
@@ -329,42 +287,6 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
     }
   } else {
     return 0;
-  }
-}
-
-async function checkUserData() {
-  var raw = fs.readFileSync(app_data + "/user_data/user_creds.json");
-  var user_creds = JSON.parse(raw);
-  
-  if(!user_creds.playerName) {
-    var response = await getUserData(user_creds.playerRegion);
-
-    user_creds.playerName = response.data[0].GameName;
-    user_creds.playerTag = response.data[0].TagLine;
-
-    fs.writeFileSync(app_data + "/user_data/user_creds.json", JSON.stringify(user_creds));
-    fs.writeFileSync(app_data + "/user_data/user_accounts/" + user_creds.playerUUID + ".json", JSON.stringify(user_creds));
-  }
-
-  if(!user_creds.playerUUID) {
-    var account_data = await (await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${user_creds.playerName}/${user_creds.playerTag}`)).json();
-
-    user_creds.playerUUID = account_data.data.puuid;
-
-    fs.writeFileSync(app_data + "/user_data/user_creds.json", JSON.stringify(user_creds));
-    fs.writeFileSync(app_data + "/user_data/user_accounts/" + user_creds.playerUUID + ".json", JSON.stringify(user_creds));
-  }
-
-  if(!user_creds.playerRank) {
-    var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
-    var bearer = token_data.accessToken;
-    var ent = await getEntitlement(bearer);
-    var currenttier = await getPlayerMMR(user_creds.playerRegion, user_creds.playerUUID, ent, bearer);
-
-    user_creds.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
-
-    fs.writeFileSync(app_data + "/user_data/user_creds.json", JSON.stringify(user_creds));
-    fs.writeFileSync(app_data + "/user_data/user_accounts/" + user_creds.playerUUID + ".json", JSON.stringify(user_creds));
   }
 }
 
@@ -1208,8 +1130,6 @@ var appIcon;
 var isInSetup = false;
 
 (async () => {
-  var pjson = require('../package.json');
-  
   var appStatus = await(await fetch('https://api.valtracker.gg/status/app', {
     headers: {
       "auth": 'v' + pjson.version,
@@ -1266,78 +1186,71 @@ var isInSetup = false;
     }
   })).json();
   
-  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
-    if(featureStatus.data.app_discord_rp.enabled === true) {
-      //Login with Discord client 
-      discordClient.login({
-        clientId: "1018145263761764382",
-      });
-      
-      // Set activity after client is finished loading
-      discordClient.on("ready", () => {
-        if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
-          discordClient.request("SET_ACTIVITY", {
-            pid: process.pid,
-            activity: discord_rps.starting_activity,
-          });
-        }
-      });
-    } else {
-      RPState = 'disabled'
-    }
-
-    if(featureStatus.data.valorant_discord_rp.enabled === true) {
-      //Login with Discord client
-      discordVALPresence.login({
-        clientId: "957041886093267005",
-      });
+  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data') && featureStatus.data.app_discord_rp.enabled) {
+    //Login with Discord client 
+    discordClient.login({
+      clientId: "1018145263761764382",
+    });
     
-      var VAL_WEBSOCKET = new Worker(new URL("../modules/valWebSocketComms.mjs", import.meta.url));
-      
-      VAL_WEBSOCKET.on("message", async (msg) => {
-        switch(msg.channel) {
-          case("message"): {
-            if(msg.data === "fetchPlayerData") {
-              var data = await checkForMatch();
-            } else {
-              console.log(msg.data);
-            }
-          }
-          case("WS_Event"): {
-            var data = await getDataFromWebSocketEvent(msg.data);
-            if(data !== undefined) {
-              decideRichPresenceData(data);
-            }
-          }
-          case("toggleDRP"): {
-            if(msg.data === true) {
-              RPState = 'val';
-              discordClient.clearActivity(process.pid);
-            } else if(msg.data === false) {
-              RPState = 'app';
-              discordVALPresence.clearActivity(69);
-              sendMessageToWindow('setDRPtoCurrentPage');
-            }
+    // Set activity after client is finished loading
+    discordClient.on("ready", () => {
+      if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
+        discordClient.request("SET_ACTIVITY", {
+          pid: process.pid,
+          activity: discord_rps.starting_activity,
+        });
+      }
+    });
+  } else {
+    RPState = 'disabled'
+  }
+
+  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data') && featureStatus.data.valorant_discord_rp.enabled === true) {
+    //Login with Discord client
+    discordVALPresence.login({
+      clientId: "957041886093267005",
+    });
+  
+    var VAL_WEBSOCKET = new Worker(new URL("../modules/valWebSocketComms.mjs", import.meta.url));
+    
+    VAL_WEBSOCKET.on("message", async (msg) => {
+      switch(msg.channel) {
+        case("message"): {
+          if(msg.data === "fetchPlayerData") {
+            var data = await checkForMatch();
+          } else {
+            console.log(msg.data);
           }
         }
-      });
-      
-      VAL_WEBSOCKET.on("error", err => {
-        console.log(err);
-      });
-      
-      VAL_WEBSOCKET.on("exit", exitCode => {
-        console.log(exitCode);
-      });
-    }
+        case("WS_Event"): {
+          var data = await getDataFromWebSocketEvent(msg.data);
+          if(data !== undefined) {
+            decideRichPresenceData(data);
+          }
+        }
+        case("toggleDRP"): {
+          if(msg.data === true) {
+            RPState = 'val';
+            discordClient.clearActivity(process.pid);
+          } else if(msg.data === false) {
+            RPState = 'app';
+            discordVALPresence.clearActivity(69);
+            sendMessageToWindow('setDRPtoCurrentPage');
+          }
+        }
+      }
+    });
+    
+    VAL_WEBSOCKET.on("error", err => {
+      console.log(err);
+    });
+    
+    VAL_WEBSOCKET.on("exit", exitCode => {
+      console.log(exitCode);
+    });
   }
 
   var startedHidden = process.argv.find(arg => arg === '--start-hidden');
-
-  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/')) {
-    var theme_raw = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
-    var theme = theme_raw.themeName;
-  }
 
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
     mainWindow = createWindow('setup-win', {
@@ -1361,6 +1274,7 @@ var isInSetup = false;
 
     ipcMain.on("finishedSetup", function () {
       isInSetup = false;
+      app.quit();
     });
 
     app.on("before-quit", () => {
@@ -1426,7 +1340,7 @@ var isInSetup = false;
   }
 
   mainWindow.onbeforeunload = () => {
-    win.removeAllListeners();
+    mainWindow.removeAllListeners();
   };
 
   mainWindow.on("move", () => {
@@ -1452,20 +1366,18 @@ var isInSetup = false;
   });
 
   ipcMain.on("close-window", async function () {
-    var app_data = app.getPath("userData");
-    var raw = fs.readFileSync(app_data + "/user_data/load_files/on_load.json");
-    var json = JSON.parse(raw);
+    var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
 
-    if(json.minimizeOnClose == false || json.minimizeOnClose == undefined) {
+    if(config.minimizeOnClose === false || config.minimizeOnClose === undefined) {
       mainWindow.close();
       return;
     }
 
-    var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
     if(config.hideDiscordRPWhenHidden === true) {
       RPState = 'ClientHidden';
       discordClient.clearActivity(process.pid);
     }
+
     mainWindow.hide();
 
     appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
@@ -1501,113 +1413,26 @@ var isInSetup = false;
 
     appIcon.setContextMenu(contextMenu);
   });
-
-  if(fs.existsSync(app_data + "/settings")) {
-    fs.renameSync(app_data + "/settings", app_data + "/user_data");
-  }
-
-  if(!fs.existsSync(app_data + "/user_data")) {
-    noFilesFound();
-    return;
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/favourite_matches")) {
-    createFavMatches();
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/home_settings")) {
-    createHomeSettings();
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/load_files")) {
-    createLoadFiles();
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/player_profile_settings")) {
-    createPlayerProfileSettings();
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/riot_games_data")) {
-    createRiotGamesData();
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/riot_games_data/cookies.json")) {
-    var cookiesData = [];
-
-    fs.writeFileSync(app_data + "/user_data/riot_games_data/cookies.json", JSON.stringify(cookiesData));
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/riot_games_data/token_data.json")) {
-    var tokenData = {};
-
-    fs.writeFileSync(app_data + "/user_data/riot_games_data/token_data.json", JSON.stringify(tokenData));
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/shop_data")) {
-    fs.mkdirSync(app_data + "/user_data/shop_data");
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/themes")) {
-    createThemes();
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/message_data")) {
-    createMessageData();
-  }
-
-  if(!fs.existsSync(app_data + "/user_data/user_accounts/")) {
-    fs.mkdirSync(app_data + "/user_data/user_accounts/");
-  } 
-
-  if(!fs.existsSync(app_data + "/user_data/player_inventory")) {
-    createInventoryData();
-  }
-
-  if(fs.existsSync(app_data + "/user_data/user_creds.json") && isInSetup === false) {
-    await checkUserData(); 
-
-    var raw = fs.readFileSync(app_data + "/user_data/user_creds.json");
-    var user_creds = JSON.parse(raw);
-
-    if(!fs.existsSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID)) {
-      fs.mkdirSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID);
-
-      if(fs.existsSync(app_data + "/user_data/riot_games_data/token_data.json")) {
-        var raw = fs.readFileSync(app_data + "/user_data/riot_games_data/token_data.json");
-        fs.writeFileSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID + "/token_data.json", raw);
-      }
-
-      if(fs.existsSync(app_data + "/user_data/riot_games_data/cookies.json")) {
-        var raw = fs.readFileSync(app_data + "/user_data/riot_games_data/cookies.json");
-        fs.writeFileSync(app_data + "/user_data/riot_games_data/" + user_creds.playerUUID + "/cookies.json", raw);
-      }
-    }
-  }
   
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/wishlists")) {
-    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/wishlists");
-  }
-
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
-    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
-  }
-
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/search_history")) {
-    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/search_history");
-    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/search_history/history.json", JSON.stringify({ "arr":[] }));
-  }
-
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json")) {
-    var data = { showMode: true, showRank: true, showTimer: true, showScore: true };
-    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json", JSON.stringify(data));
-  }
-  
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico")) {
-    download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico")) {
+    download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/tray.ico");
   };
+
+  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/')) {
+    var theme_raw = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
+    var theme = theme_raw.themeName;
+  }
   
   if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json") && isInSetup === false) {
     var { error, items, reauthArray } = await reauthAllAccounts();
+
+    if(items.expiresIn) {
+      var expiresIn = items.expiresIn;
+    } else {
+      // 55 Minutes 
+      var expiresIn = 55 * 60;
+    }
+
     var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
 
     if(on_load.appLang === undefined) var appLang = 'en-US'
@@ -1615,13 +1440,6 @@ var isInSetup = false;
 
     if(!error) {
       await refreshAllEntitlementTokens();
-
-      if(items.expiresIn) {
-        var expiresIn = items.expiresIn;
-      } else {
-        // 55 Minutes 
-        var expiresIn = 55 * 60;
-      }
       var ent_expiresIn = 25 * 60;
 
       if(items !== false) {
@@ -1649,7 +1467,6 @@ var isInSetup = false;
     }
   }
   
-
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
@@ -1682,89 +1499,12 @@ ipcMain.on('quit-app-and-install', function() {
 });
 
 ipcMain.on("changeDiscordRP", function (event, arg) {
-  let onLoadData = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-  let loadData = JSON.parse(onLoadData);
+  let loadData = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json"));
   if(RPState === "app" && loadData.hasDiscordRPenabled === true || loadData.hasDiscordRPenabled === undefined) {
-    switch (arg) {
-      case "hub_activity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.hub_activity,
-        });
-        break;
-      }
-      case "skins_activity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.skins_activity,
-        });
-        break;
-      }
-      case "bundle_acitivity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.bundles_activity,
-        });
-        break;
-      }
-      case "pprofile_acitivity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.pprofile_acitivity,
-        });
-        break;
-      }
-      case "favmatches_activity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.favmatches_activity,
-        });
-        break;
-      }
-      case "favmatches_activity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.favmatches_activity,
-        });
-        break;
-      }
-      case "settings_activity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.settings_acitivity,
-        });
-        break;
-      }
-      case "patchnotes_activity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.patchnotes_acitivity,
-        });
-        break;
-      }
-      case "matchview_activity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.matchview_activity,
-        });
-        break;
-      }
-      case "shop_activity": {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.shop_activity,
-        });
-        break;
-      }
-      case "clear": {
-        discordClient.clearActivity(process.pid);
-        break;
-      }
-      default: {
-        discordClient.clearActivity(process.pid);
-        break;
-      }
-    }
+    discordClient.request("SET_ACTIVITY", {
+      pid: process.pid,
+      activity: discord_rps[arg],
+    });
   } else {
     discordClient.clearActivity(process.pid);
   }
@@ -1837,6 +1577,7 @@ async function showSignIn(writeToFile) {
         });
       }
     });
+
     loginWindow.webContents.on('did-fail-load', () => {
       var url = loginWindow.webContents.getURL();
       const tokenData = getTokenDataFromURL(url);
@@ -1875,67 +1616,6 @@ async function showSignIn(writeToFile) {
 
 ipcMain.handle('loginWindow', async (event, args) => {
   return await showSignIn(args);
-});
-
-
-ipcMain.on("reauthCurrentAccount", async function (event, arg) {
-  async function reauthCycle() {
-    try {
-      if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json")) {
-        const newCookiesFile = {};
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json", JSON.stringify(newCookiesFile));
-      }
-      
-      var user_creds_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_creds.json");
-      var user_creds = JSON.parse(user_creds_raw);
-
-      var puuid = user_creds.playerUUID;
-      var rawCookies = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid + "/cookies.json");
-      var bakedCookies = JSON.parse(rawCookies);
-
-      var ssid;
-  
-      var jsontype = typeof bakedCookies[0] === "string";
-  
-      //check if json is object or array
-  
-      if(jsontype === true) {
-        for (var i = 0; i < bakedCookies.length; i++) {
-          var str1 = bakedCookies.split("ssid=").pop();
-          var str2 = str1.split(';')[0];
-          var ssid = 'ssid=' + str2 + ';'
-        }
-      } else {
-        for (var i = 0; i < bakedCookies.length; i++) {
-          if(bakedCookies[i].name == "ssid") {
-            ssid = `ssid=${bakedCookies[i].value}; Domain=${bakedCookies[i].domain}; Path=${bakedCookies[i].path}; hostOnly=${bakedCookies[i].hostOnly}; secure=${bakedCookies[i].secure}; httpOnly=${bakedCookies[i].httpOnly}; session=${bakedCookies[i].session}; sameSite=${bakedCookies[i].sameSite};`;
-          }
-        }
-      }
-      
-      const access_tokens = await getAccessTokens(ssid);
-
-      if(access_tokens.data.response === undefined) {
-        event.sender.send("reauthFail");
-      } else {
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json", JSON.stringify(access_tokens.headers["set-cookie"]));
-
-        const access_tokens = await getAccessTokens(ssid);
-
-        const url_params = await access_tokens.json();
-
-        var newTokenData = getTokenDataFromURL(url_params.response.parameters.uri); 
-
-        event.sender.send("reauthSuccess", url_params.response.parameters.uri);
-
-        return newTokenData;
-      }
-    } catch (err) {
-      console.log(err);
-      event.sender.send("reauthFail");
-    }
-  }
-  reauthCycle();
 });
 
 ipcMain.on('openAppOnLogin', function(event, arg) {
@@ -1979,13 +1659,13 @@ ipcMain.on('restartApp', function() {
 });
 
 ipcMain.on('resetApp', function() {
+  if(child) {
+    child.kill();
+  }
+
   fs.rmdirSync(process.env.APPDATA + "/VALTracker/user_data", { recursive: true, force: true });
   app.exit(0); 
 }); 
-
-ipcMain.on('closeApp', function() {
-  app.quit();
-});
 
 ipcMain.on('relayTextbox', function(event, args) {
   sendMessageToWindow('createTextbox', args);

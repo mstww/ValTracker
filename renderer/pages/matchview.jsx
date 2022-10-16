@@ -404,7 +404,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         </h1>
         <div className='mt-9 w-1/2 flex flex-row justify-around'>
           <span 
-            className={'matchview-tile ' + (activeTab == 'overview' ? 'active' : '') + (isDeathmatch == true ? ' hidden' : ' inline-block')}
+            className={'tab-tile ' + (activeTab == 'overview' ? 'active' : '') + (isDeathmatch == true ? ' hidden' : ' inline-block')}
             onClick={() => {
               setLastTab(activeTab);
               setActiveTab('overview');
@@ -413,7 +413,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             {LocalText(L, "nav.overview")}
           </span>
           <span 
-            className={'matchview-tile ' + (activeTab == 'scoreboard' ? 'active' : '')}
+            className={'tab-tile ' + (activeTab == 'scoreboard' ? 'active' : '')}
             onClick={() => {
               setLastTab(activeTab);
               setActiveTab('scoreboard');
