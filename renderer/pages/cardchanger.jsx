@@ -8,6 +8,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Search } from '../components/SVGs';
 import Layout from '../components/Layout';
+import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
 
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -234,21 +235,16 @@ function Cardchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const setSkin = async () => {
     var skin = shownSkin;
 
-    var inventory_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/current_inventory.json');
-    var inventory = JSON.parse(inventory_raw);
+    var inventory = (await executeQuery(`SELECT Guns, Identity, Incognito, Sprays, Subject FROM inventory:current`))[0];
 
     inventory.Identity.PlayerCardID = skin;
 
-    var tokenData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-    var tokenData = JSON.parse(tokenData_raw);
+    var user_creds = await getCurrentUserData();
 
-    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-    var user_creds = JSON.parse(user_creds_raw);
+    var region = user_creds.region;
+    var bearer = await getUserAccessToken();
 
-    var region = user_creds.playerRegion;
-    var bearer = tokenData.accessToken;
-
-    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
+    var entitlement_token = await getUserEntitlement();
     await setSkins(region, inventory.Subject, entitlement_token, bearer, inventory);
 
     setIngameSkin(skin);

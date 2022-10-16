@@ -12,6 +12,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled } from '../components/SVGs';
 import Layout from '../components/Layout';
+import { executeQuery, fetchMatch, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -70,42 +71,33 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
   const [ playerRanks, setPlayerRanks ] = React.useState([]);
 
+  const [ userCreds, setUserCreds ] = React.useState({});
+
   // ----------------------- END STATES -----------------------
 
   const loadAllFavMatches = async () => {
-    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-  
-    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')) {
-      var obj = {"favourites": []};
-      
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json', JSON.stringify(obj));
-    }
-  
-    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID)) {
-      fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID);
-    }
-  
-    var favMatchesData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')).favourites;
-    var bearer = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json')).accessToken;
+    var user_creds = await getCurrentUserData();
+    setUserCreds(user_creds);
+    var favMatchesData = await executeQuery(`SELECT matchIDs FROM matchIDCollection:⟨favMatches::${user_creds.uuid}⟩`);
+    var bearer = await getUserAccessToken();
 
     var allMatches = [];
 
     setFavMatchLength(favMatchesData.length);
 
     for(var i = 0; i < favMatchesData.length; i++) {
-      var match = favMatchesData[i]      
+      if(!favMatchesData.includes(favMatchesData[i])) {
+        var entitlement = await getUserEntitlement();
+        var data = await getMatch(user_creds.region, favMatchesData[i], entitlement, bearer);
 
-      if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches/' + match.MatchID + '.json')) {
-        var entitlement = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
-        var data = await getMatch(user_creds.playerRegion, match.MatchID, entitlement, bearer);
+        await createMatch(data);
 
         allMatches.push(data);
 
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches/' + match.MatchID + '.json', JSON.stringify(data));
       } else {
-        var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches/' + match.MatchID + '.json'));
+        var match = await fetchMatch(favMatchesData[i]);
 
-        allMatches.push(data);
+        allMatches.push(match);
       }
     }
 
@@ -181,7 +173,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   }
 
   const calculateMatchStats = (match) => {
-    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+    var user_creds = userCreds;
 
     var gameStartUnix = match.matchInfo.gameStartMillis;
     var gameLengthMS = match.matchInfo.gameLengthMillis;
@@ -217,8 +209,8 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     /* PLAYER STATS */
     for(var i = 0; i < match.players.length; i++) {
       var playerNameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
-      var homePlayerNameTag = `${user_creds.playerName}#${user_creds.playerTag}`;
-      var homePlayerNameTag_LowerCase = `${user_creds.playerName.toLowerCase()}#${user_creds.playerTag.toLowerCase()}`;
+      var homePlayerNameTag = `${user_creds.name}#${user_creds.tag}`;
+      var homePlayerNameTag_LowerCase = `${user_creds.name.toLowerCase()}#${user_creds.tag.toLowerCase()}`;
       
       if(playerNameTag == homePlayerNameTag_LowerCase) {
         var playerInfo = match.players[i];
@@ -398,12 +390,12 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   }
 
   const calculateSortStatsForMatch = (match) => {
-    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+    var user_creds = userCreds;
   
     /* PLAYER STATS */
     for(var i = 0; i < match.players.length; i++) {
       var playerNameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
-      var homePlayerNameTag_LowerCase = `${user_creds.playerName.toLowerCase()}#${user_creds.playerTag.toLowerCase()}`;
+      var homePlayerNameTag_LowerCase = `${user_creds.name.toLowerCase()}#${user_creds.tag.toLowerCase()}`;
       
       if(playerNameTag == homePlayerNameTag_LowerCase) {
         var playerInfo = match.players[i];
@@ -500,8 +492,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   }
 
   const removeFavMatch = (MatchID, key, index, fixedQueueName) => {
-    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var favMatchesData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')).favourites;
+    // TODO: Remove MatchID from here, check if match is in any hub list, if no, delete.
+    var user_creds = userCreds;
+    var favMatchesData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches.json')).favourites;
                                       
     // WORKS
     for(var i = 0; i < favMatchesData.length; i++) {
@@ -511,13 +504,13 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         var newArray = favMatchesData.filter(value => Object.keys(value).length !== 0);
         favMatchesData = newArray;
 
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json', JSON.stringify({"favourites": favMatchesData}));
+        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches.json', JSON.stringify({"favourites": favMatchesData}));
         break;
       }
     }
 
     // WORKS
-    fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches/' + MatchID + '.json');
+    fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches/' + MatchID + '.json');
 
     // WORKS
     delete favMatches[key][index];
@@ -591,6 +584,11 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   React.useEffect(async () => {
     var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query ? router.query.lang : 'en-US'))).json()
     setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
+  }, []);
+
+  React.useEffect(async () => {
+    var data = await getCurrentUserData();
+    setUserCreds(data);
   }, []);
   
   return (

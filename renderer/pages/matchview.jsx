@@ -11,6 +11,7 @@ import fetch from 'node-fetch';
 import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import Layout from '../components/Layout';
+import { getCurrentUserData } from '../js/dbFunctions';
 
 const overview_vars_first_load = {
   hidden: { opacity: 0, x: 0, y: 200, scale: 1, display: 'none' },
@@ -115,9 +116,9 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   // DATA NEEDED: MapUUID, Map Name, Match Date, Match Length, Match Mode, Region, Server, Game Version, 
   // AgentUUID, Player KDA, Player KD, Player Score, Player ACS, Player Rank, HS%, BS%, LS%, is Player MVP, Player ADR
   
-  React.useEffect(() => {
+  React.useEffect(async () => {
     if(sessionStorage.getItem("knownMatchData")) {
-      var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+      var user_data = await getCurrentUserData();
       var knownMatchData = JSON.parse(sessionStorage.knownMatchData);
       var roundData = JSON.parse(sessionStorage.roundData);
       var teamData = JSON.parse(sessionStorage.teamData);
@@ -128,7 +129,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var playerAbilityUsage = {};
   
         for(var i = 0; i < playerData.length; i++) {
-          if(playerData[i].subject === user_data.playerUUID) {
+          if(playerData[i].subject === user_data.uuid) {
             playerAbilityUsage.Ability1 = (playerData[i].stats.abilityCasts.ability1Casts / roundData.length).toFixed(1),
             playerAbilityUsage.Ability2 = (playerData[i].stats.abilityCasts.ability2Casts / roundData.length).toFixed(1),
             playerAbilityUsage.Grenade = (playerData[i].stats.abilityCasts.grenadeCasts / roundData.length).toFixed(1),

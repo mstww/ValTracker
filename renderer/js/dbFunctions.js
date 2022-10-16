@@ -100,3 +100,36 @@ export async function updateMessageDate(unix) {
   })
   return result[0].result[0];
 }
+
+export async function fetchMatch(uuid) {
+  if(db === false) await connectToDB();
+  
+  var Q = `SELECT matchInfo, players, roundResults, stats_data, teams FROM match:⟨${uuid}⟩`;
+  var result = await db.query(Q);
+  return result[0].result[0];
+}
+
+export async function createMatch(data) {
+  if(db === false) await connectToDB();
+
+  var allRoundResults = [];
+  for(var k = 0; k < data.roundResults.length; k++) {
+    var round = {
+      "bombPlanter": data.roundResults[k].bombPlanter,
+      "playerStats": data.roundResults[k].playerStats,
+      "roundResult": data.roundResults[k].roundResult,
+      "winningTeam": data.roundResults[k].winningTeam
+    }
+    allRoundResults.push(round);
+  }
+
+  var match = {
+    matchInfo: data.matchInfo,
+    players: data.players,
+    roundResults: allRoundResults,
+    stats_data: data.stats_data,
+    teams: data.teams
+  }
+
+  await db.create(`match:⟨${data.matchInfo.matchId}⟩`, match);
+}
