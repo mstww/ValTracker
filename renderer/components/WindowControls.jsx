@@ -3,7 +3,7 @@ import React from 'react';
 
 const ipcRenderer = electron.ipcRenderer || false;
 
-export default function WindowControls({ setup }) {
+export default function WindowControls({ setup, migrate }) {
 
   const handleMin = async () => {
     var args = await ipcRenderer.invoke("min-window");
@@ -46,7 +46,7 @@ export default function WindowControls({ setup }) {
   React.useEffect(async () => {
     var windowState = await ipcRenderer.invoke('checkWindowState');
     toggleMaxRestoreButtons(windowState);
-  });
+  }, []);
 
   return(
     <header id="titlebar" className='bg-maincolor fixed top-0 left-0'>
@@ -58,14 +58,14 @@ export default function WindowControls({ setup }) {
 
         <div id="window-controls">
 
-          <div className={"button " + (setup ? 'hidden' : 'flex')} id="min-button" onClick={ handleMin }>
+          <div className={"button " + (setup || migrate ? 'hidden' : 'flex')} id="min-button" onClick={ handleMin }>
             <img 
               className="icon"
               src='/icons/min-w-10.png'
               draggable="false" 
             />
           </div>
-          <div className={"button " + (setup ? 'hidden' : 'flex')} id="max-button" onClick={ handleMax }>
+          <div className={"button " + (setup || migrate ? 'hidden' : 'flex')} id="max-button" onClick={ handleMax }>
             <img 
               className="icon"
               src='/icons/max-w-10.png'
@@ -79,7 +79,7 @@ export default function WindowControls({ setup }) {
               draggable="false" 
             />
           </div>
-          <div className="button flex" id="close-button" onClick={ handleClose }>
+          <div className={"button " + (migrate ? 'hidden' : 'flex')} id="close-button" onClick={ handleClose }>
             <img 
               className="icon"
               src='/icons/close-w-10.png'

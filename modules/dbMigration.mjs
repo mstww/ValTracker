@@ -7,12 +7,19 @@ const SurrealDB = Surreal.default
 const basePath = process.env.APPDATA + '/VALTracker/user_data/';
 const db = new SurrealDB(process.env.DB_URL);
 
-export async function migrateDataToDB() {
+export async function migrateDataToDB(win) {
+  const sendMessageToWindow = (channel, args) => {
+    win.webContents.send(channel, args);
+  }
+
   try {
     await db.signin({
       user: process.env.DB_USER,
       pass: process.env.DB_PASS
     });
+
+    var favMatches = 0;
+    var hubMatches = 0;
 
     var allSettings = {};
     
@@ -30,6 +37,7 @@ export async function migrateDataToDB() {
 
       downloadedMatchesDir.forEach(downloadedMatch => {
         var match = JSON.parse(fs.readFileSync(basePath + 'favourite_matches/' + folderUUID + '/matches/' + downloadedMatch));
+        favMatches++;
         downloadedMatchesData.push(match);
       });
 
@@ -123,9 +131,41 @@ export async function migrateDataToDB() {
       allSettings.wishlists[userUUID] = JSON.parse(fs.readFileSync(basePath + 'wishlists/' + fileUUID));
     });
 
-    await db.use("app", "main");
-
     const allPUUIDs = Object.keys(allSettings.userAccounts);
+
+    for(var i = 0; i < allPUUIDs.length; i++) {
+      for(var j = 0; j < Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games).length; j++) {
+        var key_1 = Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games)[j]; // Name of the Day
+        for(var k = 0; k < Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games[key_1]).length; k++) {
+          hubMatches++;
+        }
+      }
+    }
+
+    var totalMatches = favMatches + hubMatches;
+    var favMatchVal = Math.round((favMatches / totalMatches) * 90);
+    var hubMatchVal = Math.round((hubMatches / totalMatches) * 90);
+
+    var totalPercentage = 0;
+
+    var avgSeconds = totalMatches * 17;
+    console.log("Avg Seconds: ", avgSeconds);
+    console.log("Total Matches: ", totalMatches);
+    console.log("FavMatches: ", favMatchVal + "%");
+    console.log("HubMatches: ", hubMatchVal + "%");
+    console.log(favMatchVal / favMatches);
+
+    function fmtMSS(s){return(s-(s%=60))/60+(9<s?'m, ':': 0')+s +'s'};
+
+    sendMessageToWindow("estMigrationTime", fmtMSS(avgSeconds));
+
+    totalPercentage += 2;
+    sendMessageToWindow("migrateProgressUpdate", { "message": "Connecting to Database...", "num": totalPercentage });
+
+    await db.use("app", "main");
+    
+    totalPercentage += 3;
+    sendMessageToWindow("migrateProgressUpdate", { "message": "Fetching Favorite Matches...", "num": totalPercentage });
 
     var allFavMatches = [];
     for(var i = 0; i < allPUUIDs.length; i++) {
@@ -153,6 +193,9 @@ export async function migrateDataToDB() {
   
           await db.create(`match:⟨${allSettings.favMatchConfig[allPUUIDs[i]].matches[j].matchInfo.matchId}⟩`, match);
         }
+    
+        totalPercentage += (favMatchVal / favMatches);
+        sendMessageToWindow("migrateProgressUpdate", { "message": "Fetching Favorite Matches...", "num": totalPercentage });
         allFavMatches.push(allSettings.favMatchConfig[allPUUIDs[i]].matches[j].matchInfo.matchId);
       }
     }
@@ -177,12 +220,8 @@ export async function migrateDataToDB() {
 
     var allHubMatches = [];
     for(var i = 0; i < allPUUIDs.length; i++) {
-      console.log("Total days (Should be 4): ", Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games).length);
-
       for(var j = 0; j < Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games).length; j++) {
         var key_1 = Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games)[j]; // Name of the Day
-
-        console.log(Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games[key_1]).length); // Amount of Matches, amount of next loops
         for(var k = 0; k < Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games[key_1]).length; k++) {
           var key_2 = Object.keys(allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games[key_1])[k];
           var matchObj = allSettings.hubConfig.currentMatches[allPUUIDs[i]].items.games[key_1][key_2];
@@ -210,7 +249,9 @@ export async function migrateDataToDB() {
   
             await db.create(`match:⟨${match.matchInfo.matchId}⟩`, match);
           }
-
+    
+          totalPercentage += (hubMatchVal / hubMatches);
+          sendMessageToWindow("migrateProgressUpdate", { "message": "Fetching Hub Matches...", "num": totalPercentage });
           allHubMatches.push(matchObj.matchInfo.matchId);
         }
       }
@@ -270,10 +311,6 @@ export async function migrateDataToDB() {
       var result = await db.create(`playerCollection:⟨app⟩`, {
         "players": allPlayerDataIDs
       });
-    } else {
-      var result = await db.update(`playerCollection:⟨app⟩`, {
-        "players": allPlayerDataIDs
-      });
     }
 
     for(var i = 0; i < allPUUIDs.length; i++) {
@@ -288,9 +325,15 @@ export async function migrateDataToDB() {
         });
       }
     }
+    
+    totalPercentage += 3;
+    sendMessageToWindow("migrateProgressUpdate", { "message": "Migrating Riot Games Data...", "num": totalPercentage });
 
     try {
-      await db.query(`RELATE playerCollection:⟨app⟩->currentPlayer->player:⟨${allSettings.user_data.playerUUID}⟩`);
+      var result = await db.query(`SELECT 1 FROM currentPlayer`);
+      if(!result[0].result[0]) {
+        await db.query(`RELATE playerCollection:⟨app⟩->currentPlayer->player:⟨${allSettings.user_data.playerUUID}⟩`);
+      }
     } catch(e) {
       console.log(e);
     }
@@ -329,8 +372,15 @@ export async function migrateDataToDB() {
       }
       allSettingItemIDs.push(result.id);
     }
+    
+    
+    totalPercentage += 3;
+    sendMessageToWindow("migrateProgressUpdate", { "message": "Migrating Settings...", "num": totalPercentage });
 
     // TODO: REQUEST INSTANCE TOKEN, FOR NEW USERS THAT DO NOT USE THIS SCRIPT: GENERATE IN SETUP
+    
+    totalPercentage += 4;
+    sendMessageToWindow("migrateProgressUpdate", { "message": "Finishing up...", "num": totalPercentage });
 
     var result = await db.query(`SELECT 1 FROM appConfig:⟨${process.env.APPCONFIG_UUID}⟩`);
     if(!result[0].result[0]) {
@@ -398,11 +448,17 @@ export async function migrateDataToDB() {
         });
       }
     }
+
+    var allSearchHistoryResults = [];
+    for(var i = 0; i < allSettings.searchHistory.length; i++) {
+      var result = await db.create(`searchHistoryResult`, allSettings.searchHistory[i]);
+      allSearchHistoryResults.push(result.id);
+    }
     
     var result = await db.query(`SELECT 1 FROM searchHistory:⟨app⟩`);
     if(!result[0].result[0]) {
       await db.create(`searchHistory:⟨app⟩`, {
-        "items": allSettings.searchHistory
+        "items": allSearchHistoryResults
       });
     }
 

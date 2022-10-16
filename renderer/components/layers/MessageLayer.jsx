@@ -2,15 +2,15 @@ import Message from '../messages/Message';
 import React from 'react';
 import fs from 'fs';
 import fetch from 'node-fetch';
+import { getServiceData } from '../../js/dbFunctions';
 
 const fetchMessages = async () => {
   try {
     const response = await fetch(`https://api.valtracker.gg/messages`);
     const json = await response.json();
 
-    const raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/message_data/last_checked_date.json");
-    const data = JSON.parse(raw);
-    const last_checked_date = data.date;
+    const data = await getServiceData();
+    const last_checked_date = data.lastMessageUnix;
 
     return { errored: false, items: json.data, last_check: last_checked_date };
   } catch(err) {

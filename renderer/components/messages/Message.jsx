@@ -6,6 +6,7 @@ import fs from 'fs';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { Close } from '../SVGs';
+import { executeQuery, getServiceData, updateMessageDate } from '../../js/dbFunctions';
 
 const variants = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -27,20 +28,15 @@ export default function Message({ date, message, unix, delay }) {
   var date = moment(date).format('D. MMMM, YYYY');
   var message = md_conv.makeHtml(message);
 
-  const closeMessage = (ref) => {
+  const closeMessage = async (ref) => {
     var message_date = ref.current.parentElement.lastChild;
 
     setIsMessageShown(false);
 
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json')
-    var parsed = JSON.parse(raw);
+    var data = await getServiceData();
     
-    if(parsed.date < message_date.textContent) {
-      var obj = {
-        "date": parseInt(message_date.textContent)
-      }
-
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/message_data/last_checked_date.json', JSON.stringify(obj))
+    if(data.lastMessageUnix < message_date.textContent) {
+      await updateMessageDate(message_date.textContent);
     }
   }
 

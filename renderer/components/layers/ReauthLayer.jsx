@@ -6,6 +6,7 @@ import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch';
 import L from '../../locales/translations/reauth.json';
 import LocalText from '../translation/LocalText';
+import { getCurrentUserData, getUserEntitlement } from '../../js/dbFunctions';
 
 const card_base_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -77,6 +78,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
   const [ reauthQueue, setReauthQueue ] = React.useState([]);
   const [ reauthShown, setReauthShown ] = React.useState(false);
   const [ currentReauthStep, setCurrentReauthStep ] = React.useState(0);
+  const [ userData, setUserData ] = React.useState({});
 
   const invokeLoginWindow = async () => {
     const data = await openLoginWindow();
@@ -99,7 +101,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
       var new_account_data = await fetch("https://pd." + region + ".a.pvp.net/name-service/v2/players", options);
       var new_account_data = await new_account_data.json();
     
-      const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
+      const entitlement_token = await getUserEntitlement(puuid);
   
       const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
   
@@ -144,6 +146,11 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
     }
   }, [ router ]);
 
+  React.useEffect(async () => {
+    var data = await getCurrentUserData();
+    setUserData(data);
+  }, []);
+
   return(
     <motion.div 
       className='absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-center items-center pointer-events-none z-50 bg-black bg-opacity-80'
@@ -168,7 +175,6 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
       {
         reauthQueue.map((accountData, index) => {
           var localReauthStep = index+1;
-          var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_accounts/" + accountData.puuid + ".json"));
 
           return(
             <motion.div 
@@ -179,7 +185,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
               animate={currentReauthStep === localReauthStep ? "enter" : "exit"}
               transition={{ type: 'ease-in', duration: 0.3, delay: (currentReauthStep === localReauthStep ? 0.35 : 0) }}
             >
-              <h2 className='mb-2'>{LocalText(L, "account_card.header", localReauthStep, (user_data.playerName + '#' + user_data.playerTag))}</h2>
+              <h2 className='mb-2'>{LocalText(L, "account_card.header", localReauthStep, (userData.name + '#' + userData.tag))}</h2>
               <p>{LocalText(L, "account_card.desc")}</p>
               <button 
                 className='w-full mt-4' 

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { Close, Search } from "../SVGs";
 import { ipcRenderer } from "electron";
+import { executeQuery } from "../../js/dbFunctions";
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -29,18 +30,14 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
   const [ searchHistory, setSearchHistory ] = React.useState([]);
   const [ isHistoryLocked, setIsHistoryLocked ] = React.useState(false);
 
-  React.useEffect(() => {
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json')) {
-      var search_history = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json'));
-      setSearchHistory(search_history.arr);
-    }
+  React.useEffect(async () => {
+    var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
+    setSearchHistory(search_history);
   }, []);
 
-  React.useEffect(() => {
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json')) {
-      var search_history = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json'));
-      setSearchHistory(search_history.arr);
-    }
+  React.useEffect(async () => {
+    var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
+    setSearchHistory(search_history);
   }, [historyNotifSwitch]);
 
   React.useEffect(() => {
@@ -54,21 +51,8 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
     router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
   }
 
-  const removeItemFromHistory = (name_encoded) => {
-    for(var i = 0; i < searchHistory.length; i++) {
-      if(searchHistory[i].encoded_user === name_encoded) {
-        delete searchHistory[i];
-        var newArray = searchHistory.filter(value => Object.keys(value).length !== 0);
-        searchHistory = newArray;
-        if(newArray.length === 0) {
-          setIsHistoryDropdownShown(false);
-        }
-
-        var data = { "arr": newArray }
-
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(data));
-      }
-    }
+  const removeItemFromHistory = async (name_encoded) => {
+    await executeQuery(`DELETE FROM searchHistoryResult WHERE encoded_user = "${name_encoded}"`);
     setIsHistoryLocked(false);
   }
 

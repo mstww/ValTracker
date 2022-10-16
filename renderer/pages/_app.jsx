@@ -2,7 +2,7 @@ import React from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { NextUIProvider, createTheme } from '@nextui-org/react';
-import fs from 'fs';
+import { v5 as uuidv5 } from 'uuid';
 import Navbar from '../components/Navbar';
 import WindowControls from '../components/WindowControls';
 import Head from 'next/head'
@@ -75,11 +75,15 @@ function MyApp({ Component, pageProps }) {
   pageProps.isNavbarMinimized = isNavbarMinimized;
 
   var setup = router.pathname.split("/").pop() === "setup";
+  var migrate = router.pathname.split("/").pop() === "migration";
 
-  React.useEffect(() => {
-    if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json")) {
-      var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
-      setTheme(data.themeName);
+  React.useEffect(async () => {
+    try {
+      var uuid = uuidv5("appColorTheme", process.env.SETTINGS_UUID);
+      var themeName = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+      setTheme(themeName[0].value);
+    } catch(e) {
+      console.log(e);
     }
   }, []);
 
@@ -93,8 +97,8 @@ function MyApp({ Component, pageProps }) {
         <title>VALTracker</title>
       </Head>
       <NextUIProvider theme={theme ? themes[theme] : themes['normal']}>
-        <WindowControls setup={setup} />
-        {setup ? '' : <Navbar isNavbarMinimized={isNavbarMinimized} setIsNavbarMinimized={setIsNavbarMinimized} />}
+        <WindowControls setup={setup} migrate={migrate} />
+        {setup || migrate ? '' : <Navbar isNavbarMinimized={isNavbarMinimized} setIsNavbarMinimized={setIsNavbarMinimized} />}
         <AnimatePresence
           exitBeforeEnter={true}
           onExitComplete={() => window.scrollTo(0, 0)}

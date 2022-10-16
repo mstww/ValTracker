@@ -13,6 +13,7 @@ import L from '../locales/translations/navbar.json';
 import LocalText from './translation/LocalText';
 
 import { Home, Store, User, Star, Clipboard, Settings, ExpandArrow, RetractArrow } from './SVGs';
+import { executeQuery, getCurrentPUUID, getCurrentUserData } from '../js/dbFunctions';
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -131,16 +132,15 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
     }
   }
 
-  React.useEffect(() => {
-    var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
-    var data = JSON.parse(data_raw);
-  
-    setPlayerRank(data.playerRank);
-    setPlayerName(data.playerName);
-    setPlayerTag(data.playerTag);
-    sessionStorage.setItem('navbar-rank', data.playerRank);
-    sessionStorage.setItem('navbar-name', data.playerName);
-    sessionStorage.setItem('navbar-tag', data.playerTag);
+  React.useEffect(async () => {
+    var data = await getCurrentUserData();
+    console.log(data);
+    setPlayerRank(data.rank);
+    setPlayerName(data.name);
+    setPlayerTag(data.tag);
+    sessionStorage.setItem('navbar-rank', data.rank);
+    sessionStorage.setItem('navbar-name', data.name);
+    sessionStorage.setItem('navbar-tag', data.tag);
 
     if(router.query.searchvalue) {
       // Decode the search value
@@ -176,12 +176,15 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
 
     setIsWishlistShown(featureStatus.data.wishlist.enabled);
     setWishlistHiddenDesc(featureStatus.data.wishlist.desc);
+
+    fetchUserAccounts();
   }, []);
 
   const children = [];
 
   const addAccount = (usertier, username, usertag, userregion, user_puuid, active_account) => {
     if(active_account) {
+      console.log(usertier, username, usertag, userregion, user_puuid, active_account)
       // Insert element at first position
       children.unshift(
         <AccountTile key={user_puuid} currenttier={usertier} username={username} usertag={usertag} userregion={userregion} puuid={user_puuid} active_account={active_account} />
@@ -194,25 +197,20 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   }
 
   async function fetchUserAccounts() {
-    var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
-    var data = JSON.parse(data_raw);
+    var currentPUUID = await getCurrentPUUID();
     
-    var accounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
+    var accounts = await executeQuery(`SELECT name, rank, region, tag, uuid FROM player`);
+    console.log("Accounts: ", accounts);
   
-    accounts.forEach(accountFile => {
-      var account_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + accountFile);
-      var account_data = JSON.parse(account_data_raw);
-
+    accounts.forEach(account => {
       var active_account = false;
-      if(data.playerUUID == account_data.playerUUID) {
+      if(currentPUUID == account.uuid) {
         active_account = true;
       }
 
-      addAccount(account_data.playerRank, account_data.playerName, account_data.playerTag, account_data.playerRegion, accountFile.split('.')[0], active_account);
+      addAccount(account.rank, account.name, account.tag, account.region, account.uuid, active_account);
     });
   }
-
-  fetchUserAccounts();
 
   const toggleSwitcherMenu = () => {
     setOpen(!open);
@@ -235,40 +233,23 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   if(page == "favorites") var isFav = true;
   if(page == "wishlist") var isWish = true;
 
-  const handlePlayerSearch = (event) => {
+  const handlePlayerSearch = async (event) => {
     if(event.key === 'Enter') {
       var name = event.target.value.split('#')[0];
       var tag = event.target.value.split('#')[1];
       var name_encoded = encodeURIComponent(name + '#' + tag);
 
-      var search_history = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json'));
-
-      var data = {
-        "name": name,
-        "tag": tag,
-        "encoded_user": name_encoded
-      }
+      var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
       
       var user_found = false;
-      for(var i = 0; i < search_history.arr.length; i++) {
-        if(search_history.arr[i].encoded_user === name_encoded) {
+      for(var i = 0; i < search_history.length; i++) {
+        if(search_history[i].encoded_user === name_encoded) {
           user_found = true;
         }
       }
 
       if(user_found === false) {
-        if(search_history.arr.length >= 5) {
-          delete search_history.arr[search_history.arr.length-1];
-          var newArray = search_history.arr.filter(value => Object.keys(value).length !== 0);
-          newArray.unshift(data);
-      
-          search_history.arr = newArray;
-        } else {
-          search_history.arr.unshift(data);
-        }
-      
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(search_history));
-        setHistoryNotifSwitch(!historyNotifSwitch);
+        await executeQuery(`CREATE searchHistoryResult SET name = "${name}", tag = "${tag}", encoded_user = "${name_encoded}", unix = ${Date.now()}`);
       }
 
       router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);

@@ -1,95 +1,17 @@
 import React from 'react';
-import fs from 'fs';
-import fetch from 'node-fetch';
 import { useRouter } from 'next/router';
-
-async function switcher_getPlayerUUID(bearer) {
-  return (await (await fetch('https://auth.riotgames.com/userinfo', {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['sub'];
-}
-
-async function switcher_getXMPPRegion(requiredCookie, bearer, id_token) {
-  return (await (await fetch("https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant", {
-    "method": "PUT",
-    "headers": {
-      "cookie": requiredCookie,
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + bearer
-    },
-    "body": `{\"id_token\":\"${id_token}\"}`,
-    keepalive: true
-  })).json());
-}
-
-async function switcher_getShopData(region, puuid, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v2/storefront/' + puuid, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
-}
+import { switchPlayer } from '../js/dbFunctions';
 
 export default function AccountTile({ currenttier, puuid, username, usertag, userregion, active_account }) {
   const router = useRouter();
 
   const switchAccount = async (event) => {
-    var currentUserCreds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-    var currentUserCreds = JSON.parse(currentUserCreds_raw);
-  
-    var currentPuuid = currentUserCreds.playerUUID;
-  
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + currentPuuid + '.json', currentUserCreds_raw) // works
-  
-    var currentUserTokens = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/token_data.json', currentUserTokens) // works
-  
-    var currentUserCookies = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json');
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + currentPuuid + '/cookies.json', currentUserCookies) // works
-  
     var puuidToBeSwitchedTo = event.target.id;
-    var newUserCreds = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuidToBeSwitchedTo + '.json');
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', newUserCreds); // works
-  
-    var newTokenData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/token_data.json');
-    var newTokenData = JSON.parse(newTokenData_raw);
-
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', newTokenData_raw); // works
-  
-    var newCookieData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/cookies.json');
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', newCookieData_raw); // works
-  
-    var newEntitlementData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuidToBeSwitchedTo + '/entitlement.json');
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json', newEntitlementData_raw); // works
-  
-    var bearer = newTokenData.accessToken;
+    
+    await switchPlayer(puuidToBeSwitchedTo);
     
     sessionStorage.removeItem('navbar-rank');
-    try {
-      puuid = await switcher_getPlayerUUID(bearer);
-  
-      Date.prototype.addSeconds = function (seconds) {
-        var copiedDate = new Date(this.getTime());
-        return new Date(copiedDate.getTime() + seconds * 1000);
-      }
-
-      router.push(router.route + '?account=' + puuidToBeSwitchedTo + `&lang=${router.query.lang}`);
-    } catch(err) {
-      console.log(err);
-      router.push(router.route + '?account=' + puuidToBeSwitchedTo + `&lang=${router.query.lang}`);
-    }
+    router.push(router.route + '?account=' + puuidToBeSwitchedTo + `&lang=${router.query.lang}`);
   }
 
   return (

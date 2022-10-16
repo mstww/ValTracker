@@ -6,6 +6,7 @@ import L from '../../locales/translations/navbar.json';
 import LocalText from '../translation/LocalText';
 import { Close, Search } from '../SVGs';
 import fs from 'fs';
+import { executeQuery } from '../../js/dbFunctions';
 
 const card_base_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -39,19 +40,8 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
     router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
   }
 
-  const removeItemFromHistory = (e, name_encoded) => {
-    for(var i = 0; i < searchHistory.length; i++) {
-      if(searchHistory[i].encoded_user === name_encoded) {
-        delete searchHistory[i];
-        var newArray = searchHistory.filter(value => Object.keys(value).length !== 0);
-        searchHistory = newArray;
-        setSearchHistory(searchHistory);
-
-        var data = { "arr": newArray }
-
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(data));
-      }
-    }
+  const removeItemFromHistory = async (e, name_encoded) => {
+    await executeQuery(`DELETE FROM searchHistoryResult WHERE encoded_user = "${name_encoded}"`);
   }
 
   React.useEffect(() => {
@@ -64,14 +54,12 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
     });
   }, []);
 
-  React.useEffect(() => {
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json')) {
-      var search_history = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json'));
-      setSearchHistory(search_history.arr);
-    }
+  React.useEffect(async () => {
+    var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
+    setSearchHistory(search_history);
   }, []);
 
-  const handlePlayerSearch = (event) => {
+  const handlePlayerSearch = async (event) => {
     if(event.key === 'Enter') {
       setSearchShown(false);
       setIsOverlayShown(false);
@@ -79,32 +67,17 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
       var tag = event.target.value.split('#')[1];
       var name_encoded = encodeURIComponent(name + '#' + tag);
 
-      var search_history = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json'));
-
-      var data = {
-        "name": name,
-        "tag": tag,
-        "encoded_user": name_encoded
-      }
+      var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
       
       var user_found = false;
-      for(var i = 0; i < search_history.arr.length; i++) {
-        if(search_history.arr[i].encoded_user === name_encoded) {
+      for(var i = 0; i < search_history.length; i++) {
+        if(search_history[i].encoded_user === name_encoded) {
           user_found = true;
         }
       }
+
       if(user_found === false) {
-        if(search_history.arr.length >= 5) {
-          delete search_history.arr[search_history.arr.length-1];
-          var newArray = search_history.arr.filter(value => Object.keys(value).length !== 0);
-          newArray.unshift(data);
-      
-          search_history.arr = newArray;
-        } else {
-          search_history.arr.unshift(data);
-        }
-      
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/search_history/history.json', JSON.stringify(search_history));
+        await executeQuery(`CREATE searchHistoryResult SET name = "${name}", tag = "${tag}", encoded_user = "${name_encoded}", unix = ${Date.now()}`);
       }
 
       router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);

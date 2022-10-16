@@ -41,6 +41,12 @@ var child;
 var discordVALPresence;
 var discordClient;
 
+var mainWindow;
+var appIcon;
+var isInSetup = false;
+
+var inMigrationProgress = false;
+
 const gotTheLock = app.requestSingleInstanceLock(); 
 
 if(!gotTheLock) {
@@ -132,13 +138,51 @@ async function connectAppPresence() {
 
 connectAppPresence();
 
-async function migWaitThing() {
-  if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
-    await migrateDataToDB();
-  }
-}
+await app.whenReady();
 
-migWaitThing();
+// TODO: if(userdata.user_creds dir exists) THEN do this, create extra window while this is happpening. Window can be closed when this is done, new mainWindow will be created anyway.
+if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')) {
+  var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+
+  if(on_load.appLang === undefined) var appLang = 'en-US'
+  else var appLang = on_load.appLang;
+
+  var theme_raw = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
+  var theme = theme_raw.themeName;
+
+  inMigrationProgress = true;
+
+  var win = createWindow('migrate-test', {
+    width: 620,
+    height: 400,
+    minWidth: 620,
+    minHeight: 400,
+    maxWidth: 620,
+    maxHeight: 400,
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: false,
+      contextIsolation: false,
+      devTools: true
+    }
+  });
+
+  ipcMain.handleOnce("checkWindowState", () => {
+    return win.isMaximized();
+  });
+
+  if (isProd) {
+    await win.loadURL(`app://./migration.html?usedTheme=${theme}&lang=${appLang}`);
+  } else {
+    const port = process.argv[2];
+    await win.loadURL(`http://localhost:${port}/migration?usedTheme=${theme}&lang=${appLang}`);
+  } 
+
+  await migrateDataToDB(win);
+
+  win.close();
+}
 
 function createFavMatches() {
   // Create /favourite_matches dir
@@ -1124,11 +1168,6 @@ async function checkStoreForWishlistItems() {
   });
 }
 
-// Set global mainWindow variable
-var mainWindow;
-var appIcon;
-var isInSetup = false;
-
 (async () => {
   var appStatus = await(await fetch('https://api.valtracker.gg/status/app', {
     headers: {
@@ -1177,8 +1216,6 @@ var isInSetup = false;
 
     return;
   }
-
-  await app.whenReady();
 
   var featureStatus = await(await fetch('https://api.valtracker.gg/status/features/main_process', {
     headers: {
@@ -1462,6 +1499,8 @@ var isInSetup = false;
       } 
     }
 
+    inMigrationProgress = false;
+
     if(on_load.skinWishlistNotifications === undefined || on_load.skinWishlistNotifications === true) {
       checkStoreForWishlistItems();
     }
@@ -1473,7 +1512,9 @@ var isInSetup = false;
 })();
 
 app.on("window-all-closed", function() {
-  app.quit();
+  if(inMigrationProgress === false) {
+    app.quit();
+  }
 });
 
 autoUpdater.on("update-available", () => {

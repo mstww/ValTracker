@@ -15,7 +15,7 @@ const contentVariants = {
   exit: { opacity: 0, x: 0, y: 0 },
 }
 
-export default function Layout({ children, classNames, setup, isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
+export default function Layout({ children, classNames, setup, migrate, isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
   var theme = false;
@@ -61,18 +61,18 @@ export default function Layout({ children, classNames, setup, isNavbarMinimized,
   return( 
     <motion.div 
       className={"flex flex-row bg-maincolor-light transition-all duration-100 ease-linear " + theme}
-      variants={setup ? {} : variants}
+      variants={setup || migrate ? {} : variants}
       initial="initial"
       animate={isNavbarMinimized ? "minimize" : "maximize"}
     >
       <UpdatingLayer setIsOverlayShown={setIsOverlayShown} />
-      {setup ? '' : <MessageLayer />}
-      {setup ? '' : <ReauthLayer setIsOverlayShown={setIsOverlayShown} />}
-      {setup ? '' : <TextboxLayer />}
-      {setup ? '' : <WhatsNewLayer setIsOverlayShown={setIsOverlayShown} />}
-      {setup ? '' : <IpcLayer />}
-      {setup ? '' : <PlayerSearchModal setIsOverlayShown={setIsOverlayShown} />}
-      <div className={"bg-maincolor-light relative left-0 z-40 overflow-auto " + (isNavbarMinimized ? ' strech' : ' no-strech')} id={setup ? 'layout-setup' : "Layout"}>
+      {setup || migrate ? '' : <MessageLayer />}
+      {setup || migrate ? '' : <ReauthLayer setIsOverlayShown={setIsOverlayShown} />}
+      {setup || migrate ? '' : <TextboxLayer />}
+      {setup || migrate ? '' : <WhatsNewLayer setIsOverlayShown={setIsOverlayShown} />}
+      {setup || migrate ? '' : <IpcLayer />}
+      {setup || migrate ? '' : <PlayerSearchModal setIsOverlayShown={setIsOverlayShown} />}
+      <div className={"bg-maincolor-light relative left-0 z-40 overflow-auto " + (isNavbarMinimized ? ' strech' : ' no-strech')} id={setup || migrate ? 'layout-setup' : "Layout"}>
         <motion.main
           key={"E"}
           variants={contentVariants}

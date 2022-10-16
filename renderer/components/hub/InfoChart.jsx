@@ -1,6 +1,7 @@
 import React from 'react';
 import { VictoryChart, VictoryArea, VictoryTheme, VictoryAxis } from 'victory';
-import fs from 'fs';
+import { v5 as uuidv5 } from 'uuid';
+import { executeQuery } from '../../js/dbFunctions';
 
 export default function InfoChart({ label, data, LocalLatest }) {
   const [ theme, setTheme ] = React.useState('normal');
@@ -34,9 +35,14 @@ export default function InfoChart({ label, data, LocalLatest }) {
     }
   }
 
-  React.useEffect(() => {
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
-    setTheme(data.themeName)
+  React.useEffect(async () => {
+    try {
+      var uuid = uuidv5("appColorTheme", process.env.SETTINGS_UUID);
+      var themeName = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+      setTheme(themeName[0].value);
+    } catch(e) {
+      console.log(e);
+    }
   }, []);
   
   React.useEffect(() => {
