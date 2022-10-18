@@ -1,10 +1,10 @@
 import React from "react";
-import fs from 'fs';
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { Close, Search } from "../SVGs";
 import { ipcRenderer } from "electron";
 import { executeQuery } from "../../js/dbFunctions";
+import { useFirstRender } from "../useFirstRender";
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -25,18 +25,23 @@ const account_switcher_variants = {
 
 export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handlePlayerSearch, playerSearchRef, searchHiddenDesc, placeholderText, closeLocale, isNavbarMinimized, variants }) {
   const router = useRouter();
+  const firstRender = useFirstRender();
 
   const [ isHistoryDropdownShown, setIsHistoryDropdownShown ] = React.useState(false);
   const [ searchHistory, setSearchHistory ] = React.useState([]);
   const [ isHistoryLocked, setIsHistoryLocked ] = React.useState(false);
 
   React.useEffect(async () => {
-    var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
-    setSearchHistory(search_history);
+    if(!firstRender) {
+      var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
+      console.log(search_history);
+      setSearchHistory(search_history);
+    }
   }, []);
 
   React.useEffect(async () => {
     var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
+    console.log(search_history);
     setSearchHistory(search_history);
   }, [historyNotifSwitch]);
 
@@ -63,7 +68,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
       >
         <motion.div 
           className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover hover:shadow-2xl flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden ' + (isNavbarMinimized ? 'rounded-full w-10 h-10 px-0' : 'w-full h-8 px-2')}
-          onClick={() => { isNavbarMinimized ? ipcRenderer.send("relayOpenPlayerSearchModal", []) : (playerSearchRef.current ? playerSearchRef.current.focus() : null) }}
+          onClick={() => { isNavbarMinimized ? ipcRenderer.send("relayOpenPlayerSearchModal", searchHistory) : (playerSearchRef.current ? playerSearchRef.current.focus() : null) }}
           variants={variants}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}

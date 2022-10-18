@@ -1,15 +1,22 @@
-import SurrealDB from "surrealdb.js";
+import { ipcRenderer } from "electron";
+import Surreal from "surrealdb.js";
 
 var db = false;
 
 async function connectToDB() {
-  db = new SurrealDB(process.env.DB_URL);
-  await db.signin({
+  var sdb = new Surreal(process.env.DB_URL);
+
+  await sdb.wait();
+
+  await sdb.signin({
     user: process.env.DB_USER,
     pass: process.env.DB_PASS
   });
 
-  await db.use('app', 'main');
+  await sdb.use('app', 'main');
+  
+  db = sdb;
+  return;
 };
 
 export async function executeQuery(queryStr) {
@@ -61,6 +68,7 @@ export async function getCurrentUserData() {
   
   var Q = "SELECT out.name AS name, out.rank AS rank, out.region AS region, out.tag AS tag, out.uuid AS uuid FROM playerCollection:⟨app⟩->currentPlayer FETCH out";
   var result = await db.query(Q);
+  console.log(result);
   return result[0].result[0];
 }
 
@@ -109,27 +117,38 @@ export async function fetchMatch(uuid) {
   return result[0].result[0];
 }
 
-export async function createMatch(data) {
-  if(db === false) await connectToDB();
+export async function createMatch(data) { // TODO: MOVE TO WORKER
+  ipcRenderer.send("createMatch", data);
+}
 
-  var allRoundResults = [];
-  for(var k = 0; k < data.roundResults.length; k++) {
-    var round = {
-      "bombPlanter": data.roundResults[k].bombPlanter,
-      "playerStats": data.roundResults[k].playerStats,
-      "roundResult": data.roundResults[k].roundResult,
-      "winningTeam": data.roundResults[k].winningTeam
+export async function removeMatch(collection, uuid) {
+  var puuid = await getCurrentPUUID();
+  // TODO: UPDATE THIS: 
+  var data = await db.query(`SELECT * FROM matchIDCollection`);
+
+  var collections = [];
+
+  for(var i = 0; i < data[0].result.length; i++) {
+    if(data[0].result[i].matchIDs.find(str => str === uuid)) {
+      collections.push(data[0].result[i].id);
     }
-    allRoundResults.push(round);
   }
 
-  var match = {
-    matchInfo: data.matchInfo,
-    players: data.players,
-    roundResults: allRoundResults,
-    stats_data: data.stats_data,
-    teams: data.teams
+  if(collections.length <= 1) {
+    await db.query(`DELETE match:⟨${uuid}⟩`);
   }
 
-  await db.create(`match:⟨${data.matchInfo.matchId}⟩`, match);
+  for(var i = 0; i < collections.length; i++) {
+    var matchIDCollection = await db.query(`SELECT * FROM ${collections[i]}`);
+    var newCollection = matchIDCollection[0].result[0].matchIDs;
+
+    const index = array.indexOf(uuid);
+    if (index > -1) {
+      newCollection.splice(index, 1);
+    }
+
+    await db.update(`${collections[i]}`, {
+      "matchIDs": newCollection
+    });
+  }
 }

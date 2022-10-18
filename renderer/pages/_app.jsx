@@ -8,6 +8,8 @@ import WindowControls from '../components/WindowControls';
 import Head from 'next/head'
 
 import '../styles/globals.css';
+import { executeQuery } from '../js/dbFunctions';
+import { useFirstRender } from '../components/useFirstRender';
 
 const normal = createTheme({
   type: "dark",
@@ -63,6 +65,7 @@ const themes = {
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
+  const firstRender = useFirstRender();
   
   const [ theme, setTheme ] = React.useState('normal');
   pageProps.setTheme = setTheme;
@@ -78,17 +81,19 @@ function MyApp({ Component, pageProps }) {
   var migrate = router.pathname.split("/").pop() === "migration";
 
   React.useEffect(async () => {
-    try {
-      var uuid = uuidv5("appColorTheme", process.env.SETTINGS_UUID);
-      var themeName = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
-      setTheme(themeName[0].value);
-    } catch(e) {
-      console.log(e);
+    if(!firstRender) {
+      try {
+        var uuid = uuidv5("appColorTheme", process.env.SETTINGS_UUID);
+        var themeName = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+        setTheme(themeName[0].value);
+      } catch(e) {
+        console.log(e);
+      }
     }
   }, []);
 
   React.useEffect(() => {
-    document.body.setAttribute("data-theme", theme)
+    document.body.setAttribute("data-theme", theme);
   }, [theme]);
 
   return (

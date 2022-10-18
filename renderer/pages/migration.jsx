@@ -11,7 +11,7 @@ function Migration({ isOverlayShown, setIsOverlayShown }) {
   const [ estTime, setEstTime ] = React.useState("");
 
   React.useEffect(() => {
-    ipcRenderer.on('estMigrationTime', (event, args) => {
+    ipcRenderer.once('estMigrationTime', (event, args) => {
       setEstTime(args);
     });
 

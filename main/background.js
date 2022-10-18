@@ -9,6 +9,8 @@ import { Worker } from 'worker_threads';
 import RPC from 'discord-rpc';
 import notifier from 'node-notifier';
 import { spawn } from 'child_process';
+import Surreal from 'surrealdb.js';
+import { v5 as uuidv5 } from 'uuid';
 
 import { createWindow } from './helpers';
 import { migrateDataToDB } from '../modules/dbMigration.mjs';
@@ -17,14 +19,11 @@ import L from '../translation/main_process.json';
 import LocalText from './helpers/localization.mjs';
 
 import * as dotenv from 'dotenv';
+import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../renderer/js/dbFunctions';
 dotenv.config();
 
 const discord_rps = require("../modules/discordRPs.js");
 const pjson = require('../package.json');
-
-const sendMessageToWindow = (channel, args) => {
-  mainWindow.webContents.send(channel, args);
-}
 
 async function asyncTimeout(delay) {
   return new Promise(resolve => {
@@ -36,16 +35,22 @@ const isProd = process.env.NODE_ENV === 'production';
 var app_data = app.getPath("userData");
 
 var RPState = "app";
-var child;
+var child = null;
 
-var discordVALPresence;
-var discordClient;
+var discordVALPresence = null;
+var discordClient = null;
 
-var mainWindow;
-var appIcon;
+var migrateWin = null;
+var mainWindow = null;
+var appIcon = null;
 var isInSetup = false;
 
 var inMigrationProgress = false;
+var db = false;
+
+const sendMessageToWindow = (channel, args) => {
+  mainWindow.webContents.send(channel, args);
+}
 
 const gotTheLock = app.requestSingleInstanceLock(); 
 
@@ -53,12 +58,16 @@ if(!gotTheLock) {
   app.quit();
 } else {
   app.on("second-instance", (event, CommandLine, workingDirectory) => {
-    if(mainWindow) {
-      if(mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-      mainWindow.show();
-      if(appIcon) {
-        appIcon.destroy();
+    if(mainWindow !== null) {
+      try {
+        if(mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
+        mainWindow.show();
+        if(appIcon) {
+          appIcon.destroy();
+        }
+      } catch(e) {
+        console.log(e);
       }
     }
   });
@@ -68,24 +77,6 @@ if (isProd) {
   serve({ directory: 'app' });
 } else {
   app.setPath('userData', `${app.getPath('userData')}`);
-}
-
-if(fs.existsSync(process.env.APPDATA + "/user_data/load_files/on_load.json")) {
-  let loadData = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json"));
-  
-  if(loadData.enableHardwareAcceleration == false) {
-    app.disableHardwareAcceleration();
-  }
-}
-
-if(process.defaultApp) {
-  if(process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient("x-valtracker-client", process.execPath, [
-      path.resolve(process.argv[1]),
-    ]);
-  }
-} else {
-  app.setAsDefaultProtocolClient("x-valtracker-client");
 }
 
 const execFilePath = path.join(
@@ -104,6 +95,44 @@ if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
   child.stderr.on('data', function (data) {
     process.stderr.write(data);
   });
+}
+
+async function connectToDB() {
+  var sdb = new Surreal(process.env.DB_URL);
+
+  await sdb.wait();
+
+  await sdb.signin({
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASS
+  });
+
+  await sdb.use('app', 'main');
+  
+  db = sdb;
+  return;
+}
+
+async function disableHardwareAcceleration() {
+  if(db === false) await connectToDB();
+  var uuid = uuidv5("hardwareAccel", process.env.SETTINGS_UUID);
+  let loadData = await db.query(`SELECT value FROM setting:⟨${uuid}⟩`);
+  
+  if(loadData[0].result[0]) {
+    if(loadData[0].result[0].value === false) app.disableHardwareAcceleration();
+  }
+}
+
+await disableHardwareAcceleration();
+
+if(process.defaultApp) {
+  if(process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient("x-valtracker-client", process.execPath, [
+      path.resolve(process.argv[1]),
+    ]);
+  }
+} else {
+  app.setAsDefaultProtocolClient("x-valtracker-client");
 }
 
 async function connectGamePresence() {
@@ -140,7 +169,24 @@ connectAppPresence();
 
 await app.whenReady();
 
-// TODO: if(userdata.user_creds dir exists) THEN do this, create extra window while this is happpening. Window can be closed when this is done, new mainWindow will be created anyway.
+ipcMain.handle("checkWindowState", () => {
+  return migrateWin !== false ? migrateWin.isMaximized() : mainWindow.isMaximized();
+});
+
+ipcMain.handle("min-window", async function() {
+  mainWindow.minimize();
+});
+
+ipcMain.handle("max-window", async function() {
+  mainWindow.maximize();
+  return mainWindow.isMaximized();
+});
+
+ipcMain.handle("restore-window", async function() {
+  mainWindow.unmaximize();
+  return mainWindow.isMaximized();
+});
+
 if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')) {
   var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
 
@@ -152,7 +198,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'))
 
   inMigrationProgress = true;
 
-  var win = createWindow('migrate-test', {
+  migrateWin = createWindow('migrate-test', {
     width: 620,
     height: 400,
     minWidth: 620,
@@ -168,113 +214,17 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'))
     }
   });
 
-  ipcMain.handleOnce("checkWindowState", () => {
-    return win.isMaximized();
-  });
-
   if (isProd) {
-    await win.loadURL(`app://./migration.html?usedTheme=${theme}&lang=${appLang}`);
+    await migrateWin.loadURL(`app://./migration.html?usedTheme=${theme}&lang=${appLang}`);
   } else {
     const port = process.argv[2];
-    await win.loadURL(`http://localhost:${port}/migration?usedTheme=${theme}&lang=${appLang}`);
+    await migrateWin.loadURL(`http://localhost:${port}/migration?usedTheme=${theme}&lang=${appLang}`);
   } 
 
-  await migrateDataToDB(win);
+  await migrateDataToDB(migrateWin);
 
-  win.close();
-}
-
-function createFavMatches() {
-  // Create /favourite_matches dir
-  fs.mkdirSync(app_data + "/user_data/favourite_matches");
-}
-
-function createUserData() {
-  // Create /user_data dir and all files in it
-  fs.mkdirSync(app_data + "/user_data");
-  let userData = {
-    playerName: "",
-    playerTag: "",
-    playerRegion: "",
-    playerUUID: "",
-  };
-  fs.writeFileSync(app_data + "/user_data/user_creds.json", JSON.stringify(userData));
-}
-
-function createHomeSettings() {
-  // Create /home_settings dir and all files in it
-  fs.mkdirSync(app_data + "/user_data/home_settings");
-
-  let homeSettings = {
-    preferredMatchFilter: "unrated",
-  };
-
-  fs.writeFileSync(app_data + "/user_data/home_settings/settings.json", JSON.stringify(homeSettings));
-}
-
-function createLoadFiles() {
-  // Create /load_files dir and all files in it
-  fs.mkdirSync(app_data + "/user_data/load_files");
-
-  let loadFileData = {
-    hasFinishedSetupSequence: false,
-    hasDiscordRPenabled: true
-  };
-
-  fs.writeFileSync(app_data + "/user_data/load_files/on_load.json", JSON.stringify(loadFileData));
-}
-
-function createPlayerProfileSettings() {
-  // Create /player_profile_settings dir and all files in it
-  fs.mkdirSync(app_data + "/user_data/player_profile_settings");
-
-  let playerProfileSettings = {
-    preferredMatchFilter: "unrated",
-  };
-
-  fs.writeFileSync(app_data + "/user_data/player_profile_settings/settings.json", JSON.stringify(playerProfileSettings));
-}
-
-function createThemes() {
-  if(!fs.existsSync(app_data + "/user_data/themes")) {
-    fs.mkdirSync(app_data + "/user_data/themes");
-  }
-
-  let themesPointerFile = {
-    themeName: "normal",
-  };
-
-  fs.writeFileSync(app_data + "/user_data/themes/color_theme.json", JSON.stringify(themesPointerFile));
-}
-
-function createMessageData() {
-  fs.mkdirSync(app_data + "/user_data/message_data");
-
-  var date = Date.now();
-  var dateData = {
-    date: date,
-  };
-
-  fs.writeFileSync(app_data + "/user_data/message_data/last_checked_date.json", JSON.stringify(dateData));
-}
-
-function createRiotGamesData() {
-  fs.mkdirSync(app_data + "/user_data/riot_games_data");
-
-  var cookiesData = [];
-  var tokenData = {};
-
-  fs.writeFileSync(app_data + "/user_data/riot_games_data/cookies.json", JSON.stringify(cookiesData));
-  fs.writeFileSync(app_data + "/user_data/riot_games_data/token_data.json", JSON.stringify(tokenData));
-}
-
-function createInventoryData() {
-  fs.mkdirSync(app_data + "/user_data/player_inventory");
-  fs.mkdirSync(app_data + "/user_data/player_inventory/presets");
-
-  var inventoryData = {};
-
-  fs.writeFileSync(app_data + "/user_data/player_inventory/current_inventory.json", JSON.stringify(inventoryData));
+  migrateWin.close();
+  migrateWin = false;
 }
 
 async function getAccessTokens(ssid) {
@@ -340,58 +290,10 @@ const download_image = (url, new_path) => {
 }
 
 async function noFilesFound() {
-  // Create /user_data dir and all files in it
-  createUserData();
-
-  // Create /favourite_matches dir and all files in it
-  createFavMatches();
-
-  // Create /home_settings dir and all files in it
-  createHomeSettings();
-
-  // Create /load_files dir and all files in it
-  createLoadFiles();
-
-  // Create /player_profile_settings dir and all files in it
-  createPlayerProfileSettings();
-
-  // Create /riot_games_data dir
-  createRiotGamesData()
-
-  // Create /shop_data dir
-  fs.mkdirSync(app_data + "/user_data/shop_data");
-
-  // Create /themes dir and all files in it
-  createThemes();
-
-  // Create /message_data dir and all files in it
-  createMessageData();
-
-  // Create /player_inventory dir and all files in it
-  createInventoryData();
-
-  fs.mkdirSync(app_data + "/user_data/user_accounts");
-
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/wishlists")) {
-    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/wishlists");
-  }
-  
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons")) {
-    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/icons");
-  }
-
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/search_history")) {
-    fs.mkdirSync(process.env.APPDATA + "/VALTracker/user_data/search_history");
-    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/search_history/history.json", JSON.stringify({ "arr":[] }));
-  }
-
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json")) {
-    var data = { showMode: true, showRank: true, showTimer: true, showScore: true };
-    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/settings.json", JSON.stringify(data));
-  }
+  // TODO: LAUNCH AND FINISH SETUP
     
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico")) {
-    download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico")) {
+    download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/tray.ico");
   };
 
   // Load Window with Setup Sequence
@@ -405,72 +307,44 @@ async function noFilesFound() {
 
 async function reauthAccount(puuid) {
   try {
-    if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid.split('.').pop() + "/cookies.json")) {
-      const newCookiesFile = {};
+    if(db === false) await connectToDB();
 
-      fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid.split('.').pop() + "/cookies.json", JSON.stringify(newCookiesFile));
-    }
+    console.log(puuid);
+    
+    var data = await db.query(`SELECT * FROM rgConfig:⟨${puuid}⟩`);
+    console.log(data);
+    var rgConfig = data[0].result[0];
 
-    var rawCookies = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid.split('.').pop() + "/cookies.json");
-    var bakedCookies = JSON.parse(rawCookies);
-
-    var ssid;
-
-    var jsontype = typeof bakedCookies[0] === "string";
-
-    //check if json is object or array
-
-    if(jsontype == true) {
-      for (var i = 0; i < bakedCookies.length; i++) {
-        var str1 = bakedCookies.split("ssid=").pop();
-        var str2 = str1.split(';')[0];
-        var ssid = 'ssid=' + str2 + ';'
-      }
-    } else {
-      for (var i = 0; i < bakedCookies.length; i++) {
-        if(bakedCookies[i].name == "ssid") {
-          ssid = `ssid=${bakedCookies[i].value}; Domain=${bakedCookies[i].domain}; Path=${bakedCookies[i].path}; hostOnly=${bakedCookies[i].hostOnly}; secure=${bakedCookies[i].secure}; httpOnly=${bakedCookies[i].httpOnly}; session=${bakedCookies[i].session}; sameSite=${bakedCookies[i].sameSite};`;
-        }
-      }
-    }
+    var { ssid } = rgConfig;
+    console.log(ssid);
 
     const access_tokens = await getAccessTokens(ssid);
+    console.log(access_tokens);
 
     const url_params = await access_tokens.json();
+    console.log(url_params);
 
     var newTokenData = getTokenDataFromURL(url_params.response.parameters.uri);
 
-    if(url_params.response.parameters.uri) {
-      
-      try {
-        var user_data_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/user_accounts/" + puuid.split('.').pop() + ".json");
-        var user_data = JSON.parse(user_data_raw);
+    rgConfig.accesstoken = newTokenData.accessToken;
+    rgConfig.idtoken = newTokenData.id_token;
 
-        var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
-        var bearer = token_data.accessToken;
-        var ent = await getEntitlement(bearer);
+    if(url_params.response.parameters.uri) {
+      try {
+        var data = await db.query(`SELECT * FROM player:⟨${puuid}⟩`);
+        var user_data = data[0].result[0];
+
+        var bearer = rgConfig.accesstoken;
+        var ent = rgConfig.entitlement;
         
-        var currenttier = await getPlayerMMR(user_data.playerRegion, user_data.playerUUID, ent, bearer);
+        var currenttier = await getPlayerMMR(user_data.region, puuid, ent, bearer);
   
-        user_data.playerRank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
+        user_data.rank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
   
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/user_accounts/" + puuid.split('.').pop() + ".json", JSON.stringify(user_data));
-  
-        if(puuid.startsWith(".")) {
-          fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/user_creds.json", JSON.stringify(user_data));
-        }
+        await db.update(`player:⟨${puuid}⟩`, user_data);
       } catch(unused) {}
   
-      if(puuid.startsWith(".")) {
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/cookies.json", JSON.stringify(access_tokens.headers.get("set-cookie")));
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/token_data.json", JSON.stringify(newTokenData));
-  
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid.split(".").pop() + "/cookies.json", JSON.stringify(access_tokens.headers.get("set-cookie")));
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid.split(".").pop() + "/token_data.json", JSON.stringify(newTokenData));
-      } else {
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid + "/cookies.json", JSON.stringify(access_tokens.headers.get("set-cookie")));
-        fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + puuid + "/token_data.json", JSON.stringify(newTokenData));
-      }
+      await db.update(`rgConfig:⟨${puuid}⟩`, rgConfig);
   
       console.log('Reauthenticated account with PUUID ' + puuid.split(".").pop());
   
@@ -484,24 +358,14 @@ async function reauthAccount(puuid) {
 }
 
 async function reauthAllAccounts() {
-  var puuid_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-  var puuid_parsed = JSON.parse(puuid_raw);
+  if(db === false) await connectToDB();
+  var puuid = await getCurrentPUUID();
 
-  if(puuid_parsed.playerUUID) {
-    var puuid = puuid_parsed.playerUUID;
+  if(puuid) {
+    var data = await db.query(`SELECT players.uuid AS uuids FROM playerCollection:app`);
+    var account_puuids = data[0].result[0].uuids;
   
-    var account_puuids = fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/user_accounts/");
-    var accountsToReauth = [];
-
-    account_puuids.forEach(uuid => {
-      if(uuid.split(".")[0] == puuid) { 
-        accountsToReauth.push("." + uuid.split(".")[0]);
-      } else {
-        accountsToReauth.push(uuid.split(".")[0]);
-      }
-    });
-  
-    var expectedLength = accountsToReauth.length;
+    var expectedLength = account_puuids.length;
   
     var i = 0;
   
@@ -510,7 +374,7 @@ async function reauthAllAccounts() {
 
     // Make a promise and check if it is rejected
     var promise = new Promise(async function(resolve, reject) {
-      accountsToReauth.forEach(async (uuid) => {
+      account_puuids.forEach(async (uuid) => {
         const { error, items, puuid } = await reauthAccount(uuid);
 
         if(error === true) {
@@ -528,6 +392,7 @@ async function reauthAllAccounts() {
     // Check if promise the promise was rejected
     var account_data = await promise.then(function({ data_array, reauth_array }) {
       if(reauth_array.length > 0) {
+        console.log(reauth_array);
         console.log("Error while reauthing accounts.");
         return { error: true, items: false, reauthArray: reauth_array }; 
       } else {
@@ -543,67 +408,53 @@ async function reauthAllAccounts() {
 
 async function refreshEntitlementToken(uuid) {
   // Get entitlement for every account and write to file
-  var bearer = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + uuid.split(".").pop() + "/token_data.json")).accessToken;
-  var entitlement_token = await getEntitlement(bearer);
+  var data = await db.query(`SELECT * FROM rgConfig:⟨${uuid}⟩`);
+  console.log(data);
+  var rgConfig = data[0].result[0];
 
-  fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/" + uuid.split(".").pop() + "/entitlement.json", JSON.stringify({ entitlement_token }));
+  var bearer = rgConfig.accesstoken;
+  rgConfig.entitlement = await getEntitlement(bearer);
 
-  if(uuid.startsWith(".")) {
-    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/riot_games_data/entitlement.json", JSON.stringify({ entitlement_token }));
-  }
+  await db.update(`rgConfig:⟨${uuid}⟩`, rgConfig);
 }
 
 async function refreshAllEntitlementTokens() {
-  var puuid_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-  var puuid_parsed = JSON.parse(puuid_raw);
+  if(db === false) await connectToDB();
+  var puuid = await getCurrentPUUID();
 
-  if(puuid_parsed.playerUUID) {
-    var puuid = puuid_parsed.playerUUID;
-  
-    var account_puuids = fs.readdirSync(process.env.APPDATA + "/VALTracker/user_data/user_accounts/");
-    var accountsToReauth = [];
+  var data = await db.query(`SELECT players.uuid AS uuids FROM playerCollection:app`);
+  var account_puuids = data[0].result[0].uuids;
 
-    account_puuids.forEach(uuid => {
-      if(uuid.split(".")[0] == puuid) { 
-        accountsToReauth.push("." + uuid.split(".")[0]);
-      } else {
-        accountsToReauth.push(uuid.split(".")[0]);
-      }
+  var expectedLength = account_puuids.length;
+
+  var i = 0;
+
+  var data_array = [];
+  var reauth_array = [];
+
+  // Make a promise and check if it is rejected
+  var promise = new Promise(async function(resolve, reject) {
+    accountsToReauth.forEach(async (uuid) => {
+      await refreshEntitlementToken(uuid);
+
+      i++;
+
+      if(i == expectedLength) 
+        resolve({ data_array, reauth_array });
     });
+  });
+
+  // Check if promise the promise was rejected
+  var account_data = await promise.then(function({ data_array, reauth_array }) {
+    if(reauth_array.length > 0) {
+      console.log("Error while getting Entitlements.");
+      return { ent_error: true, ent_items: false, ent_reauthArray: reauth_array }; 
+    } else {
+      return { ent_error: false, ent_items: data_array[0], ent_reauthArray: null }; 
+    }
+  });
   
-    var expectedLength = accountsToReauth.length;
-  
-    var i = 0;
-  
-    var data_array = [];
-    var reauth_array = [];
-
-    // Make a promise and check if it is rejected
-    var promise = new Promise(async function(resolve, reject) {
-      accountsToReauth.forEach(async (uuid) => {
-        await refreshEntitlementToken(uuid);
-
-        i++;
-
-        if(i == expectedLength) 
-          resolve({ data_array, reauth_array });
-      });
-    });
-
-    // Check if promise the promise was rejected
-    var account_data = await promise.then(function({ data_array, reauth_array }) {
-      if(reauth_array.length > 0) {
-        console.log("Error while getting Entitlements.");
-        return { ent_error: true, ent_items: false, ent_reauthArray: reauth_array }; 
-      } else {
-        return { ent_error: false, ent_items: data_array[0], ent_reauthArray: null }; 
-      }
-    });
-    
-    return account_data;
-  } else {
-    return { ent_error: true, ent_items: false, ent_reauthArray: null };
-  }
+  return account_data;
 }
 
 // -------------------- START RICH PRESENCE STATES --------------------
@@ -632,9 +483,9 @@ async function getDataFromWebSocketEvent(eventData) {
     return;
   }
 
-  var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+  var user_data = await getCurrentUserData();
 
-  if(eventData[2].data.presences[0].puuid !== user_data.playerUUID || eventData[2].data.presences[0].product !== "valorant") {
+  if(eventData[2].data.presences[0].puuid !== user_data.uuid || eventData[2].data.presences[0].product !== "valorant") {
     return;
   }
 
@@ -770,14 +621,13 @@ async function getParty(region, PartyID, entitlement_token, bearer) {
 }
 
 async function fetchPlayerAgent() {
-  var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-  var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
+  var user_data = await getCurrentUserData();
+  var puuid = user_data.uuid;
+  var region = user_data.region;
 
-  var bearer = token_data.accessToken;
-  var region = user_data.playerRegion;
-  var puuid = user_data.playerUUID;
+  var bearer = getUserAccessToken();
 
-  var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+  var entitlement_token = await getUserEntitlement();
 
   var player_data = await getPlayer_CoreGame(region, puuid, entitlement_token, bearer);
 
@@ -823,14 +673,13 @@ function decideMatchModeFromURL(url, isRanked) {
 }
 
 async function checkForMatch() {
-  var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-  var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
+  var user_data = await getCurrentUserData();
+  var puuid = user_data.uuid;
+  var region = user_data.region;
 
-  var bearer = token_data.accessToken;
-  var region = user_data.playerRegion;
-  var puuid = user_data.playerUUID;
+  var bearer = getUserAccessToken();
 
-  var entitlement_token = await getEntitlement(bearer);
+  var entitlement_token = await getUserEntitlement();
 
   var player_pregame_data = await getPlayer_PreGame(region, puuid, entitlement_token, bearer);
   if(player_pregame_data.MatchID !== undefined) {
@@ -899,14 +748,27 @@ async function checkForMatch() {
 const gamemodes = LocalText(L, 'gamemodes');
 
 async function decideRichPresenceData(data) {
-  var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
+  if(db === false) await connectToDB();
+
+  var settingsValues = {
+    "showGameRPScore": null,
+    "showGameRPMode": null,
+    "showGameRPTimer": null,
+    "showGameRPRank": null
+  };
+
+  for(var i = 0; i < Object.keys(settingsValues).length; i++) {
+    var uuid = uuidv5(Object.keys(settingsValues)[i], process.env.SETTINGS_UUID);
+    var result = await db.query(`SELECT value FROM setting:⟨${uuid}⟩`);
+    settingsValues[Object.keys(settingsValues)[i]] = result[0].result[0].value;
+  }
 
   switch(data.playerState) {
     case("INGAME"): {
       pregameTimestamp = null;
       menusTimestamp = null;
 
-      if(ingameTimestamp === null && config.showTimer === true) ingameTimestamp = Date.now();
+      if(ingameTimestamp === null && settingsValues.showGameRPTimer === true) ingameTimestamp = Date.now();
 
       if(data.isCustomGame === true) {
 
@@ -922,18 +784,18 @@ async function decideRichPresenceData(data) {
           }
         } else if(data.gameMode === 'competitive') {
           playerAgent = null;
-          var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+          var user_data = await getCurrentUserData();
 
-          var smallImage = user_data.playerRank.split("/")[5];
+          var smallImage = user_data.rank.split("/")[5];
         }
 
-        if(config.showMode === true) {
+        if(settingsValues.showGameRPMode === true) {
           var details = `${gamemodes['custom']} - ${LocalText(L, 'val_rp_details.in_match')}`;
         } else {
           var details = LocalText(L, 'val_rp_details.in_match');
         }
 
-        if(config.showScore === true) {
+        if(settingsValues.showGameRPScore === true) {
           if(data.teamScore === null && data.enemyScore === null) {
             var scores = LocalText(L, 'val_rp_details.waiting_for_round');
           } else {
@@ -962,22 +824,22 @@ async function decideRichPresenceData(data) {
           data.matchID = matchData.MatchID;
 
           var smallImage = playerAgent;
-        } else if(data.gameMode === 'competitive' && config.showRank === true) {
+        } else if(data.gameMode === 'competitive' && settingsValues.showGameRPRank === true) {
           playerAgent = null;
-          var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+          var user_data = await getCurrentUserData();
 
-          var smallImage = user_data.playerRank.split("/")[5];
+          var smallImage = user_data.rank.split("/")[5];
         } else {
           var smallImage = undefined;
         }
 
-        if(config.showMode === true) {
+        if(settingsValues.showGameRPMode === true) {
           var details = gamemodes[data.gameMode] + ` - ${LocalText(L, 'val_rp_details.in_match')}`;
         } else {
           var details = LocalText(L, 'val_rp_details.in_match');
         }
 
-        if(config.showScore === true) {
+        if(settingsValues.showGameRPScore === true) {
           if(data.teamScore === null && data.enemyScore === null) {
             var scores = LocalText(L, 'val_rp_details.waiting_for_round');
           } else {
@@ -1000,11 +862,11 @@ async function decideRichPresenceData(data) {
       menusTimestamp = null;
       ingameTimestamp = null;
 
-      if(pregameTimestamp === null && config.showTimer === true) pregameTimestamp = Date.now();
+      if(pregameTimestamp === null && settingsValues.showGameRPTimer === true) pregameTimestamp = Date.now();
 
       var map = data.mapPath.split("/").pop().toLowerCase();
 
-      if(config.showMode === true) {
+      if(settingsValues.showGameRPMode === true) {
         var details = gamemodes[data.gameMode] + ` - ${LocalText(L, 'val_rp_details.agent_select')}`;
         var mode = data.gameMode;
       } else {
@@ -1059,111 +921,119 @@ function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
   });
 }
 
+// TODO: playerUUID, playerRegion, playerName, playerTag, playerRank (Replace)
+
 async function checkStoreForWishlistItems() {
-  var user_accounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
-  user_accounts.forEach(async (account) => {
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + account)) {
-      var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + account));
-      var user_wishlists = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + account));
-    
-      account = account.split(".")[0];
+  if(db === false) await connectToDB();
+  
+  var timeoutSet = false;
 
-      const tokenData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + account + '/token_data.json'));
-    
-      var bearer = tokenData.accessToken;
-    
-      var puuid = user_creds.playerUUID;
-      var region = user_creds.playerRegion;
-    
-      var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
-    
-      var shopData = await getShopData(region, puuid, entitlement_token, bearer);
+  var data = await db.query(`SELECT players.uuid AS uuids FROM playerCollection:app`);
+  var account_puuids = data[0].result[0].uuids;
 
-      var playerItems = await getPlayerItems(region, puuid, entitlement_token, bearer);
+  account_puuids.forEach(async (account) => {
+    var data = await db.query(`SELECT * FROM player:⟨${account}⟩`);
+    var user_creds = data[0].result[0];
     
-      var shopSkinUUIDs = [];
-      
-      for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
-        var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
-        shopSkinUUIDs.push(skinUUID);
-      }
+    var data = await db.query(`SELECT * FROM wishlist:⟨${account}⟩`);
+    var user_wishlist = data[0].data[0];
+  
+    var bearer = await getUserAccessToken();
+  
+    var puuid = user_creds.uuid;
+    var region = user_creds.region;
+  
+    var entitlement_token = await getUserEntitlement();
+  
+    var shopData = await getShopData(region, puuid, entitlement_token, bearer);
+
+    var playerItems = await getPlayerItems(region, puuid, entitlement_token, bearer);
+  
+    var shopSkinUUIDs = [];
     
-      var singleSkinsTime = shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds + 10;
-      var now = new Date();
-      var singleSkinsExpirationDate = now.setSeconds(now.getSeconds() + singleSkinsTime);
+    for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
+      var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
+      shopSkinUUIDs.push(skinUUID);
+    }
+  
+    var singleSkinsTime = shopData.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds + 10;
+    var now = new Date();
+    var singleSkinsExpirationDate = now.setSeconds(now.getSeconds() + singleSkinsTime);
 
-      var hoursLeft = (Math.abs(singleSkinsExpirationDate - Date.now()) / 36e5);
-      var hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.h_1');
+    var hoursLeft = (Math.abs(singleSkinsExpirationDate - Date.now()) / 36e5);
+    var hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.h_1');
 
-      if(hoursLeft < 1) {
-        hoursLeft = (Math.abs(singleSkinsExpirationDate - Date.now()) / 60000).toFixed(0);
-        hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.m');
-      } else if(hoursLeft > 1 && hoursLeft < 2) {
-        hoursLeft = '1';
-        hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.h_2');
-      } else {
-        hoursLeft = hoursLeft.toFixed(0);
-      }
+    if(hoursLeft < 1) {
+      hoursLeft = (Math.abs(singleSkinsExpirationDate - Date.now()) / 60000).toFixed(0);
+      hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.m');
+    } else if(hoursLeft > 1 && hoursLeft < 2) {
+      hoursLeft = '1';
+      hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.h_2');
+    } else {
+      hoursLeft = hoursLeft.toFixed(0);
+    }
 
-      var wishlistedSkinsInShop = [];
-    
-      for(var i = 0; i < user_wishlists.skins.length; i++) {
-        for(var j = 0; j < shopSkinUUIDs.length; j++) {
-          if(shopSkinUUIDs[j] === user_wishlists.skins[i].uuid) {
-            wishlistedSkinsInShop.push({ displayName: user_wishlists.skins[i].displayName, isMelee: user_wishlists.skins[i].isMelee });
-          }
+    var wishlistedSkinsInShop = [];
+  
+    for(var i = 0; i < user_wishlist.skins.length; i++) {
+      for(var j = 0; j < shopSkinUUIDs.length; j++) {
+        if(shopSkinUUIDs[j] === user_wishlist.skins[i].uuid) {
+          wishlistedSkinsInShop.push({ displayName: user_wishlist.skins[i].displayName, isMelee: user_wishlist.skins[i].isMelee });
         }
       }
+    }
 
-      if(wishlistedSkinsInShop.length === 1) {
-        notifier.notify({
-          title: LocalText(L, 'skin_wishlist_notifications.notif_1.header'),
-          message: (
-            wishlistedSkinsInShop[0].isMelee ? 
-            LocalText(L, 'skin_wishlist_notifications.notif_1.desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr) 
-            : 
-            LocalText(L, 'skin_wishlist_notifications.notif_1.melee_desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr)
-          ),
-          icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
-          wait: 3,
-          appID: 'VALTracker'
-        }, function (err, response, metadata) {
-          if(response === undefined && err === null && JSON.stringify(metadata) === JSON.stringify({})) {
-            mainWindow.show();
-          }
-        });
-      } else if(wishlistedSkinsInShop.length > 1) {
-        notifier.notify({
-          title: LocalText(L, 'skin_wishlist_notifications.notif_2.header'),
-          message: LocalText(L, 'skin_wishlist_notifications.notif_2.desc', hoursLeft, hoursStr),
-          icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
-          wait: 3,
-          appID: 'VALTracker'
-        }, function (err, response, metadata) {
-          if(response === undefined && err === null && JSON.stringify(metadata) === JSON.stringify({})) {
-            mainWindow.show();
-          }
-        });
-      }
-      
-      for(var i = 0; i < playerItems.Entitlements.length; i++) {
-        for(var j = 0; j < user_wishlists.skins.length; j++) {
-          if(playerItems.Entitlements[i].ItemID === user_wishlists.skins[j].uuid) {
-            delete user_wishlists.skins[j];
-            var newArray = user_wishlists.skins.filter(value => Object.keys(value).length !== 0);
-            
-            var data = {
-              "skins": newArray
-            }
-
-            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.playerUUID + '.json', JSON.stringify(data));
-          }
+    if(wishlistedSkinsInShop.length === 1) {
+      notifier.notify({
+        title: LocalText(L, 'skin_wishlist_notifications.notif_1.header'),
+        message: (
+          wishlistedSkinsInShop[0].isMelee ? 
+          LocalText(L, 'skin_wishlist_notifications.notif_1.desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr) 
+          : 
+          LocalText(L, 'skin_wishlist_notifications.notif_1.melee_desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr)
+        ),
+        icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
+        wait: 3,
+        appID: 'VALTracker'
+      }, function (err, response, metadata) {
+        if(response === undefined && err === null && JSON.stringify(metadata) === JSON.stringify({})) {
+          mainWindow.show();
+        }
+      });
+    } else if(wishlistedSkinsInShop.length > 1) {
+      notifier.notify({
+        title: LocalText(L, 'skin_wishlist_notifications.notif_2.header'),
+        message: LocalText(L, 'skin_wishlist_notifications.notif_2.desc', hoursLeft, hoursStr),
+        icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
+        wait: 3,
+        appID: 'VALTracker'
+      }, function (err, response, metadata) {
+        if(response === undefined && err === null && JSON.stringify(metadata) === JSON.stringify({})) {
+          mainWindow.show();
+        }
+      });
+    }
+    
+    for(var i = 0; i < playerItems.Entitlements.length; i++) {
+      for(var j = 0; j < user_wishlist.skins.length; j++) {
+        if(playerItems.Entitlements[i].ItemID === user_wishlist.skins[j].uuid) {
+          delete user_wishlist.skins[j];
+          var newArray = user_wishlist.skins.filter(value => Object.keys(value).length !== 0);
+          
+          await db.update(`wishlist:⟨${account}⟩`, {
+            id: user_wishlist.id,
+            skins: newArray
+          });
         }
       }
-      
+    }
+    
+    if(timeoutSet === false) {
       setTimeout(() => {
         checkStoreForWishlistItems();
       }, (singleSkinsExpirationDate+5) - Date.now());
+
+      timeoutSet = true;
     }
   });
 }
@@ -1223,7 +1093,7 @@ async function checkStoreForWishlistItems() {
     }
   })).json();
   
-  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data') && featureStatus.data.app_discord_rp.enabled) {
+  if(featureStatus.data.app_discord_rp.enabled) {
     //Login with Discord client 
     discordClient.login({
       clientId: "1018145263761764382",
@@ -1231,18 +1101,16 @@ async function checkStoreForWishlistItems() {
     
     // Set activity after client is finished loading
     discordClient.on("ready", () => {
-      if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json")) {
-        discordClient.request("SET_ACTIVITY", {
-          pid: process.pid,
-          activity: discord_rps.starting_activity,
-        });
-      }
+      discordClient.request("SET_ACTIVITY", {
+        pid: process.pid,
+        activity: discord_rps.starting_activity,
+      });
     });
   } else {
     RPState = 'disabled'
   }
 
-  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data') && featureStatus.data.valorant_discord_rp.enabled === true) {
+  if(featureStatus.data.valorant_discord_rp.enabled === true) {
     //Login with Discord client
     discordVALPresence.login({
       clientId: "957041886093267005",
@@ -1289,7 +1157,7 @@ async function checkStoreForWishlistItems() {
 
   var startedHidden = process.argv.find(arg => arg === '--start-hidden');
 
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) { // TODO: SOMEHOW DO THIS? DB SETTING?
     mainWindow = createWindow('setup-win', {
       width: 620,
       height: 400,
@@ -1341,8 +1209,8 @@ async function checkStoreForWishlistItems() {
     });
   }
 
-  if(startedHidden !== undefined && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
-    appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+  if(startedHidden !== undefined) {
+    appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/tray.ico");
 
     appIcon.setToolTip("VALTracker");
 
@@ -1384,33 +1252,24 @@ async function checkStoreForWishlistItems() {
     sendMessageToWindow("togglerestore", mainWindow.isMaximized());
   });
 
-  ipcMain.handle("checkWindowState", () => {
-    return mainWindow.isMaximized();
-  });
-  
-  ipcMain.handle("min-window", async function() {
-    mainWindow.minimize();
-  });
-
-  ipcMain.handle("max-window", async function() {
-    mainWindow.maximize();
-    return mainWindow.isMaximized();
-  });
-
-  ipcMain.handle("restore-window", async function() {
-    mainWindow.unmaximize();
-    return mainWindow.isMaximized();
-  });
-
   ipcMain.on("close-window", async function () {
-    var config = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
+    var settings = {
+      "minOnClose": null,
+      "hideAppPresenceWhenHidden": null
+    }
 
-    if(config.minimizeOnClose === false || config.minimizeOnClose === undefined) {
+    for(var i = 0; i < Object.keys(settings).length; i++) {
+      var uuid = uuidv5(Object.keys(settings)[i], process.env.SETTINGS_UUID);
+      var result = await db.query(`SELECT value FROM setting:⟨${uuid}⟩`);
+      settings[Object.keys(settings)[i]] = result[0].result[0].value;
+    }
+
+    if(settings.minOnClose === false || settings.minOnClose === undefined) {
       mainWindow.close();
       return;
     }
 
-    if(config.hideDiscordRPWhenHidden === true) {
+    if(settings.hideAppPresenceWhenHidden === true) {
       RPState = 'ClientHidden';
       discordClient.clearActivity(process.pid);
     }
@@ -1452,15 +1311,14 @@ async function checkStoreForWishlistItems() {
   });
   
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico")) {
-    download_image('https://valtracker.gg/img/VALTracker_Logo_beta.ico', process.env.APPDATA + "/VALTracker/user_data/tray.ico");
+    download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/tray.ico");
   };
 
-  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/themes/')) {
-    var theme_raw = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/themes/color_theme.json"));
-    var theme = theme_raw.themeName;
-  }
+  var uuid = uuidv5("appColorTheme", process.env.SETTINGS_UUID);
+  var themeObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+  var theme = themeObj[0] ? themeObj[0].value : 'normal';
   
-  if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json") && isInSetup === false) {
+  if(isInSetup === false) {
     var { error, items, reauthArray } = await reauthAllAccounts();
 
     if(items.expiresIn) {
@@ -1470,10 +1328,9 @@ async function checkStoreForWishlistItems() {
       var expiresIn = 55 * 60;
     }
 
-    var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-
-    if(on_load.appLang === undefined) var appLang = 'en-US'
-    else var appLang = on_load.appLang;
+    var uuid = uuidv5("appLang", process.env.SETTINGS_UUID);
+    var langObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    var appLang = langObj[0] ? langObj[0].value : 'en-US';
 
     if(!error) {
       await refreshAllEntitlementTokens();
@@ -1501,7 +1358,11 @@ async function checkStoreForWishlistItems() {
 
     inMigrationProgress = false;
 
-    if(on_load.skinWishlistNotifications === undefined || on_load.skinWishlistNotifications === true) {
+    var uuid = uuidv5("wishlistNotifs", process.env.SETTINGS_UUID);
+    var wishObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    var wishlistNotifs = wishObj[0] ? wishObj[0].value : undefined;
+
+    if(wishlistNotifs === null || wishlistNotifs === true || wishlistNotifs === undefined) {
       checkStoreForWishlistItems();
     }
   }
@@ -1539,9 +1400,12 @@ ipcMain.on('quit-app-and-install', function() {
   autoUpdater.quitAndInstall(true, true);
 });
 
-ipcMain.on("changeDiscordRP", function (event, arg) {
-  let loadData = JSON.parse(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json"));
-  if(RPState === "app" && loadData.hasDiscordRPenabled === true || loadData.hasDiscordRPenabled === undefined) {
+ipcMain.on("changeDiscordRP", async function (event, arg) {
+  var uuid = uuidv5("useAppRP", process.env.SETTINGS_UUID);
+  var rpObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+  var useAppRP = rpObj[0] ? rpObj[0].value : undefined;
+
+  if(RPState === "app" && useAppRP === true) {
     discordClient.request("SET_ACTIVITY", {
       pid: process.pid,
       activity: discord_rps[arg],
@@ -1606,15 +1470,6 @@ async function showSignIn(writeToFile) {
             tokenData,
             riotcookies,
           });
-          for(var i = 0; i < riotcookies.length; i++) {
-            if(riotcookies[i].name == "ssid") {
-              var cookieString = riotcookies[i].value
-            }
-          }
-          if(writeToFile == true) {
-            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(cookieString))
-            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
-          }
         });
       }
     });
@@ -1633,15 +1488,6 @@ async function showSignIn(writeToFile) {
           tokenData,
           riotcookies,
         });
-        for(var i = 0; i < riotcookies.length; i++) {
-          if(riotcookies[i].name == "ssid") {
-            var cookieString = riotcookies[i].value
-          }
-        }
-        if(writeToFile == true) {
-          fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(cookieString))
-          fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(tokenData))
-        }
       });
     });
     loginWindow.once('ready-to-show', () => {
@@ -1659,38 +1505,61 @@ ipcMain.handle('loginWindow', async (event, args) => {
   return await showSignIn(args);
 });
 
-ipcMain.on('openAppOnLogin', function(event, arg) {
+ipcMain.on('openAppOnLogin', async function(event, arg) {
   if(!isDev) {
     app.setLoginItemSettings({
       openAtLogin: arg,
       openAsHidden: false,
       args: []
     });
-    var raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-    var data = JSON.parse(raw);
-    data.startOnBoot = arg;
-    data.startHidden = false;
-    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json", JSON.stringify(data));
+
+    var uuid = uuidv5("launchOnBoot", process.env.SETTINGS_UUID);
+    var obj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    var launchOnBoot = obj[0];
+    
+    launchOnBoot.value = arg;
+    
+    await db.update(obj[0].id, launchOnBoot);
+
+    var uuid = uuidv5("lauchHiddenOnBoot", process.env.SETTINGS_UUID);
+    var obj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    var lauchHiddenOnBoot = obj[0];
+
+    lauchHiddenOnBoot.value = false;
+    
+    await db.update(obj[0].id, lauchHiddenOnBoot);
   }
 });
 
-ipcMain.on('hideAppOnLogin', function(event, arg) {
+ipcMain.on('hideAppOnLogin', async function(event, arg) {
   if(!isDev) {
     if(arg === true) {
       var args = [`--start-hidden`];
     } else {
       var args = [];
     }
+
     app.setLoginItemSettings({
       openAtLogin: true,
       openAsHidden: arg,
       args: args
     });
-    var raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-    var data = JSON.parse(raw);
-    data.startOnBoot = true;
-    data.startHidden = arg;
-    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json", JSON.stringify(data));
+
+    var uuid = uuidv5("launchOnBoot", process.env.SETTINGS_UUID);
+    var obj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    var launchOnBoot = obj[0];
+    
+    launchOnBoot.value = true;
+    
+    await db.update(obj[0].id, launchOnBoot);
+
+    var uuid = uuidv5("lauchHiddenOnBoot", process.env.SETTINGS_UUID);
+    var obj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    var lauchHiddenOnBoot = obj[0];
+
+    lauchHiddenOnBoot.value = arg;
+    
+    await db.update(obj[0].id, lauchHiddenOnBoot);
   }
 });
 
@@ -1714,4 +1583,8 @@ ipcMain.on('relayTextbox', function(event, args) {
 
 ipcMain.on('relayOpenPlayerSearchModal', function(event, args) {
   sendMessageToWindow('openPlayerSearchModal', args);
+});
+
+ipcMain.on("createMatch", function(event, args) {
+  new Worker(new URL("../modules/createMatch.mjs", import.meta.url), { workerData: { data: args } });
 });

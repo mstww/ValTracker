@@ -1,11 +1,11 @@
 import React from 'react';
 import { VictoryChart, VictoryArea, VictoryTheme, VictoryAxis } from 'victory';
-import { v5 as uuidv5 } from 'uuid';
-import { executeQuery } from '../../js/dbFunctions';
+import { useFirstRender } from '../useFirstRender';
 
 export default function InfoChart({ label, data, LocalLatest }) {
-  const [ theme, setTheme ] = React.useState('normal');
+  const firstRender = useFirstRender();
 
+  const [ theme, setTheme ] = React.useState('normal');
   const [ dataRelay, setDataRelay ] = React.useState([]);
 
   const colors = {
@@ -36,12 +36,14 @@ export default function InfoChart({ label, data, LocalLatest }) {
   }
 
   React.useEffect(async () => {
-    try {
-      var uuid = uuidv5("appColorTheme", process.env.SETTINGS_UUID);
-      var themeName = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
-      setTheme(themeName[0].value);
-    } catch(e) {
-      console.log(e);
+    if(!firstRender) {
+      try {
+        console.log(document);
+        console.log(document.body.getAttribute("data-theme"));
+        setTheme(document.body.getAttribute("data-theme"));
+      } catch(e) {
+        console.log(e);
+      }
     }
   }, []);
   

@@ -451,8 +451,11 @@ export async function migrateDataToDB(win) {
 
     var allSearchHistoryResults = [];
     for(var i = 0; i < allSettings.searchHistory.length; i++) {
-      var result = await db.create(`searchHistoryResult`, allSettings.searchHistory[i]);
-      allSearchHistoryResults.push(result.id);
+      var result = await db.query(`SELECT 1 FROM searchHistoryResult:⟨${allSettings.searchHistory[i].encoded_user}⟩`);
+      if(!result[0].result[0]) {
+        var result = await db.create(`searchHistoryResult:⟨${allSettings.searchHistory[i].encoded_user}⟩`, allSettings.searchHistory[i]);
+        allSearchHistoryResults.push(result.id);
+      }
     }
     
     var result = await db.query(`SELECT 1 FROM searchHistory:⟨app⟩`);

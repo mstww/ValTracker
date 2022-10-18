@@ -7,6 +7,7 @@ import LocalText from '../translation/LocalText';
 import { Close, Search } from '../SVGs';
 import fs from 'fs';
 import { executeQuery } from '../../js/dbFunctions';
+import { useFirstRender } from '../useFirstRender';
 
 const card_base_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -22,6 +23,7 @@ const backdrop_variants = {
 
 export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
+  const firstRender = useFirstRender();
   
   const [ searchShown, setSearchShown ] = React.useState(false);
   const [ searchHistory, setSearchHistory ] = React.useState([]);
@@ -55,8 +57,11 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
   }, []);
 
   React.useEffect(async () => {
-    var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
-    setSearchHistory(search_history);
+    if(!firstRender) {
+      var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
+      console.log(search_history);
+      setSearchHistory(search_history);
+    }
   }, []);
 
   const handlePlayerSearch = async (event) => {

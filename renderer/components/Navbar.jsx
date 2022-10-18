@@ -71,6 +71,8 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   const [ settingsHiddenDesc, setSettingsHiddenDesc ] = React.useState('');
   const [ wishlistHiddenDesc, setWishlistHiddenDesc ] = React.useState('');
 
+  const [ switchableAccounts, setSwitchableAccounts ] = React.useState([]);
+
   const [ historyNotifSwitch, setHistoryNotifSwitch ] = React.useState(false);
   
   const playerSearchRef = React.useRef(null);
@@ -134,7 +136,6 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
 
   React.useEffect(async () => {
     var data = await getCurrentUserData();
-    console.log(data);
     setPlayerRank(data.rank);
     setPlayerName(data.name);
     setPlayerTag(data.tag);
@@ -180,27 +181,25 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
     fetchUserAccounts();
   }, []);
 
-  const children = [];
-
   const addAccount = (usertier, username, usertag, userregion, user_puuid, active_account) => {
+    var accs = switchableAccounts;
     if(active_account) {
-      console.log(usertier, username, usertag, userregion, user_puuid, active_account)
       // Insert element at first position
-      children.unshift(
-        <AccountTile key={user_puuid} currenttier={usertier} username={username} usertag={usertag} userregion={userregion} puuid={user_puuid} active_account={active_account} />
+      accs.unshift(
+        { usertier: usertier, username: username, usertag: usertag, userregion: userregion, user_puuid: user_puuid, active_account: active_account }
       );
     } else {
-      children.push(
-        <AccountTile key={user_puuid} currenttier={usertier} username={username} usertag={usertag} userregion={userregion} puuid={user_puuid} active_account={active_account} />
+      accs.push(
+        { usertier: usertier, username: username, usertag: usertag, userregion: userregion, user_puuid: user_puuid, active_account: active_account }
       )
     }
+    setSwitchableAccounts(accs);
   }
 
   async function fetchUserAccounts() {
     var currentPUUID = await getCurrentPUUID();
     
     var accounts = await executeQuery(`SELECT name, rank, region, tag, uuid FROM player`);
-    console.log("Accounts: ", accounts);
   
     accounts.forEach(account => {
       var active_account = false;
@@ -434,7 +433,19 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
             animate={open ? 'enter' : 'hidden'}
             transition={{ duration: 0.2, delay: 0.1 }}
           >
-            { children }
+            {switchableAccounts.map((acc, index) => {
+              return (
+                <AccountTile 
+                  key={acc.user_puuid} 
+                  currenttier={acc.usertier} 
+                  username={acc.username} 
+                  usertag={acc.usertag} 
+                  userregion={acc.userregion} 
+                  puuid={acc.user_puuid} 
+                  active_account={acc.active_account} 
+                />
+              )
+            })}
           </motion.ul>
         </motion.div>
         <div 

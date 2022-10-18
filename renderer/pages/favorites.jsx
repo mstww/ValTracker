@@ -12,7 +12,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled } from '../components/SVGs';
 import Layout from '../components/Layout';
-import { executeQuery, fetchMatch, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
+import { createMatch, executeQuery, fetchMatch, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch } from '../js/dbFunctions';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -86,14 +86,15 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     setFavMatchLength(favMatchesData.length);
 
     for(var i = 0; i < favMatchesData.length; i++) {
-      if(!favMatchesData.includes(favMatchesData[i])) {
+      if(!allMatches.includes(favMatchesData[i])) {
         var entitlement = await getUserEntitlement();
+        console.log(user_creds.region, favMatchesData[i], entitlement, bearer);
         var data = await getMatch(user_creds.region, favMatchesData[i], entitlement, bearer);
+        console.log(data);
 
         await createMatch(data);
 
         allMatches.push(data);
-
       } else {
         var match = await fetchMatch(favMatchesData[i]);
 
@@ -110,6 +111,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     var newMatches = [];
 
     for(var i = 0; i < allMatches.length; i++) {
+      console.log(allMatches);
       var dateDiff = getDifferenceInDays(allMatches[i].matchInfo.gameStartMillis, Date.now());
       moment.locale(router.query.lang);
       var startdate = moment();
@@ -443,7 +445,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   }
 
   const sortMatchesAndSetActiveSort = (newValue) => {
-    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
+    var user_creds = userCreds;
 
     sortableFavMatches.forEach(match => {
       if(!match.statsData) {
@@ -451,7 +453,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         match.stats_data = stats_data;
         
         fs.writeFileSync(
-          process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches/' + match.matchInfo.matchId + '.json', 
+          process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches/' + match.matchInfo.matchId + '.json', 
           JSON.stringify(match)
         );
       }
@@ -491,12 +493,13 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     }
   }
 
-  const removeFavMatch = (MatchID, key, index, fixedQueueName) => {
+  const removeFavMatch = async (MatchID, key, index, fixedQueueName) => {
     // TODO: Remove MatchID from here, check if match is in any hub list, if no, delete.
     var user_creds = userCreds;
-    var favMatchesData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches.json')).favourites;
+    var favMatchesData = await removeMatch('favMatches', MatchID);
+    console.log(favMatchesData);
                                       
-    // WORKS
+    /*// WORKS
     for(var i = 0; i < favMatchesData.length; i++) {
       if(favMatchesData[i].MatchID === MatchID) {
         delete favMatchesData[i];
@@ -538,7 +541,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         setShownMatchesPerDay({ ...shownMatchesPerDay });
         break;
       }
-    }
+    }*/
   }
 
   const toggleDeleteMatchDialogue = () => {
@@ -554,7 +557,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     var map_data = await map_data_raw.json();
     setMapData(map_data);
 
-    loadAllFavMatches();
+    await loadAllFavMatches();
   }, []);
 
   React.useEffect(() => {
