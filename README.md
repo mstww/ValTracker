@@ -9,9 +9,6 @@
   <a href="https://twitter.com/valtracker_gg"><img src="https://img.shields.io/badge/Twitter-@VALTracker_gg-1da1f2.svg?logo=twitter?style=for-the-badge&logo=appveyor"></a>
   <br>
   <a href="https://ko-fi.com/valtrackergg"><img src="https://ko-fi.com/img/githubbutton_sm.svg"></a>
-  <br>
-  <br>
-  <a href="https://valtracker.gg"><img width="250px" src="https://media.codedotspirit.dev/assets/valtracker/github/download-button.png?version=1"></a>
 </p>
 
 # Table of Contents
