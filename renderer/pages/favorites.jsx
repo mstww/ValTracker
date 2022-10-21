@@ -491,33 +491,13 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   }
 
   const removeFavMatch = async (MatchID, key, index, fixedQueueName) => {
-    // TODO: Remove MatchID from here, check if match is in any hub list, if no, delete.
-    var user_creds = userCreds;
-    var favMatchesData = await removeMatch('favMatches', MatchID);
-                                      
-    /*// WORKS
-    for(var i = 0; i < favMatchesData.length; i++) {
-      if(favMatchesData[i].MatchID === MatchID) {
-        delete favMatchesData[i];
+    await removeMatch('favMatches', MatchID);
 
-        var newArray = favMatchesData.filter(value => Object.keys(value).length !== 0);
-        favMatchesData = newArray;
-
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches.json', JSON.stringify({"favourites": favMatchesData}));
-        break;
-      }
-    }
-
-    // WORKS
-    fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches/' + MatchID + '.json');
-
-    // WORKS
     delete favMatches[key][index];
 
     var newArray = favMatches[key].filter(value => Object.keys(value).length !== 0);
     favMatches[key] = newArray;
 
-    // WORKS
     setFavMatchLength(favMatchLength-1);
 
     for(var i = 0; i < shownMatchesPerDay[key].matchModes.length; i++) {
@@ -537,7 +517,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         setShownMatchesPerDay({ ...shownMatchesPerDay });
         break;
       }
-    }*/
+    }
   }
 
   const toggleDeleteMatchDialogue = () => {

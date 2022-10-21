@@ -145,8 +145,7 @@ export async function createMatch(data) {
 
 export async function removeMatch(collection, uuid) {
   var puuid = await getCurrentPUUID();
-  // TODO: UPDATE THIS: 
-  var data = await db.query(`SELECT * FROM matchIDCollection:⟨${collection}::${userCreds.uuid}⟩`);
+  var data = await db.query(`SELECT * FROM matchIDCollection:⟨${collection}::${puuid}⟩`);
 
   var collections = [];
 
