@@ -378,6 +378,7 @@ export async function migrateDataToDB(win) {
     sendMessageToWindow("migrateProgressUpdate", { "message": "Migrating Settings...", "num": totalPercentage });
 
     // TODO: REQUEST INSTANCE TOKEN, FOR NEW USERS THAT DO NOT USE THIS SCRIPT: GENERATE IN SETUP
+    // TODO: DELETE ALL OLD FOLDERS AND FILES
     
     totalPercentage += 4;
     sendMessageToWindow("migrateProgressUpdate", { "message": "Finishing up...", "num": totalPercentage });

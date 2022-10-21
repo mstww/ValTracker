@@ -19,7 +19,6 @@ function Migration({ isOverlayShown, setIsOverlayShown }) {
       var { message, num } = args;
       setProgressState(message);
       setProgress(num);
-      console.log(num);
     });
   });
 

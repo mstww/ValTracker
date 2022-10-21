@@ -8,6 +8,22 @@ import L from '../locales/translations/inventory.json';
 import LocalText from '../components/translation/LocalText';
 import { useFirstRender } from '../components/useFirstRender';
 import Layout from '../components/Layout';
+import { createThing, executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, updateThing } from '../js/dbFunctions';
+
+function sortObject(obj) {
+  return Object.keys(obj).sort().reduce(function (acc, key) {
+    if(obj[key] !== null && obj[key].length !== undefined && typeof obj[key] === "object" && obj[key].length > 0) {
+      for(var i = 0; i < obj[key].length; i++) {
+        obj[key][i] = sortObject(obj[key][i]);
+      }
+    }
+    if(typeof obj[key] === "object" && obj[key] !== null && obj[key].length === undefined) {
+      obj[key] = sortObject(obj[key]);
+    }
+    acc[key] = obj[key];
+    return acc;
+  }, {});
+}
 
 async function getPlayerLoadout(region, puuid, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -100,22 +116,17 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     router.push(path + '&lang=' + router.query.lang);
   }
 
-  var token_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-  var token_data = JSON.parse(token_data_raw);
-
-  var user_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-  var user_data = JSON.parse(user_data_raw);
-
   React.useEffect(async () => {
     ipcRenderer.send('changeDiscordRP', 'skins_activity');
-    var bearer = token_data.accessToken;
+    var user_data = await getCurrentUserData();
+    var bearer = await getUserAccessToken();
     try {
-      var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
-      var player_loadout_data = await getPlayerLoadout(user_data.playerRegion, user_data.playerUUID, entitlement_token, bearer);
+      var entitlement_token = await getUserEntitlement();
+      var player_loadout_data = await getPlayerLoadout(user_data.region, user_data.uuid, entitlement_token, bearer);
       setPlayerLoadout(player_loadout_data);
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/current_inventory.json', JSON.stringify(player_loadout_data));
+      await updateThing(`inventory:current`, player_loadout_data);
   
-      var player_items = await getPlayerItems(user_data.playerRegion, user_data.playerUUID, entitlement_token, bearer);
+      var player_items = await getPlayerItems(user_data.region, user_data.uuid, entitlement_token, bearer);
       setPlayerItems(player_items);
   
       player_loadout_data.Guns.forEach(gun => {
@@ -146,40 +157,23 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       img.src = `https://media.valorant-api.com/playercards/${player_loadout_data.Identity.PlayerCardID}/largeart.png`;
       img.setAttribute('data-card', player_loadout_data.Identity.PlayerCardID);
   
-      if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID)) {
-        fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID);
-      }
-      var folderPresetList = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID);
+      var presetList = await executeQuery(`SELECT * FROM presetCollection:⟨${user_data.uuid}⟩ FETCH presets.preset`);
+      setPresetList(presetList[0].presets);
   
-      var newPresetList = [];
-      folderPresetList.forEach(preset => {
-        var preset_obj = {};
-
-        var JSON_preset = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID + '/' + preset));
-
-        preset_obj.name = preset.replace('.json', '');
-
-        if(JSON_preset.displayName) {
-          preset_obj.displayName = JSON_preset.displayName;
-        } else {
-          preset_obj.displayName = preset.replace('.json', '');
-        }
-        
-        newPresetList.push(preset_obj);
-      });
-  
-      setPresetList(newPresetList);
-
-      var all_presets = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID);
-  
-      all_presets.forEach(preset => {
-        var presetData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID + '/' + preset));
+      presetList[0].presets.forEach(preset => {
         player_loadout_data.Version = 0;
-        presetData.Version = 0;
-        delete presetData['displayName'];
+        preset.Version = 0;
 
-        if(JSON.stringify(presetData) == JSON.stringify(player_loadout_data)) {
-          setCurrentPresetName(preset.split('.')[0]);
+        var name = preset['name'];
+        delete preset['name'];
+        delete preset['displayName'];
+        delete preset['id'];
+
+        var presetSorted = sortObject(preset);
+        var invSorted = sortObject(player_loadout_data);
+
+        if(JSON.stringify(presetSorted) === JSON.stringify(invSorted)) {
+          setCurrentPresetName(name);
           setShowDeletePresetButton(true);
         }
       });
@@ -212,7 +206,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   const saveInventory = async () => {
     var loadout_name = loadoutNameRef.current.value;
-    var puuid = user_data.playerUUID;
+    var puuid = await getCurrentPUUID();
     loadoutNameRef.current.value = '';
 
     var loadoutToSave = player_loadout;
@@ -222,63 +216,36 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     loadout_name = loadout_name.replace(/\s+/g, " ");
     loadout_name = loadout_name.trim();
 
-    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + puuid)) {
-      fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + puuid);
-    }
+    loadoutToSave.name = loadout_name;
+    
+    var result = await createThing(`preset`, loadoutToSave);
+    
+    var currentPresetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
 
-    fs.writeFileSync(process.env.APPDATA + `/VALTracker/user_data/player_inventory/presets/${puuid}/${loadout_name}.json`, JSON.stringify(loadoutToSave));
+    currentPresetList[0].presets.push(result.id);
 
-    var folderPresetList = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + puuid);
-
-    var newPresetList = [];
-    folderPresetList.forEach(preset => {
-      var preset_obj = {};
-
-      var JSON_preset = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID + '/' + preset));
-
-      preset_obj.name = preset.replace('.json', '');
-
-      if(JSON_preset.displayName) {
-        preset_obj.displayName = JSON_preset.displayName;
-      } else {
-        preset_obj.displayName = preset.replace('.json', '');
-      }
-      
-      newPresetList.push(preset_obj);
-    });
+    await updateThing(`presetCollection:⟨${puuid}⟩`, currentPresetList[0]);
 
     toggleSaveInvDialogue();
 
-    setPresetList(newPresetList);
+    setPresetList(currentPresetList[0].presets);
 
     setCurrentPresetName(loadout_name);
 
     setShowDeletePresetButton(true);
   }
 
-  const deleteCurrentPreset = () => {
-    fs.unlinkSync(process.env.APPDATA + `/VALTracker/user_data/player_inventory/presets/${user_data.playerUUID}/${currentPresetName}.json`);
+  const deleteCurrentPreset = async () => {
+    var result = await executeQuery(`SELECT id FROM preset WHERE name = "${currentPresetName}"`)
+    await executeQuery(`DELETE preset:${result[0].id}`); // TODO: Make a check so that presets can't have the same name twice
+    
+    var currentPresetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
 
-    var folderPresetList = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID);
+    currentPresetList[0].presets = currentPresetList[0].presets.filter(e => e !== result[0].id);
 
-    var newPresetList = [];
-    folderPresetList.forEach(preset => {
-      var preset_obj = {};
+    await updateThing(`presetCollection:⟨${puuid}⟩`, currentPresetList[0]);
 
-      var JSON_preset = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/presets/' + user_data.playerUUID + '/' + preset));
-
-      preset_obj.name = preset.replace('.json', '');
-
-      if(JSON_preset.displayName) {
-        preset_obj.displayName = JSON_preset.displayName;
-      } else {
-        preset_obj.displayName = preset.replace('.json', '');
-      }
-      
-      newPresetList.push(preset_obj);
-    });
-
-    setPresetList(newPresetList);
+    setPresetList(currentPresetList[0].presets);
     
     setCurrentPresetName('0');
     toggleDeleteCurrentPresetDialogue();
@@ -288,18 +255,19 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     if(loadout_name === '0') {
       return;
     }
-    var loadout_raw = fs.readFileSync(process.env.APPDATA + `/VALTracker/user_data/player_inventory/presets/${user_data.playerUUID}/${loadout_name}.json`);
-    var loadout = JSON.parse(loadout_raw);
+    var user_data = await getCurrentUserData();
+    
+    var loadout_raw = await executeQuery(`SELECT * FROM preset WHERE name = "${loadout_name}"`);
+    var loadout = loadout_raw[0];
 
     delete loadout['displayName'];
+    delete loadout['name'];
+    delete loadout['id'];
 
-    var token_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-    var token_data = JSON.parse(token_data_raw);
+    var bearer = await getUserAccessToken();
 
-    var bearer = token_data.accessToken;
-
-    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
-    var new_inv = await setSkins(user_data.playerRegion, user_data.playerUUID, entitlement_token, bearer, loadout);
+    var entitlement_token = await getUserEntitlement();
+    var new_inv = await setSkins(user_data.region, user_data.uuid, entitlement_token, bearer, loadout);
 
     new_inv.Guns.forEach(async gun => {
       var img = document.querySelector(`img[data-weapontype="${gun.ID}"]`);

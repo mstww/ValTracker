@@ -19,6 +19,8 @@ import Layout from '../components/Layout';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled, Star } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
+import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions';
+import { v5 as uuidv5 } from 'uuid';
 
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -72,11 +74,9 @@ function getDifferenceInDays(date1, date2) {
 const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region, lang) => {
   try {
     var newMatches = currentMatches;
-    const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-    const tokenData = JSON.parse(rawTokenData);
 
-    const bearer = tokenData.accessToken;
-    const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+    const bearer = await getUserAccessToken();
+    const entitlement_token =  await getUserEntitlement();
 
     const playerMatches = await getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer);
     
@@ -85,10 +85,13 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
     const history = playerMatches.History;
 
     var matches = [];
+    var matchIDs = [];
 
     for (var i = 0; i < history.length; i++) {
       const match = await getMatch(region, history[i].MatchID, entitlement_token, bearer);
+      ipcRenderer.send(`createMatch`, match);
       matches.push(match);
+      matchIDs.push(match.matchInfo.matchId);
     }
 
     for(var i = 0; i < matches.length; i++) {
@@ -103,11 +106,24 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
 
       newMatches[matchDate].push(matches[i]);
     }
+
+    var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
+
+    await updateThing(`hubConfig:⟨${puuid}⟩`, {
+      ...hubConfig[0],
+      loadedMatches: newEndIndex,
+      totalMatches: totalMatches
+    });
+
+    await updateThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
+      matchIDs: matchIDs
+    });
       
     var json = {
       "totalMatches": totalMatches,
       "endIndex": newEndIndex,
-      "games": newMatches
+      "games": newMatches,
+      "matchIDs": matchIDs
     }
 
     return { errored: false, items: json };
@@ -465,9 +481,6 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
         var current_level = current_chapter.levels[j-1];
         var atEnd = true;
       }
-      
-
-      tierCount++;
 
       if(tierCount == agentContractProgressionLevel) {
         if(current_level) {
@@ -509,6 +522,8 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
           agentContractProgression.currentXPowned = agentContractXpRemaining;
         }
       }
+
+      tierCount++;
     }
   }
 
@@ -603,7 +618,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     date: Date.now()
   }
   
-  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + puuid + '/current_contract_progress.json', JSON.stringify(data));
+  await updateThing(`hubContractProgress:⟨${puuid}⟩`, data);
 
   return data;
 }
@@ -699,17 +714,18 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   
   const [ homePrefs, setHomePrefs ] = React.useState({});
   const [ favMatches, setFavMatches ] = React.useState([]);
-  const [ playerRanks, setPlayerRanks ] = React.useState([]);
+  const [ ranks, setranks ] = React.useState([]);
+
+  const [ userCreds, setUserCreds ] = React.useState({});
 
 // ------------------------------- END STATES -------------------------------
 
   const fetchMatchesAndCalculateStats = async (isNewQueue, beginIndex, endIndex, mode, isFirstLoad, isSilentLoading, keepCurrentMatches) => {
-    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-    var user_creds = JSON.parse(user_creds_raw);
-    var puuid = user_creds.playerUUID;
+    var user_creds = await getCurrentUserData();
+    var puuid = user_creds.uuid;
 
     if(keepCurrentMatches === true) {
-      var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.playerUUID, user_creds.playerRegion, router.query.lang);
+      var data = await fetchMatches(beginIndex, endIndex, [], mode, puuid, user_creds.region, router.query.lang);
 
       setMaxMatchesFound(data.items.totalMatches);
 
@@ -798,48 +814,38 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
 
     if(isSilentLoading === true) {
-      var old_matches_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_matches.json'));
+      var old_matches_data = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${user_creds.uuid}⟩`);
 
-      setMaxMatchesFound(old_matches_data.items.totalMatches);
-
-      // Get latest 4 matches from old data
-      var old_matches = [];
-
-      for(var key in old_matches_data.items.games) {
-        for(var i = 0; i < old_matches_data.items.games[key].length; i++) {
-          old_matches.push(old_matches_data.items.games[key][i])
-        }
-      }
-
-      old_matches.sort(function(a, b) {
-        return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
-      });
-
-      var latest_old_matches = old_matches.slice(0, 5);
+      var old_matches = old_matches_data[0].matchIDs;
       
-      // Get newest 4 Matches from Match history
-      var data = await fetchMatches(0, 5, [], mode, user_creds.playerUUID, user_creds.playerRegion, router.query.lang);
-
-      setMaxMatchesFound(data.items.totalMatches);
-
-      var new_matches = [];
-
-      for(var key in data.items.games) {
-        for(var i = 0; i < data.items.games[key].length; i++) {
-          new_matches.push(data.items.games[key][i])
+      if(old_matches.length === 0) {
+        var new_matches_amount = 5;
+      } else {
+        var latest_old_matches = old_matches.slice(0, 5);
+        
+        // Get newest 4 Matches from Match history
+        var data = await fetchMatches(0, 5, [], mode, user_creds.uuid, user_creds.region, router.query.lang);
+  
+        setMaxMatchesFound(data.items.totalMatches);
+  
+        var new_matches = [];
+  
+        for(var key in data.items.games) {
+          for(var i = 0; i < data.items.games[key].length; i++) {
+            new_matches.push(data.items.games[key][i])
+          }
         }
+  
+        new_matches.sort(function(a, b) {
+          return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
+        });
+  
+        var latest_new_matches = new_matches.slice(0, 5);
+  
+        // Using Some Method
+        const res2 = latest_old_matches.filter((match1) => !latest_new_matches.some(match2 => match1 === match2.matchInfo.matchId ));
+        var new_matches_amount = res2.length;
       }
-
-      new_matches.sort(function(a, b) {
-        return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
-      });
-
-      var latest_new_matches = new_matches.slice(0, 5);
-
-      // Using Some Method
-      const res2 = latest_old_matches.filter((match1) => !latest_new_matches.some(match2 => match1.matchInfo.matchId === match2.matchInfo.matchId ));
-
-      var new_matches_amount = res2.length;
 
       if(new_matches_amount === 0) {
         setIsSilentLoading(false);
@@ -881,12 +887,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             obj[key] = dataToWrite.items.games[key];
           }
           dataToWrite.items.games = obj;
-
-          if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID)) {
-            fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID);
-          }
-  
-          fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_matches.json', JSON.stringify(dataToWrite));
     
           var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
           
@@ -946,20 +946,42 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       }
     }
 
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_matches.json') && isFirstLoad) {
-      var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_matches.json'));
+    if(isFirstLoad) {
+      var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${user_creds.uuid}⟩`);
+      var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${user_creds.uuid}⟩`);
   
-      setCurrentlyLoadedMatchCount(data.items.endIndex);
+      setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches); // TODO: LOADEDMATCHES IS WRONG
+
+      var matches = [];
+      var newMatches = [];
+      // TODO: Get all Matches from DB and put in array
+      for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
+        var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
+        matches.push(match[0]);
+      }
+
+      for(var i = 0; i < matches.length; i++) {
+        var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+        moment.locale(router.query.lang);
+        var startdate = moment();
+        startdate = startdate.subtract(dateDiff, "days");
+        var matchDate = startdate.format("D. MMMM");
+  
+        // Create array if it doesn't exist
+        if(!newMatches[matchDate]) newMatches[matchDate] = [];
+  
+        newMatches[matchDate].push(matches[i]);
+      }
 
       var arr = [];
 
-      for(var key in data.items.games) {
-        arr[key] = data.items.games[key];
+      for(var key in newMatches) {
+        arr[key] = newMatches[key];
       }
       
-      data.items.games = arr;
+      newMatches = arr;
 
-      var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
+      var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
         
       setAvgKillsPerMatch(playerstats.kills_per_match);
       setAvgKillsPerRound(playerstats.kills_per_round);
@@ -1002,15 +1024,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
       setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
 
-      setCurrentMatches(data.items.games);
+      setCurrentMatches(newMatches);
       setLoading(false);
       setIsSilentLoading(true);
       return;
     } else {
-      if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID)) {
-        fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID);
-      }
-
       setLoading(true);
       setErrored(false);
   
@@ -1047,10 +1065,15 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setKillsDeathsChartData([]);
   
       if(isNewQueue) {
-        var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.playerUUID, user_creds.playerRegion, router.query.lang);
+        var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.uuid, user_creds.region, router.query.lang);
       } else {
-        var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.playerUUID, user_creds.playerRegion, router.query.lang);
+        var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.uuid, user_creds.region, router.query.lang);
       }
+
+      /*
+        Save Matches by ID in matchIDCollection, save as normal matches. Save endIndex and totalMatches in hubConfig:puuid. Fetch all matches, then use current 
+        object technique. ONLY SAVE MATCHES AS RAW MATCHES AND ID'S.
+      */
   
       setCurrentlyLoadedMatchCount(data.items.endIndex);
       setMaxMatchesFound(data.items.totalMatches);
@@ -1063,12 +1086,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           obj[key] = dataToWrite.items.games[key];
         }
         dataToWrite.items.games = obj;
-
-        if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID)) {
-          fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID);
-        }
-
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_matches.json', JSON.stringify(dataToWrite));
   
         var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
         
@@ -1133,23 +1150,20 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }
 
   const fetchContractData = async (refetch) => {
-    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-    var user_creds = JSON.parse(user_creds_raw);
+    var user_creds = await getCurrentUserData();
+    var contractData = await executeQuery(`SELECT * FROM hubContractProgress:⟨${user_creds.uuid}⟩`);
 
     try {
-      if(refetch === false && fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_contract_progress.json')) {
-        var contract_progress = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/' + user_creds.playerUUID + '/current_contract_progress.json'));
+      if(refetch === false && contractData[0]) {
+        var contract_progress = contractData[0];
       } else {
         var version_data = await (await fetch('https://valorant-api.com/v1/version')).json();
-  
-        const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-        const tokenData = JSON.parse(rawTokenData);
     
-        const bearer = tokenData.accessToken;
+        const bearer = await getUserAccessToken();
   
-        const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+        const entitlement_token = await getUserEntitlement();
   
-        var contract_progress = await calculateContractProgress(user_creds.playerRegion, user_creds.playerUUID, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
+        var contract_progress = await calculateContractProgress(user_creds.region, user_creds.uuid, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
       }
     
       setAgentContract_prevLevelNum(contract_progress.agentContractProgress.current_level.levelNum);
@@ -1174,9 +1188,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setContractsError(true);
     }
   }
-
-  var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-  var user_creds = JSON.parse(user_creds_raw);
 
   const calculateMatchStats = (match) => {
     var gameStartUnix = match.matchInfo.gameStartMillis;
@@ -1212,17 +1223,17 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
     /* PLAYER STATS */
     for(var i = 0; i < match.players.length; i++) {
-      var homePlayerNameTag = `${user_creds.playerName}#${user_creds.playerTag}`;
+      var homenameTag = `${userCreds.name}#${userCreds.tag}`;
       
-      if(match.players[i].subject == user_creds.playerUUID) {
+      if(match.players[i].subject == userCreds.uuid) {
         var playerInfo = match.players[i];
         var playerCurrentTier = match.players[i].competitiveTier;
-        var playerRankFixed = playerRanks[playerCurrentTier];
+        var rankFixed = ranks[playerCurrentTier];
       }
     }
 
     if(playerInfo) {
-      var playerUUID = playerInfo.subject;
+      var uuid = playerInfo.subject;
       var playerTeam = playerInfo.teamId;
 
       if(playerTeam == winning_team) {
@@ -1274,7 +1285,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         return b.stats.score - a.stats.score;
       });
       
-      var playerPosition = players.findIndex(player => player.subject == playerUUID) + 1;
+      var playerPosition = players.findIndex(player => player.subject == uuid) + 1;
 
       if(playerPosition == 1) {
         // Player is Match MVP
@@ -1289,7 +1300,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           }
         }
 
-        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == playerUUID) + 1;
+        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == uuid) + 1;
 
         if(teamPlayerPosition == 1) {
           // Player is Team MVP
@@ -1312,7 +1323,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
       for(var i = 0; i < match.roundResults.length; i++) {
         for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
-          if(match.roundResults[i].playerStats[i2].subject == playerUUID) {
+          if(match.roundResults[i].playerStats[i2].subject == uuid) {
             for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
               playerHeadShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
               playerBodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
@@ -1364,7 +1375,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         });
 
         var firstRoundKill = totalRoundKills[0];
-        if(firstRoundKill && firstRoundKill.killer == playerUUID) {
+        if(firstRoundKill && firstRoundKill.killer == uuid) {
           playerFBs++;
         }
       }
@@ -1372,11 +1383,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
     var matchData = {
       playerAgent, 
-      playerUUID,
-      homePlayerNameTag,
+      uuid,
+      homenameTag,
       mapName, 
       playerCurrentTier, 
-      playerRankFixed, 
+      rankFixed, 
       matchOutcomeColor, 
       matchOutcome, 
       matchScore, 
@@ -1397,7 +1408,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     
     var matchViewData = {
       matchScore, matchOutcome, mapUUID, mapName, gameStartUnix, gameLengthMS, gameMode, gameServer, gameVersion,
-      playerName: homePlayerNameTag.split("#")[0], playerUUID, playerTeam, playerAgent, playerKD, playerKDA, playerKD, playerScore, playerACS, playerKillsPerRound: averageDamageRounded, playerCurrentTier, playerRankFixed, headShotsPercentRounded, bodyShotsPercentRounded, legShotsPercentRounded, playerPositionText, playerPosition, playerFBs
+      name: homenameTag.split("#")[0], uuid, playerTeam, playerAgent, playerKD, playerKDA, playerKD, playerScore, playerACS, playerKillsPerRound: averageDamageRounded, playerCurrentTier, rankFixed, headShotsPercentRounded, bodyShotsPercentRounded, legShotsPercentRounded, playerPositionText, playerPosition, playerFBs
     }
 
     return { matchData, matchViewData };
@@ -1410,76 +1421,48 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     fetchMatchesAndCalculateStats(false, currentlyLoadedMatchCount, currentlyLoadedMatchCount + 5, activeQueueTab, false, false, true, currentMatches);
   }
 
-  const toggleMatchInFavs = (MatchID, isFav) => {
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json');
-    var data = JSON.parse(raw);
-
+  const toggleMatchInFavs = async (MatchID, isFav) => {
+    var favMatches = await executeQuery(`SELECT * FROM matchIDCollection:⟨favMatches::${userCreds.uuid}⟩`);
     if(!isFav) {
-      data.favourites.push({
-        "MatchID": MatchID,
+      await updateThing(`matchIDCollection:⟨favMatches::${userCreds.uuid}⟩`, {
+        "matchIDs": [
+          ...favMatches[0].matchIDs,
+          MatchID
+        ]
       });
-      
-      var newArray = data.favourites.filter(value => Object.keys(value).length !== 0);
 
-      setFavMatches(newArray);
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json', JSON.stringify({"favourites": newArray}));
+      setFavMatches([...favMatches[0].matchIDs, MatchID]);
     } else {
-      for (var i = 0; i < data.favourites.length; i++) {
-        if(data.favourites[i].MatchID == MatchID) {
-          delete data.favourites[i];
-        }
-      }
-      
-      var newArray = data.favourites.filter(value => Object.keys(value).length !== 0);
-
-      setFavMatches(newArray);
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json', JSON.stringify({"favourites": newArray}));
-
-      if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/matches/' + MatchID + '.json')) {
-        fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/matches/' + MatchID + '.json');
-      }
+      await removeMatch('favMatches', MatchID);
     }
   }
   
   React.useEffect(async () => {
     ipcRenderer.send('changeDiscordRP', "hub_activity");
-    
-    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID)) {
-      fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID);
-    }
 
-    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches')) {
-      fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches');
-    }
+    var user_creds = await getCurrentUserData();
+    setUserCreds(user_creds);
 
-    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json')) {
-      var obj = {"favourites": []};
-      
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json', JSON.stringify(obj));
-    }
+    var favs_data = await executeQuery(`SELECT * FROM matchIDCollection:⟨favMatches::${user_creds.uuid}⟩`);
 
-    var favs_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.playerUUID + '/matches.json');
-    var favs_data = JSON.parse(favs_data_raw);
-
-    setFavMatches(favs_data.favourites);
+    setFavMatches(favs_data[0].matchIDs);
 
     var map_data_raw = await fetch('https://valorant-api.com/v1/maps', { 'Content-Type': 'application/json' });
     var map_data = await map_data_raw.json();
     setMapData(map_data);
 
-    var home_prefs_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/settings.json');
-    var home_prefs = JSON.parse(home_prefs_raw);
+    var uuid = uuidv5("hubMatchFilter", process.env.SETTINGS_UUID);
+    var result = await executeQuery(`SELECT * FROM setting:⟨${uuid}⟩`);
 
-    setHomePrefs(home_prefs);
-    setActiveQueueTab(home_prefs.preferredMatchFilter);
+    setActiveQueueTab(result[0].value);
 
-    if(!home_prefs.preferredMatchFilter || home_prefs.preferredMatchFilter === "") {
+    if(!result[0].value || result[0].value === "") {
       await fetchMatchesAndCalculateStats(true, 0, 15, 'unrated', true);
       await fetchMatchesAndCalculateStats(true, 0, 15, 'unrated', false, true);
     } else {
       try {
-        await fetchMatchesAndCalculateStats(true, 0, 15, home_prefs.preferredMatchFilter, true);
-        await fetchMatchesAndCalculateStats(true, 0, 15, home_prefs.preferredMatchFilter, false, true);
+        await fetchMatchesAndCalculateStats(true, 0, 15, result[0].value, true);
+        await fetchMatchesAndCalculateStats(true, 0, 15, result[0].value, false, true);
       } catch(e) {
         console.log(e);
       }
@@ -1501,33 +1484,30 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setFeaturedBundleName(featured_bundle.data.name);
       setFeaturedBundlePrice(featured_bundle.data.price);
       setFeaturedBundleImage(featured_bundle.data.displayIcon);
-  
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/featured_bundle.json', JSON.stringify(featured_bundle));
+      
+      await updateThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, featured_bundle.data);
     }
 
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/featured_bundle.json')) {
-      var old_featured_bundle_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/featured_bundle.json');
-      var old_featured_bundle = JSON.parse(old_featured_bundle_raw);
+    var old_featured_bundle = await executeQuery(`SELECT * FROM featuredBundle:⟨${process.env.SERVICE_UUID}⟩`);
 
-      if(Date.now() < old_featured_bundle.data.expiry_date) {
-        setFeaturedBundleName(old_featured_bundle.data.name);
-        setFeaturedBundlePrice(old_featured_bundle.data.price);
-        setFeaturedBundleImage(old_featured_bundle.data.displayIcon);
-      } else {
-        refetchFeaturedBundle();
-      }
+    if(Date.now() < old_featured_bundle[0].expiry_date) {
+      setFeaturedBundleName(old_featured_bundle[0].name);
+      setFeaturedBundlePrice(old_featured_bundle[0].price);
+      setFeaturedBundleImage(old_featured_bundle[0].displayIcon);
     } else {
       refetchFeaturedBundle();
     }
-  });
+  }, []);
 
   React.useEffect(async () => {
     if(!firstRender) {
       if(isPrefChange === true) {
         setIsPrefChange(false);
       } else {
-        homePrefs.preferredMatchFilter = activeQueueTab;
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/home_settings/settings.json', JSON.stringify(homePrefs));
+        var uuid = uuidv5("hubMatchFilter", process.env.SETTINGS_UUID);
+        await updateThing(`setting:⟨${uuid}⟩`, {
+          "value": activeQueueTab
+        });
   
         fetchMatchesAndCalculateStats(true, 0, 15, activeQueueTab, false);
       }
@@ -1590,16 +1570,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }, [ headshotPercentagesOfLast5, adrOfLast5, kdOfLast5 ]);
 
   React.useEffect(() => {
-    var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.playerUUID + '.json')) {
-      var data = {
-        "skins": []
-      }
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.playerUUID + '.json', JSON.stringify(data));
-    }
-  }, [])
-
-  React.useEffect(() => {
     ipcRenderer.on("hub_smartLoadNewMatches", async function(event, args) {
       fetchContractData(true);
       if(args !== 'newmap' && args !== 'snowball' && args !== '') {
@@ -1615,8 +1585,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     if(!firstRender) {
-      var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
-      setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
+      var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
+      setranks(ranksRaw.data[ranksRaw.data.length-1].tiers);
     }
   }, [ router.query ]);
 
@@ -1851,7 +1821,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               <span className='text-xl'>{matchData.mapName}</span>
                               <span className='text-base font-light flex flex-row items-center'> 
                                 <Tooltip 
-                                  content={matchData.playerCurrentTier > 3 ? matchData.playerRankFixed : ''}
+                                  content={matchData.playerCurrentTier > 3 ? matchData.rankFixed : ''}
                                   color="error" 
                                   placement={'top'} 
                                   className={'rounded'}

@@ -51,9 +51,9 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   const router = useRouter();
   var page = router.pathname.split("/").pop();
 
-  const [ playerName, setPlayerName ] = React.useState('');
-  const [ playerTag, setPlayerTag ] = React.useState('');
-  const [ playerRank, setPlayerRank ] = React.useState(null);
+  const [ name, setname ] = React.useState('');
+  const [ tag, settag ] = React.useState('');
+  const [ rank, setrank ] = React.useState(null);
 
   const [ open, setOpen ] = React.useState(false);
 
@@ -136,9 +136,9 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
 
   React.useEffect(async () => {
     var data = await getCurrentUserData();
-    setPlayerRank(data.rank);
-    setPlayerName(data.name);
-    setPlayerTag(data.tag);
+    setrank(data.rank);
+    setname(data.name);
+    settag(data.tag);
     sessionStorage.setItem('navbar-rank', data.rank);
     sessionStorage.setItem('navbar-name', data.name);
     sessionStorage.setItem('navbar-tag', data.tag);
@@ -455,15 +455,15 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         >
           <div className='flex flex-row items-center content-center h-full justify-start'>
             <img 
-              src={playerRank != '' ? playerRank : '/images/empty_rank.png'}
+              src={rank != '' ? rank : '/images/empty_rank.png'}
               width={40}
               height={20}
               className='h-5/6 p-1 mr-2 ml-1 rounded-full border border-gray-500'
               id='navbar-account-rank shadow-img'
             /> 
             <div className='flex flex-col justify-center absolute left-12 pl-px'>
-              <span id="navbar-player-name" className='m-0 leading-none mb-px'>{playerName}</span>
-              <span id="navbar-player-tag" className='text-gray-500 font-light leading-none'>#{playerTag}</span>
+              <span id="navbar-player-name" className='m-0 leading-none mb-px'>{name}</span>
+              <span id="navbar-player-tag" className='text-gray-500 font-light leading-none'>#{tag}</span>
             </div>
           </div>
         </div>

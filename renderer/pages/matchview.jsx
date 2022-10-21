@@ -76,8 +76,8 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   // -------------------- PLAYER INFO --------------------
 
-  const [ playerName, setPlayerName ] = React.useState('');
-  const [ playerUUID, setPlayerUUID ] = React.useState('');
+  const [ name, setname ] = React.useState('');
+  const [ uuid, setuuid ] = React.useState('');
   const [ playerAgentUUID, setPlayerAgentUUID ] = React.useState('');
   const [ playerKDA, setPlayerKDA ] = React.useState('');
   const [ playerKD, setPlayerKD ] = React.useState('');
@@ -260,14 +260,14 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         });
         var playerWithMostACS = playerStatsSortingArray[0].subject;
   
-        setHasPlayerSpentMost(playerThatSpentMostMoney === knownMatchData.playerUUID);
-        setHasPlayerSpentLeast(playerThatSpentLeastMoney === knownMatchData.playerUUID);
-        setHasPlayerMostKills(playerWithMostKills === knownMatchData.playerUUID);
-        setHasPlayerMostAssists(playerWithMostAssists === knownMatchData.playerUUID);
-        setHasPlayerMostACS(playerWithMostACS === knownMatchData.playerUUID);
-        setHasPlayerDealtMostDmg(playerWithMostDmg === knownMatchData.playerUUID);
-        setHasPlayerHighestHsPercent(playerWithBestHsPercent === knownMatchData.playerUUID);
-        setHasPlayerMostFBs(playerWithMostFBs === knownMatchData.playerUUID);
+        setHasPlayerSpentMost(playerThatSpentMostMoney === knownMatchData.uuid);
+        setHasPlayerSpentLeast(playerThatSpentLeastMoney === knownMatchData.uuid);
+        setHasPlayerMostKills(playerWithMostKills === knownMatchData.uuid);
+        setHasPlayerMostAssists(playerWithMostAssists === knownMatchData.uuid);
+        setHasPlayerMostACS(playerWithMostACS === knownMatchData.uuid);
+        setHasPlayerDealtMostDmg(playerWithMostDmg === knownMatchData.uuid);
+        setHasPlayerHighestHsPercent(playerWithBestHsPercent === knownMatchData.uuid);
+        setHasPlayerMostFBs(playerWithMostFBs === knownMatchData.uuid);
   
         setTeamData(teamData);
   
@@ -296,8 +296,8 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setMatchServer(knownMatchData.gameServer);
         setMatchGameVersion(knownMatchData.gameVersion);
   
-        setPlayerName(knownMatchData.playerName);
-        setPlayerUUID(knownMatchData.playerUUID);
+        setname(knownMatchData.name);
+        setuuid(knownMatchData.uuid);
         setPlayerAgentUUID(knownMatchData.playerAgent);
         setPlayerKDA(knownMatchData.playerKDA);
         setPlayerKD(knownMatchData.playerKD);
@@ -360,8 +360,8 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setMatchScore(knownMatchData.matchScore);
         setPlayerMatchResult(knownMatchData.matchOutcome);
   
-        setPlayerName(knownMatchData.playerName);
-        setPlayerUUID(knownMatchData.playerUUID);
+        setname(knownMatchData.name);
+        setuuid(knownMatchData.uuid);
         setPlayerAgentUUID(knownMatchData.playerAgent);
         setPlayerKDA(knownMatchData.playerKDA);
         setPlayerKD(knownMatchData.playerKD);
@@ -584,7 +584,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     var isSpikePlanted = true;
                   }
 
-                  if(teamData[round.winningTeam].includes(playerUUID)) {
+                  if(teamData[round.winningTeam].includes(uuid)) {
                     var hasPlayerTeamWonRound = true;
                   }
 
@@ -600,7 +600,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       teamRedRoundKills = teamRedRoundKills + round.playerStats[i].kills.length;
                     }
 
-                    if(round.playerStats[i].subject == playerUUID) {
+                    if(round.playerStats[i].subject == uuid) {
                       playerKills = playerKills + round.playerStats[i].kills.length;
                     }
                   }
@@ -692,7 +692,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 : 
                 ''
               }
-              <span className='relative top-1.5 ml-2'>{playerName}</span>
+              <span className='relative top-1.5 ml-2'>{name}</span>
             </span>
           </div>
           <div id='matchview-gradient-overlay' className='absolute top-0 h-full w-full left-0 z-30'>

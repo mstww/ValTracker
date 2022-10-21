@@ -6,7 +6,7 @@ import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch';
 import L from '../../locales/translations/reauth.json';
 import LocalText from '../translation/LocalText';
-import { getCurrentUserData, getUserEntitlement } from '../../js/dbFunctions';
+import { getCurrentUserData, getUserEntitlement, updateThing } from '../../js/dbFunctions';
 
 const card_base_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -30,7 +30,7 @@ async function openLoginWindow() {
   return await ipcRenderer.invoke('loginWindow', false);
 }
 
-async function getPlayerUUID(bearer) {
+async function getuuid(bearer) {
   return (await (await fetch('https://auth.riotgames.com/userinfo', {
     method: 'GET',
     headers: {
@@ -88,7 +88,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
       var arg = await ipcRenderer.invoke('getTdidCookie', 'addedNewAccount');
       
       var requiredCookie = "tdid=" + arg
-      var puuid = await getPlayerUUID(bearer);
+      var puuid = await getuuid(bearer);
   
       var reagiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
       var region = reagiondata.affinities.live;
@@ -112,21 +112,23 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
       }
   
       var accObj = {
-        playerName: new_account_data[0].GameName,
-        playerTag: new_account_data[0].TagLine,
-        playerRegion: region,
-        playerUUID: puuid,
-        playerRank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`,
+        name: new_account_data[0].GameName,
+        tag: new_account_data[0].TagLine,
+        region: region,
+        uuid: puuid,
+        rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`,
       }
+
+      var ssidObj = data.riotcookies.find(obj => obj.name === "ssid");
   
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuid + '.json', JSON.stringify(accObj));
-  
-      if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid)) {
-        fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid);
-      }
-      
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
+      await updateThing(`player:⟨${puuid}⟩`, accObj);
+      await updateThing(`rgConfig:⟨${puuid}⟩`, {
+        accesstoken: bearer,
+        entitlement: entitlement_token,
+        idtoken: id_token,
+        ssid: "ssid=" + ssidObj.value,
+        tdid: requiredCookie
+      });
   
       return;
     }

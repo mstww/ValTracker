@@ -72,7 +72,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                     "skins": newArray
                   }
   
-                  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.playerUUID + '.json', JSON.stringify(data));
+                  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
                   setWishlistedItems(newArray);
                   setWishlistPosition(null);
                   setIsWishlisted(false);
@@ -93,7 +93,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                     "skins": wishlistedItems
                   }
   
-                  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.playerUUID + '.json', JSON.stringify(data));
+                  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
                   setWishlistedItems(wishlistedItems);
                   setWishlistPosition(wishlistedItems.length-1);
                   setIsWishlisted(true);
@@ -138,7 +138,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                   "skins": newArray
                 }
 
-                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.playerUUID + '.json', JSON.stringify(data));
+                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
                 setWishlistedItems(newArray);
                 setWishlistPosition(null);
                 setIsWishlisted(false);
@@ -165,7 +165,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                   "skins": wishlistedItems
                 }
 
-                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.playerUUID + '.json', JSON.stringify(data));
+                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
                 setWishlistedItems(wishlistedItems);
                 setWishlistPosition(wishlistedItems.length-1);
                 setIsWishlisted(true);

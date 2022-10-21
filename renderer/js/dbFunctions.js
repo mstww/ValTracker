@@ -26,6 +26,26 @@ export async function executeQuery(queryStr) {
   return result[0].result;
 }
 
+export async function createThing(thing, obj) {
+  if(db === false) await connectToDB();
+
+  var result = await db.query(`SELECT 1 FROM ${thing}`);
+  if(!result[0].result[0]) {
+    var result = await db.create(thing, obj);
+  } else {
+    var result = await db.update(thing, obj);
+  }
+
+  return result;
+}
+
+export async function updateThing(thing, obj) {
+  if(db === false) await connectToDB();
+
+  var result = await db.update(thing, obj);
+  return result;
+}
+
 export async function switchPlayer(uuid) {
   if(db === false) await connectToDB();
   
@@ -65,11 +85,13 @@ export async function getUserAccessToken(uuid) {
 
 export async function getCurrentUserData() {
   if(db === false) await connectToDB();
-  
-  var Q = "SELECT out.name AS name, out.rank AS rank, out.region AS region, out.tag AS tag, out.uuid AS uuid FROM playerCollection:⟨app⟩->currentPlayer FETCH out";
-  var result = await db.query(Q);
-  console.log(result);
-  return result[0].result[0];
+  try {
+    var Q = "SELECT out.name AS name, out.rank AS rank, out.region AS region, out.tag AS tag, out.uuid AS uuid FROM playerCollection:⟨app⟩->currentPlayer FETCH out";
+    var result = await db.query(Q);
+    return result[0].result[0];
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 export async function getCurrentPUUID() {
@@ -117,14 +139,14 @@ export async function fetchMatch(uuid) {
   return result[0].result[0];
 }
 
-export async function createMatch(data) { // TODO: MOVE TO WORKER
+export async function createMatch(data) {
   ipcRenderer.send("createMatch", data);
 }
 
 export async function removeMatch(collection, uuid) {
   var puuid = await getCurrentPUUID();
   // TODO: UPDATE THIS: 
-  var data = await db.query(`SELECT * FROM matchIDCollection`);
+  var data = await db.query(`SELECT * FROM matchIDCollection:⟨${collection}::${userCreds.uuid}⟩`);
 
   var collections = [];
 

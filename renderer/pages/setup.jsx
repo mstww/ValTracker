@@ -10,6 +10,8 @@ import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
 import { Translate, BackArrow } from '../components/SVGs';
 import Layout from '../components/Layout';
+import { createThing, executeQuery, updateThing } from '../js/dbFunctions';
+import { v5 as uuidv5 } from 'uuid';
 
 const slides_first_load = {
   hidden: { opacity: 0, x: 0, y: 100, scale: 1, display: 'none' },
@@ -40,7 +42,7 @@ const page_4_vars = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, height: '100%', transitionEnd: { display: 'none' } },
 }
 
-async function getPlayerUUID(bearer) {
+async function getuuid(bearer) {
   return (await (await fetch('https://auth.riotgames.com/userinfo', {
     method: 'GET',
     headers: {
@@ -157,7 +159,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
   const [ isPage2Shown, setIsPage2Shown ] = React.useState(false);
   const [ isLoginCompleted, setIsLoginCompleted ] = React.useState(false);
 
-  const [ playerData, setPlayerData ] = React.useState({ playerRegion: '' });
+  const [ playerData, setPlayerData ] = React.useState({ region: '' });
   const [ loadingState, setLoadingState ] = React.useState('');
 
   const [ isProgressShown, setIsProgressShown ] = React.useState(false);
@@ -165,7 +167,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
 
   var overallProgressValues = LocalText(L, currentSelectedLanguage, "progress.values");
 
-  const [ overallProgress, setOverallProgress ] = React.useState(overallProgressValues[0]); //6, 33, 62, 100
+  const [ overallProgress, setOverallProgress ] = React.useState(overallProgressValues[0]);
 
   const login = async () => {
     var data = await ipcRenderer.invoke('loginWindow');
@@ -182,7 +184,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
     
         setProgress(10);
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s0"));
-        var puuid = await getPlayerUUID(bearer);
+        var puuid = await getuuid(bearer);
         var entitlement_token = await getEntitlement(bearer);
         setProgress(30);
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s1"));
@@ -197,43 +199,105 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
     
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s2"));
         var userInfo = await requestUserCreds(region, puuid);
-        var playerName = userInfo[0].GameName;
-        var playerTag = userInfo[0].TagLine;
-        var playerUUID = userInfo[0].Subject;
-        var playerRegion = region;
+        var name = userInfo[0].GameName;
+        var tag = userInfo[0].TagLine;
+        var uuid = userInfo[0].Subject;
+        var region = region;
         setProgress(60);
     
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s3"));
-        const currenttier = await getPlayerMMR(playerRegion, playerUUID, entitlement_token, bearer);
+        const currenttier = await getPlayerMMR(region, uuid, entitlement_token, bearer);
         setProgress(90);
     
         var userData = {
-          playerName: playerName,
-          playerTag: playerTag,
-          playerUUID: playerUUID,
-          playerRegion: playerRegion,
-          playerRank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`
+          name: name,
+          tag: tag,
+          uuid: uuid,
+          region: region,
+          rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`
         }
   
         setPlayerData(userData);
     
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s4"));
-    
-        if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid)) {
-          fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid);
-        }
-    
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
-        
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json', JSON.stringify(data.tokenData));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/cookies.json', JSON.stringify(data.riotcookies));
-    
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json', JSON.stringify(userData));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + playerUUID + '.json', JSON.stringify(userData));
+        var favMatchConfigs = {};
+      
+        var matchIDResult = await createThing(`matchIDCollection:⟨favMatches::${puuid}⟩`, {
+          "matchIDs": []
+        });
+      
+        favMatchConfigs[puuid] = (await createThing(`favMatchConfig:⟨${puuid}⟩`, {
+          matchIDCollection: matchIDResult.id ? matchIDResult.id : matchIDResult[0].result[0].id
+        })).id;
+      
+        var hubConfigs = {};
+      
+        var matchIDResult = await createThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
+          "matchIDs": []
+        });
+      
+        hubConfigs[puuid] = (await createThing(`hubConfig:⟨${puuid}⟩`, {
+          matchIDResult: matchIDResult.id ? matchIDResult.id : matchIDResult[0].result[0].id
+        })).id;
+      
+        var allPlayerConfigs = {};
+      
+        var result = await createThing(`playerConfig:⟨${puuid}⟩`, {
+          "favMatchConfig": favMatchConfigs[puuid],
+          "hubConfig": hubConfigs[puuid]
+        });
+        allPlayerConfigs[puuid] = result.id;
+      
+        var allPlayerDataIDs = [];
+      
+        var result = await createThing(`player:⟨${puuid}⟩`, {
+          ...userData,
+          "playerConfig": allPlayerConfigs[puuid]
+        });
+      
+        allPlayerDataIDs.push(result.id);
+      
+        var result = await createThing(`playerCollection:⟨app⟩`, {
+          "players": allPlayerDataIDs
+        });
 
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json', JSON.stringify({ entitlement_token}));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/entitlement.json', JSON.stringify({ entitlement_token}));
+        var ssidObj = data.riotcookies.find(obj => obj.name === "ssid");
+      
+        await createThing(`rgConfig:⟨${puuid}⟩`, {
+          "accesstoken": data.tokenData.accessToken,
+          "idtoken": data.tokenData.id_token,
+          "ssid": "ssid=" + ssidObj.value,
+          "tdid": requiredCookie,
+          "entitlement": entitlement_token
+        });
+      
+        await executeQuery(`RELATE playerCollection:⟨app⟩->currentPlayer->player:⟨${puuid}⟩`); // Switch for new UUID
+      
+        await createThing(`hubContractProgress:⟨${puuid}⟩`, {
+          "agentContract": {},
+          "battlePass": {},
+          "date": null
+        });
+      
+        await createThing(`playerStore:⟨${puuid}⟩`, {});
+      
+        await createThing(`inventory:⟨current⟩`, {});
+      
+        await createThing(`presetCollection:⟨${puuid}⟩`, {
+          "presets": []
+        });
+      
+        await createThing(`wishlist:⟨${puuid}⟩`, {
+          "skins": []
+        });
+      
+        var bundle = await (await fetch('https://api.valtracker.gg/featured-bundle')).json();
+        var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
+      
+        await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
+          "lastMessageUnix": Date.now(),
+          "featuredBundle": result.id
+        });
   
         setLoadingState('');
         setProgress(100);
@@ -248,13 +312,16 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
     }
   }
 
-  const finishSetup = () => {
-    var load_data_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-    var load_data = JSON.parse(load_data_raw);
-  
-    load_data.hasFinishedSetupSequence = true;
-    load_data.appLang = currentSelectedLanguage;
-    fs.writeFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json", JSON.stringify(load_data));
+  const finishSetup = async () => {
+    var uuid = uuidv5("setupCompleted", process.env.SETTINGS_UUID);
+    await updateThing(`setting:⟨${uuid}⟩`, {
+      "value": true
+    });
+
+    var uuid = uuidv5("appLang", process.env.SETTINGS_UUID);
+    await updateThing(`setting:⟨${uuid}⟩`, {
+      "value": currentSelectedLanguage
+    });
 
     ipcRenderer.send('finishedSetup');
   }
@@ -372,15 +439,15 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                 }
               >
                 <img 
-                  src={playerData.playerRank}
+                  src={playerData.rank}
                   className='w-9 p-1 mr-2 ml-1 rounded-full border border-gray-500 my-1 pointer-events-none'
                   id='navbar-account-switcher-rank shadow-img'
                 /> 
                 <div className='flex flex-col justify-center pointer-events-none'>
-                  <span className='m-0 leading-none mb-px pointer-events-none'>{ playerData.playerName }</span>
-                  <span className='text-gray-500 font-light leading-none pointer-events-none'>#{ playerData.playerTag }</span>
+                  <span className='m-0 leading-none mb-px pointer-events-none'>{ playerData.name }</span>
+                  <span className='text-gray-500 font-light leading-none pointer-events-none'>#{ playerData.tag }</span>
                 </div>
-                <span className='ml-auto mr-4 pointer-events-none'>{ playerData.playerRegion.toUpperCase() }</span>
+                <span className='ml-auto mr-4 pointer-events-none'>{ playerData.region.toUpperCase() }</span>
               </div>
 
             </div>

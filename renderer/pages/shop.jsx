@@ -14,6 +14,7 @@ import APIi18n from '../components/translation/ValApiFormatter';
 import { Close } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import Layout from '../components/Layout';
+import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
 
 const slide_right = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -136,12 +137,12 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ wishlistedItems, setWishlistedItems ] = React.useState([]);
   const [ userData, setUserData ] = React.useState({});
 
-  React.useEffect(() => {
-    var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var user_wishlist = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.playerUUID + '.json'));
+  React.useEffect(async () => {
+    var user_data = await getCurrentUserData();
+    var user_wishlist = await executeQuery(`SELECT * FROM wishlist:⟨${user_data.uuid}⟩`);
 
     setUserData(user_data);
-    setWishlistedItems(user_wishlist.skins);
+    setWishlistedItems(user_wishlist[0].skins);
   }, []);
 
   var localBundleHeader = LocalText(L, "bundle_header");
@@ -242,12 +243,12 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }, 1000);
 
     // Fetch Wallet
-    var region = user_creds.playerRegion;
-    var puuid = user_creds.playerUUID;
-    var bearer = tokenData.accessToken;
+    var region = user_creds.region;
+    var puuid = user_creds.uuid;
+    var bearer = await getUserAccessToken();
 
     try {
-      var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;;
+      var entitlement_token = await getUserEntitlement();
       var wallet = await getWallet(region, puuid, entitlement_token, bearer);
   
       var VP = wallet.Balances['85ad13f7-3d1b-5128-9eb2-7cd8ee0b5741'];

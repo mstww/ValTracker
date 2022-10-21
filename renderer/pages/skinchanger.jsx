@@ -220,7 +220,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'))
 
     var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
-    var skinPriceData = await getOffers(user_data.playerRegion, entitlement_token, token_data.accessToken);
+    var skinPriceData = await getOffers(user_data.region, entitlement_token, token_data.accessToken);
 
     setSkinPrices(skinPriceData.Offers);
 
@@ -542,7 +542,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
     var user_creds = JSON.parse(user_creds_raw);
 
-    var region = user_creds.playerRegion;
+    var region = user_creds.region;
     var bearer = tokenData.accessToken;
 
     var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
@@ -563,7 +563,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(() => {
     var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var user_wishlist = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.playerUUID + '.json'));
+    var user_wishlist = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.uuid + '.json'));
 
     setUserData(user_data);
     setWishlistedItems(user_wishlist.skins);
@@ -699,7 +699,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                         "skins": newArray
                       }
 
-                      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.playerUUID + '.json', JSON.stringify(data));
+                      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
                       setWishlistedItems(newArray);
                       setWishlistPosition(null);
                       setIsWishlisted(false);
@@ -725,7 +725,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                         "skins": wishlistedItems
                       }
 
-                      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.playerUUID + '.json', JSON.stringify(data));
+                      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
                       setWishlistedItems(wishlistedItems);
                       setWishlistPosition(wishlistedItems.length-1);
                       setIsWishlisted(true);

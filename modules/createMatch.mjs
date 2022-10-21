@@ -3,7 +3,6 @@ import { workerData } from "worker_threads";
 
 async function createMatch() {
   const { data } = workerData;
-  console.log(data)
   const db = new Surreal(process.env.DB_URL);
 
   await db.wait();
@@ -34,7 +33,10 @@ async function createMatch() {
     teams: data.teams
   }
 
-  await db.create(`match:⟨${data.matchInfo.matchId}⟩`, match);
+  var result = await db.query(`SELECT 1 FROM match:⟨${data.matchInfo.matchId}⟩`);
+  if(!result[0].result[0]) {
+    var result = await db.create(`match:⟨${data.matchInfo.matchId}⟩`, match);
+  }
 }
 
 createMatch();

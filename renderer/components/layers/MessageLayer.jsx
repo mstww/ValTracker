@@ -1,6 +1,5 @@
 import Message from '../messages/Message';
 import React from 'react';
-import fs from 'fs';
 import fetch from 'node-fetch';
 import { getServiceData } from '../../js/dbFunctions';
 

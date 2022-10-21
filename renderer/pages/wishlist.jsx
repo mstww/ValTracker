@@ -27,7 +27,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
 
   React.useEffect(() => {
     var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.playerUUID + '.json'));
+    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.uuid + '.json'));
 
     setUserData(user_data);
 
@@ -155,7 +155,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                               "skins": newArray1
                             }
 
-                            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.playerUUID + '.json', JSON.stringify(data));
+                            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
                             setPlayerWishlistSkins(newArray1);
                             setUnsortedPlayerWishlistSkins(newArray2);
                           }}

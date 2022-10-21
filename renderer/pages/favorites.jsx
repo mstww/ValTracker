@@ -69,7 +69,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
   const [ matchInfo, setMatchInfo ] = React.useState({});
 
-  const [ playerRanks, setPlayerRanks ] = React.useState([]);
+  const [ ranks, setranks ] = React.useState([]);
 
   const [ userCreds, setUserCreds ] = React.useState({});
 
@@ -88,9 +88,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     for(var i = 0; i < favMatchesData.length; i++) {
       if(!allMatches.includes(favMatchesData[i])) {
         var entitlement = await getUserEntitlement();
-        console.log(user_creds.region, favMatchesData[i], entitlement, bearer);
         var data = await getMatch(user_creds.region, favMatchesData[i], entitlement, bearer);
-        console.log(data);
 
         await createMatch(data);
 
@@ -111,7 +109,6 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     var newMatches = [];
 
     for(var i = 0; i < allMatches.length; i++) {
-      console.log(allMatches);
       var dateDiff = getDifferenceInDays(allMatches[i].matchInfo.gameStartMillis, Date.now());
       moment.locale(router.query.lang);
       var startdate = moment();
@@ -210,19 +207,19 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
     /* PLAYER STATS */
     for(var i = 0; i < match.players.length; i++) {
-      var playerNameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
-      var homePlayerNameTag = `${user_creds.name}#${user_creds.tag}`;
-      var homePlayerNameTag_LowerCase = `${user_creds.name.toLowerCase()}#${user_creds.tag.toLowerCase()}`;
+      var nameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
+      var homenameTag = `${user_creds.name}#${user_creds.tag}`;
+      var homenameTag_LowerCase = `${user_creds.name.toLowerCase()}#${user_creds.tag.toLowerCase()}`;
       
-      if(playerNameTag == homePlayerNameTag_LowerCase) {
+      if(nameTag == homenameTag_LowerCase) {
         var playerInfo = match.players[i];
         var playerCurrentTier = match.players[i].competitiveTier;
-        var playerRankFixed = playerRanks[playerCurrentTier];
+        var rankFixed = ranks[playerCurrentTier];
       }
     }
 
     if(playerInfo) {
-      var playerUUID = playerInfo.subject;
+      var uuid = playerInfo.subject;
       var playerTeam = playerInfo.teamId;
 
       if(playerTeam == winning_team) {
@@ -270,7 +267,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         return b.stats.score - a.stats.score;
       });
       
-      var playerPosition = players.findIndex(player => player.subject == playerUUID) + 1;
+      var playerPosition = players.findIndex(player => player.subject == uuid) + 1;
 
       if(playerPosition == 1) {
         // Player is Match MVP
@@ -285,7 +282,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
           }
         }
 
-        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == playerUUID) + 1;
+        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == uuid) + 1;
 
         if(teamPlayerPosition == 1) {
           // Player is Team MVP
@@ -308,7 +305,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
       for(var i = 0; i < match.roundResults.length; i++) {
         for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
-          if(match.roundResults[i].playerStats[i2].subject == playerUUID) {
+          if(match.roundResults[i].playerStats[i2].subject == uuid) {
             for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
               playerHeadShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
               playerBodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
@@ -352,7 +349,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         });
 
         var firstRoundKill = totalRoundKills[0];
-        if(firstRoundKill && firstRoundKill.killer == playerUUID) {
+        if(firstRoundKill && firstRoundKill.killer == uuid) {
           playerFBs++;
         }
       }
@@ -360,11 +357,11 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
     var matchData = {
       playerAgent, 
-      playerUUID,
-      homePlayerNameTag,
+      uuid,
+      homenameTag,
       mapName, 
       playerCurrentTier, 
-      playerRankFixed, 
+      rankFixed, 
       matchOutcomeColor, 
       matchOutcome, 
       matchScore, 
@@ -385,7 +382,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     
     var matchViewData = {
       matchScore, matchOutcome, mapUUID, mapName, gameStartUnix, gameLengthMS, gameMode, gameServer, gameVersion,
-      playerName: homePlayerNameTag.split("#")[0], playerUUID, playerTeam, playerAgent, playerKD, playerKDA, playerKD, playerScore, playerACS, playerKillsPerRound: averageDamageRounded, playerCurrentTier, playerRankFixed, headShotsPercentRounded, bodyShotsPercentRounded, legShotsPercentRounded, playerPositionText, playerPosition, playerFBs
+      name: homenameTag.split("#")[0], uuid, playerTeam, playerAgent, playerKD, playerKDA, playerKD, playerScore, playerACS, playerKillsPerRound: averageDamageRounded, playerCurrentTier, rankFixed, headShotsPercentRounded, bodyShotsPercentRounded, legShotsPercentRounded, playerPositionText, playerPosition, playerFBs
     }
 
     return { matchData, matchViewData };
@@ -396,17 +393,17 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   
     /* PLAYER STATS */
     for(var i = 0; i < match.players.length; i++) {
-      var playerNameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
-      var homePlayerNameTag_LowerCase = `${user_creds.name.toLowerCase()}#${user_creds.tag.toLowerCase()}`;
+      var nameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
+      var homenameTag_LowerCase = `${user_creds.name.toLowerCase()}#${user_creds.tag.toLowerCase()}`;
       
-      if(playerNameTag == homePlayerNameTag_LowerCase) {
+      if(nameTag == homenameTag_LowerCase) {
         var playerInfo = match.players[i];
         var playerCurrentTier = match.players[i].competitiveTier;
       }
     }
 
     if(playerInfo) {
-      var playerUUID = playerInfo.subject;
+      var uuid = playerInfo.subject;
 
       var playerKills = playerInfo.stats.kills;
       var playerDeaths = playerInfo.stats.deaths;
@@ -424,7 +421,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
       for(var i = 0; i < match.roundResults.length; i++) {
         for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
-          if(match.roundResults[i].playerStats[i2].subject == playerUUID) {
+          if(match.roundResults[i].playerStats[i2].subject == uuid) {
             for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
               playerHeadShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
               playerBodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
@@ -497,7 +494,6 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     // TODO: Remove MatchID from here, check if match is in any hub list, if no, delete.
     var user_creds = userCreds;
     var favMatchesData = await removeMatch('favMatches', MatchID);
-    console.log(favMatchesData);
                                       
     /*// WORKS
     for(var i = 0; i < favMatchesData.length; i++) {
@@ -585,8 +581,8 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   }, [ activeQueueTab ]);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query ? router.query.lang : 'en-US'))).json()
-    setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
+    var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query ? router.query.lang : 'en-US'))).json()
+    setranks(ranksRaw.data[ranksRaw.data.length-1].tiers);
   }, []);
 
   React.useEffect(async () => {
@@ -769,7 +765,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                   <span className='text-xl'>{matchData.mapName}</span>
                                   <span className='text-base font-light flex flex-row items-center'> 
                                     <Tooltip 
-                                      content={matchData.playerCurrentTier > 3 ? matchData.playerRankFixed : ''}
+                                      content={matchData.playerCurrentTier > 3 ? matchData.rankFixed : ''}
                                       color="error" 
                                       placement={'top'} 
                                       className={'rounded'}
@@ -941,7 +937,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                             <span className='text-xl'>{matchData.mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
-                                content={matchData.playerCurrentTier > 3 ? matchData.playerRankFixed : ''}
+                                content={matchData.playerCurrentTier > 3 ? matchData.rankFixed : ''}
                                 color="error" 
                                 placement={'top'} 
                                 className={'rounded'}

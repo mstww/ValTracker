@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
-import fs from 'fs';
 import APIi18n from '../components/translation/ValApiFormatter';
+import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement, updateThing } from './dbFunctions';
+import { v5 as uuidv5 } from 'uuid';
 
 async function getStoreOffers(region, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -37,11 +38,13 @@ Date.prototype.addSeconds = function (seconds) {
 
 export async function calculateDailyStore(puuid, shopData) {
   try {
-    var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-    var user_creds = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
-    var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'));
-    var bearer = token_data.accessToken;
+    var uuid = uuidv5("appLang", process.env.SETTINGS_UUID);
+    var langObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    var appLang = langObj[0] ? langObj[0].value : 'en-US';
+
+    var user_creds = await getCurrentUserData();
+    var entitlement_token = await getUserEntitlement();
+    var bearer = await getUserAccessToken();
   
     var bundleUUID = shopData.FeaturedBundle.Bundle.DataAssetID;
   
@@ -67,20 +70,16 @@ export async function calculateDailyStore(puuid, shopData) {
     var singleSkinsExpireIn = singleSkinsExpirationDate;
     var bundleExpiresIn = bundleExpirationDate;
   
-    if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid)) {
-      fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid);
-    }
-  
     // Calculate Bundle Price
     var bundlePrice = 0;
     for(var i = 0; i < shopData.FeaturedBundle.Bundles[0].Items.length; i++) {
       bundlePrice = bundlePrice + parseInt(shopData.FeaturedBundle.Bundles[0].Items[i].DiscountedPrice);
     }
   
-    var skinPriceData = await getStoreOffers(user_creds.playerRegion, entitlement_token, bearer);
+    var skinPriceData = await getStoreOffers(user_creds.region, entitlement_token, bearer);
     var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
   
-    var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(on_load.appLang)}`)).json();
+    var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(appLang)}`)).json();
   
     for(var i = 0; i < shopData.SkinsPanelLayout.SingleItemOffers.length; i++) {
       var skinUUID = shopData.SkinsPanelLayout.SingleItemOffers[i];
@@ -122,7 +121,7 @@ export async function calculateDailyStore(puuid, shopData) {
     }
     
     try {
-      var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle?language=${APIi18n(on_load.appLang)}`)).json();
+      var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle?language=${APIi18n(appLang)}`)).json();
       
       data.featuredBundle = {
         bundleUUID,
@@ -132,13 +131,13 @@ export async function calculateDailyStore(puuid, shopData) {
         expiresIn: bundleExpiresIn
       }
   
-      data.expiriresAt = singleSkinsExpireIn;
-    } catch(unused) {
-      console.log(unused);
+      data.expiresAt = singleSkinsExpireIn;
+    } catch(e) {
+      console.log(e);
       data.featuredBundle = false;
     }
   
-    data.expiriresAt = singleSkinsExpireIn;
+    data.expiresAt = singleSkinsExpireIn;
   
     if(shopData.BonusStore !== undefined) {
       data.nightMarket = {
@@ -151,8 +150,8 @@ export async function calculateDailyStore(puuid, shopData) {
   
       data.nightMarket.nightMarketExpiresIn = nightMarketExpirationDate;
     }
-  
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/daily_shop.json', JSON.stringify(data));
+
+    var data = await updateThing(`playerStore:⟨${puuid}⟩`, data);
   
     return data;
   } catch(e) {
@@ -161,38 +160,31 @@ export async function calculateDailyStore(puuid, shopData) {
 }
 
 async function fetchShop() {
-  const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-  const tokenData = JSON.parse(rawTokenData);
+  var bearer = await getUserAccessToken();
 
-  var bearer = tokenData.accessToken;
+  var user_creds = await getCurrentUserData();
 
-  var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-  var user_creds = JSON.parse(user_creds_raw);
-
-  var puuid = user_creds.playerUUID;
-  var region = user_creds.playerRegion;
+  var puuid = user_creds.uuid;
+  var region = user_creds.region;
 
   var daily = false;
 
-  if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/daily_shop.json')) {
-    var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/daily_shop.json');
-    var data = JSON.parse(data_raw);
-    if(Date.now() < data.expiriresAt && Date.now() < data.featuredBundle.expiresIn && data.featuredBundle !== false) {
-      var daily = data;
-    }
+  var data = await executeQuery(`SELECT * FROM playerStore:⟨${puuid}⟩`);
+  if(Date.now() < data[0].expiresAt && Date.now() < data[0].featuredBundle.expiresIn && data[0].featuredBundle !== false) {
+    var daily = data[0];
   }
-
+  
   if(daily !== false) {
     // FETCHING FROM CURRENT FILE
-    return [daily, user_creds, tokenData];
+    return [daily, user_creds];
   } else {
     // REFETCHING SHOP
-    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+    var entitlement_token = await getUserEntitlement();
 
     var shopData = await getShopData(region, puuid, entitlement_token, bearer);
 
     const data = await calculateDailyStore(puuid, shopData);
-    return [data, user_creds, tokenData];
+    return [data, user_creds];
   }
 }
 

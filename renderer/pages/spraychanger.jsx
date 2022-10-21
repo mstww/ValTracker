@@ -232,7 +232,7 @@ function Spraychanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) 
     var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
     var user_creds = JSON.parse(user_creds_raw);
 
-    var region = user_creds.playerRegion;
+    var region = user_creds.region;
     var bearer = tokenData.accessToken;
 
     var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;

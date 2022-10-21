@@ -16,7 +16,6 @@ import { createWindow } from './helpers';
 import { migrateDataToDB } from '../modules/dbMigration.mjs';
 
 import L from '../translation/main_process.json';
-import LocalText from './helpers/localization.mjs';
 
 import * as dotenv from 'dotenv';
 import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../renderer/js/dbFunctions';
@@ -47,6 +46,33 @@ var isInSetup = false;
 
 var inMigrationProgress = false;
 var db = false;
+
+export default async function LocalText(json, path, num1replace, num2replace, num3replace) {
+  var uuid = uuidv5("appLang", process.env.SETTINGS_UUID);
+  var langObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+  var appLang = langObj[0] ? langObj[0].value : 'en-US';
+
+  var str = (appLang + '.' + path);
+
+  var res = str.split('.').reduce(function(o, k) {
+    return o && o[k];
+  }, json);
+
+  if(res === undefined) {
+    var str = 'en-US.' + path;
+    var res = str.split('.').reduce(function(o, k) {
+      return o && o[k];
+    }, json);
+  }
+
+  if(typeof res === "string") {
+    res = res.replace("{{ val1 }}", num1replace);
+    res = res.replace("{{ val2 }}", num2replace);
+    res = res.replace("{{ val3 }}", num3replace);
+  }
+
+  return res;
+}
 
 const sendMessageToWindow = (channel, args) => {
   mainWindow.webContents.send(channel, args);
@@ -86,30 +112,40 @@ const execFilePath = path.join(
   "VALTrackerDB.exe"
 ).replace("app.asar", "app.asar.unpacked");
 
-if(fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) {
-  child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
-
-  child.stdout.on('data', function (data) {
-    process.stdout.write(data);
-  });
-  child.stderr.on('data', function (data) {
-    process.stderr.write(data);
-  });
+async function startDB() {
+  try {
+    child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
+    
+    child.stdout.on('data', function (data) {
+      process.stdout.write(data);
+    });
+    child.stderr.on('data', function (data) {
+      process.stderr.write(data);
+    });
+  } catch(e) {
+    console.log(e);
+  }
 }
 
+startDB();
+
 async function connectToDB() {
-  var sdb = new Surreal(process.env.DB_URL);
-
-  await sdb.wait();
-
-  await sdb.signin({
-    user: process.env.DB_USER,
-    pass: process.env.DB_PASS
-  });
-
-  await sdb.use('app', 'main');
+  try {
+    var sdb = new Surreal(process.env.DB_URL);
   
-  db = sdb;
+    await sdb.wait();
+  
+    await sdb.signin({
+      user: process.env.DB_USER,
+      pass: process.env.DB_PASS
+    });
+  
+    await sdb.use('app', 'main');
+    
+    db = sdb;
+  } catch(e) {
+    console.log(e);
+  }
   return;
 }
 
@@ -170,7 +206,7 @@ connectAppPresence();
 await app.whenReady();
 
 ipcMain.handle("checkWindowState", () => {
-  return migrateWin !== false ? migrateWin.isMaximized() : mainWindow.isMaximized();
+  return migrateWin !== false && migrateWin !== null ? migrateWin.isMaximized() : mainWindow.isMaximized();
 });
 
 ipcMain.handle("min-window", async function() {
@@ -290,39 +326,68 @@ const download_image = (url, new_path) => {
 }
 
 async function noFilesFound() {
-  // TODO: LAUNCH AND FINISH SETUP
-    
+  if(db === false) await connectToDB();
+  
+  await db.use("app", "main");
+
+  var appSettings = [
+    { "name": "hubMatchFilter", "value": "unrated", "settingsType": "hub" },
+    { "name": "setupCompleted", "value": false, "settingsType": "main" },
+    { "name": "useAppRP", "value": true, "settingsType": "main" },
+    { "name": "minOnClose", "value": false, "settingsType": "main" },
+    { "name": "wishlistNotifs", "value": true, "settingsType": "main" },
+    { "name": "hardwareAccel", "value": true, "settingsType": "main" },
+    { "name": "launchOnBoot", "value": false, "settingsType": "main" },
+    { "name": "lauchHiddenOnBoot", "value": false, "settingsType": "main" },
+    { "name": "hideAppPresenceWhenHidden", "value": false, "settingsType": "main" },
+    { "name": "useGameRP", "value": true, "settingsType": "main" },
+    { "name": "appLang", "value": "en-US", "settingsType": ["main", "app"] },
+    { "name": "showGameRPMode", "value": true, "settingsType": "main" },
+    { "name": "showGameRPRank", "value": true, "settingsType": "main" },
+    { "name": "showGameRPTimer", "value": true, "settingsType": "main" },
+    { "name": "showGameRPScore", "value": true, "settingsType": "main" },
+    { "name": "appColorTheme", "value": "normal", "settingsType": ["main", "app"] }
+  ];
+
+  var allSettingItemIDs = [];
+  
+  for(var i = 0; i < appSettings.length; i++) {
+    var uuid = uuidv5(appSettings[i].name, process.env.SETTINGS_UUID);
+
+    var result = await db.create(`setting:⟨${uuid}⟩`, {
+      "name": appSettings[i].name,
+      "value": appSettings[i].value,
+      "type": appSettings[i].settingsType
+    });
+
+    allSettingItemIDs.push(result.id);
+  }
+
+  await db.create(`appConfig:⟨${process.env.APPCONFIG_UUID}⟩`, {
+    "settingsCollection": allSettingItemIDs,
+  });
+
+  await db.create(`searchHistory:⟨app⟩`, {
+    "items": []
+  });
+
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico")) {
     download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/tray.ico");
   };
-
-  // Load Window with Setup Sequence
-  if (isProd) {
-    await mainWindow.loadURL(`app://./setup.html?lang=en-US`);
-  } else {
-    const port = process.argv[2];
-    await mainWindow.loadURL(`http://localhost:${port}/setup?lang=en-US`);
-  }
 }
 
 async function reauthAccount(puuid) {
   try {
     if(db === false) await connectToDB();
-
-    console.log(puuid);
     
     var data = await db.query(`SELECT * FROM rgConfig:⟨${puuid}⟩`);
-    console.log(data);
     var rgConfig = data[0].result[0];
 
     var { ssid } = rgConfig;
-    console.log(ssid);
 
     const access_tokens = await getAccessTokens(ssid);
-    console.log(access_tokens);
 
     const url_params = await access_tokens.json();
-    console.log(url_params);
 
     var newTokenData = getTokenDataFromURL(url_params.response.parameters.uri);
 
@@ -339,6 +404,7 @@ async function reauthAccount(puuid) {
         
         var currenttier = await getPlayerMMR(user_data.region, puuid, ent, bearer);
   
+        // TODO: For every link of these, check for current BP Version and replace UUID
         user_data.rank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
   
         await db.update(`player:⟨${puuid}⟩`, user_data);
@@ -392,7 +458,6 @@ async function reauthAllAccounts() {
     // Check if promise the promise was rejected
     var account_data = await promise.then(function({ data_array, reauth_array }) {
       if(reauth_array.length > 0) {
-        console.log(reauth_array);
         console.log("Error while reauthing accounts.");
         return { error: true, items: false, reauthArray: reauth_array }; 
       } else {
@@ -409,7 +474,6 @@ async function reauthAllAccounts() {
 async function refreshEntitlementToken(uuid) {
   // Get entitlement for every account and write to file
   var data = await db.query(`SELECT * FROM rgConfig:⟨${uuid}⟩`);
-  console.log(data);
   var rgConfig = data[0].result[0];
 
   var bearer = rgConfig.accesstoken;
@@ -434,7 +498,7 @@ async function refreshAllEntitlementTokens() {
 
   // Make a promise and check if it is rejected
   var promise = new Promise(async function(resolve, reject) {
-    accountsToReauth.forEach(async (uuid) => {
+    account_puuids.forEach(async (uuid) => {
       await refreshEntitlementToken(uuid);
 
       i++;
@@ -442,7 +506,7 @@ async function refreshAllEntitlementTokens() {
       if(i == expectedLength) 
         resolve({ data_array, reauth_array });
     });
-  });
+  }); 
 
   // Check if promise the promise was rejected
   var account_data = await promise.then(function({ data_array, reauth_array }) {
@@ -921,8 +985,6 @@ function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
   });
 }
 
-// TODO: playerUUID, playerRegion, playerName, playerTag, playerRank (Replace)
-
 async function checkStoreForWishlistItems() {
   if(db === false) await connectToDB();
   
@@ -1039,6 +1101,15 @@ async function checkStoreForWishlistItems() {
 }
 
 (async () => {
+  if(db === false) await connectToDB();
+
+  var uuid = uuidv5("setupCompleted", process.env.SETTINGS_UUID);
+  var res = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+  
+  if(res.length === 0) {
+    await noFilesFound();
+  }
+
   var appStatus = await(await fetch('https://api.valtracker.gg/status/app', {
     headers: {
       "auth": 'v' + pjson.version,
@@ -1111,53 +1182,67 @@ async function checkStoreForWishlistItems() {
   }
 
   if(featureStatus.data.valorant_discord_rp.enabled === true) {
-    //Login with Discord client
-    discordVALPresence.login({
-      clientId: "957041886093267005",
-    });
+    var uuid = uuidv5("useGameRP", process.env.SETTINGS_UUID);
+    let useGameRP = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    useGameRP = useGameRP.length > 0 ? useGameRP[0] : {value: false};
   
-    var VAL_WEBSOCKET = new Worker(new URL("../modules/valWebSocketComms.mjs", import.meta.url));
+    var uuid = uuidv5("setupCompleted", process.env.SETTINGS_UUID);
+    let setupCompleted = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+    setupCompleted = setupCompleted.length > 0 ? setupCompleted[0] : {value: false};
     
-    VAL_WEBSOCKET.on("message", async (msg) => {
-      switch(msg.channel) {
-        case("message"): {
-          if(msg.data === "fetchPlayerData") {
-            var data = await checkForMatch();
-          } else {
-            console.log(msg.data);
+    if((useGameRP.value === undefined || useGameRP.value === true) && setupCompleted.value === true) {
+      //Login with Discord client
+      discordVALPresence.login({
+        clientId: "957041886093267005",
+      });
+    
+      var VAL_WEBSOCKET = new Worker(new URL("../modules/valWebSocketComms.mjs", import.meta.url));
+      
+      VAL_WEBSOCKET.on("message", async (msg) => {
+        switch(msg.channel) {
+          case("message"): {
+            if(msg.data === "fetchPlayerData") {
+              var data = await checkForMatch();
+            } else {
+              console.log(msg.data);
+            }
+          }
+          case("WS_Event"): {
+            var data = await getDataFromWebSocketEvent(msg.data);
+            if(data !== undefined) {
+              decideRichPresenceData(data);
+            }
+          }
+          case("toggleDRP"): {
+            if(msg.data === true) {
+              RPState = 'val';
+              discordClient.clearActivity(process.pid);
+            } else if(msg.data === false) {
+              RPState = 'app';
+              discordVALPresence.clearActivity(69);
+              sendMessageToWindow('setDRPtoCurrentPage');
+            }
           }
         }
-        case("WS_Event"): {
-          var data = await getDataFromWebSocketEvent(msg.data);
-          if(data !== undefined) {
-            decideRichPresenceData(data);
-          }
-        }
-        case("toggleDRP"): {
-          if(msg.data === true) {
-            RPState = 'val';
-            discordClient.clearActivity(process.pid);
-          } else if(msg.data === false) {
-            RPState = 'app';
-            discordVALPresence.clearActivity(69);
-            sendMessageToWindow('setDRPtoCurrentPage');
-          }
-        }
-      }
-    });
-    
-    VAL_WEBSOCKET.on("error", err => {
-      console.log(err);
-    });
-    
-    VAL_WEBSOCKET.on("exit", exitCode => {
-      console.log(exitCode);
-    });
+      });
+      
+      VAL_WEBSOCKET.on("error", err => {
+        console.log(err);
+      });
+      
+      VAL_WEBSOCKET.on("exit", exitCode => {
+        console.log(exitCode);
+      });
+    }
   }
 
   var startedHidden = process.argv.find(arg => arg === '--start-hidden');
 
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data")) { // TODO: SOMEHOW DO THIS? DB SETTING?
+  var uuid = uuidv5("setupCompleted", process.env.SETTINGS_UUID);
+  let setupCompleted = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+  setupCompleted = setupCompleted.length > 0 ? setupCompleted[0] : {value: false};
+
+  if(setupCompleted.value === false) { // TODO: SOMEHOW DO THIS? DB SETTING?
     mainWindow = createWindow('setup-win', {
       width: 620,
       height: 400,
@@ -1171,8 +1256,7 @@ async function checkStoreForWishlistItems() {
         enableRemoteModule: false,
         contextIsolation: false,
         devTools: true
-      },
-      show: startedHidden === undefined,
+      }
     });
 
     isInSetup = true;
@@ -1190,8 +1274,6 @@ async function checkStoreForWishlistItems() {
         fs.rmSync(process.env.APPDATA + "/VALTracker/user_data", { recursive: true, force: true });
       }
     });
-
-    noFilesFound();
   } else {
     mainWindow = createWindow('main', {
       width: 1400,
@@ -1364,6 +1446,14 @@ async function checkStoreForWishlistItems() {
 
     if(wishlistNotifs === null || wishlistNotifs === true || wishlistNotifs === undefined) {
       checkStoreForWishlistItems();
+    }
+  } else {
+    // Load Window with Setup Sequence
+    if (isProd) {
+      await mainWindow.loadURL(`app://./setup.html?lang=en-US`);
+    } else {
+      const port = process.argv[2];
+      await mainWindow.loadURL(`http://localhost:${port}/setup?lang=en-US`);
     }
   }
   

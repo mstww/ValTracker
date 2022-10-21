@@ -60,88 +60,81 @@ async function getLockfileData() {
 }
 
 async function runValorantPresence() {
-  var load_data_raw = fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/load_files/on_load.json");
-  var load_data = JSON.parse(load_data_raw);
+  parentPort.postMessage({"channel": "message", "data": "VALORANT RICH PRESENCE ACTIVATED."});
 
-  if((load_data.hasValorantRPenabled === undefined || load_data.hasValorantRPenabled === true) && load_data.hasFinishedSetupSequence === true) {
-    parentPort.postMessage({"channel": "message", "data": "VALORANT RICH PRESENCE ACTIVATED."});
+  let sessionData = null;
+  let lastRetryMessage = 0;
 
-    let sessionData = null;
-    let lastRetryMessage = 0;
-  
-    let lockData = null;
-    do {
-      try {
-        lockData = await getLockfileData();
-        parentPort.postMessage({"channel": "message", "data": "Waiting for game to be opened..."});
+  let lockData = null;
+  do {
+    try {
+      lockData = await getLockfileData();
+      parentPort.postMessage({"channel": "message", "data": "Waiting for game to be opened..."});
 
-        parentPort.postMessage({"channel": "message", "data": lockData});
-      } catch (e) {
-        parentPort.postMessage({"channel": "message", "data": "No Lockfile found. Starting Watcher..."});
-        await waitForLockfile();
-      }
-    } while (lockData === null);
+      parentPort.postMessage({"channel": "message", "data": lockData});
+    } catch (e) {
+      parentPort.postMessage({"channel": "message", "data": "No Lockfile found. Starting Watcher..."});
+      await waitForLockfile();
+    }
+  } while (lockData === null);
 
-    parentPort.postMessage({"channel": "message", "data": "Game opened."});
-  
-    do {
-      try {
-        sessionData = await getSession(lockData.port, lockData.password);
-        if(sessionData.loaded === false)
-        {
-          await asyncTimeout(1500);
-          sessionData = null;
-        }
-      } catch(e) {
-        const currentTime = (new Date()).getTime();
-        if(currentTime - lastRetryMessage > 1000) {
-          parentPort.postMessage({"channel": "message", "data": "Trying to get session data..."});
-          lastRetryMessage = currentTime;
-        }
-      }
-    } while(sessionData === null);
+  parentPort.postMessage({"channel": "message", "data": "Game opened."});
 
-    parentPort.postMessage({"channel": "message", "data": "Got Session Data."});
-    
-    let helpData = null;
-    do {
-      helpData = await getHelp(lockData.port, lockData.password);
-      if(!helpData.events.hasOwnProperty('OnJsonApiEvent_chat_v4_presences')) {
-        helpData = null;
+  do {
+    try {
+      sessionData = await getSession(lockData.port, lockData.password);
+      if(sessionData.loaded === false)
+      {
         await asyncTimeout(1500);
+        sessionData = null;
       }
+    } catch(e) {
+      const currentTime = (new Date()).getTime();
+      if(currentTime - lastRetryMessage > 1000) {
+        parentPort.postMessage({"channel": "message", "data": "Trying to get session data..."});
+        lastRetryMessage = currentTime;
+      }
+    }
+  } while(sessionData === null);
 
-      parentPort.postMessage({"channel": "message", "data": "Waiting for WebSocket to open..."});
-    } while(helpData === null);
-    
-    const ws = new WebSocket(`wss://riot:${lockData.password}@localhost:${lockData.port}`, {
-      rejectUnauthorized: false
-    });
-    
-    ws.on('open', () => {
-      Object.entries(helpData.events).forEach(([name, desc]) => {
-        if(name === 'OnJsonApiEvent') return;
-        ws.send(JSON.stringify([5, name]));
-      });
+  parentPort.postMessage({"channel": "message", "data": "Got Session Data."});
+  
+  let helpData = null;
+  do {
+    helpData = await getHelp(lockData.port, lockData.password);
+    if(!helpData.events.hasOwnProperty('OnJsonApiEvent_chat_v4_presences')) {
+      helpData = null;
+      await asyncTimeout(1500);
+    }
 
-      parentPort.postMessage({"channel": "message", "data": "fetchPlayerData"});
-      parentPort.postMessage({"channel": "message", "data": "Connected to WebSocket!"});
-      parentPort.postMessage({"channel": "toggleDRP", "data": true});
+    parentPort.postMessage({"channel": "message", "data": "Waiting for WebSocket to open..."});
+  } while(helpData === null);
+  
+  const ws = new WebSocket(`wss://riot:${lockData.password}@localhost:${lockData.port}`, {
+    rejectUnauthorized: false
+  });
+  
+  ws.on('open', () => {
+    Object.entries(helpData.events).forEach(([name, desc]) => {
+      if(name === 'OnJsonApiEvent') return;
+      ws.send(JSON.stringify([5, name]));
     });
-    
-    ws.on('message', data => {
-      parentPort.postMessage({"channel": "WS_Event", "data": data});
-    });
-    
-    ws.on('close', () => {
-      parentPort.postMessage({"channel": "message", "data": "The game has been closed."});
-      parentPort.postMessage({"channel": "toggleDRP", "data": false});
 
-      runValorantPresence();
-    });
-  } else {
-    parentPort.postMessage({"channel": "message", "data": "VALORANT RICH PRESENCE IS NOT ACTIVATED."});
-  }
+    parentPort.postMessage({"channel": "message", "data": "fetchPlayerData"});
+    parentPort.postMessage({"channel": "message", "data": "Connected to WebSocket!"});
+    parentPort.postMessage({"channel": "toggleDRP", "data": true});
+  });
+  
+  ws.on('message', data => {
+    parentPort.postMessage({"channel": "WS_Event", "data": data});
+  });
+  
+  ws.on('close', () => {
+    parentPort.postMessage({"channel": "message", "data": "The game has been closed."});
+    parentPort.postMessage({"channel": "toggleDRP", "data": false});
+
+    runValorantPresence();
+  });
 }
 
 runValorantPresence();

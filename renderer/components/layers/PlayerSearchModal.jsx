@@ -5,7 +5,6 @@ import { ipcRenderer } from 'electron';
 import L from '../../locales/translations/navbar.json';
 import LocalText from '../translation/LocalText';
 import { Close, Search } from '../SVGs';
-import fs from 'fs';
 import { executeQuery } from '../../js/dbFunctions';
 import { useFirstRender } from '../useFirstRender';
 

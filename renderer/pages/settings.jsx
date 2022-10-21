@@ -31,7 +31,7 @@ async function openLoginWindow() {
   return await ipcRenderer.invoke('loginWindow', false);
 }
 
-async function getPlayerUUID(bearer) {
+async function getuuid(bearer) {
   return (await (await fetch('https://auth.riotgames.com/userinfo', {
     method: 'GET',
     headers: {
@@ -224,7 +224,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
       var account_data = JSON.parse(account_data_raw);
 
       var active_account = false;
-      if(data.playerUUID == account_data.playerUUID) {
+      if(data.uuid == account_data.uuid) {
         active_account = true;
       }
 
@@ -434,7 +434,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
         var arg = await ipcRenderer.invoke('getTdidCookie', 'addedNewAccount');
       
         var requiredCookie = "tdid=" + arg
-        var puuid = await getPlayerUUID(bearer);
+        var puuid = await getuuid(bearer);
 
         var userAccounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
         for(var i = 0; i < userAccounts.length; i++) {
@@ -465,11 +465,11 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
         }
     
         var accObj = {
-          playerName: new_account_data[0].GameName,
-          playerTag: new_account_data[0].TagLine,
-          playerRegion: region,
-          playerUUID: puuid,
-          playerRank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`,
+          name: new_account_data[0].GameName,
+          tag: new_account_data[0].TagLine,
+          region: region,
+          uuid: puuid,
+          rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`,
         }
     
         fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuid + '.json', JSON.stringify(accObj));
@@ -493,8 +493,8 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   const removeAccount = async (puuid, popupToClose) => {
     fs.rmdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid, { recursive: true });
     fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuid + '.json');
-    // Find object in riot_accountList with same playerUUID propety as puuid and remove it
-    var new_account_list = riot_accountList.filter(account => account.playerUUID !== puuid);
+    // Find object in riot_accountList with same uuid propety as puuid and remove it
+    var new_account_list = riot_accountList.filter(account => account.uuid !== puuid);
     setRiot_AccountList(new_account_list);
     closePopup(popupToClose);
   }
@@ -737,22 +737,22 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
                 <div 
                   className={
                     'flex flex-row items-center content-center h-1/6 mb-2 justify-start rounded transition-all ease-in duration-100 border border-gray-500'
-                    + (account.playerUUID == riot_activeAccountSelection ? ' border-gradient-left active-riot-acc' : ' hover:bg-tile-color border-tile-color cursor-pointer')
+                    + (account.uuid == riot_activeAccountSelection ? ' border-gradient-left active-riot-acc' : ' hover:bg-tile-color border-tile-color cursor-pointer')
                   }
-                  onClick={() => { setRiot_ActiveAccountSelection(account.playerUUID) }}
-                  id={ account.playerUUID }
+                  onClick={() => { setRiot_ActiveAccountSelection(account.uuid) }}
+                  id={ account.uuid }
                   key={ index }
                 >
                   <img 
-                    src={account.playerRank}
+                    src={account.rank}
                     className='w-9 p-1 mr-2 ml-1 rounded-full border border-gray-500 my-1 pointer-events-none'
                     id='navbar-account-switcher-rank'
                   /> 
                   <div className='flex flex-col justify-center pointer-events-none'>
-                    <span className='m-0 leading-none mb-px pointer-events-none'>{ account.playerName }</span>
-                    <span className='text-gray-500 font-light leading-none pointer-events-none'>#{ account.playerTag }</span>
+                    <span className='m-0 leading-none mb-px pointer-events-none'>{ account.name }</span>
+                    <span className='text-gray-500 font-light leading-none pointer-events-none'>#{ account.tag }</span>
                   </div>
-                  <span className='ml-auto mr-4 pointer-events-none'>{ account.playerRegion.toUpperCase() }</span>
+                  <span className='ml-auto mr-4 pointer-events-none'>{ account.region.toUpperCase() }</span>
                 </div>
               )
             })}

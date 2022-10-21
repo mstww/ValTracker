@@ -98,8 +98,8 @@ const fetchPlayer = async (name, tag, lang) => {
 
     const puuid = playerInfo.data.puuid;
     const region = playerInfo.data.region;
-    const playerName = playerInfo.data.name;
-    const playerTag = playerInfo.data.tag;
+    const name = playerInfo.data.name;
+    const tag = playerInfo.data.tag;
 
     const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
     const tokenData = JSON.parse(rawTokenData);
@@ -112,11 +112,11 @@ const fetchPlayer = async (name, tag, lang) => {
     const currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
     if(!currenttier) currenttier = 0;
 
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(lang))).json()
-    var playerRanks = playerRanksRaw.data[playerRanksRaw.data.length-1].tiers
+    var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(lang))).json()
+    var ranks = ranksRaw.data[ranksRaw.data.length-1].tiers
 
-    const playerRank = playerRanks[playerMmr.LatestCompetitiveUpdate.TierAfterUpdate];
-    const playerRankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
+    const rank = ranks[playerMmr.LatestCompetitiveUpdate.TierAfterUpdate];
+    const rankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
 
     const playerMatches = await getMatchHistory(region, puuid, 0, 5, 'unrated', entitlement_token, bearer);
     
@@ -148,15 +148,15 @@ const fetchPlayer = async (name, tag, lang) => {
       
     var json = {
       playerInfo: {
-        "name": playerName,
-        "tag": playerTag,
+        "name": name,
+        "tag": tag,
         "puuid": puuid,
         "region": region.toUpperCase(),
         "account_level": playerInfo.data.account_level,
         "card": playerInfo.data.card.small,
-        "playerRankNum": currenttier,
-        "playerRank": playerRank,
-        "playerRankIcon": playerRankIcon,
+        "rankNum": currenttier,
+        "rank": rank,
+        "rankIcon": rankIcon,
       },
       matches: {
         "totalMatches": totalMatches,
@@ -230,11 +230,11 @@ function PlayerInfo({ isNavbarMinimized }) {
   const [ isReloadable, setIsReloadable ] = React.useState(false);
 
   const [ playerCard, setPlayerCard ] = React.useState(null);
-  const [ playerNameTag, setPlayerNameTag ] = React.useState(null);
-  const [ playerRankImg, setPlayerRankImage ] = React.useState(null);
-  const [ playerRegion, setPlayerRegion ] = React.useState(null);
+  const [ nameTag, setnameTag ] = React.useState(null);
+  const [ rankImg, setrankImage ] = React.useState(null);
+  const [ region, setregion ] = React.useState(null);
   const [ playerLevel, setPlayerLevel ] = React.useState(null);
-  const [ playerUUID, setPlayerUUID ] = React.useState(null);
+  const [ uuid, setuuid ] = React.useState(null);
   const [ matches, setMatches ] = React.useState([]);
 
   const [ shownMatches, setShownMatches ] = React.useState(5);
@@ -248,7 +248,7 @@ function PlayerInfo({ isNavbarMinimized }) {
 
   const [ mapData, setMapData ] = React.useState({});
 
-  const [ playerRanks, setPlayerRanks ] = React.useState([]);
+  const [ ranks, setranks ] = React.useState([]);
 
   React.useEffect(() => {
     const fetchApi = async () => {
@@ -264,11 +264,11 @@ function PlayerInfo({ isNavbarMinimized }) {
         setMatches(items.matches.games);
 
         setPlayerCard(items.playerInfo.card);
-        setPlayerNameTag(items.playerInfo.name + '#' + items.playerInfo.tag);
-        setPlayerRankImage(items.playerInfo.playerRankIcon);
-        setPlayerRegion(items.playerInfo.region);
+        setnameTag(items.playerInfo.name + '#' + items.playerInfo.tag);
+        setrankImage(items.playerInfo.rankIcon);
+        setregion(items.playerInfo.region);
         setPlayerLevel(items.playerInfo.account_level);
-        setPlayerUUID(items.playerInfo.puuid);
+        setuuid(items.playerInfo.puuid);
 
         setMaxMatches(items.matches.totalMatches);
         setShownMatches(items.matches.endIndex);
@@ -306,8 +306,8 @@ function PlayerInfo({ isNavbarMinimized }) {
   }, []);
 
   React.useEffect(async () => {
-    var playerRanksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
-    setPlayerRanks(playerRanksRaw.data[playerRanksRaw.data.length-1].tiers);
+    var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
+    setranks(ranksRaw.data[ranksRaw.data.length-1].tiers);
   }, []);
 
   const fetchFurtherMatches = async () => {
@@ -315,7 +315,7 @@ function PlayerInfo({ isNavbarMinimized }) {
     setMatchFetchingError(false);
 
     const fetchApi = async () => {
-      const { errored, items } = await fetchMatches(shownMatches, shownMatches + 5, matches, activeQueueTab, playerUUID, playerRegion, router.query.lang);
+      const { errored, items } = await fetchMatches(shownMatches, shownMatches + 5, matches, activeQueueTab, uuid, region, router.query.lang);
 
       if(!errored) {
         setShownMatches(items.matches.endIndex);
@@ -360,7 +360,7 @@ function PlayerInfo({ isNavbarMinimized }) {
     setShownMatches(0);
     setMaxMatches(0);
     const fetchApi = async () => {
-      const { errored, items } = await fetchMatches(0, 5, [], type, playerUUID, playerRegion, router.query.lang);
+      const { errored, items } = await fetchMatches(0, 5, [], type, uuid, region, router.query.lang);
 
       if(!errored) {
         setMatches(items.matches.games);
@@ -415,13 +415,13 @@ function PlayerInfo({ isNavbarMinimized }) {
           </div>
           <div id='player-info' className='text-2xl flex flex-col ml-4 py-auto'>
             <div id='rank-name' className=''>
-              <span id='player-name-region'>{playerNameTag}</span><br /> 
+              <span id='player-name-region'>{nameTag}</span><br /> 
               <span id='player-name-region' className='flex items-center'>
                 <img 
-                  src={playerRankImg}
+                  src={rankImg}
                   className='w-12 inline-block shadow-img p-1 mr-1' 
                 /> 
-                - {playerRegion}
+                - {region}
                 </span>
             </div>
           </div>
@@ -472,20 +472,20 @@ function PlayerInfo({ isNavbarMinimized }) {
                     /* PLAYER STATS */
                     if(router.query.name && router.query.tag) {
                       for(var i = 0; i < match.players.length; i++) {
-                        var playerNameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
+                        var nameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
                         var searchedNameTag = `${router.query.name.toLowerCase()}#${router.query.tag.toLowerCase()}`;
                         
-                        if(playerNameTag == searchedNameTag) {
+                        if(nameTag == searchedNameTag) {
                           var playerInfo = match.players[i];
                           var playerCurrentTier = match.players[i].competitiveTier;
-                          var playerRankFixed = playerRanks[playerCurrentTier];
+                          var rankFixed = ranks[playerCurrentTier];
                         }
                       }
                     }
   
                     // Again, Boilerplate if-statement to make sure JS doesnt cry about undefined
                     if(playerInfo) {
-                      var playerUUID = playerInfo.subject;
+                      var uuid = playerInfo.subject;
                       var playerTeam = playerInfo.teamId;
     
                       if(playerTeam == winning_team) {
@@ -532,7 +532,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                         return b.stats.score - a.stats.score;
                       });
                       
-                      var playerPosition = players.findIndex(player => player.subject == playerUUID);
+                      var playerPosition = players.findIndex(player => player.subject == uuid);
   
                       if(playerPosition == 0) {
                         // Player is Match MVP
@@ -547,7 +547,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                           }
                         }
   
-                        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == playerUUID) + 1;
+                        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == uuid) + 1;
   
                         if(teamPlayerPosition == 1) {
                           // Player is Team MVP
@@ -573,7 +573,7 @@ function PlayerInfo({ isNavbarMinimized }) {
     
                         for(var i = 0; i < match.roundResults.length; i++) {
                           for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
-                            if(match.roundResults[i].playerStats[i2].subject == playerUUID) {
+                            if(match.roundResults[i].playerStats[i2].subject == uuid) {
                               for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
                                 headShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
                                 bodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
@@ -602,7 +602,7 @@ function PlayerInfo({ isNavbarMinimized }) {
     
                         for(var i = 0; i < match.roundResults.length; i++) {
                           for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
-                            if(match.roundResults[i].playerStats[i2].subject == playerUUID) {
+                            if(match.roundResults[i].playerStats[i2].subject == uuid) {
                               for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
                                 headShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
                                 bodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
@@ -636,7 +636,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                             <span className='text-2xl'>{mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
-                                content={playerCurrentTier > 3 ? playerRankFixed : ''}
+                                content={playerCurrentTier > 3 ? rankFixed : ''}
                                 color="error" 
                                 placement={'top'} 
                                 className={'rounded'}

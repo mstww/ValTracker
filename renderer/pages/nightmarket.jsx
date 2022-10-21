@@ -74,7 +74,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(() => {
     var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var user_wishlist = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.playerUUID + '.json'));
+    var user_wishlist = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.uuid + '.json'));
 
     setUserData(user_data);
     setWishlistedItems(user_wishlist.skins);
@@ -82,7 +82,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
   var user_creds = JSON.parse(user_creds_raw);
-  var puuid = user_creds.playerUUID;
+  var puuid = user_creds.uuid;
 
   var localTimerObj = LocalText(L, "timer");
 
