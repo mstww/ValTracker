@@ -954,7 +954,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
       var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
   
-      setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches); // TODO: LOADEDMATCHES IS WRONG
+      setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
 
       var matches = [];
       var newMatches = [];
@@ -1836,9 +1836,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                     <img 
                                       src={
                                         matchData.playerCurrentTier ? 
-                                        `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
+                                        `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${matchData.playerCurrentTier}/smallicon.png`
                                         :
-                                        `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
+                                        `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
                                       } 
                                       className={
                                         'w-7 transform scale-75 shadow-img '

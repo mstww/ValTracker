@@ -12,7 +12,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled } from '../components/SVGs';
 import Layout from '../components/Layout';
-import { createMatch, executeQuery, fetchMatch, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch } from '../js/dbFunctions';
+import { createMatch, executeQuery, fetchMatch, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -449,11 +449,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         var stats_data = calculateSortStatsForMatch(match);
         match.stats_data = stats_data;
         
-        fs.writeFileSync( // TODO
-          process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches/' + match.matchInfo.matchId + '.json', 
-          JSON.stringify(match)
-        );
+        updateThing(`match:⟨${match.matchInfo.matchId}⟩`, match);
       }
+      return;
     });
 
     switch(newValue) {
@@ -606,9 +604,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                       src={
                         matchInfo.fixedQueueName == 'competitive' ? 
                         (matchInfo.currenttier ? 
-                          `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchInfo.currenttier}/smallicon.png`
+                          `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${matchInfo.currenttier}/smallicon.png`
                           :
-                          `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
+                          `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
                         )
                         :
                         'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
@@ -754,9 +752,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                         src={
                                           match.matchInfo.queueID == 'competitive' ? 
                                           (matchData.playerCurrentTier ? 
-                                            `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
+                                            `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${matchData.playerCurrentTier}/smallicon.png`
                                             :
-                                            `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
+                                            `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
                                           )
                                           :
                                           'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
@@ -926,9 +924,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                   src={
                                     match.matchInfo.queueID == 'competitive' ? 
                                     (matchData.playerCurrentTier ? 
-                                      `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
+                                      `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${matchData.playerCurrentTier}/smallicon.png`
                                       :
-                                      `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
+                                      `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
                                     )
                                     :
                                     'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'

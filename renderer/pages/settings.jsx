@@ -404,7 +404,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
           tag: tag,
           uuid: uuid,
           region: region,
-          rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`
+          rank: `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${currenttier}/largeicon.png`
         }
     
         var favMatchConfigs = {};

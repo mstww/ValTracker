@@ -384,7 +384,6 @@ export async function migrateDataToDB(win) {
     sendMessageToWindow("migrateProgressUpdate", { "message": "Migrating Settings...", "num": totalPercentage });
 
     // TODO: REQUEST INSTANCE TOKEN, FOR NEW USERS THAT DO NOT USE THIS SCRIPT: GENERATE IN SETUP
-    // TODO: DELETE ALL OLD FOLDERS AND FILES
 
     var dirs = getDirectories(process.env.APPDATA + '/VALTracker/user_data');
     console.log(dirs);
