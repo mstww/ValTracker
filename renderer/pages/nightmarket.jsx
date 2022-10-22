@@ -12,6 +12,7 @@ import { BackArrow, Close } from '../components/SVGs';
 import Layout from '../components/Layout';
 import StoreItem from '../components/StoreItem';
 import { useFirstRender } from '../components/useFirstRender';
+import { executeQuery, getCurrentPUUID, getCurrentUserData, updateThing } from '../js/dbFunctions';
 
 const backdrop_variants = {
   hidden: { opacity: 0, x: 0, y: 0, display: 'none' },
@@ -72,17 +73,13 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ wishlistedItems, setWishlistedItems ] = React.useState([]);
   const [ userData, setUserData ] = React.useState({});
 
-  React.useEffect(() => {
-    var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var user_wishlist = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.uuid + '.json'));
+  React.useEffect(async () => {
+    var user_data = await getCurrentUserData();
+    var user_wishlist = await executeQuery(`SELECT * FROM wishlist:⟨${user_data.uuid}⟩`);
 
     setUserData(user_data);
-    setWishlistedItems(user_wishlist.skins);
+    setWishlistedItems(user_wishlist[0].skins);
   }, []);
-
-  var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-  var user_creds = JSON.parse(user_creds_raw);
-  var puuid = user_creds.uuid;
 
   var localTimerObj = LocalText(L, "timer");
 
@@ -101,8 +98,6 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
   }, []);
 
-  React.useEffect
-
   React.useEffect(() => {
     if(!firstRender) {
       var timer = setInterval(async () => {
@@ -118,10 +113,9 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   async function fetchSkins() {
     if(router.query.store) {
-      var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-
+      var puuid = await getCurrentPUUID();
       var skinTiers = await (await fetch(`https://valorant-api.com/v1/contenttiers`)).json();
-      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(on_load.appLang)}`)).json();
+      var allSkins = await (await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(router.query.lang)}`)).json();
 
       var data = JSON.parse(router.query.store);
       var skins = [];
@@ -163,22 +157,25 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         skins: skins,
         expiresIn: data.nightMarket.nightMarketExpiresIn,
       }
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/night_market.json', JSON.stringify(objectToWrite));
+
+      var playerStore = await executeQuery(`SELECT * FROM playerStore:⟨${puuid}⟩`);
+
+      await updateThing(`playerStore:⟨${puuid}⟩`, {
+        ...playerStore[0],
+        nightMarket: objectToWrite
+      });
 
       setNightMarket(skins);
     }
   }
 
   React.useEffect(async () => {
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/night_market.json')) {
-      var nightMarket_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/shop_data/' + puuid + '/night_market.json');
-      var nightMarket = JSON.parse(nightMarket_raw);
-      
-      if(Date.now() < nightMarket.expiresIn) {
-        setNightMarket(nightMarket.skins);
-      } else {
-        fetchSkins();
-      }
+    var puuid = await getCurrentPUUID(); // TODO 
+    var playerStore = await executeQuery(`SELECT nightMarket FROM playerStore:⟨${puuid}⟩`);
+    var nightMarket = JSON.parse(playerStore[0].nightMarket);
+    
+    if(Date.now() < nightMarket.expiresIn) {
+      setNightMarket(nightMarket.skins);
     } else {
       fetchSkins();
     }

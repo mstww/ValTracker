@@ -42,7 +42,7 @@ const page_4_vars = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, height: '100%', transitionEnd: { display: 'none' } },
 }
 
-async function getuuid(bearer) {
+async function getPUUID(bearer) {
   return (await (await fetch('https://auth.riotgames.com/userinfo', {
     method: 'GET',
     headers: {
@@ -184,18 +184,13 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
     
         setProgress(10);
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s0"));
-        var puuid = await getuuid(bearer);
+        var puuid = await getPUUID(bearer);
         var entitlement_token = await getEntitlement(bearer);
         setProgress(30);
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s1"));
         var regiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
         var region = regiondata.affinities.live;
         setProgress(50);
-    
-        Date.prototype.addSeconds = function (s) {
-          var copiedDate = new Date(this.getTime());
-          return new Date(copiedDate.getTime() + s * 1000);
-        }
     
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s2"));
         var userInfo = await requestUserCreds(region, puuid);
@@ -315,7 +310,9 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
   const finishSetup = async () => {
     var uuid = uuidv5("setupCompleted", process.env.SETTINGS_UUID);
     await updateThing(`setting:⟨${uuid}⟩`, {
-      "value": true
+      "name": "setupCompleted",
+      "value": true,
+      "type": "main"
     });
 
     var uuid = uuidv5("appLang", process.env.SETTINGS_UUID);

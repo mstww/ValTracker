@@ -12,6 +12,7 @@ import L from '../locales/translations/player.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import Layout from '../components/Layout';
+import { getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
 
 const variants = {
   hidden: { opacity: 0, x: -100, y: 0 },
@@ -87,12 +88,14 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
-const fetchPlayer = async (name, tag, lang) => {
+const fetchPlayer = async (pname, ptag, lang) => {
   try {
-    const playerInfoRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${name}/${tag}`, { keepalive: true });
+    const playerInfoRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${pname}/${ptag}`, { keepalive: true });
     const playerInfo = await playerInfoRaw.json();
+    console.log(playerInfo);
 
     if(playerInfo.status !== 200) {
+      console.log("Hey")
       return { errored: true, items: {status: playerInfo.status, message: playerInfo.message }};
     }
 
@@ -101,11 +104,8 @@ const fetchPlayer = async (name, tag, lang) => {
     const name = playerInfo.data.name;
     const tag = playerInfo.data.tag;
 
-    const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-    const tokenData = JSON.parse(rawTokenData);
-
-    const bearer = tokenData.accessToken;
-    const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+    const bearer = await getUserAccessToken();
+    const entitlement_token = await getUserEntitlement();
 
     const playerMmr = await getPlayerMMR(region, puuid, entitlement_token, bearer);
 
@@ -173,11 +173,8 @@ const fetchPlayer = async (name, tag, lang) => {
 
 const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region, lang) => {
   try {
-    const rawTokenData = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-    const tokenData = JSON.parse(rawTokenData);
-
-    const bearer = tokenData.accessToken;
-    const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+    const bearer = await getUserAccessToken();
+    const entitlement_token = await getUserEntitlement();
 
     const playerMatches = await getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer);
     
@@ -303,6 +300,11 @@ function PlayerInfo({ isNavbarMinimized }) {
     }
 
     fetchApi();
+
+    return () => {
+      setError(false);
+      setLoading(true);
+    }
   }, []);
 
   React.useEffect(async () => {

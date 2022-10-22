@@ -19,6 +19,7 @@ export default function ThemeSelector({ currentTheme, setCurrentTheme, L }) {
                 color="error" 
                 placement={'top'} 
                 className={(index === 0 ? ' ml-auto ' : '') + (index+1 === themes.length ? '' : ' mr-4 ') + (currentTheme === theme.name ? 'cursor-default' : 'cursor-pointer')}
+                key={index}
               >
                 <div 
                   className={"w-9 h-9 border-2 rounded " + (currentTheme === theme.name ? 'border-button-color' : 'border-black border-opacity-70')} 

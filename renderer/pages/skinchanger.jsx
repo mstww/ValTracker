@@ -12,6 +12,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Close, Search, Star, StarFilled } from '../components/SVGs';
 import Layout from '../components/Layout';
+import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -216,11 +217,11 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   React.useEffect(async () => {
     var skin_data = await(await fetch(`https://valorant-api.com/v1/weapons/skins?language=${APIi18n(router.query.lang)}` , { keepalive: true })).json();
 
-    var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var token_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json'))
+    var user_data = await getCurrentUserData();
+    var bearer = await getUserAccessToken();
 
-    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
-    var skinPriceData = await getOffers(user_data.region, entitlement_token, token_data.accessToken);
+    var entitlement_token = await getUserEntitlement();
+    var skinPriceData = await getOffers(user_data.region, entitlement_token, bearer);
 
     setSkinPrices(skinPriceData.Offers);
 
@@ -525,8 +526,8 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var level = activeLevel;
     var chroma = activeChroma;
 
-    var inventory_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/current_inventory.json');
-    var inventory = JSON.parse(inventory_raw);
+    var inventory_raw = await executeQuery(`SELECT * FROM inventory:current`);
+    var inventory = inventory_raw[0];
 
     for(var i = 0; i < inventory.Guns.length; i++) {
       if(inventory.Guns[i].ID == weapon) {
@@ -536,16 +537,12 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       }
     }
 
-    var tokenData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-    var tokenData = JSON.parse(tokenData_raw);
-
-    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-    var user_creds = JSON.parse(user_creds_raw);
+    var user_creds = await getCurrentUserData();
 
     var region = user_creds.region;
-    var bearer = tokenData.accessToken;
+    var bearer = await getUserAccessToken();
+    var entitlement_token = await getUserEntitlement();
 
-    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
     await setSkins(region, inventory.Subject, entitlement_token, bearer, inventory);
 
     setIngameSkin(skin);
@@ -561,12 +558,12 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }, 2000);
   }
 
-  React.useEffect(() => {
-    var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var user_wishlist = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.uuid + '.json'));
+  React.useEffect(async () => {
+    var user_data = await getCurrentUserData();
+    var user_wishlist = await executeQuery(`SELECT * FROM wishlist:⟨${user_data.uuid}⟩`);
 
     setUserData(user_data);
-    setWishlistedItems(user_wishlist.skins);
+    setWishlistedItems(user_wishlist[0].skins);
   }, []);
 
   React.useEffect(() => {
@@ -690,18 +687,10 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               <div className='flex flex-row w-full mt-2'>
                 <button 
                   className={'w-2/3 mr-2 flex flex-row items-center justify-center ' + (showWishlistButton === true && lockWishlistButton === false ? '' : 'hidden')}
-                  onClick={() => {
+                  onClick={async () => {
                     if(isWishlisted === true) {
-                      delete wishlistedItems[wishlistPosition];
-                      var newArray = wishlistedItems.filter(value => Object.keys(value).length !== 0);
-                      
-                      var data = {
-                        "skins": newArray
-                      }
-
-                      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
-                      setWishlistedItems(newArray);
-                      setWishlistPosition(null);
+                      var wishlist = await rmSkinFromWishlist(wishlistedItems[wishlistPosition]);
+                      setWishlistedItems(wishlist);
                       setIsWishlisted(false);
                     } else {
                       var item = activeSkinLevels[0];
@@ -718,17 +707,12 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                         "price": price,
                         "wishlistedAt": Date.now()
                       }
-
-                      wishlistedItems.push(newItem);
                       
-                      var data = {
-                        "skins": wishlistedItems
-                      }
-
-                      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
-                      setWishlistedItems(wishlistedItems);
-                      setWishlistPosition(wishlistedItems.length-1);
+                      var result = await addSkinToWishlist(newItem);
+      
+                      setWishlistedItems(result);
                       setIsWishlisted(true);
+                      setWishlistPosition(result.length-1);
                     }
                   }}
                 >

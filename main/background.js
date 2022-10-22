@@ -18,7 +18,7 @@ import { migrateDataToDB } from '../modules/dbMigration.mjs';
 import L from '../translation/main_process.json';
 
 import * as dotenv from 'dotenv';
-import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../renderer/js/dbFunctions';
+import { changeSetting, executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../renderer/js/dbFunctions';
 dotenv.config();
 
 const discord_rps = require("../modules/discordRPs.js");
@@ -998,7 +998,7 @@ async function checkStoreForWishlistItems() {
     var user_creds = data[0].result[0];
     
     var data = await db.query(`SELECT * FROM wishlist:⟨${account}⟩`);
-    var user_wishlist = data[0].data[0];
+    var user_wishlist = data[0].result[0];
   
     var bearer = await getUserAccessToken();
   
@@ -1358,7 +1358,7 @@ async function checkStoreForWishlistItems() {
 
     mainWindow.hide();
 
-    appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/icons/tray.ico");
+    appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/tray.ico");
 
     appIcon.setToolTip("VALTracker");
   
@@ -1603,21 +1603,8 @@ ipcMain.on('openAppOnLogin', async function(event, arg) {
       args: []
     });
 
-    var uuid = uuidv5("launchOnBoot", process.env.SETTINGS_UUID);
-    var obj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
-    var launchOnBoot = obj[0];
-    
-    launchOnBoot.value = arg;
-    
-    await db.update(obj[0].id, launchOnBoot);
-
-    var uuid = uuidv5("lauchHiddenOnBoot", process.env.SETTINGS_UUID);
-    var obj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
-    var lauchHiddenOnBoot = obj[0];
-
-    lauchHiddenOnBoot.value = false;
-    
-    await db.update(obj[0].id, lauchHiddenOnBoot);
+    await changeSetting(`launchOnBoot`, arg);
+    await changeSetting(`lauchHiddenOnBoot`, false);
   }
 });
 
@@ -1635,21 +1622,8 @@ ipcMain.on('hideAppOnLogin', async function(event, arg) {
       args: args
     });
 
-    var uuid = uuidv5("launchOnBoot", process.env.SETTINGS_UUID);
-    var obj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
-    var launchOnBoot = obj[0];
-    
-    launchOnBoot.value = true;
-    
-    await db.update(obj[0].id, launchOnBoot);
-
-    var uuid = uuidv5("lauchHiddenOnBoot", process.env.SETTINGS_UUID);
-    var obj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
-    var lauchHiddenOnBoot = obj[0];
-
-    lauchHiddenOnBoot.value = arg;
-    
-    await db.update(obj[0].id, lauchHiddenOnBoot);
+    await changeSetting(`launchOnBoot`, true);
+    await changeSetting(`lauchHiddenOnBoot`, arg);
   }
 });
 

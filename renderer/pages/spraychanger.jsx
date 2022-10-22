@@ -8,6 +8,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Search } from '../components/SVGs';
 import Layout from '../components/Layout';
+import { getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
 
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -217,8 +218,8 @@ function Spraychanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) 
   const setSkin = async () => {
     var spray = shownSkin;
 
-    var inventory_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/player_inventory/current_inventory.json');
-    var inventory = JSON.parse(inventory_raw);
+    var inventory_raw = await executeQuery(`SELECT * FROM inventory:current`);
+    var inventory = inventory_raw[0];
 
     for(var i = 0; i < inventory.Sprays.length; i++) {
       if(inventory.Sprays[i].EquipSlotID == router.query.equipslot) {
@@ -226,16 +227,12 @@ function Spraychanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) 
       }
     }
 
-    var tokenData_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/token_data.json');
-    var tokenData = JSON.parse(tokenData_raw);
-
-    var user_creds_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
-    var user_creds = JSON.parse(user_creds_raw);
+    var user_creds = await getCurrentUserData();
 
     var region = user_creds.region;
-    var bearer = tokenData.accessToken;
+    var bearer = await getUserAccessToken();
+    var entitlement_token = await getUserEntitlement();
 
-    var entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
     await setSkins(region, inventory.Subject, entitlement_token, bearer, inventory);
 
     setIngameSkin(spray);

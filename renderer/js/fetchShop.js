@@ -31,11 +31,6 @@ async function getShopData(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
-Date.prototype.addSeconds = function (seconds) {
-  var copiedDate = new Date(this.getTime());
-  return new Date(copiedDate.getTime() + seconds * 1000);
-}
-
 export async function calculateDailyStore(puuid, shopData) {
   try {
     var uuid = uuidv5("appLang", process.env.SETTINGS_UUID);

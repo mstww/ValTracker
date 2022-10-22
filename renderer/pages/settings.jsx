@@ -24,6 +24,8 @@ import ThemeSelector from '../components/settings/ThemeSelector';
 import VersionCheckbox from '../components/settings/VersionCheckbox';
 import { Loading } from '@nextui-org/react';
 import Layout from '../components/Layout';
+import { changeSetting, executeQuery, getAllSettings, getCurrentPUUID, updateThing } from '../js/dbFunctions';
+import { v5 as uuidv5 } from 'uuid';
 
 const md_conv = new parser.Converter();
 
@@ -31,7 +33,7 @@ async function openLoginWindow() {
   return await ipcRenderer.invoke('loginWindow', false);
 }
 
-async function getuuid(bearer) {
+async function getPUUID(bearer) {
   return (await (await fetch('https://auth.riotgames.com/userinfo', {
     method: 'GET',
     headers: {
@@ -56,6 +58,18 @@ async function getXMPPRegion(requiredCookie, bearer, id_token) {
   })).json());
 }
 
+async function getEntitlement(bearer) {
+  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + bearer,
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    keepalive: true
+  })).json())['entitlements_token'];
+}
+
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
   if(region === 'latam' || region === 'br') region = 'na';
@@ -69,6 +83,18 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
       'Content-Type': 'application/json',
       'User-Agent': ''
     },
+    keepalive: true
+  })).json());
+}
+
+async function requestUserCreds(region, puuid) {
+  if(region === 'latam' || region === 'br') region = 'na';
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: "[\"" + puuid + "\"]",
     keepalive: true
   })).json());
 }
@@ -186,7 +212,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   const [ general_changeLangPopupOpen, setGeneral_changeLangPopupOpen ] = React.useState(false);
 
   const [ currentSelectedLanguage, setCurrentSelectedLanguage ] = React.useState(false);
-  const [ loadData, setLoadData ] = React.useState({});
+  const [ appLang, setAppLang ] = React.useState({});
 
   const riot_removeAccount = React.useRef(null);
   const [ riot_removeAccountPopupOpen, setRiot_RemoveAccountPopupOpen ] = React.useState(false);
@@ -215,75 +241,62 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   const [ patchnoteVersions, setPatchnotesVersions ] = React.useState([]);
 
   async function fetchUserAccounts() {
-    var data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')
-    var data = JSON.parse(data_raw);
-    var accounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
+    var puuid = await getCurrentPUUID();
+    var accounts = await executeQuery(`SELECT * FROM playerCollection:app FETCH players.player`);
   
-    accounts.forEach(accountFile => {
-      var account_data_raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + accountFile);
-      var account_data = JSON.parse(account_data_raw);
-
+    accounts[0].players.forEach(account => {
       var active_account = false;
-      if(data.uuid == account_data.uuid) {
+      if(puuid == account.uuid) {
         active_account = true;
       }
 
-      // Add account_data to riot_accountList using setRiot_AccountList, but only if active_account is false
       if(!active_account) {
-        setRiot_AccountList(riot_accountList => [...riot_accountList, account_data]);
+        setRiot_AccountList(riot_accountList => [...riot_accountList, account]);
       }
     });
   }
 
-  const fetchSettings = () => {
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
-    var data = JSON.parse(raw);
+  const fetchSettings = async () => {
+    var data = await getAllSettings();
+    console.log(data);
 
-    if(data.startOnBoot === true) {
+    if(data.launchOnBoot === true) {
       setAutoOpen(true);
     }
-    if(data.startOnBoot === true && data.startHidden === true) {
+    if(data.launchOnBoot === true && data.lauchHiddenOnBoot === true) {
       setStartHidden(true);
     }
-    if(data.skinWishlistNotifications === true || data.skinWishlistNotifications === undefined) {
+    if(data.wishlistNotifs === true || data.wishlistNotifs === undefined) {
       setSkinWishlistNotifications(true);
     }
-    if(data.minimizeOnClose === true) {
+    if(data.minOnClose === true) {
       setMinClose(true);
     }
-    if(data.enableHardwareAcceleration === true || data.enableHardwareAcceleration === undefined) {
+    if(data.hardwareAccel === true || data.hardwareAccel === undefined) {
       setHardwareAcceleration(true);
     }
-    if(data.hasDiscordRPenabled === true || data.hasDiscordRPenabled === undefined) {
+    if(data.useAppRP === true || data.useAppRP === undefined) {
       setAppRP(true);
     }
-    if(data.hasValorantRPenabled === true || data.hasValorantRPenabled === undefined) {
+    if(data.useGameRP === true || data.useGameRP === undefined) {
       setGameRP(true);
     }
-    if(data.hideDiscordRPWhenHidden === true) {
+    if(data.hideAppPresenceWhenHidden === true) {
       setAppRPwhenHidden(true);
     }
-    
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json');
-    var data = JSON.parse(raw);
 
-    setCurrentTheme(data.themeName);
+    setCurrentTheme(data.appColorTheme);
 
-    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json')) {
-      var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
+    setGameRP_showMode(data.showGameRPMode);
 
-      setGameRP_showMode(data.showMode);
+    setGameRP_showRank(data.showGameRPRank);
 
-      setGameRP_showRank(data.showRank);
-  
-      setGameRP_showTimer(data.showTimer);
-  
-      setGameRP_showScore(data.showScore);
-    }
+    setGameRP_showTimer(data.showGameRPScore);
+
+    setGameRP_showScore(data.showGameRPTimer);
   }
 
   const changeAutoOpen = (e) => {
-    console.log(e)
     if(typeof e === 'boolean') ipcRenderer.send('openAppOnLogin', e);
     else ipcRenderer.send('openAppOnLogin', !autoOpen);
 
@@ -291,135 +304,72 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   }
 
   const changeOpenHiddenOnAuto = (e) => {
-    console.log(e)
     if(typeof e === 'boolean') ipcRenderer.send('hideAppOnLogin', e);
     else ipcRenderer.send('hideAppOnLogin', !startHidden);
 
     setStartHidden(!startHidden)
   }
 
-  const changeSkinWishlistNotifications = (e) => {
-    console.log(e)
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
-    var data = JSON.parse(raw);
-
-    if(typeof e === 'boolean') data.skinWishlistNotifications = e;
-    else data.skinWishlistNotifications = !data.skinWishlistNotifications;
-
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+  const changeSkinWishlistNotifications = async (e) => {
+    await changeSetting(`wishlistNotifs`, e);
 
     setSkinWishlistNotifications(!skinWishlistNotifications);
   }
 
-  const changeMinClose = (e) => {
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
-    var data = JSON.parse(raw);
-
-    if(typeof e === 'boolean') data.minimizeOnClose = e;
-    else data.minimizeOnClose = !data.minimizeOnClose;
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+  const changeMinClose = async (e) => {
+    await changeSetting(`minOnClose`, e);
 
     setMinClose(!minClose);
   }
 
-  const changeHardwareAcceleration = (e) => {
-    
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
-    var data = JSON.parse(raw);
-
-    if(typeof e === 'boolean') data.enableHardwareAcceleration = e;
-    else data.enableHardwareAcceleration = !data.enableHardwareAcceleration;
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+  const changeHardwareAcceleration = async (e) => {
+    await changeSetting(`hardwareAccel`, e);
 
     setHardwareAcceleration(!hardwareAcceleration);
   }
 
-  const changeAppRP = (e) => {
-    
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
-    var data = JSON.parse(raw);
-
-    if(typeof e === 'boolean') data.hasDiscordRPenabled = e;
-    else data.hasDiscordRPenabled = !data.hasDiscordRPenabled;
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+  const changeAppRP = async (e) => {
+    await changeSetting(`useAppRP`, e);
 
     ipcRenderer.send('changeDiscordRP', `clear`);
 
     setAppRP(!appRP);
   }
 
-  const changeAppRPWhenHidden = (e) => {
-    
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
-    var data = JSON.parse(raw);
-
-    if(typeof e === 'boolean') data.hideDiscordRPWhenHidden = e;
-    else if(data.hideDiscordRPWhenHidden === true) data.hideDiscordRPWhenHidden = false;
-    else if(data.hideDiscordRPWhenHidden === false) data.hideDiscordRPWhenHidden = true;
-    else data.hideDiscordRPWhenHidden = true;
-
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+  const changeAppRPWhenHidden = async (e) => {
+    await changeSetting(`hideAppPresenceWhenHidden`, e);
 
     ipcRenderer.send('changeDiscordRP', `clear`);
 
     setAppRPwhenHidden(!appRPwhenHidden);
   }
 
-  const changeGameRP = (e) => {
-    var raw = fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json');
-    var data = JSON.parse(raw);
-
-    if(typeof e === 'boolean') data.hasValorantRPenabled = e;
-    else data.hasValorantRPenabled = !data.hasValorantRPenabled;
-
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(data));
+  const changeGameRP = async (e) => {
+    await changeSetting(`useGameRP`, e);
 
     setGameRP(!gameRP);
   }
 
-  const changeShowMatchMode = (e) => {
-    
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
-
-    if(typeof e === 'boolean') data.showMode = e;
-    else data.showMode = !gameRP_showMode;
-    
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
+  const changeShowMatchMode = async (e) => {
+    await changeSetting(`showGameRPMode`, e);
 
     setGameRP_showMode(!gameRP_showMode);
   }
 
-  const changeShowRank = (e) => {
-    
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
-    
-    if(typeof e === 'boolean') data.showRank = e;
-    else data.showRank = !gameRP_showRank;
-    
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
+  const changeShowRank = async (e) => {
+    await changeSetting(`showGameRPRank`, e);
 
     setGameRP_showRank(!gameRP_showRank);
   }
 
-  const changeShowTimer = (e) => {
-    
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
-
-    if(typeof e === 'boolean') data.showTimer = e;
-    else data.showTimer = !gameRP_showTimer;
-    
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
+  const changeShowTimer = async (e) => {
+    await changeSetting(`showGameRPScore`, e);
     
     setGameRP_showTimer(!gameRP_showTimer);
   }
 
-  const changeShowScore = (e) => {
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json'));
-
-    if(typeof e === 'boolean') data.showScore = e;
-    else data.showScore = !gameRP_showScore;
-
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/settings.json', JSON.stringify(data));
+  const changeShowScore = async (e) => {
+    await changeSetting(`showGameRPTimer`, e);
     
     setGameRP_showScore(!gameRP_showScore);
   }
@@ -431,58 +381,111 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
       var id_token = data.tokenData.id_token;
   
       try {
-        var arg = await ipcRenderer.invoke('getTdidCookie', 'addedNewAccount');
-      
-        var requiredCookie = "tdid=" + arg
-        var puuid = await getuuid(bearer);
-
-        var userAccounts = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts');
-        for(var i = 0; i < userAccounts.length; i++) {
-          if(userAccounts[i].split('.')[0] === puuid) {
-            ipcRenderer.send('relayTextbox', errors.acc_already_added);
-            return false;
-          }
-        }
+        var bearer = data.tokenData.accessToken;
+        var id_token = data.tokenData.id_token;
     
-        var reagiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
-        var region = reagiondata.affinities.live;
-        var options = {
-          method: "PUT",
-          body: "[\"" + puuid + "\"]",
-          keepalive: true
-        }
-        var new_account_data = await fetch("https://pd." + region + ".a.pvp.net/name-service/v2/players", options );
-        var new_account_data = await new_account_data.json();
+        var tdid_val = await ipcRenderer.invoke('getTdidCookie');
+        var requiredCookie = 'tdid=' + tdid_val;
     
-        const entitlement_token = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/entitlement.json')).entitlement_token;
+        var puuid = await getPUUID(bearer);
+        var entitlement_token = await getEntitlement(bearer);
+        var regiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
+        var region = regiondata.affinities.live;
     
-        const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
-    
-        var currenttier = 0;
+        var userInfo = await requestUserCreds(region, puuid);
+        var name = userInfo[0].GameName;
+        var tag = userInfo[0].TagLine;
+        var uuid = userInfo[0].Subject;
+        var region = region;
         
-        if(account_rank_data.LatestCompetitiveUpdate !== undefined) {
-          var currenttier = account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate;
-        }
+        const currenttier = await getPlayerMMR(region, uuid, entitlement_token, bearer);
     
-        var accObj = {
-          name: new_account_data[0].GameName,
-          tag: new_account_data[0].TagLine,
+        var userData = {
+          name: name,
+          tag: tag,
+          uuid: uuid,
           region: region,
-          uuid: puuid,
-          rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`,
+          rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`
         }
     
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuid + '.json', JSON.stringify(accObj));
-    
-        if(!fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid)) {
-          fs.mkdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid);
-        }
-    
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/token_data.json', JSON.stringify(data.tokenData));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/entitlement.json', JSON.stringify(data.tokenData));
-        fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid + '/cookies.json', JSON.stringify(data.riotcookies));
+        var favMatchConfigs = {};
+      
+        var matchIDResult = await createThing(`matchIDCollection:⟨favMatches::${puuid}⟩`, {
+          "matchIDs": []
+        });
+      
+        favMatchConfigs[puuid] = (await createThing(`favMatchConfig:⟨${puuid}⟩`, {
+          matchIDCollection: matchIDResult.id ? matchIDResult.id : matchIDResult[0].result[0].id
+        })).id;
+      
+        var hubConfigs = {};
+      
+        var matchIDResult = await createThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
+          "matchIDs": []
+        });
+      
+        hubConfigs[puuid] = (await createThing(`hubConfig:⟨${puuid}⟩`, {
+          matchIDResult: matchIDResult.id ? matchIDResult.id : matchIDResult[0].result[0].id
+        })).id;
+      
+        var allPlayerConfigs = {};
+      
+        var result = await createThing(`playerConfig:⟨${puuid}⟩`, {
+          "favMatchConfig": favMatchConfigs[puuid],
+          "hubConfig": hubConfigs[puuid]
+        });
+        allPlayerConfigs[puuid] = result.id;
+      
+        var allPlayerDataIDs = [];
+      
+        var result = await createThing(`player:⟨${puuid}⟩`, {
+          ...userData,
+          "playerConfig": allPlayerConfigs[puuid]
+        });
+      
+        allPlayerDataIDs.push(result.id);
+      
+        var result = await createThing(`playerCollection:⟨app⟩`, {
+          "players": allPlayerDataIDs
+        });
   
-        router.push('/settings?tab=riot&counter=' + router.query.counter + `&lang=${router.query.lang}`);
+        var ssidObj = data.riotcookies.find(obj => obj.name === "ssid");
+      
+        await createThing(`rgConfig:⟨${puuid}⟩`, {
+          "accesstoken": data.tokenData.accessToken,
+          "idtoken": data.tokenData.id_token,
+          "ssid": "ssid=" + ssidObj.value,
+          "tdid": requiredCookie,
+          "entitlement": entitlement_token
+        });
+      
+        await executeQuery(`RELATE playerCollection:⟨app⟩->currentPlayer->player:⟨${puuid}⟩`); // Switch for new UUID
+      
+        await createThing(`hubContractProgress:⟨${puuid}⟩`, {
+          "agentContract": {},
+          "battlePass": {},
+          "date": null
+        });
+      
+        await createThing(`playerStore:⟨${puuid}⟩`, {});
+      
+        await createThing(`inventory:⟨current⟩`, {});
+      
+        await createThing(`presetCollection:⟨${puuid}⟩`, {
+          "presets": []
+        });
+      
+        await createThing(`wishlist:⟨${puuid}⟩`, {
+          "skins": []
+        });
+      
+        var bundle = await (await fetch('https://api.valtracker.gg/featured-bundle')).json();
+        var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
+      
+        await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
+          "lastMessageUnix": Date.now(),
+          "featuredBundle": result.id
+        });
       } catch(err) {
         console.log(err)
         router.push('/settings?tab=riot&counter=' + router.query.counter + `&lang=${router.query.lang}`);
@@ -491,8 +494,12 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   }
 
   const removeAccount = async (puuid, popupToClose) => {
-    fs.rmdirSync(process.env.APPDATA + '/VALTracker/user_data/riot_games_data/' + puuid, { recursive: true });
-    fs.unlinkSync(process.env.APPDATA + '/VALTracker/user_data/user_accounts/' + puuid + '.json');
+    var data = await executeQuery(`SELECT * FROM SELECT * FROM playerCollection:app`);
+    var newArr = data[0].players.filter(e => e !== `player:⟨${puuid}⟩`);
+    await updateThing(`playerCollection:app`, {
+      players: newArr
+    });
+    await executeQuery(`DELETE player:⟨${puuid}⟩`);
     // Find object in riot_accountList with same uuid propety as puuid and remove it
     var new_account_list = riot_accountList.filter(account => account.uuid !== puuid);
     setRiot_AccountList(new_account_list);
@@ -610,10 +617,8 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
     }
   }
 
-  const changeLanguageAndRestart = () => {
-    var loadData = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-    loadData.appLang = currentSelectedLanguage;
-    fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json', JSON.stringify(loadData));
+  const changeLanguageAndRestart = async () => {
+    await changeSetting(`appLang`, currentSelectedLanguage);
 
     ipcRenderer.send('restartApp');
   }
@@ -629,7 +634,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
       setCurrentTheme(theme);
       setTheme(theme);
 
-      fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/themes/color_theme.json', JSON.stringify({ themeName: theme }));
+      changeSetting(`appColorTheme`, theme);
     }
   }
 
@@ -640,10 +645,11 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
     generateSettingsCode();
   }, []);
 
-  React.useEffect(() => {
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
-    setLoadData(data);
-    setCurrentSelectedLanguage(data.appLang);
+  React.useEffect(async () => {
+    var uuid = uuidv5('appLang', process.env.SETTINGS_UUID);
+    var data = await executeQuery(`SELECT * FROM setting:⟨${uuid}⟩`);
+    setAppLang(data[0].value);
+    setCurrentSelectedLanguage(data[0].value);
   }, [ general_changeLangPopupOpen ]);
 
   React.useEffect(async () => {
@@ -671,16 +677,16 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
           }}
           button_2_onClick={() => {
             closePopup(setGeneral_changeLangPopupOpen);
-            setCurrentSelectedLanguage(loadData.appLang === undefined ? 'en-US' : loadData.appLang);
+            setCurrentSelectedLanguage(appLang === undefined ? 'en-US' : appLang);
           }}
           isWideCard={true}
-          isButtonClickable={(loadData.appLang === undefined ? 'en-US' : loadData.appLang ) !== currentSelectedLanguage}
+          isButtonClickable={(appLang === undefined ? 'en-US' : appLang ) !== currentSelectedLanguage}
           isOpen={general_changeLangPopupOpen}
         >
           <div className="w-full mt-4 flex flex-row flex-wrap items-center">
             {
               Object.keys(AllLangs).map((lang, index) => {
-                var appLang = loadData.appLang;
+                var appLang = appLang;
                 if(appLang === undefined) appLang = 'en-US';
 
                 if(appLang !== lang) {
@@ -780,7 +786,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
           <div className="w-full mt-4 flex flex-row flex-wrap items-center">
             {patchnoteVersions.map((version, index) => {
               return (
-                <VersionCheckbox version={version} selectedVersion={patchnotes_versionSwitcherSelectedPatchnotesVersion} click={() => { setPatchnotes_versionSwitcherSelectedPatchnotesVersion(version) }} />
+                <VersionCheckbox key={index} version={version} selectedVersion={patchnotes_versionSwitcherSelectedPatchnotesVersion} click={() => { setPatchnotes_versionSwitcherSelectedPatchnotesVersion(version) }} />
               )
             })}
           </div>

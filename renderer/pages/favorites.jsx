@@ -83,18 +83,18 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
     var allMatches = [];
 
-    setFavMatchLength(favMatchesData.length);
+    setFavMatchLength(favMatchesData[0].matchIDs.length);
 
-    for(var i = 0; i < favMatchesData.length; i++) {
-      if(!allMatches.includes(favMatchesData[i])) {
+    for(var i = 0; i < favMatchesData[0].matchIDs.length; i++) {
+      if(!allMatches.includes(favMatchesData[0].matchIDs[i])) {
         var entitlement = await getUserEntitlement();
-        var data = await getMatch(user_creds.region, favMatchesData[i], entitlement, bearer);
+        var data = await getMatch(user_creds.region, favMatchesData[0].matchIDs[i], entitlement, bearer);
 
         await createMatch(data);
 
         allMatches.push(data);
       } else {
-        var match = await fetchMatch(favMatchesData[i]);
+        var match = await fetchMatch(favMatchesData[0].matchIDs[i]);
 
         allMatches.push(match);
       }

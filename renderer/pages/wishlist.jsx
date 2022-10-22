@@ -8,6 +8,7 @@ import LocalText from "../components/translation/LocalText";
 import { useRouter } from "next/router";
 import { ArrowRoundUp, StarFilled } from "../components/SVGs";
 import Layout from '../components/Layout';
+import { executeQuery, getCurrentUserData, rmSkinFromWishlist } from "../js/dbFunctions";
 
 const scoreboard_vars_initial = {
   hidden: { opacity: 0, x: -200, y: 0, scale: 1, display: 'none' },
@@ -25,14 +26,14 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
 
   const [ userData, setUserData ] = React.useState({});
 
-  React.useEffect(() => {
-    var user_data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'));
-    var data = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + user_data.uuid + '.json'));
+  React.useEffect(async () => {
+    var user_data = await getCurrentUserData();
+    var data = await executeQuery(`SELECT * FROM wishlist:⟨${user_data.uuid}⟩`);
 
     setUserData(user_data);
 
-    setUnsortedPlayerWishlistSkins(data.skins);
-    setPlayerWishlistSkins(data.skins);
+    setUnsortedPlayerWishlistSkins(data[0].skins);
+    setPlayerWishlistSkins(data[0].skins);
   }, []);
   
   return (
@@ -112,7 +113,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                 return (
                   <>
                     <motion.div
-                      className={'flex flex-row items-center w-full h-24'} key={index + 'tr'}
+                      className={'flex flex-row items-center w-full h-24 overflow-hidden'} key={index + 'tr'}
                       variants={scoreboard_vars_initial}
                       initial="hidden"
                       enter="enter"
@@ -140,9 +141,11 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                       <div className={'py-1 text-xl border-t-2 border-b-2 border-r-2 rounded-r border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col justify-center items-center'}>
                         <button 
                           className="flex items-center relative right-9"
-                          onClick={() => {
+                          onClick={async () => {
                             for(var i = 0; i < unsortedPlayerWishlistSkins.length; i++) {
                               if(unsortedPlayerWishlistSkins[i].uuid === skin.uuid) {
+                                await rmSkinFromWishlist(unsortedPlayerWishlistSkins[index]);
+                                
                                 delete unsortedPlayerWishlistSkins[index];
                                 var newArray1 = unsortedPlayerWishlistSkins.filter(value => Object.keys(value).length !== 0);
                               }
@@ -150,12 +153,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
 
                             delete playerWishlistSkins[index];
                             var newArray2 = playerWishlistSkins.filter(value => Object.keys(value).length !== 0);
-                            
-                            var data = {
-                              "skins": newArray1
-                            }
 
-                            fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
                             setPlayerWishlistSkins(newArray1);
                             setUnsortedPlayerWishlistSkins(newArray2);
                           }}

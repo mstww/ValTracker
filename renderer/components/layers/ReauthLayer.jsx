@@ -1,12 +1,11 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
-import fs from 'fs';
 import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch';
 import L from '../../locales/translations/reauth.json';
 import LocalText from '../translation/LocalText';
-import { getCurrentUserData, getUserEntitlement, updateThing } from '../../js/dbFunctions';
+import { createThing, executeQuery, getCurrentUserData } from '../../js/dbFunctions';
 
 const card_base_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -30,7 +29,7 @@ async function openLoginWindow() {
   return await ipcRenderer.invoke('loginWindow', false);
 }
 
-async function getuuid(bearer) {
+async function getPUUID(bearer) {
   return (await (await fetch('https://auth.riotgames.com/userinfo', {
     method: 'GET',
     headers: {
@@ -72,6 +71,30 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
+async function getEntitlement(bearer) {
+  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + bearer,
+      'Content-Type': 'application/json',
+      'User-Agent': ''
+    },
+    keepalive: true
+  })).json())['entitlements_token'];
+}
+
+async function requestUserCreds(region, puuid) {
+  if(region === 'latam' || region === 'br') region = 'na';
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: "[\"" + puuid + "\"]",
+    keepalive: true
+  })).json());
+}
+
 export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
   
@@ -85,51 +108,110 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
     if(data) {
       var bearer = data.tokenData.accessToken;
       var id_token = data.tokenData.id_token;
-      var arg = await ipcRenderer.invoke('getTdidCookie', 'addedNewAccount');
+  
+      var tdid_val = await ipcRenderer.invoke('getTdidCookie');
+      var requiredCookie = 'tdid=' + tdid_val;
+  
+      var puuid = await getPUUID(bearer);
+      var entitlement_token = await getEntitlement(bearer);
+      var regiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
+      var region = regiondata.affinities.live;
+  
+      var userInfo = await requestUserCreds(region, puuid);
+      var name = userInfo[0].GameName;
+      var tag = userInfo[0].TagLine;
+      var uuid = userInfo[0].Subject;
+      var region = region;
       
-      var requiredCookie = "tdid=" + arg
-      var puuid = await getuuid(bearer);
+      const currenttier = await getPlayerMMR(region, uuid, entitlement_token, bearer);
   
-      var reagiondata = await getXMPPRegion(requiredCookie, bearer, id_token);
-      var region = reagiondata.affinities.live;
-      if(region === 'latam' || region === 'br') region = 'na';
-      var options = {
-        method: "PUT",
-        body: "[\"" + puuid + "\"]",
-        keepalive: true
-      }
-      var new_account_data = await fetch("https://pd." + region + ".a.pvp.net/name-service/v2/players", options);
-      var new_account_data = await new_account_data.json();
-    
-      const entitlement_token = await getUserEntitlement(puuid);
-  
-      const account_rank_data = await getPlayerMMR(region, puuid, entitlement_token, bearer);
-  
-      var currenttier = 0;
-      
-      if(account_rank_data.LatestCompetitiveUpdate !== undefined) {
-        var currenttier = account_rank_data.LatestCompetitiveUpdate.TierAfterUpdate
-      }
-  
-      var accObj = {
-        name: new_account_data[0].GameName,
-        tag: new_account_data[0].TagLine,
+      var userData = {
+        name: name,
+        tag: tag,
+        uuid: uuid,
         region: region,
-        uuid: puuid,
-        rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`,
+        rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`
       }
+  
+      var favMatchConfigs = {};
+    
+      var matchIDResult = await createThing(`matchIDCollection:⟨favMatches::${puuid}⟩`, {
+        "matchIDs": []
+      });
+    
+      favMatchConfigs[puuid] = (await createThing(`favMatchConfig:⟨${puuid}⟩`, {
+        matchIDCollection: matchIDResult.id ? matchIDResult.id : matchIDResult[0].result[0].id
+      })).id;
+    
+      var hubConfigs = {};
+    
+      var matchIDResult = await createThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
+        "matchIDs": []
+      });
+    
+      hubConfigs[puuid] = (await createThing(`hubConfig:⟨${puuid}⟩`, {
+        matchIDResult: matchIDResult.id ? matchIDResult.id : matchIDResult[0].result[0].id
+      })).id;
+    
+      var allPlayerConfigs = {};
+    
+      var result = await createThing(`playerConfig:⟨${puuid}⟩`, {
+        "favMatchConfig": favMatchConfigs[puuid],
+        "hubConfig": hubConfigs[puuid]
+      });
+      allPlayerConfigs[puuid] = result.id;
+    
+      var allPlayerDataIDs = [];
+    
+      var result = await createThing(`player:⟨${puuid}⟩`, {
+        ...userData,
+        "playerConfig": allPlayerConfigs[puuid]
+      });
+    
+      allPlayerDataIDs.push(result.id);
+    
+      var result = await createThing(`playerCollection:⟨app⟩`, {
+        "players": allPlayerDataIDs
+      });
 
       var ssidObj = data.riotcookies.find(obj => obj.name === "ssid");
-  
-      await updateThing(`player:⟨${puuid}⟩`, accObj);
-      await updateThing(`rgConfig:⟨${puuid}⟩`, {
-        accesstoken: bearer,
-        entitlement: entitlement_token,
-        idtoken: id_token,
-        ssid: "ssid=" + ssidObj.value,
-        tdid: requiredCookie
+    
+      await createThing(`rgConfig:⟨${puuid}⟩`, {
+        "accesstoken": data.tokenData.accessToken,
+        "idtoken": data.tokenData.id_token,
+        "ssid": "ssid=" + ssidObj.value,
+        "tdid": requiredCookie,
+        "entitlement": entitlement_token
       });
-  
+    
+      await executeQuery(`RELATE playerCollection:⟨app⟩->currentPlayer->player:⟨${puuid}⟩`); // Switch for new UUID
+    
+      await createThing(`hubContractProgress:⟨${puuid}⟩`, {
+        "agentContract": {},
+        "battlePass": {},
+        "date": null
+      });
+    
+      await createThing(`playerStore:⟨${puuid}⟩`, {});
+    
+      await createThing(`inventory:⟨current⟩`, {});
+    
+      await createThing(`presetCollection:⟨${puuid}⟩`, {
+        "presets": []
+      });
+    
+      await createThing(`wishlist:⟨${puuid}⟩`, {
+        "skins": []
+      });
+    
+      var bundle = await (await fetch('https://api.valtracker.gg/featured-bundle')).json();
+      var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
+    
+      await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
+        "lastMessageUnix": Date.now(),
+        "featuredBundle": result.id
+      });
+
       return;
     }
   }

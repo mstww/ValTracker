@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import fs from 'fs';
 import React from "react";
+import { addSkinToWishlist, rmSkinFromWishlist } from "../js/dbFunctions";
 import { StarFilled, Star } from "./SVGs";
 
 const slide_bottom = {
@@ -10,7 +11,7 @@ const slide_bottom = {
 
 export default function StoreItem({ item, delay, index, clickHandler, shownOverlayUUID, wishlistedItems, setWishlistedItems, userData, wishlistTextLocale, nightMarket, nmDiscount }) {
   const [ isWishlisted, setIsWishlisted ] = React.useState(false);
-  const [ wishlistPosition, setWishlistPosition ] = React.useState(null);
+  const [ wishlistItem, setWishlistItem ] = React.useState({});
 
   const [ isThisSkinsOverlayShown, setIsThisSkinsOverlayShown ] = React.useState(false);
 
@@ -18,7 +19,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
     for(var i = 0; i < wishlistedItems.length; i++) {
       if(item.uuid === wishlistedItems[i].uuid) {
         setIsWishlisted(true);
-        setWishlistPosition(i);
+        setWishlistItem(wishlistedItems[i]);
         break;
       }
     }
@@ -63,18 +64,10 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
           <div id='levels-chromas' className='absolute bottom-4 left-4 w-64 text-white z-20'>
             <button 
               className={'w-full mt-2 flex flex-row items-center justify-center pointer-events-auto ' + (isThisSkinsOverlayShown ? '' : 'hidden')}
-              onClick={() => {
+              onClick={async () => {
                 if(isWishlisted === true) {
-                  delete wishlistedItems[wishlistPosition];
-                  var newArray = wishlistedItems.filter(value => Object.keys(value).length !== 0);
-                  
-                  var data = {
-                    "skins": newArray
-                  }
-  
-                  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
-                  setWishlistedItems(newArray);
-                  setWishlistPosition(null);
+                  var wishlist = await rmSkinFromWishlist(wishlistItem);
+                  setWishlistedItems(wishlist);
                   setIsWishlisted(false);
                 } else {
                   var newItem = {
@@ -86,16 +79,10 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                     "isMelee": item.isMelee,
                     "wishlistedAt": Date.now()
                   }
-  
-                  wishlistedItems.push(newItem);
                   
-                  var data = {
-                    "skins": wishlistedItems
-                  }
+                  var result = await addSkinToWishlist(newItem);
   
-                  fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
-                  setWishlistedItems(wishlistedItems);
-                  setWishlistPosition(wishlistedItems.length-1);
+                  setWishlistedItems(result);
                   setIsWishlisted(true);
                 }
               }}
@@ -130,17 +117,9 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             <StarFilled 
               color
               cls='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear' 
-              click={() => {
-                delete wishlistedItems[wishlistPosition];
-                var newArray = wishlistedItems.filter(value => Object.keys(value).length !== 0);
-                
-                var data = {
-                  "skins": newArray
-                }
-
-                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
-                setWishlistedItems(newArray);
-                setWishlistPosition(null);
+              click={async () => {
+                var wishlist = await rmSkinFromWishlist(wishlistItem);
+                setWishlistedItems(wishlist);
                 setIsWishlisted(false);
               }} 
             />
@@ -148,7 +127,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             <Star 
               color
               cls='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear'
-              click={() => {
+              click={async () => {
                 var newItem = {
                   "uuid": item.uuid,
                   "displayName": item.name,
@@ -158,16 +137,10 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
                   "isMelee": item.isMelee,
                   "wishlistedAt": Date.now()
                 }
-
-                wishlistedItems.push(newItem);
                 
-                var data = {
-                  "skins": wishlistedItems
-                }
+                var result = await addSkinToWishlist(newItem);
 
-                fs.writeFileSync(process.env.APPDATA + '/VALTracker/user_data/wishlists/' + userData.uuid + '.json', JSON.stringify(data));
-                setWishlistedItems(wishlistedItems);
-                setWishlistPosition(wishlistedItems.length-1);
+                setWishlistedItems(result);
                 setIsWishlisted(true);
               }} 
             />

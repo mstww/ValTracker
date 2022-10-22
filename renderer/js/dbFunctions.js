@@ -1,5 +1,6 @@
 import { ipcRenderer } from "electron";
 import Surreal from "surrealdb.js";
+import { v5 as uuidv5 } from "uuid";
 
 var db = false;
 
@@ -144,6 +145,8 @@ export async function createMatch(data) {
 }
 
 export async function removeMatch(collection, uuid) {
+  if(db === false) await connectToDB();
+
   var puuid = await getCurrentPUUID();
   var data = await db.query(`SELECT * FROM matchIDCollection:⟨${collection}::${puuid}⟩`);
 
@@ -163,7 +166,7 @@ export async function removeMatch(collection, uuid) {
     var matchIDCollection = await db.query(`SELECT * FROM ${collections[i]}`);
     var newCollection = matchIDCollection[0].result[0].matchIDs;
 
-    const index = array.indexOf(uuid);
+    const index = newCollection.indexOf(uuid);
     if (index > -1) {
       newCollection.splice(index, 1);
     }
@@ -172,4 +175,85 @@ export async function removeMatch(collection, uuid) {
       "matchIDs": newCollection
     });
   }
+}
+
+export async function addSkinToWishlist(obj) {
+  if(db === false) await connectToDB();
+
+  var puuid = await getCurrentPUUID();
+  var wishlist = await executeQuery(`SELECT * FROM wishlist:⟨${puuid}⟩`);
+
+  await updateThing(`wishlist:⟨${puuid}⟩`, {
+    "skins": [...wishlist[0].skins, obj]
+  });
+
+  return [...wishlist[0].skins, obj];
+}
+
+export async function rmSkinFromWishlist(obj) {
+  if(db === false) await connectToDB();
+
+  var puuid = await getCurrentPUUID();
+  var wishlist = await executeQuery(`SELECT * FROM wishlist:⟨${puuid}⟩`);
+  var newCollection = wishlist[0].skins;
+
+  const index = newCollection.findIndex(object => {
+    return object.uuid === obj.uuid;
+  });
+
+  if (index > -1) {
+    newCollection.splice(index, 1);
+  }
+
+  await updateThing(`wishlist:⟨${puuid}⟩`, {
+    "skins": newCollection
+  });
+
+  return newCollection;
+}
+
+export async function getAllSettings() {
+  if(db === false) await connectToDB();
+
+  var appSettings = [
+    "hubMatchFilter",
+    "setupCompleted",
+    "useAppRP",
+    "minOnClose",
+    "wishlistNotifs",
+    "hardwareAccel",
+    "launchOnBoot",
+    "lauchHiddenOnBoot",
+    "hideAppPresenceWhenHidden",
+    "useGameRP",
+    "appLang",
+    "showGameRPMode",
+    "showGameRPRank",
+    "showGameRPTimer",
+    "showGameRPScore",
+    "appColorTheme",
+  ];
+
+  var allSettings = {};
+
+  for(var i = 0; i < appSettings.length; i++) {
+    var uuid = uuidv5(appSettings[i], process.env.SETTINGS_UUID);
+    var setting = await executeQuery(`SELECT * FROM setting:⟨${uuid}⟩`);
+
+    allSettings[setting[0].name] = setting[0].value;
+  }
+
+  return allSettings;
+}
+
+export async function changeSetting(name, val) {
+  if(db === false) await connectToDB();
+
+  var uuid = uuidv5(name, process.env.SETTINGS_UUID);
+  var setting = await executeQuery(`SELECT * FROM setting:⟨${uuid}⟩`);
+
+  await updateThing(`setting:⟨${uuid}⟩`, {
+    ...setting[0],
+    value: val
+  });
 }

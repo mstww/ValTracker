@@ -71,7 +71,7 @@ function getDifferenceInDays(date1, date2) {
   return Math.round(diffInMs / (1000 * 60 * 60 * 24));
 }
 
-const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region, lang) => {
+const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region, lang, isTestFetch) => {
   try {
     var newMatches = currentMatches;
 
@@ -107,17 +107,21 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
       newMatches[matchDate].push(matches[i]);
     }
 
-    var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
+    if(isTestFetch === false) {
+      var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
 
-    await updateThing(`hubConfig:⟨${puuid}⟩`, {
-      ...hubConfig[0],
-      loadedMatches: newEndIndex,
-      totalMatches: totalMatches
-    });
+      await updateThing(`hubConfig:⟨${puuid}⟩`, {
+        ...hubConfig[0],
+        loadedMatches: newEndIndex,
+        totalMatches: totalMatches
+      });
 
-    await updateThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
-      matchIDs: matchIDs
-    });
+      var matchIDCollection = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
+  
+      await updateThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
+        matchIDs: [...matchIDCollection[0].matchIDs, ...matchIDs]
+      });
+    }
       
     var json = {
       "totalMatches": totalMatches,
@@ -725,7 +729,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var puuid = user_creds.uuid;
 
     if(keepCurrentMatches === true) {
-      var data = await fetchMatches(beginIndex, endIndex, [], mode, puuid, user_creds.region, router.query.lang);
+      var data = await fetchMatches(beginIndex, endIndex, [], mode, puuid, user_creds.region, router.query.lang, false);
 
       setMaxMatchesFound(data.items.totalMatches);
 
@@ -738,9 +742,10 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       }
   
       var newMatches = currentMatches;
+      console.log(newMatches);
 
       for(var i = 0; i < new_matches.length; i++) {
-        var dateDiff = getDifferenceInDays(newMatches[i].matchInfo.gameStartMillis, Date.now());
+        var dateDiff = getDifferenceInDays(new_matches[i].matchInfo.gameStartMillis, Date.now());
         moment.locale(router.query.lang);
         var startdate = moment();
         startdate = startdate.subtract(dateDiff, "days");
@@ -749,7 +754,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         // Create array if it doesn't exist
         if(!newMatches[matchDate]) newMatches[matchDate] = [];
   
-        newMatches[matchDate].push(matches[i]);
+        newMatches[matchDate].push(new_matches[i]);
       }
 
       data.items.games = newMatches;
@@ -782,7 +787,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
           }
         }
-  
+        
         setBestMapWinPercent(best_map.map_win_percentage);
         setBestMapKdaRatio(best_map.map_kda_ratio);
   
@@ -824,7 +829,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var latest_old_matches = old_matches.slice(0, 5);
         
         // Get newest 4 Matches from Match history
-        var data = await fetchMatches(0, 5, [], mode, user_creds.uuid, user_creds.region, router.query.lang);
+        var data = await fetchMatches(0, 5, [], mode, user_creds.uuid, user_creds.region, router.query.lang, true);
   
         setMaxMatchesFound(data.items.totalMatches);
   
@@ -957,8 +962,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       // TODO: Get all Matches from DB and put in array
       for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
         var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
+        if(match[0] === undefined) continue;
         matches.push(match[0]);
       }
+
+      console.log(matchIDData);
 
       for(var i = 0; i < matches.length; i++) {
         var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
@@ -1065,9 +1073,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setKillsDeathsChartData([]);
   
       if(isNewQueue) {
-        var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.uuid, user_creds.region, router.query.lang);
+        await updateThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
+          matchIDs: []
+        });
+        var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.uuid, user_creds.region, router.query.lang, false);
       } else {
-        var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.uuid, user_creds.region, router.query.lang);
+        var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.uuid, user_creds.region, router.query.lang, false);
       }
 
       /*
@@ -1506,7 +1517,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       } else {
         var uuid = uuidv5("hubMatchFilter", process.env.SETTINGS_UUID);
         await updateThing(`setting:⟨${uuid}⟩`, {
-          "value": activeQueueTab
+          "name": "hubMatchFilter",
+          "value": activeQueueTab,
+          "type": "app"
         });
   
         fetchMatchesAndCalculateStats(true, 0, 15, activeQueueTab, false);
@@ -1585,8 +1598,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     if(!firstRender) {
-      var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
-      setranks(ranksRaw.data[ranksRaw.data.length-1].tiers);
+      try {
+        var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
+        setranks(ranksRaw.data[ranksRaw.data.length-1].tiers);
+      } catch(e) {
+        console.log(e);
+      }
     }
   }, [ router.query ]);
 
@@ -1648,7 +1665,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
               <hr className='bg-maincolor-lightest h-0.5 border-none' />
               <ContractProgressCard 
-                title={LocalText(L, "top_l.contracts.agent_contract_header")} 
+                title={LocalText(L, "top_l.contracts.agent_contract_header")}
                 level_locale={LocalText(L, "top_l.contracts.level_text")}
                 xp_locale={LocalText(L, "top_l.contracts.xp_text")}
                 reward_1={agentContract_prevLevelReward}
@@ -1788,21 +1805,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           <div className='matchview-gradient-overlay'>
                             <div className='absolute top-0 left-3 flex flex-row z-40 w-1/6 h-full items-center'>
                               {
-                                favMatches.length > 0 ?
-                                  (
-                                    favMatches.find(x => x.MatchID === match.matchInfo.matchId) !== undefined ?
-                                    <StarFilled 
-                                      color 
-                                      cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
-                                      click={() => { toggleMatchInFavs(match.matchInfo.matchId, true) }} 
-                                    />
-                                    :
-                                    <Star 
-                                      color 
-                                      cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
-                                      click={() => { toggleMatchInFavs(match.matchInfo.matchId, false) }} 
-                                    />
-                                  )
+                                favMatches.find(x => x === match.matchInfo.matchId) !== undefined ?
+                                <StarFilled 
+                                  color 
+                                  cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                  click={() => { toggleMatchInFavs(match.matchInfo.matchId, true) }} 
+                                />
                                 :
                                 <Star 
                                   color 
