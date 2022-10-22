@@ -5,7 +5,7 @@ import { ipcRenderer } from 'electron';
 import L from '../../locales/translations/navbar.json';
 import LocalText from '../translation/LocalText';
 import { Close, Search } from '../SVGs';
-import { executeQuery } from '../../js/dbFunctions';
+import { executeQuery } from '../../js/dbFunctions.mjs';
 import { useFirstRender } from '../useFirstRender';
 
 const card_base_variants = {

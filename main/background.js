@@ -18,7 +18,7 @@ import { migrateDataToDB } from '../modules/dbMigration.mjs';
 import L from '../translation/main_process.json';
 
 import * as dotenv from 'dotenv';
-import { changeSetting, executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../renderer/js/dbFunctions';
+import { addSkinToWishlist, changeSetting, createThing, executeQuery, fetchMatch, getAllSettings, getCurrentPUUID, getCurrentUserData, getInstanceToken, getServiceData, getUserAccessToken, getUserEntitlement, removeMatch, rmSkinFromWishlist, switchPlayer, updateMessageDate, updateThing } from './helpers/dbFunctions';
 dotenv.config();
 
 const discord_rps = require("../modules/discordRPs.js");
@@ -415,7 +415,7 @@ async function reauthAccount(puuid) {
         var currenttier = await getPlayerMMR(user_data.region, puuid, ent, bearer);
   
         // TODO: For every link of these, check for current BP Version and replace UUID
-        user_data.rank = `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${currenttier}/largeicon.png`;
+        user_data.rank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
   
         await db.update(`player:⟨${puuid}⟩`, user_data);
       } catch(unused) {}
@@ -1659,6 +1659,74 @@ ipcMain.on('relayOpenPlayerSearchModal', function(event, args) {
   sendMessageToWindow('openPlayerSearchModal', args);
 });
 
-ipcMain.on("createMatch", function(event, args) {
+ipcMain.handle('executeQuery', async (event, args) => {
+  return await executeQuery(args);
+});
+
+ipcMain.handle('createThing', async (event, args) => {
+  return await createThing(args[0], args[1]);
+});
+
+ipcMain.handle('updateThing', async (event, args) => {
+  return await updateThing(args[0], args[1]);
+});
+
+ipcMain.handle('switchPlayer', async (event, args) => {
+  return await switchPlayer(args);
+});
+
+ipcMain.handle('getUserEntitlement', async (event, args) => {
+  return await getUserEntitlement(args);
+});
+
+ipcMain.handle('getUserAccessToken', async (event, args) => {
+  return await getUserAccessToken(args);
+});
+
+ipcMain.handle('getCurrentUserData', async (event, args) => {
+  return await getCurrentUserData();
+});
+
+ipcMain.handle('getCurrentPUUID', async (event, args) => {
+  return await getCurrentPUUID();
+});
+
+ipcMain.handle('getInstanceToken', async (event, args) => {
+  return await getInstanceToken();
+});
+
+ipcMain.handle('getServiceData', async (event, args) => {
+  return await getServiceData();
+});
+
+ipcMain.handle('updateMessageDate', async (event, args) => {
+  return await updateMessageDate(args);
+});
+
+ipcMain.handle('fetchMatch', async (event, args) => {
+  return await fetchMatch(args);
+});
+
+ipcMain.handle('createMatch', async (event, args) => {
   new Worker(new URL("../modules/createMatch.mjs", import.meta.url), { workerData: { data: args } });
+});
+
+ipcMain.handle('removeMatch', async (event, args) => {
+  return await removeMatch(args[0], args[1]);
+});
+
+ipcMain.handle('addSkinToWishlist', async (event, args) => {
+  return await addSkinToWishlist(args);
+});
+
+ipcMain.handle('rmSkinFromWishlist', async (event, args) => {
+  return await rmSkinFromWishlist(args);
+});
+
+ipcMain.handle('getAllSettings', async (event, args) => {
+  return await getAllSettings();
+});
+
+ipcMain.handle('changeSetting', async (event, args) => {
+  return await changeSetting(args[0], args[1]);
 });

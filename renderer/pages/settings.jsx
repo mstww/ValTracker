@@ -23,7 +23,7 @@ import ThemeSelector from '../components/settings/ThemeSelector';
 import VersionCheckbox from '../components/settings/VersionCheckbox';
 import { Loading } from '@nextui-org/react';
 import Layout from '../components/Layout';
-import { changeSetting, executeQuery, getAllSettings, getCurrentPUUID, updateThing } from '../js/dbFunctions';
+import { changeSetting, executeQuery, getAllSettings, getCurrentPUUID, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
 
 const md_conv = new parser.Converter();
@@ -404,7 +404,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
           tag: tag,
           uuid: uuid,
           region: region,
-          rank: `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${currenttier}/largeicon.png`
+          rank: `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`
         }
     
         var favMatchConfigs = {};

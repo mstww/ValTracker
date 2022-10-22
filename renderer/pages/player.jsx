@@ -11,7 +11,7 @@ import L from '../locales/translations/player.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import Layout from '../components/Layout';
-import { getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
+import { getUserAccessToken, getUserEntitlement } from '../js/dbFunctions.mjs';
 
 const variants = {
   hidden: { opacity: 0, x: -100, y: 0 },
@@ -115,7 +115,7 @@ const fetchPlayer = async (pname, ptag, lang) => {
     var ranks = ranksRaw.data[ranksRaw.data.length-1].tiers
 
     const rank = ranks[playerMmr.LatestCompetitiveUpdate.TierAfterUpdate];
-    const rankIcon = `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${currenttier}/smallicon.png`;
+    const rankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
 
     const playerMatches = await getMatchHistory(region, puuid, 0, 5, 'unrated', entitlement_token, bearer);
     
@@ -646,9 +646,9 @@ function PlayerInfo({ isNavbarMinimized }) {
                                   src={
                                     activeQueueTab == 'competitive' ? 
                                     (playerCurrentTier ? 
-                                      `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${playerCurrentTier}/smallicon.png`
+                                      `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${playerCurrentTier}/smallicon.png`
                                       :
-                                      `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
+                                      `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
                                     )
                                     :
                                     'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'

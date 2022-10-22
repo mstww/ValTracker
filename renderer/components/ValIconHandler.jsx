@@ -1,6 +1,6 @@
 import React from "react";
 import { v5 as uuidv5 } from 'uuid';
-import { executeQuery } from "../js/dbFunctions";
+import { executeQuery } from "../js/dbFunctions.mjs";
 
 export default function ValIconHandler({ icon, classes }) {
   const [ isLightMode, setIsLightMode ] = React.useState(false);

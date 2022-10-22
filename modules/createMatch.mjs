@@ -3,7 +3,13 @@ import { workerData } from "worker_threads";
 
 async function createMatch() {
   const { data } = workerData;
-  const db = new Surreal(process.env.DB_URL);
+  var db;
+  if(process.env.NODE_ENV === 'production') {
+    const SurrealDB = Surreal.default
+    db = new SurrealDB(process.env.DB_URL);
+  } else {
+    db = new Surreal(process.env.DB_URL);
+  }
 
   await db.wait();
 

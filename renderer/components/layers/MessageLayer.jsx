@@ -1,7 +1,7 @@
 import Message from '../messages/Message';
 import React from 'react';
 import fetch from 'node-fetch';
-import { getServiceData } from '../../js/dbFunctions';
+import { getServiceData } from '../../js/dbFunctions.mjs';
 
 const fetchMessages = async () => {
   try {

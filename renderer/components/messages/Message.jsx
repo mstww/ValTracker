@@ -5,7 +5,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { Close } from '../SVGs';
-import { getServiceData, updateMessageDate } from '../../js/dbFunctions';
+import { getServiceData, updateMessageDate } from '../../js/dbFunctions.mjs';
 
 const variants = {
   hidden: { opacity: 0, x: 100, y: 0 },

@@ -18,7 +18,7 @@ import Layout from '../components/Layout';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled, Star } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
-import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions';
+import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
 
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
@@ -1497,6 +1497,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
 
     var old_featured_bundle = await executeQuery(`SELECT * FROM featuredBundle:⟨${process.env.SERVICE_UUID}⟩`);
+    console.log(old_featured_bundle);
 
     if(Date.now() < old_featured_bundle[0].expiry_date) {
       setFeaturedBundleName(old_featured_bundle[0].name);
@@ -1512,6 +1513,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       if(isPrefChange === true) {
         setIsPrefChange(false);
       } else {
+        console.log(process.env.SETTINGS_UUID);
+        console.log(process.env);
         var uuid = uuidv5("hubMatchFilter", process.env.SETTINGS_UUID);
         await updateThing(`setting:⟨${uuid}⟩`, {
           "name": "hubMatchFilter",
@@ -1836,9 +1839,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                     <img 
                                       src={
                                         matchData.playerCurrentTier ? 
-                                        `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${matchData.playerCurrentTier}/smallicon.png`
+                                        `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
                                         :
-                                        `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
+                                        `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
                                       } 
                                       className={
                                         'w-7 transform scale-75 shadow-img '

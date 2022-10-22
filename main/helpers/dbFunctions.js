@@ -4,9 +4,10 @@ import { v5 as uuidv5 } from "uuid";
 
 var db = false;
 
+const isProd = process.env.NODE_ENV === 'production';
+
 async function connectToDB() {
   var sdb = new Surreal(process.env.DB_URL);
-
   await sdb.wait();
 
   await sdb.signin({
@@ -138,10 +139,6 @@ export async function fetchMatch(uuid) {
   var Q = `SELECT matchInfo, players, roundResults, stats_data, teams FROM match:⟨${uuid}⟩`;
   var result = await db.query(Q);
   return result[0].result[0];
-}
-
-export async function createMatch(data) {
-  ipcRenderer.send("createMatch", data);
 }
 
 export async function removeMatch(collection, uuid) {

@@ -9,14 +9,14 @@ export default function Setting({ title, desc, desc2, inputType, buttonText, isC
       <div className="ml-auto relative mr-28 w-52">
         { inputType == "checkbox" ?
           <label className={"switch absolute right-0 " + (isDisabled ? 'disabled' : '') } id="valtracker-closing-behavior-switch">
-            <input type='checkbox' id={(title ? title.toLowerCase().replace(" ", "-") : 'text') + "tray-valtracker"} name={(title ? title.toLowerCase().replace(" ", "-") : 'text') + "tray-valtracker"} checked={isChecked} readOnly onClick={onClick} disabled={isDisabled} />
+            <input type='checkbox' id={(title ? title.toLowerCase().replace(" ", "-") : 'text') + "tray-valtracker"} name={(title ? title.toLowerCase().replace(" ", "-") : 'text') + "tray-valtracker"} checked={isChecked} readOnly onClick={() => { onClick(!isChecked) }} disabled={isDisabled} />
             <span className={"slider round absolute right-0 " + (isDisabled? 'disabled' : '')}></span>
           </label>
           :
           ('')
         }
         { inputType == "button" ?
-          <button onClick={onClick} id={id ? id : ''} className="w-full">{buttonText}</button>
+          <button onClick={() => { onClick(!isChecked) }} id={id ? id : ''} className="w-full">{buttonText}</button>
           :
           ('')
         }
