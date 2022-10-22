@@ -6,7 +6,6 @@ import { Tooltip, Spacer } from '@nextui-org/react'
 import AwardTile from '../components/matchview/AwardTile';
 import L from '../locales/translations/matchview.json';
 import LocalText from '../components/translation/LocalText';
-import fs from 'fs';
 import fetch from 'node-fetch';
 import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';

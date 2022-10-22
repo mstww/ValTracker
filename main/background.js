@@ -114,6 +114,16 @@ const execFilePath = path.join(
 
 async function startDB() {
   try {
+    if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data')) {
+      var files = fs.readdirSync(process.env.APPDATA + '/VALTracker/user_data');
+      files.forEach(file => {
+        let regex = /^[a-zA-Z]+\.[a-zA-Z]+[0-9]*\.[0-9]+$/i;
+        if(regex.test(file)) {
+          fs.rmSync(process.env.APPDATA + '/VALTracker/user_data/' + file);
+        }
+      });
+    }
+
     child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
     
     child.stdout.on('data', function (data) {

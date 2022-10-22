@@ -5,7 +5,6 @@ import SettingsWrapper from '../components/settings/SettingsWrapper';
 import SettingsGroup from '../components/settings/SettingsGroup';
 import Setting from '../components/settings/Setting';
 import SettingsSeperator from '../components/settings/SettingsSeperator';
-import fs from 'fs';
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch';
 import pjson from '../../package.json';

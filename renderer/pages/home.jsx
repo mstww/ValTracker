@@ -1,7 +1,6 @@
 import React from 'react';
 import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch'
-import fs from 'fs';
 import { Loading, Tooltip } from '@nextui-org/react';
 import moment from 'moment';
 import AwesomeSlider from 'react-awesome-slider';
@@ -19,7 +18,7 @@ import Layout from '../components/Layout';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled, Star } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
-import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions';
+import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions';
 import { v5 as uuidv5 } from 'uuid';
 
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
@@ -742,7 +741,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       }
   
       var newMatches = currentMatches;
-      console.log(newMatches);
 
       for(var i = 0; i < new_matches.length; i++) {
         var dateDiff = getDifferenceInDays(new_matches[i].matchInfo.gameStartMillis, Date.now());
@@ -952,21 +950,25 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
 
     if(isFirstLoad) {
-      var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${user_creds.uuid}⟩`);
-      var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${user_creds.uuid}⟩`);
+      var puuid = await getCurrentPUUID();
+      var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
+      var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
   
       setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches); // TODO: LOADEDMATCHES IS WRONG
 
       var matches = [];
       var newMatches = [];
-      // TODO: Get all Matches from DB and put in array
+      
+      if(matchIDData[0].matchIDs.length === 0) return;
+
       for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
         var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
+        console.log(match);
         if(match[0] === undefined) continue;
         matches.push(match[0]);
       }
 
-      console.log(matchIDData);
+      console.log(matches);
 
       for(var i = 0; i < matches.length; i++) {
         var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
@@ -995,7 +997,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setAvgKillsPerRound(playerstats.kills_per_round);
       setWinratePercent(playerstats.win_percentage);
       setHeadshotPercent(playerstats.headshot_percent);
-
+      
       var map_stats = playerstats.map_stats;
       var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
         return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
@@ -1080,11 +1082,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       } else {
         var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.uuid, user_creds.region, router.query.lang, false);
       }
-
-      /*
-        Save Matches by ID in matchIDCollection, save as normal matches. Save endIndex and totalMatches in hubConfig:puuid. Fetch all matches, then use current 
-        object technique. ONLY SAVE MATCHES AS RAW MATCHES AND ID'S.
-      */
   
       setCurrentlyLoadedMatchCount(data.items.endIndex);
       setMaxMatchesFound(data.items.totalMatches);

@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from "framer-motion"
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch';
-import fs from 'fs';
 import MatchTypeTile from '../components/profiles/MatchTypeTile';
 import moment from 'moment';
 import { ipcRenderer } from 'electron';

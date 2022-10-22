@@ -4,7 +4,6 @@ import fetch from 'node-fetch'
 import SkinTile from '../components/skins/SkinTile';
 import ChromaSwatch from '../components/skins/ChromaSwatch';
 import LevelTile from '../components/skins/LevelTile';
-import fs from 'fs';
 import OverlayWrapper from '../components/settings/OverlayWrapper';
 import { motion } from 'framer-motion';
 import L from '../locales/translations/invchanger.json';

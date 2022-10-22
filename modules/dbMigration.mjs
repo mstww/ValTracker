@@ -7,6 +7,11 @@ const SurrealDB = Surreal.default
 const basePath = process.env.APPDATA + '/VALTracker/user_data/';
 const db = new SurrealDB(process.env.DB_URL);
 
+const getDirectories = source =>
+  fs.readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name)
+
 export async function migrateDataToDB(win) {
   const sendMessageToWindow = (channel, args) => {
     win.webContents.send(channel, args);
@@ -60,8 +65,6 @@ export async function migrateDataToDB(win) {
         allSettings.hubConfig.currentMatches[folder] = JSON.parse(fs.readFileSync(basePath + 'home_settings/' + folder + '/current_matches.json'));
       }
     });
-
-    // TODO: DELETE ICONS DIR AND RE-DOWNLOAD INTO /user_data DIR
 
     allSettings.loadConfig = JSON.parse(fs.readFileSync(basePath + 'load_files/on_load.json'));
 
@@ -173,7 +176,10 @@ export async function migrateDataToDB(win) {
         let result = await db.query(`SELECT 1 FROM match:⟨${allSettings.favMatchConfig[allPUUIDs[i]].matches[j].matchInfo.matchId}⟩`);
         if(!result[0].result[0]) {
           var allRoundResults = [];
+          console.log("HERE");
+          console.log(allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults);
           for(var k = 0; k < allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults.length; k++) {
+            console.log(allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults);
             var round = {
               "bombPlanter": allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults[k].bombPlanter,
               "playerStats": allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults[k].playerStats,
@@ -231,10 +237,10 @@ export async function migrateDataToDB(win) {
             var allRoundResults = [];
             for(var l = 0; l < matchObj.roundResults.length; l++) {
               var round = {
-                "bombPlanter": matchObj.roundResults[k].bombPlanter,
-                "playerStats": matchObj.roundResults[k].playerStats,
-                "roundResult": matchObj.roundResults[k].roundResult,
-                "winningTeam": matchObj.roundResults[k].winningTeam
+                "bombPlanter": matchObj.roundResults[l].bombPlanter,
+                "playerStats": matchObj.roundResults[l].playerStats,
+                "roundResult": matchObj.roundResults[l].roundResult,
+                "winningTeam": matchObj.roundResults[l].winningTeam
               }
               allRoundResults.push(round);
             }
@@ -379,6 +385,14 @@ export async function migrateDataToDB(win) {
 
     // TODO: REQUEST INSTANCE TOKEN, FOR NEW USERS THAT DO NOT USE THIS SCRIPT: GENERATE IN SETUP
     // TODO: DELETE ALL OLD FOLDERS AND FILES
+
+    var dirs = getDirectories(process.env.APPDATA + '/VALTracker/user_data');
+    console.log(dirs);
+    dirs.forEach(dir => {
+      console.log(dir);
+      fs.rmSync(process.env.APPDATA + '/VALTracker/user_data/' + dir, { recursive: true, force: true });
+    });
+    fs.rmSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');
     
     totalPercentage += 4;
     sendMessageToWindow("migrateProgressUpdate", { "message": "Finishing up...", "num": totalPercentage });
@@ -398,8 +412,8 @@ export async function migrateDataToDB(win) {
       var result = await db.query(`SELECT 1 FROM hubContractProgress:⟨${allPUUIDs[i]}⟩`);
       if(!result[0].result[0]) {
         await db.create(`hubContractProgress:⟨${allPUUIDs[i]}⟩`, {
-          "agentContract": allSettings.hubConfig.contractProgress[allPUUIDs[i]].agentContractProgress,
-          "battlePass": allSettings.hubConfig.contractProgress[allPUUIDs[i]].battlePassProgress,
+          "agentContractProgress": allSettings.hubConfig.contractProgress[allPUUIDs[i]].agentContractProgress,
+          "battlePassProgress": allSettings.hubConfig.contractProgress[allPUUIDs[i]].battlePassProgress,
           "date": allSettings.hubConfig.contractProgress[allPUUIDs[i]].date
         });
       }

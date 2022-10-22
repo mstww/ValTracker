@@ -3,7 +3,6 @@ import moment from 'moment';
 import { motion } from "framer-motion"
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch';
-import fs from 'fs';
 import { Collapse } from '@nextui-org/react';
 import L from '../locales/translations/shop.json';
 import LocalText from '../components/translation/LocalText';

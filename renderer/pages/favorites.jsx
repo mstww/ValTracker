@@ -12,7 +12,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { StarFilled } from '../components/SVGs';
 import Layout from '../components/Layout';
-import { createMatch, executeQuery, fetchMatch, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch } from '../js/dbFunctions';
+import { createMatch, executeQuery, fetchMatch, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch } from '../js/dbFunctions';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -449,7 +449,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         var stats_data = calculateSortStatsForMatch(match);
         match.stats_data = stats_data;
         
-        fs.writeFileSync(
+        fs.writeFileSync( // TODO
           process.env.APPDATA + '/VALTracker/user_data/favourite_matches/' + user_creds.uuid + '/matches/' + match.matchInfo.matchId + '.json', 
           JSON.stringify(match)
         );

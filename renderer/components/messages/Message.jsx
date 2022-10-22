@@ -2,7 +2,6 @@ import moment from 'moment';
 import parser from 'showdown';
 import { shell } from 'electron';
 import React from 'react';
-import fs from 'fs';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { Close } from '../SVGs';

@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from './NoScrollLink';
-import fs from 'fs';
 import AccountTile from './accountTile';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';

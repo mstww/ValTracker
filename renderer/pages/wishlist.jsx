@@ -1,6 +1,5 @@
 import React from "react";
 import { Spacer } from "@nextui-org/react";
-import fs from 'fs';
 import { motion } from "framer-motion";
 import moment from "moment";
 import L from '../locales/translations/wishlist.json';

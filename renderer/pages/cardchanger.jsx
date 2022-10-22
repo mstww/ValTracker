@@ -2,7 +2,6 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import fetch from 'node-fetch'
 import SkinTile from '../components/skins/SkinTile';
-import fs from 'fs';
 import L from '../locales/translations/invchanger.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';

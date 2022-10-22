@@ -1,5 +1,4 @@
 import React from 'react';
-import fs from 'fs'
 import fetch from 'node-fetch';
 import { useRouter } from 'next/router'
 import { ipcRenderer } from 'electron';

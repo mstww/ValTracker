@@ -7,7 +7,6 @@ import fetch from 'node-fetch';
 import fetchShop from '../js/fetchShop';
 import { useRouter } from 'next/router';
 import { Collapse } from '@nextui-org/react';
-import fs from 'fs';
 import L from '../locales/translations/shop.json';
 import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';

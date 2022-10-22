@@ -1,5 +1,4 @@
 import { motion } from "framer-motion"
-import fs from 'fs';
 import React from "react";
 import { addSkinToWishlist, rmSkinFromWishlist } from "../js/dbFunctions";
 import { StarFilled, Star } from "./SVGs";

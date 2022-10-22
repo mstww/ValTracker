@@ -1,7 +1,6 @@
 import React from 'react';
 import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch';
-import fs from 'fs';
 import Langs from '../locales/languages.json';
 import LanguageCheckbox from '../components/settings/LanguageCheckbox';
 import L from '../locales/translations/setup.json';
