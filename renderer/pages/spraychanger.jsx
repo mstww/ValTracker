@@ -254,7 +254,7 @@ function Spraychanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) 
             <input 
               id='skin-search'
               type='text'
-              className='group bg-button-color text-sm font-light pl-8 hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 rounded cursor-pointer my-2 transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
+              className='bg-button-color focus:outline-none text-sm z-20 pl-8 ml-1 font-light group-hover:bg-button-color-hover hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer outline-none mx-auto transition-all ease-in duration-100 w-full h-8 px-2'
               placeholder={LocalText(L, "sprays.search_placeholder")}
               onKeyUp={handlePlayerSearch}
               autoCorrect='off'

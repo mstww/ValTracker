@@ -38,8 +38,6 @@ export default function InfoChart({ label, data, LocalLatest }) {
   React.useEffect(async () => {
     if(!firstRender) {
       try {
-        console.log(document);
-        console.log(document.body.getAttribute("data-theme"));
         setTheme(document.body.getAttribute("data-theme"));
       } catch(e) {
         console.log(e);

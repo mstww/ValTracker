@@ -103,7 +103,6 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var new_nm_timer = nightMarketTimerNum - 1;
         setNightMarketTimerNum(new_nm_timer);
         setNightMarketTimer(bundleTimeToHMS(new_nm_timer, localTimerObj) + " " + localTimerObj.rem);
-        console.log("TIMER UPDATE", new_nm_timer);
       }, 1000);
 
       return () => clearInterval(timer);

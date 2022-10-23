@@ -39,7 +39,7 @@ function Textboxes() {
         textboxes.map(textbox => {
           return (
             <motion.div 
-              className='w-1/4 mb-4 textbox-card mx-auto bg-button-color shadow-2xl p-2 rounded flex flex-row relative z-50'
+              className='w-1/4 mb-4 textbox-card mx-auto border-2 border-button-color bg-maincolor-light shadow-2xl p-2 rounded flex flex-row relative z-50'
               key={textboxKeys + textbox + (Math.random()) + Math.random()}
               variants={update_card_variants}
               initial="hidden"
@@ -48,7 +48,7 @@ function Textboxes() {
             >
               <span className='mr-9 h-full flex items-center'>{textbox}</span>
               <div 
-                className='absolute pointer-events-auto z-30 top-2 right-2 ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-8 h-8 flex items-center justify-center'
+                className='absolute pointer-events-auto z-30 top-1.5 right-2 ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-8 h-8 flex items-center justify-center'
                 onClick={() => {
                   var newArray = removeItemOnce(textboxes, textbox);
                   var newArray = newArray.filter(value => Object.keys(value).length !== 0);

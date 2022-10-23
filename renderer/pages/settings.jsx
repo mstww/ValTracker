@@ -257,7 +257,6 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
 
   const fetchSettings = async () => {
     var data = await getAllSettings();
-    console.log(data);
 
     if(data.launchOnBoot === true) {
       setAutoOpen(true);

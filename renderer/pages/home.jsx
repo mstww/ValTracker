@@ -785,6 +785,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
           }
         }
+
+        console.log(playerstats);
         
         setBestMapWinPercent(best_map.map_win_percentage);
         setBestMapKdaRatio(best_map.map_kda_ratio);
@@ -897,7 +899,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setAvgKillsPerRound(playerstats.kills_per_round);
           setWinratePercent(playerstats.win_percentage);
           setHeadshotPercent(playerstats.headshot_percent);
-    
           var map_stats = playerstats.map_stats;
           var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
             return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
@@ -914,7 +915,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
             }
           }
-    
+
+          console.log(playerstats);
+          
           setBestMapWinPercent(best_map.map_win_percentage);
           setBestMapKdaRatio(best_map.map_kda_ratio);
     
@@ -963,12 +966,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
       for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
         var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
-        console.log(match);
         if(match[0] === undefined) continue;
         matches.push(match[0]);
       }
-
-      console.log(matches);
 
       for(var i = 0; i < matches.length; i++) {
         var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
@@ -990,6 +990,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       }
       
       newMatches = arr;
+
+      console.log(newMatches);
 
       var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
         
@@ -1014,6 +1016,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
         }
       }
+
+      console.log(playerstats);
 
       setBestMapWinPercent(best_map.map_win_percentage);
       setBestMapKdaRatio(best_map.map_kda_ratio);
@@ -1118,6 +1122,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
           }
         }
+
+        console.log(playerstats);
   
         setBestMapWinPercent(best_map.map_win_percentage);
         setBestMapKdaRatio(best_map.map_kda_ratio);
@@ -1497,7 +1503,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
 
     var old_featured_bundle = await executeQuery(`SELECT * FROM featuredBundle:⟨${process.env.SERVICE_UUID}⟩`);
-    console.log(old_featured_bundle);
 
     if(Date.now() < old_featured_bundle[0].expiry_date) {
       setFeaturedBundleName(old_featured_bundle[0].name);
@@ -1513,8 +1518,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       if(isPrefChange === true) {
         setIsPrefChange(false);
       } else {
-        console.log(process.env.SETTINGS_UUID);
-        console.log(process.env);
         var uuid = uuidv5("hubMatchFilter", process.env.SETTINGS_UUID);
         await updateThing(`setting:⟨${uuid}⟩`, {
           "name": "hubMatchFilter",

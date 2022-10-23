@@ -4,7 +4,7 @@ import { shell } from 'electron';
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import { Close } from '../SVGs';
+import { Close, MessageIcon } from '../SVGs';
 import { getServiceData, updateMessageDate } from '../../js/dbFunctions.mjs';
 
 const variants = {
@@ -15,17 +15,19 @@ const variants = {
 
 const md_conv = new parser.Converter();
 
-export default function Message({ date, message, unix, delay }) {
+export default function Message({ message, unix, delay }) {
   const router = useRouter();
   
   const messageRef = React.useRef(null);
   const contentRef = React.useRef(null);
 
   const [ isMessageShown, setIsMessageShown ] = React.useState(true);
+  
+  var title = message.title;
 
   moment.locale(router.query.lang);
-  var date = moment(date).format('D. MMMM, YYYY');
-  var message = md_conv.makeHtml(message);
+  var date = moment(message.date).format('D. MMMM, YYYY');
+  var message = md_conv.makeHtml(message.message);
 
   const closeMessage = async (ref) => {
     var message_date = ref.current.parentElement.lastChild;
@@ -47,11 +49,10 @@ export default function Message({ date, message, unix, delay }) {
       }
     })
   });
-  
 
   return(
     <motion.div 
-      className="message text-gray-500 w-80 p-2 min-h-40 h-auto mx-4 mb-4 rounded bg-maincolor-lightest pointer-events-auto shadow-xl relative"
+      className="message border-2 border-tile-color text-gray-500 w-96 p-2 min-h-40 h-auto mx-4 mb-4 rounded bg-maincolor-lightest pointer-events-auto shadow-xl relative"
       variants={variants}
       initial="hidden"
       animate={isMessageShown ? "enter" : "exit"}
@@ -59,12 +60,14 @@ export default function Message({ date, message, unix, delay }) {
     >
       <div
         ref={messageRef}
-        className='absolute top-2 right-2 cursor-pointer rounded hover:bg-black transition-all duration-100 ease-in p-1'
+        className='absolute top-2 right-2 cursor-pointer rounded hover:bg-black transition-all duration-100 ease-in p-1 z-10'
         onClick={() => {closeMessage(messageRef)}}
       >
         <Close cls='w-4' />
       </div>
-      <span className='text-gray-500'>{ date }</span>
+      <h2 className='text-white relative flex flex-row'><MessageIcon cls="w-6 h-6 mr-2 relative top-1" /> { title }</h2>
+      <span className='text-gray-500 relative bottom-1'>{ date }</span>
+      <hr className='relative bottom-0.5 w-full' />
       <div className='messageContent' ref={contentRef} dangerouslySetInnerHTML={{ __html: message }} />
       <span className='hidden'>{ unix }</span>
     </motion.div>

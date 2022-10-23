@@ -245,7 +245,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
       transition={{ type: 'ease-in', duration: 0.3 }}
     >
       <motion.div 
-        className='flex flex-col justify-center items-center w-96 bg-maincolor rounded p-4 pointer-events-auto'
+        className='flex flex-col justify-center items-center border-2 border-tile-color w-96 bg-maincolor-light rounded p-4 pointer-events-auto'
         key={"InfoCard"}
         variants={card_base_variants}
         initial="hidden"

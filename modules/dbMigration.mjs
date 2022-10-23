@@ -153,11 +153,6 @@ export async function migrateDataToDB(win) {
     var totalPercentage = 0;
 
     var avgSeconds = totalMatches * 17;
-    console.log("Avg Seconds: ", avgSeconds);
-    console.log("Total Matches: ", totalMatches);
-    console.log("FavMatches: ", favMatchVal + "%");
-    console.log("HubMatches: ", hubMatchVal + "%");
-    console.log(favMatchVal / favMatches);
 
     function fmtMSS(s){return(s-(s%=60))/60+(9<s?'m, ':': 0')+s +'s'};
 
@@ -177,10 +172,7 @@ export async function migrateDataToDB(win) {
         let result = await db.query(`SELECT 1 FROM match:⟨${allSettings.favMatchConfig[allPUUIDs[i]].matches[j].matchInfo.matchId}⟩`);
         if(!result[0].result[0]) {
           var allRoundResults = [];
-          console.log("HERE");
-          console.log(allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults);
           for(var k = 0; k < allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults.length; k++) {
-            console.log(allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults);
             var round = {
               "bombPlanter": allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults[k].bombPlanter,
               "playerStats": allSettings.favMatchConfig[allPUUIDs[i]].matches[j].roundResults[k].playerStats,
@@ -387,9 +379,7 @@ export async function migrateDataToDB(win) {
     var instancetoken = await requestInstanceToken(allSettings.user_data.playerName, allSettings.user_data.playerTag);
 
     var dirs = getDirectories(process.env.APPDATA + '/VALTracker/user_data');
-    console.log(dirs);
     dirs.forEach(dir => {
-      console.log(dir);
       fs.rmSync(process.env.APPDATA + '/VALTracker/user_data/' + dir, { recursive: true, force: true });
     });
     fs.rmSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json');

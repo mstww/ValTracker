@@ -5,7 +5,7 @@ import { getServiceData } from '../../js/dbFunctions.mjs';
 
 const fetchMessages = async () => {
   try {
-    const response = await fetch(`https://api.valtracker.gg/messages`);
+    const response = await fetch(`http://localhost:4000/v1/messages`);
     const json = await response.json();
 
     const data = await getServiceData();
@@ -44,8 +44,7 @@ function Messages() {
           message.date > lastDate ? 
           <Message
             key={message.date}
-            date={message.date}
-            message={message.message}
+            message={message}
             unix={message.date}
             delay={delay += 0.05}
           />

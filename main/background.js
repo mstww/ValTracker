@@ -1273,6 +1273,7 @@ async function checkStoreForWishlistItems() {
 
     ipcMain.on("finishedSetup", function () {
       isInSetup = false;
+      app.relaunch();
       app.quit();
     });
 

@@ -91,7 +91,6 @@ const fetchPlayer = async (pname, ptag, lang) => {
   try {
     const playerInfoRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${pname}/${ptag}`, { keepalive: true });
     const playerInfo = await playerInfoRaw.json();
-    console.log(playerInfo);
 
     if(playerInfo.status !== 200) {
       console.log("Hey")

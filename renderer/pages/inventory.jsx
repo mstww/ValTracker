@@ -764,30 +764,32 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <button className='w-5/6' onClick={() => { toggleSaveInvDialogue() }}>
               {LocalText(L, "save_loadout_button_text")}
             </button>
-            <select
-              id='inv_selector_select' 
-              value={currentPresetName}
-              onChange={(e) => {
-                setCurrentPresetName(e.target.value);
-                changeInventory(e.target.value, e.target);
-                if(e.target.value !== '0') {
-                  setShowDeletePresetButton(true);
-                } else {
-                  setShowDeletePresetButton(false);
+            <div className='select-wrapper w-5/6 mx-auto flex flex-row items-center relative'>
+              <select
+                id='inv_selector_select' 
+                value={currentPresetName}
+                onChange={(e) => {
+                  setCurrentPresetName(e.target.value);
+                  changeInventory(e.target.value, e.target);
+                  if(e.target.value !== '0') {
+                    setShowDeletePresetButton(true);
+                  } else {
+                    setShowDeletePresetButton(false);
+                  }
+                }}
+                className='w-full mx-auto flex items-center focus:bg-button-color-hover mt-4'
+              >
+                <option value='0' disabled>{LocalText(L, "preset_select_placeholder")}</option>
+                {
+                  // Reverse Map
+                  presetList.reverse().map((preset, i) => {
+                    return (
+                      <option key={i} value={preset.name}>{preset.displayName}</option>
+                    )
+                  })
                 }
-              }}
-              className='bg-button-color text-md font-light hover:bg-button-color-hover h-8 w-5/6 flex items-center px-2 py-1 shadow-lg hover:shadow-2xl rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mt-4'
-            >
-              <option value='0' disabled>{LocalText(L, "preset_select_placeholder")}</option>
-              {
-                // Reverse Map
-                presetList.reverse().map((preset, i) => {
-                  return (
-                    <option key={i} value={preset.name}>{preset.displayName}</option>
-                  )
-                })
-              }
-            </select>
+              </select>
+            </div>
           </div>
 
           <div id='inv_selector' className='flex items-center justify-center'>

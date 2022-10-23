@@ -1,7 +1,6 @@
 import { ipcRenderer } from "electron";
 
 export async function executeQuery(queryStr) {
-  console.log(queryStr);
   return await ipcRenderer.invoke('executeQuery', queryStr);
 }
 
@@ -70,6 +69,5 @@ export async function getAllSettings() {
 }
 
 export async function changeSetting(name, val) {
-  console.log([name, val]);
   return await ipcRenderer.invoke('changeSetting', [name, val]);
 }

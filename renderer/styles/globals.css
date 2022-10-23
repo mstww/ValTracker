@@ -518,55 +518,77 @@ input:checked + .slider:before {
 }
 
 button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button):not(.change-color-btn):not(.setup-button):not(.disabled) {
-  border: none;
-  @apply bg-button-color text-button-text text-sm;
-  padding: 8px 25px;
+  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
+  padding: 8px 10px;
   border-radius: 4px;
   outline: none;
   position: relative;
-  -webkit-transition: all 0.3s;
-  -o-transition: all 0.3s;
   transition: all 0.3s;
 }
 
 button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.change-color-btn):not(.normal-buttons button):not(.setup-button):not(.disabled):hover {
-  @apply bg-button-color-hover;
-  border-radius: 0px;
+  @apply bg-button-color border-button-color-hover bg-opacity-75;
 }
 
 .setup-button {
   position: absolute;
-  border: none;
-  @apply bg-button-color text-button-text text-sm;
-  padding: 8px 25px;
+  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
+  padding: 8px 10px;
   border-radius: 4px;
   outline: none;
-  -webkit-transition: all 0.3s;
-  -o-transition: all 0.3s;
   transition: all 0.3s;
 }
 
 button.disabled {
-  @apply bg-gray-600 hover:bg-gray-600 cursor-not-allowed text-sm;
-  padding: 8px 25px;
+  @apply border-2 border-gray-600 hover:border-gray-500 bg-gray-800 hover:bg-gray-600 cursor-not-allowed text-sm;
+  padding: 8px 10px;
   border-radius: 4px;
+  transition: all 0.3s;
 }
 
 .setup-button:hover {
-  @apply bg-button-color-hover;
-  border-radius: 0px;
+  @apply bg-button-color border-button-color-hover bg-opacity-75;
 }
 
 .change-color-btn {
-  border: none;
-  @apply text-button-text text-sm;
-  padding: 8px 25px;
+  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
+  padding: 8px 10px;
   border-radius: 4px;
   outline: none;
   position: relative;
-  -webkit-transition: all 0.3s;
-  -o-transition: all 0.3s;
   transition: all 0.3s;
+}
+
+select {
+  @apply border-2 border-button-color bg-tile-color text-button-text font-light shadow-lg hover:shadow-2xl cursor-pointer relative outline-none;
+  padding: 6px 10px 6px 10px;
+  border-radius: 4px;
+  outline: none;
+  position: relative;
+  transition: all 0.3s;
+  appearance: none;
+}
+
+.select-wrapper {
+  @apply relative;
+}
+
+.maximized .select-wrapper::after {
+  content: ">";
+  @apply absolute left-0 z-20 font-normal text-2xl transform rotate-90 pointer-events-none;
+  top: 35%;
+  left: 92%;
+}
+
+.select-wrapper::after {
+  content: ">";
+  @apply absolute left-0 z-20 font-normal text-2xl transform rotate-90 pointer-events-none;
+  top: 35%;
+  left: 85%;
+}
+
+select:hover, select:focus {
+  @apply bg-button-color border-button-color-hover bg-opacity-75;
 }
 
 h1 {

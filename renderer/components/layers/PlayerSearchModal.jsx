@@ -58,7 +58,6 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
   React.useEffect(async () => {
     if(!firstRender) {
       var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
-      console.log(search_history);
       setSearchHistory(search_history);
     }
   }, []);
@@ -98,7 +97,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
       transition={{ type: 'ease-in', duration: 0.3 }}
     >
       <motion.div 
-        className='flex flex-col justify-center items-center w-96 bg-maincolor rounded p-4 pointer-events-auto relative'
+        className='flex flex-col border-2 border-tile-color justify-center items-center w-96 bg-maincolor-light rounded p-4 pointer-events-auto relative'
         key={"ModalCard"}
         variants={card_base_variants}
         initial="hidden"
