@@ -428,8 +428,8 @@ export async function migrateDataToDB(win) {
     if(!result[0].result[0]) {
       await db.create(`services:⟨${process.env.SERVICE_UUID}⟩`, {
         "lastMessageUnix": allSettings.lastMessageDate,
-        "featuredBundle": result.id,
-        "instancetoken": instancetoken
+        "featuredBundle": bundle.id,
+        "instancetoken": instancetoken.data
       });
     }
 

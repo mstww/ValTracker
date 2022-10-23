@@ -279,7 +279,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
         await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
           "lastMessageUnix": Date.now(),
           "featuredBundle": result.id,
-          "instancetoken": instancetoken
+          "instancetoken": instancetoken.data
         });
   
         setLoadingState('');
