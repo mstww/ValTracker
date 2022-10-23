@@ -14,6 +14,7 @@ import { v5 as uuidv5 } from 'uuid';
 
 import { createWindow } from './helpers';
 import { migrateDataToDB } from '../modules/dbMigration.mjs';
+import { requestInstanceToken } from '../modules/requestInstanceToken.mjs';
 
 import L from '../translation/main_process.json';
 
@@ -1728,4 +1729,8 @@ ipcMain.handle('getAllSettings', async (event, args) => {
 
 ipcMain.handle('changeSetting', async (event, args) => {
   return await changeSetting(args[0], args[1]);
+});
+
+ipcMain.handle('requestInstanceToken', async (event, args) => {
+  return await await requestInstanceToken(args[0], args[1]);
 });

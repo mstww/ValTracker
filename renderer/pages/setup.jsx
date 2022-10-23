@@ -78,20 +78,6 @@ async function getXMPPRegion(requiredCookie, bearer, id_token) {
   })).json());
 }
 
-async function getShopData(region, puuid, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/store/v2/storefront/${puuid}`, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
-}
-
 async function requestUserCreds(region, puuid) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
@@ -287,10 +273,13 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
       
         var bundle = await (await fetch('https://api.valtracker.gg/featured-bundle')).json();
         var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
+        
+        var instancetoken = await ipcRenderer.invoke("requestInstanceToken", [name, tag]);
       
         await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
           "lastMessageUnix": Date.now(),
-          "featuredBundle": result.id
+          "featuredBundle": result.id,
+          "instancetoken": instancetoken
         });
   
         setLoadingState('');

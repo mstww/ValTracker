@@ -5,3 +5,4 @@ app
 dist
 .env
 /lib
+/modules/requestInstanceToken.mjs

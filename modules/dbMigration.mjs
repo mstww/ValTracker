@@ -1,6 +1,7 @@
 import fs from 'fs';
 import Surreal from 'surrealdb.js';
 import { v5 as uuidv5 } from 'uuid';
+import { requestInstanceToken } from './requestInstanceToken.mjs';
 
 const SurrealDB = Surreal.default
 
@@ -383,7 +384,7 @@ export async function migrateDataToDB(win) {
     totalPercentage += 3;
     sendMessageToWindow("migrateProgressUpdate", { "message": "Migrating Settings...", "num": totalPercentage });
 
-    // TODO: REQUEST INSTANCE TOKEN, FOR NEW USERS THAT DO NOT USE THIS SCRIPT: GENERATE IN SETUP
+    var instancetoken = await requestInstanceToken(allSettings.user_data.playerName, allSettings.user_data.playerTag);
 
     var dirs = getDirectories(process.env.APPDATA + '/VALTracker/user_data');
     console.log(dirs);
@@ -427,7 +428,8 @@ export async function migrateDataToDB(win) {
     if(!result[0].result[0]) {
       await db.create(`services:⟨${process.env.SERVICE_UUID}⟩`, {
         "lastMessageUnix": allSettings.lastMessageDate,
-        "featuredBundle": result.id
+        "featuredBundle": result.id,
+        "instancetoken": instancetoken
       });
     }
 
