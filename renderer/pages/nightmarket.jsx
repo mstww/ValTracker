@@ -169,7 +169,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }
 
   React.useEffect(async () => {
-    var puuid = await getCurrentPUUID(); // TODO 
+    var puuid = await getCurrentPUUID();
     var playerStore = await executeQuery(`SELECT nightMarket FROM playerStore:⟨${puuid}⟩`);
     var nightMarket = JSON.parse(playerStore[0].nightMarket);
     

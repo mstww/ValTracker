@@ -414,7 +414,6 @@ async function reauthAccount(puuid) {
         
         var currenttier = await getPlayerMMR(user_data.region, puuid, ent, bearer);
   
-        // TODO: For every link of these, check for current BP Version and replace UUID
         user_data.rank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
   
         await db.update(`player:⟨${puuid}⟩`, user_data);
