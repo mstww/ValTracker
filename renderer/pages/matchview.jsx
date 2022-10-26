@@ -392,7 +392,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}
       >
-        <BackArrow cls='w-8 p-1 shadow-img' />
+        <BackArrow className='w-8 p-1 shadow-img' />
       </div>
       <div id='matchview-header' className='w-full h-1/5 flex flex-col items-center drop-shadow-xl'>
         <h1 className='text-5xl mt-8'>
@@ -450,11 +450,11 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <hr />
                 <ul className='mt-4'>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.date")} color="error" placement={'left'} className='rounded'><Calendar cls='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.date")} color="error" placement={'left'} className='rounded'><Calendar className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>{matchDate}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.time")} color="error" placement={'left'} className='rounded'><Clock cls='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.time")} color="error" placement={'left'} className='rounded'><Clock className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>{matchLenght}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
@@ -462,13 +462,13 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <span className='relative text-lg top-0.5 left-2'>{matchMode}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.region_server")} color="error" placement={'left'} className='rounded'><Globe cls='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.region_server")} color="error" placement={'left'} className='rounded'><Globe className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>
                       {matchServer ? matchServer.split(".")[2].split("-")[0].toUpperCase() : ''} // {matchServer ? (matchServer.split("-")[4].charAt(0).toUpperCase() + matchServer.split("-")[4].slice(1)) : ''}
                     </span>
                   </li>
                   <li className='flex flex-row items-center mb-8'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.patch")} color="error" placement={'left'} className='rounded'><ValorantV cls='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.patch")} color="error" placement={'left'} className='rounded'><ValorantV className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2'>Patch {matchGameVersion ? (matchGameVersion.split("-")[1].startsWith('0') ? matchGameVersion.split("-")[1].slice(1) : matchGameVersion.split("-")[1]) : ''}</span>
                   </li>
                 </ul> 
@@ -618,7 +618,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                             </Tooltip>
                             :
                             <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded h-full flex items-center'>
-                              <Skull cls='h-4/6 shadow-img' />
+                              <Skull className='h-4/6 shadow-img' />
                             </Tooltip>
                           }
                           <div className='ml-2.5 flex flex-col relative'>
@@ -647,7 +647,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                         index === 11 ?
                         <div className='h-8 p-1 mb-1 flex flex-row items-center justify-center relative overflow-hidden'>
                           <Tooltip content={LocalText(L, "round_results.tooltips.side-switch")} color="error" placement={'left'} className='rounded h-full flex items-center'>
-                            <Swap cls='h-8 shadow-img' />
+                            <Swap className='h-8 shadow-img' />
                           </Tooltip>
                         </div>
                         :
@@ -700,23 +700,23 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               <hr />
               <ul className='mt-4'>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded'><SignalGraph cls='w-7 shadow-img' /></Tooltip>
+                  <Tooltip content={'KD // KDA'} color="error" placement={'left'} className='rounded'><SignalGraph className='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerKD} ({playerKDA})</span>
                 </li>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={'ACS'} color="error" placement={'left'} className='rounded'><ArrowIncrease cls='w-7 shadow-img' /></Tooltip>
+                  <Tooltip content={'ACS'} color="error" placement={'left'} className='rounded'><ArrowIncrease className='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerACS} {isEscalation === true ? 'Score' : 'ACS'}</span>
                 </li>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={isEscalation === true ? LocalText(L, "player_stats.tooltips.dmg") : LocalText(L, "player_stats.tooltips.dmg_round")} color="error" placement={'left'} className='rounded'><Skull cls='w-7 shadow-img' /></Tooltip>
+                  <Tooltip content={isEscalation === true ? LocalText(L, "player_stats.tooltips.dmg") : LocalText(L, "player_stats.tooltips.dmg_round")} color="error" placement={'left'} className='rounded'><Skull className='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2'>{playerKillsPerRound} {isEscalation === true ? LocalText(L, "player_stats.stats.dmg") : LocalText(L, "player_stats.stats.dmg_round")}</span>
                 </li>
                 <li className={'flex flex-row items-center mb-4 ' + (isEscalation === true ? 'hidden' : '')}>
-                  <Tooltip content={LocalText(L, "player_stats.stats.fbs")} color="error" placement={'left'} className='rounded'><Flash cls='w-7 shadow-img' /></Tooltip>
+                  <Tooltip content={LocalText(L, "player_stats.stats.fbs")} color="error" placement={'left'} className='rounded'><Flash className='w-7 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2 '>{playerFBs} {LocalText(L, "player_stats.stats.fbs")}</span>
                 </li>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={LocalText(L, "player_stats.stats.hit_percent")} color="error" placement={'left'} className='rounded'><Crosshair cls='w-7 relative top-px transform rotate-45 shadow-img' /></Tooltip>
+                  <Tooltip content={LocalText(L, "player_stats.stats.hit_percent")} color="error" placement={'left'} className='rounded'><Crosshair className='w-7 relative top-px transform rotate-45 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2.5'>{LocalText(L, "player_stats.stats.hit_percent")}</span>
                 </li>
                 <li className='flex flex-row items-center mb-4 2xl:h-56 h-44 ml-4'>
@@ -780,7 +780,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <span className='cursor-pointer'>{isEscalation === true ? 'Score' : 'ACS'}</span>
                 {
                   currentSortStat === 'acs' ?
-                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp className='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -797,7 +797,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <span className='cursor-pointer'>Score</span>
                 {
                   currentSortStat === 'score' ?
-                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp className='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -814,7 +814,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <span className='cursor-pointer'>K/D/A</span>
                 {
                   currentSortStat === 'kda' ?
-                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp className='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -831,7 +831,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <span className='cursor-pointer'>{LocalText(L, "scoreboard.headers.fbs")}</span>
                 {
                   currentSortStat === 'fbs' ?
-                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp className='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }
@@ -848,7 +848,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <span className='cursor-pointer'>{isEscalation === true ? LocalText(L, "scoreboard.headers.dmg") : LocalText(L, "scoreboard.headers.dmg_round")}</span>
                 {
                   currentSortStat === 'round_dmg' ?
-                  <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                  <ArrowRoundUp className='w-5 ml-2 mb-0.5 inline shadow-img' />
                   :
                   null
                 }

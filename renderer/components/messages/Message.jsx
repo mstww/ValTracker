@@ -63,9 +63,9 @@ export default function Message({ message, unix, delay }) {
         className='absolute top-2 right-2 cursor-pointer rounded hover:bg-black transition-all duration-100 ease-in p-1 z-10'
         onClick={() => {closeMessage(messageRef)}}
       >
-        <Close cls='w-4' />
+        <Close className='w-4' />
       </div>
-      <h2 className='text-white relative flex flex-row'><MessageIcon cls="w-6 h-6 mr-2 relative top-1" /> { title }</h2>
+      <h2 className='text-white relative flex flex-row'><MessageIcon className="w-6 h-6 mr-2 relative top-1" /> { title }</h2>
       <span className='text-gray-500 relative bottom-1'>{ date }</span>
       <hr className='relative bottom-0.5 w-full' />
       <div className='messageContent' ref={contentRef} dangerouslySetInnerHTML={{ __html: message }} />

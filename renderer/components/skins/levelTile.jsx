@@ -38,7 +38,7 @@ export default function LevelTile({ name, effect, onClick, levelUUID, activeLeve
         ''
         :
         <div className="absolute top-0 bottom-0 right-0 flex justify-center items-center h-full mr-3">
-          <Lock cls='h-2/4 ml-auto' />
+          <Lock className='h-2/4 ml-auto' />
         </div>
       }
     </div>

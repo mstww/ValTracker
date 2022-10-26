@@ -263,7 +263,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               setActiveCardSkinLevel(0);
             }}
           >
-            <Close cls='w-8 p-1' />
+            <Close className='w-8 p-1' />
           </div>
           <div 
             className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-4 py-2'
@@ -337,7 +337,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         </motion.div>
       </motion.div>
       <div id='back-arrow' className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
-        <BackArrow cls='w-8 p-1' />
+        <BackArrow className='w-8 p-1' />
       </div>
       <div className='absolute top-4 left-4'>
         <h1 className='text-2xl'>{LocalText(L, "night_market_header")} - {nightMarketTimer}</h1>

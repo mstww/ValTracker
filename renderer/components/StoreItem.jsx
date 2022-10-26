@@ -88,9 +88,9 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             >
               {
                 isWishlisted === true ?
-                <StarFilled cls='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-100 ease-linear' />
+                <StarFilled className='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-100 ease-linear' />
                 :
-                <Star cls='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-100 ease-linear' />
+                <Star className='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-100 ease-linear' />
               }
               {wishlistTextLocale}
             </button>
@@ -115,7 +115,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             isWishlisted === true ?
             <StarFilled 
               color
-              cls='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear' 
+              className='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear' 
               click={async () => {
                 var wishlist = await rmSkinFromWishlist(wishlistItem);
                 setWishlistedItems(wishlist);
@@ -125,7 +125,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             :
             <Star 
               color
-              cls='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear'
+              className='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear'
               click={async () => {
                 var newItem = {
                   "uuid": item.uuid,

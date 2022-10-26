@@ -398,7 +398,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                 }}
                 className={'text-button relative inline-flex flex-row items-center ' + (isLoginCompleted ? 'right-5 top-0.5' : ' right-8 top-0.5')}
               >
-                <BackArrow cls='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, "page_2.button_2_text")}
+                <BackArrow className='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, "page_2.button_2_text")}
               </button>
             </div>
           </motion.div>
@@ -415,7 +415,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             <hr className='bg-maincolor-lightest h-0.5 border-none mb-2' />
             <div className='flex flex-col items-center'>
               <div className='flex flex-row items-center mb-4 mt-8'>
-                <Translate cls='w-6 mr-2 ml-1' />
+                <Translate className='w-6 mr-2 ml-1' />
                 <span>{currentLanguageDisplayName}</span>
               </div>
               <div 
@@ -456,7 +456,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                 }}
                 className={'text-button relative inline-flex flex-row items-center right-5'}
               >
-                <BackArrow cls='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, 'page_3.button_2_text')}
+                <BackArrow className='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, 'page_3.button_2_text')}
               </button>
             </div>
           </motion.div>

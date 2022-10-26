@@ -58,7 +58,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                     <span className='cursor-pointer'>{LocalText(L, "headers.price")}</span>
                     {
                       currentSortStat === 'price' ?
-                      <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                      <ArrowRoundUp className='w-5 ml-2 mb-0.5 inline shadow-img' />
                       :
                       null
                     }
@@ -75,7 +75,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                     <span className='cursor-pointer'>{LocalText(L, "headers.wishlisted_on")}</span>
                     {
                       currentSortStat === 'wishedAt' ?
-                      <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                      <ArrowRoundUp className='w-5 ml-2 mb-0.5 inline shadow-img' />
                       :
                       null
                     }
@@ -92,7 +92,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                     <span className='cursor-pointer'>{LocalText(L, "headers.days_since")}</span>
                     {
                       currentSortStat === 'daysSince' ?
-                      <ArrowRoundUp cls='w-5 ml-2 mb-0.5 inline shadow-img' />
+                      <ArrowRoundUp className='w-5 ml-2 mb-0.5 inline shadow-img' />
                       :
                       null
                     }
@@ -157,7 +157,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                             setUnsortedPlayerWishlistSkins(newArray2);
                           }}
                         >
-                          <StarFilled cls='w-5 relative bottom-px mr-1' />
+                          <StarFilled className='w-5 relative bottom-px mr-1' />
                           {LocalText(L, "content.remove_button_text")}
                         </button>
                       </div>

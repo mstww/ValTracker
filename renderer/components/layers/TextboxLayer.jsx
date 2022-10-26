@@ -55,7 +55,7 @@ function Textboxes() {
                   setTextboxes(newArray);
                 }}
               >
-                <Close cls='w-8 p-1' />
+                <Close className='w-8 p-1' />
               </div>
             </motion.div>
           )

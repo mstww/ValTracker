@@ -726,7 +726,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                 <div className='absolute top-0 left-3 flex flex-row z-40 w-1/6 h-full items-center'>
                                   <StarFilled 
                                     color 
-                                    cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                    className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
                                     click={() => {
                                       toggleDeleteMatchDialogue();
                                       setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore });
@@ -898,7 +898,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                           <div className='absolute top-0 left-3 flex flex-row z-40 w-1/6 h-full items-center'>
                             <StarFilled 
                               color 
-                              cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                              className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
                               click={() => {
                                 toggleDeleteMatchDialogue();
                                 setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore });

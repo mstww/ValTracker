@@ -116,9 +116,10 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
       });
 
       var matchIDCollection = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
+      var arr = new Set([...matchIDCollection[0].matchIDs, ...matchIDs]);
   
       await updateThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
-        matchIDs: [...matchIDCollection[0].matchIDs, ...matchIDs]
+        matchIDs: [...arr]
       });
     }
       
@@ -785,8 +786,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
           }
         }
-
-        console.log(playerstats);
         
         setBestMapWinPercent(best_map.map_win_percentage);
         setBestMapKdaRatio(best_map.map_kda_ratio);
@@ -915,8 +914,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
             }
           }
-
-          console.log(playerstats);
           
           setBestMapWinPercent(best_map.map_win_percentage);
           setBestMapKdaRatio(best_map.map_kda_ratio);
@@ -947,12 +944,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         fetchContractData(true);
     
         setIsSilentLoading(false);
-        fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false);
+        fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false, false);
         return;
       }
     }
 
-    if(isFirstLoad) {
+    if(isFirstLoad === true) {
       var puuid = await getCurrentPUUID();
       var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
       var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
@@ -969,6 +966,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         if(match[0] === undefined) continue;
         matches.push(match[0]);
       }
+
+      if(matches.length === 0) {
+        fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false, false);
+        return;
+      };
 
       for(var i = 0; i < matches.length; i++) {
         var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
@@ -990,8 +992,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       }
       
       newMatches = arr;
-
-      console.log(newMatches);
 
       var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
         
@@ -1016,8 +1016,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
         }
       }
-
-      console.log(playerstats);
 
       setBestMapWinPercent(best_map.map_win_percentage);
       setBestMapKdaRatio(best_map.map_kda_ratio);
@@ -1122,8 +1120,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
           }
         }
-
-        console.log(playerstats);
   
         setBestMapWinPercent(best_map.map_win_percentage);
         setBestMapKdaRatio(best_map.map_kda_ratio);
@@ -1811,13 +1807,13 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                 favMatches.find(x => x === match.matchInfo.matchId) !== undefined ?
                                 <StarFilled 
                                   color 
-                                  cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                  className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
                                   click={() => { toggleMatchInFavs(match.matchInfo.matchId, true) }} 
                                 />
                                 :
                                 <Star 
                                   color 
-                                  cls='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                  className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
                                   click={() => { toggleMatchInFavs(match.matchInfo.matchId, false) }} 
                                 />
                               }

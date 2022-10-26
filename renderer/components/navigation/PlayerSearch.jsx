@@ -72,7 +72,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.2 : 0.4, duration: 0.2, ease: "easeOut" }}
         >
-          <Search cls={'transition-all duration-75 ease-linear cursor-pointer z-30 w-5 h-5 player-search-mgnfy ' + (isNavbarMinimized ? 'absolute' : 'relative')} />
+          <Search className={'transition-all duration-75 ease-linear cursor-pointer z-30 w-5 h-5 player-search-mgnfy ' + (isNavbarMinimized ? 'absolute' : 'relative')} />
           <input 
             id="skin-search"
             type='text'
@@ -137,7 +137,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
                     setIsHistoryLocked(true);
                   }}
                 >
-                  <Close cls='w-4' />
+                  <Close className='w-4' />
                 </div>
               </div>
             )

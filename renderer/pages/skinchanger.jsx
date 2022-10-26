@@ -586,7 +586,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             className='absolute top-4 right-4 hover:bg-black z-30 rounded cursor-pointer transition-all duration-100 ease-linear'
             onClick={() => { setShowVideo(false) }}
           >
-            <Close cls='w-8 p-1' />
+            <Close className='w-8 p-1' />
           </div>
           <video ref={videoRef} src={''} type="video/mp4" controls className='rounded ml-px' />
         </motion.div>
@@ -595,7 +595,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}
       >
-        <BackArrow cls='w-8 p-1' />
+        <BackArrow className='w-8 p-1' />
       </div>
       <div className='flex flex-row h-full'>
         <div id='skin-selector' className='h-full w-1/5 p-4 overflow-hidden'>
@@ -610,7 +610,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               spellCheck='false'
             >
             </input>
-            <Search cls='absolute top-2 left-2 ml-0.5 w-4' />
+            <Search className='absolute top-2 left-2 ml-0.5 w-4' />
           </div>
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">
@@ -717,9 +717,9 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 >
                   {
                     isWishlisted === true ?
-                    <StarFilled cls='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear' />
+                    <StarFilled className='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear' />
                     :
-                    <Star cls='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear' />
+                    <Star className='w-5 h-5 mr-1 relative bottom-px shadow-img group-hover:block cursor-pointer transition-all duration-100 ease-linear' />
                   }
                   {LocalText(L, "skins.wishlist_button")}
                 </button>

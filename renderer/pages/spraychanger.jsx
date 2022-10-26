@@ -246,7 +246,7 @@ function Spraychanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) 
   return ( 
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className='absolute z-10 top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
-        <BackArrow cls='w-8 p-1' />
+        <BackArrow className='w-8 p-1' />
       </div>
       <div className='flex flex-row h-full'>
         <div id='skin-selector' className='h-full w-1/5 p-4 overflow-hidden'>
@@ -260,7 +260,7 @@ function Spraychanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) 
               autoCorrect='off'
               spellCheck='false'
             />
-            <Search cls='absolute top-2 left-2 ml-0.5 w-4' />
+            <Search className='absolute top-2 left-2 ml-0.5 w-4' />
           </div>
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">

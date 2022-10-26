@@ -258,7 +258,7 @@ function Cardchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   return ( 
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className='absolute top-4 z-10 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
-        <BackArrow cls='w-8 p-1 shadow-img' />
+        <BackArrow className='w-8 p-1 shadow-img' />
       </div>
       <div className='flex flex-row h-full relative'>
         <div id='skin-selector' className='relative h-full w-1/5 p-4 overflow-hidden'>
@@ -273,7 +273,7 @@ function Cardchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               spellCheck='false'
             >
             </input>
-            <Search cls='absolute top-2 left-2 ml-0.5 w-4' />
+            <Search className='absolute top-2 left-2 ml-0.5 w-4' />
           </div>
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">

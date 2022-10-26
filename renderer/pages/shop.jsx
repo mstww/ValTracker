@@ -364,7 +364,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               setActiveCardSkinLevel(0);
             }}
           >
-            <Close cls='w-8 p-1' />
+            <Close className='w-8 p-1' />
           </div>
           <div 
             className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-4 py-2'

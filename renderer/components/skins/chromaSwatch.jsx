@@ -57,7 +57,7 @@ export default function ChromaSwatch({ image, onClick, chromaUUID, activeChroma,
         ''
         :
         <div className="chroma-swatch-not-owned-overlay absolute top-0 left-0 w-full h-full bg-black bg-opacity-70 items-center justify-center flex rounded">
-          <Lock cls='w-2/4' />
+          <Lock className='w-2/4' />
         </div>
       }
     </div>

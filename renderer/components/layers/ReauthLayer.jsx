@@ -262,7 +262,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
 
           return(
             <motion.div 
-              className='flex flex-col justify-center items-center w-96 bg-maincolor rounded p-4 pointer-events-auto'
+              className='flex flex-col justify-center items-center w-96 border-2 border-tile-color bg-maincolor-light rounded p-4 pointer-events-auto'
               key={"LoginCard_" + localReauthStep}
               variants={card_step_variants}
               initial="hidden"
@@ -285,7 +285,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
         })
       }
       <motion.div 
-        className='flex flex-col justify-center items-center w-96 bg-maincolor rounded p-4 pointer-events-auto'
+        className='flex flex-col justify-center items-center w-96 border-2 border-tile-color bg-maincolor-light rounded p-4 pointer-events-auto'
         key={"FinalCard"}
         variants={card_step_variants}
         initial="hidden"

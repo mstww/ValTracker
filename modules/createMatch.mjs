@@ -1,15 +1,8 @@
-import Surreal from 'surrealdb.js';
-import { workerData } from "worker_threads";
+import { workerData, parentPort } from "worker_threads";
 
 async function createMatch() {
-  const { data } = workerData;
-  var db;
-  if(process.env.NODE_ENV === 'production') {
-    const SurrealDB = Surreal.default
-    db = new SurrealDB(process.env.DB_URL);
-  } else {
-    db = new Surreal(process.env.DB_URL);
-  }
+  const { data, db } = workerData;
+  console.log(db);
 
   await db.wait();
 
@@ -19,6 +12,12 @@ async function createMatch() {
   });
 
   await db.use('app', 'main');
+
+  var result = await db.query(`SELECT 1 FROM match:⟨${data.matchInfo.matchId}⟩`);
+  if(result[0].result[0]) {
+    parentPort.postMessage({ exit: true });
+    return;
+  }
 
   var allRoundResults = [];
   for(var k = 0; k < data.roundResults.length; k++) {
@@ -39,10 +38,10 @@ async function createMatch() {
     teams: data.teams
   }
 
-  var result = await db.query(`SELECT 1 FROM match:⟨${data.matchInfo.matchId}⟩`);
-  if(!result[0].result[0]) {
-    var result = await db.create(`match:⟨${data.matchInfo.matchId}⟩`, match);
-  }
+  var result = await db.create(`match:⟨${data.matchInfo.matchId}⟩`, match);
+
+  parentPort.postMessage({ exit: true });
+  return;
 }
 
 createMatch();

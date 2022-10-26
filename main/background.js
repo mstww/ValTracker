@@ -32,7 +32,8 @@ async function asyncTimeout(delay) {
 }
 
 const isProd = process.env.NODE_ENV === 'production';
-var app_data = app.getPath("userData");
+
+var allCurrentlyProcessingMatchIDs = [];
 
 var RPState = "app";
 var child = null;
@@ -336,6 +337,26 @@ const download_image = (url, new_path) => {
     .then(res => res.body.pipe(fs.createWriteStream(new_path)));
 }
 
+async function quitApp() {
+  if(mainWindow) mainWindow.close();
+
+  console.log("Matches left to process: ", allCurrentlyProcessingMatchIDs.length);
+  
+  if(allCurrentlyProcessingMatchIDs.length === 0) {
+    console.log("Quitting...");
+    app.quit();
+    return;
+  }
+  var processingInterval = setInterval(() => {
+    console.log("Matches left to process: ", allCurrentlyProcessingMatchIDs.length);
+    if(allCurrentlyProcessingMatchIDs.length === 0) {
+      console.log("Quitting...");
+      clearInterval(processingInterval);
+      app.quit();
+    }
+  }, 5000);
+}
+
 async function noFilesFound() {
   if(db === false) await connectToDB();
   
@@ -384,6 +405,10 @@ async function noFilesFound() {
 
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico")) {
     download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/tray.ico");
+  };
+
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png")) {
+    download_image('https://valtracker.gg/img/VALTracker_Logo_default.png', process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png");
   };
 }
 
@@ -1064,7 +1089,7 @@ async function checkStoreForWishlistItems() {
           : 
           LocalText(L, 'skin_wishlist_notifications.notif_1.melee_desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr)
         ),
-        icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
+        icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
       }, function (err, response, metadata) {
@@ -1076,7 +1101,7 @@ async function checkStoreForWishlistItems() {
       notifier.notify({
         title: LocalText(L, 'skin_wishlist_notifications.notif_2.header'),
         message: LocalText(L, 'skin_wishlist_notifications.notif_2.desc', hoursLeft, hoursStr),
-        icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
+        icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
       }, function (err, response, metadata) {
@@ -1133,7 +1158,7 @@ async function checkStoreForWishlistItems() {
       notifier.notify({
         title: LocalText(L, 'disabled_notifs.no_update.header'),
         message: appStatus.data.desc,
-        icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
+        icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
       });
@@ -1145,7 +1170,7 @@ async function checkStoreForWishlistItems() {
       notifier.notify({
         title: LocalText(L, 'disabled_notifs.update_err.header'),
         message: appStatus.data.desc,
-        icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
+        icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
       });
@@ -1157,7 +1182,7 @@ async function checkStoreForWishlistItems() {
       notifier.notify({
         title: LocalText(L, 'disabled_notifs.update_downloaded.header'),
         message: LocalText(L, 'disabled_notifs.update_downloaded.desc'),
-        icon: process.env.APPDATA + "/VALTracker/user_data/icons/VALTracker_Logo_default.png",
+        icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
       });
@@ -1314,24 +1339,27 @@ async function checkStoreForWishlistItems() {
       mainWindow.show();
     });
 
+    var showText = await LocalText(L, 'tray_menu.show');
+    var closeText = await LocalText(L, 'tray_menu.quit');
+
     var contextMenu = Menu.buildFromTemplate([
       {
-        label: LocalText(L, 'tray_menu.show'),
+        label: showText,
         click: function () {
           RPState = 'app';
           sendMessageToWindow('setDRPtoCurrentPage');
           appIcon.destroy();
           mainWindow.show();
-        },
+        }
       },
       {
-        label: LocalText(L, 'tray_menu.quit'),
+        label: closeText,
         click: function () {
           app.isQuiting = true;
           appIcon.destroy();
-          app.quit();
-        },
-      },
+          quitApp();
+        }
+      }
     ]);
 
     appIcon.setContextMenu(contextMenu);
@@ -1367,8 +1395,6 @@ async function checkStoreForWishlistItems() {
       discordClient.clearActivity(process.pid);
     }
 
-    mainWindow.hide();
-
     appIcon = new Tray(process.env.APPDATA + "/VALTracker/user_data/tray.ico");
 
     appIcon.setToolTip("VALTracker");
@@ -1380,31 +1406,40 @@ async function checkStoreForWishlistItems() {
       mainWindow.show();
     });
 
+    var showText = await LocalText(L, 'tray_menu.show');
+    var closeText = await LocalText(L, 'tray_menu.quit');
+
     var contextMenu = Menu.buildFromTemplate([
       {
-        label: LocalText(L, 'tray_menu.show'),
+        label: showText,
         click: function () {
           RPState = 'app';
           sendMessageToWindow('setDRPtoCurrentPage');
           appIcon.destroy();
           mainWindow.show();
-        },
+        }
       },
       {
-        label: LocalText(L, 'tray_menu.quit'),
+        label: closeText,
         click: function () {
           app.isQuiting = true;
           appIcon.destroy();
-          app.quit();
-        },
-      },
+          quitApp();
+        }
+      }
     ]);
 
     appIcon.setContextMenu(contextMenu);
+
+    mainWindow.hide();
   });
   
   if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico")) {
     download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/tray.ico");
+  };
+
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png")) {
+    download_image('https://valtracker.gg/img/VALTracker_Logo_default.png', process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png");
   };
 
   var uuid = uuidv5("appColorTheme", process.env.SETTINGS_UUID);
@@ -1475,7 +1510,7 @@ async function checkStoreForWishlistItems() {
 
 app.on("window-all-closed", function() {
   if(inMigrationProgress === false) {
-    app.quit();
+    quitApp();
   }
 });
 
@@ -1640,7 +1675,7 @@ ipcMain.on('hideAppOnLogin', async function(event, arg) {
 
 ipcMain.on('restartApp', function() {
   app.relaunch();
-  app.quit();
+  quitApp();
 });
 
 ipcMain.on('resetApp', function() {
@@ -1708,8 +1743,48 @@ ipcMain.handle('fetchMatch', async (event, args) => {
   return await fetchMatch(args);
 });
 
-ipcMain.handle('createMatch', async (event, args) => {
-  new Worker(new URL("../modules/createMatch.mjs", import.meta.url), { workerData: { data: args } });
+ipcMain.on('createMatch', async (event, args) => {
+  if(allCurrentlyProcessingMatchIDs.includes(args.matchInfo.matchId)) return;
+
+  allCurrentlyProcessingMatchIDs.push(args.matchInfo.matchId);
+
+  var db = new Surreal(process.env.DB_URL);
+
+  await db.wait();
+
+  await db.signin({
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASS
+  });
+
+  await db.use('app', 'main');
+
+  var result = await db.query(`SELECT 1 FROM match:⟨${args.matchInfo.matchId}⟩`);
+  if(result[0].result[0]) return;
+
+  var allRoundResults = [];
+  for(var k = 0; k < args.roundResults.length; k++) {
+    var round = {
+      "bombPlanter": args.roundResults[k].bombPlanter,
+      "playerStats": args.roundResults[k].playerStats,
+      "roundResult": args.roundResults[k].roundResult,
+      "winningTeam": args.roundResults[k].winningTeam
+    }
+    allRoundResults.push(round);
+  }
+
+  var match = {
+    matchInfo: args.matchInfo,
+    players: args.players,
+    roundResults: allRoundResults,
+    stats_data: args.stats_data,
+    teams: args.teams
+  }
+
+  var result = await db.create(`match:⟨${args.matchInfo.matchId}⟩`, match);
+
+  allCurrentlyProcessingMatchIDs = allCurrentlyProcessingMatchIDs.filter(x => x !== args.matchInfo.matchId);
+  db.close();
 });
 
 ipcMain.handle('removeMatch', async (event, args) => {
