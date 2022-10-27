@@ -1761,7 +1761,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               + (currentlyLoadedMatchCount <= 0 ? ' disabled ' : ' ')
             }
           >
-            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
+            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded fixed top-2 right-7'> // TODO
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
