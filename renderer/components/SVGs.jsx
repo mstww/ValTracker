@@ -137,3 +137,7 @@ export const ExpandArrow = ({ className, click }) => {
 export const MessageIcon = ({ className, click }) => {
   return <svg xmlns="http://www.w3.org/2000/svg" className={className} onClick={click} viewBox="0 0 14 14"><g><circle cx={4.25} cy={6.5} r={0.5} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><circle cx={7.5} cy={6.5} r={0.5} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><circle cx={10.75} cy={6.5} r={0.5} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><path d="M4.5,12.5l-4,1,1-3v-9a1,1,0,0,1,1-1h10a1,1,0,0,1,1,1v10a1,1,0,0,1-1,1Z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /></g></svg>
 }
+
+export const CircleArrowDown = ({ className }) => {
+  return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 14 14"><g><polyline points="10 6 7 9 4 6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><circle cx={7} cy={7} r={6.5} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /></g></svg>
+}

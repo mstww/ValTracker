@@ -93,7 +93,6 @@ const fetchPlayer = async (pname, ptag, lang) => {
     const playerInfo = await playerInfoRaw.json();
 
     if(playerInfo.status !== 200) {
-      console.log("Hey")
       return { errored: true, items: {status: playerInfo.status, message: playerInfo.message }};
     }
 
@@ -653,7 +652,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                                     'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
                                   } 
                                   className={
-                                    'w-8 transform scale-75 '
+                                    'w-8 scale-75 '
                                     +
                                     (activeQueueTab == 'competitive' ?
                                       `w-10`

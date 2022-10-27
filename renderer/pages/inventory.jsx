@@ -8,6 +8,7 @@ import LocalText from '../components/translation/LocalText';
 import { useFirstRender } from '../components/useFirstRender';
 import Layout from '../components/Layout';
 import { createThing, executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, updateThing } from '../js/dbFunctions';
+import { Select } from '../components/Select';
 
 function sortObject(obj) {
   return Object.keys(obj).sort().reduce(function (acc, key) {
@@ -97,6 +98,8 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const loadoutNameRef = React.useRef(null);
   const [ isClickable, setIsClickable ] = React.useState(false);
 
+  const [ isSaveButtonShown, setIsSaveButtonShown ] = React.useState(true);
+
   const redirectToSkinChanger = (weaponType, usedSkin, usedChroma, usedLevel) => {
     var items_stringified = JSON.stringify(player_items);
     var path = `/skinchanger?weaponType=${weaponType}&usedSkin=${usedSkin}&usedLevel=${usedLevel}&usedChroma=${usedChroma}&playerItems=${items_stringified}`;
@@ -156,10 +159,12 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       img.src = `https://media.valorant-api.com/playercards/${player_loadout_data.Identity.PlayerCardID}/largeart.png`;
       img.setAttribute('data-card', player_loadout_data.Identity.PlayerCardID);
   
-      var presetList = await executeQuery(`SELECT * FROM presetCollection:⟨${user_data.uuid}⟩ FETCH presets.preset`);
-      setPresetList(presetList[0].presets);
+      var preList = await executeQuery(`SELECT * FROM presetCollection:⟨${user_data.uuid}⟩ FETCH presets.preset`);
+      setPresetList(preList[0].presets);
+
+      var copy = structuredClone(preList[0].presets);
   
-      presetList[0].presets.forEach(preset => {
+      copy.forEach(preset => {
         player_loadout_data.Version = 0;
         preset.Version = 0;
 
@@ -173,6 +178,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
         if(JSON.stringify(presetSorted) === JSON.stringify(invSorted)) {
           setCurrentPresetName(name);
+          setIsSaveButtonShown(false);
           setShowDeletePresetButton(true);
         }
       });
@@ -220,23 +226,26 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var result = await createThing(`preset`, loadoutToSave);
     
     var currentPresetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
+    console.log(result);
 
-    currentPresetList[0].presets.push(result.id);
-
+    currentPresetList[0].presets.push(result[0].id);
     await updateThing(`presetCollection:⟨${puuid}⟩`, currentPresetList[0]);
+  
+    var presetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
+    setPresetList(presetList[0].presets);
 
     toggleSaveInvDialogue();
 
-    setPresetList(currentPresetList[0].presets);
-
+    setIsSaveButtonShown(false);
     setCurrentPresetName(loadout_name);
 
     setShowDeletePresetButton(true);
   }
 
   const deleteCurrentPreset = async () => {
+    var puuid = await getCurrentPUUID();
     var result = await executeQuery(`SELECT id FROM preset WHERE name = "${currentPresetName}"`)
-    await executeQuery(`DELETE preset:${result[0].id}`); // TODO: Make a check so that presets can't have the same name twice
+    await executeQuery(`DELETE ${result[0].id}`);
     
     var currentPresetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
 
@@ -246,14 +255,13 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
     setPresetList(currentPresetList[0].presets);
     
+    setIsSaveButtonShown(true);
     setCurrentPresetName('0');
     toggleDeleteCurrentPresetDialogue();
   }
 
-  const changeInventory = async (loadout_name, input) => {
-    if(loadout_name === '0') {
-      return;
-    }
+  const changeInventory = async (loadout_name) => {
+    if(loadout_name === '0') return;
     var user_data = await getCurrentUserData();
     
     var loadout_raw = await executeQuery(`SELECT * FROM preset WHERE name = "${loadout_name}"`);
@@ -761,35 +769,29 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
 
           <div id='save-inv' className='flex flex-col items-center justify-center'>
-            <button className='w-5/6' onClick={() => { toggleSaveInvDialogue() }}>
+            <button className={'w-5/6 ' + (isSaveButtonShown ? 'block' : "hidden")} onClick={() => { toggleSaveInvDialogue() }}>
               {LocalText(L, "save_loadout_button_text")}
             </button>
-            <div className='select-wrapper w-5/6 mx-auto flex flex-row items-center relative'>
-              <select
-                id='inv_selector_select' 
-                value={currentPresetName}
-                onChange={(e) => {
-                  setCurrentPresetName(e.target.value);
-                  changeInventory(e.target.value, e.target);
-                  if(e.target.value !== '0') {
-                    setShowDeletePresetButton(true);
-                  } else {
-                    setShowDeletePresetButton(false);
-                  }
-                }}
-                className='w-full mx-auto flex items-center focus:bg-button-color-hover mt-4'
-              >
-                <option value='0' disabled>{LocalText(L, "preset_select_placeholder")}</option>
-                {
-                  // Reverse Map
-                  presetList.reverse().map((preset, i) => {
-                    return (
-                      <option key={i} value={preset.name}>{preset.displayName}</option>
-                    )
-                  })
+            <Select 
+              className={"w-5/6"}
+              value={currentPresetName}
+              setValue={setCurrentPresetName}
+              onChange={() => {
+                changeInventory(currentPresetName);
+                if(currentPresetName !== '0') {
+                  setShowDeletePresetButton(true);
+                } else {
+                  setShowDeletePresetButton(false);
                 }
-              </select>
-            </div>
+              }}
+              items={[
+                { value: "0", text: "Select a preset", disabled: true, important: false },
+                { "seperator": true },
+                ...presetList.reverse().map((preset) => {
+                  return { value: preset.name, text: preset.displayName, disabled: false, important: false }
+                })
+              ]}
+            />
           </div>
 
           <div id='inv_selector' className='flex items-center justify-center'>

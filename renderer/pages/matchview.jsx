@@ -716,7 +716,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   <span className='relative text-lg top-0.5 left-2 '>{playerFBs} {LocalText(L, "player_stats.stats.fbs")}</span>
                 </li>
                 <li className='flex flex-row items-center mb-4'>
-                  <Tooltip content={LocalText(L, "player_stats.stats.hit_percent")} color="error" placement={'left'} className='rounded'><Crosshair className='w-7 relative top-px transform rotate-45 shadow-img' /></Tooltip>
+                  <Tooltip content={LocalText(L, "player_stats.stats.hit_percent")} color="error" placement={'left'} className='rounded'><Crosshair className='w-7 relative top-px rotate-45 shadow-img' /></Tooltip>
                   <span className='relative text-lg top-0.5 left-2.5'>{LocalText(L, "player_stats.stats.hit_percent")}</span>
                 </li>
                 <li className='flex flex-row items-center mb-4 2xl:h-56 h-44 ml-4'>

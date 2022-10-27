@@ -612,7 +612,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                         'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
                       } 
                       className={
-                        'w-7 transform scale-75 shadow-img '
+                        'w-7 scale-75 shadow-img '
                         +
                         (matchInfo.fixedQueueName == 'competitive' ?
                           `w-10`
@@ -760,7 +760,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                           'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
                                         } 
                                         className={
-                                          'w-7 transform scale-75 shadow-img '
+                                          'w-7 scale-75 shadow-img '
                                           +
                                           (match.matchInfo.queueID == 'competitive' ?
                                             `w-10`
@@ -932,7 +932,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                     'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
                                   } 
                                   className={
-                                    'w-7 transform scale-75 shadow-img '
+                                    'w-7 scale-75 shadow-img '
                                     +
                                     (match.matchInfo.queueID == 'competitive' ?
                                       `w-10`

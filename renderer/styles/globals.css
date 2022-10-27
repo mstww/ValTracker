@@ -576,14 +576,14 @@ select {
 
 .maximized .select-wrapper::after {
   content: ">";
-  @apply absolute left-0 z-20 font-normal text-2xl transform rotate-90 pointer-events-none;
+  @apply absolute left-0 z-20 font-normal text-2xl rotate-90 pointer-events-none;
   top: 35%;
   left: 92%;
 }
 
 .select-wrapper::after {
   content: ">";
-  @apply absolute left-0 z-20 font-normal text-2xl transform rotate-90 pointer-events-none;
+  @apply absolute left-0 z-20 font-normal text-2xl rotate-90 pointer-events-none;
   top: 35%;
   left: 85%;
 }
@@ -1487,4 +1487,71 @@ tr td:first-child {
 
 tr td:last-child {
   border-radius: 0 4px 4px 0;
+}
+
+.card {
+  @apply rounded border-2 border-maincolor-lightest bg-maincolor-light p-2 relative overflow-hidden;
+}
+
+.card.hoverable {
+  @apply hover:bg-tile-color border-2 border-tile-color transition-all duration-100 ease-linear;
+}
+
+.button.default, .button.select {
+  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
+  height: 2.5rem;
+  border-radius: 4px;
+  outline: none;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.button.default {
+  padding: 4px 30px;
+}
+
+.button.default:hover, .button.select:hover, .button.select.opened {
+  @apply bg-button-color border-button-color-hover bg-opacity-75;
+}
+
+.button.default.disabled {
+  @apply border-2 border-gray-600 hover:border-gray-500 bg-gray-800 hover:bg-gray-600 cursor-not-allowed text-sm;
+  padding: 4px 30px;
+  height: 2.5rem;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.button.text {
+  background-color: none;
+  background: none;
+  cursor: pointer;
+  height: 2.5rem;
+  padding: 4px 40px;
+  @apply bg-transparent text-sm rounded;
+}
+
+.button.text:hover {
+  text-decoration: underline;
+}
+
+.modal-backdrop {
+  @apply absolute overflow-hidden top-0 h-screen flex flex-col justify-center items-center pointer-events-none z-50 bg-black bg-opacity-60 text-white;
+  width: calc(50% - 1px);
+}
+
+.modal {
+  background: rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  @apply border-2 border-tile-color w-96 rounded p-4 pointer-events-auto relative;
+}
+
+.close-icon-wrapper {
+  @apply absolute z-30 top-4 right-4 ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center;
+}
+
+.modal-wrapper {
+  @apply flex flex-col justify-center items-center;
 }

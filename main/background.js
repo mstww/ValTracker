@@ -1760,7 +1760,10 @@ ipcMain.on('createMatch', async (event, args) => {
   await db.use('app', 'main');
 
   var result = await db.query(`SELECT 1 FROM match:⟨${args.matchInfo.matchId}⟩`);
-  if(result[0].result[0]) return;
+  if(result[0].result[0]) {
+    allCurrentlyProcessingMatchIDs = allCurrentlyProcessingMatchIDs.filter(x => x !== args.matchInfo.matchId);
+    return;
+  }
 
   var allRoundResults = [];
   for(var k = 0; k < args.roundResults.length; k++) {

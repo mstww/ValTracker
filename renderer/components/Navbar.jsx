@@ -270,7 +270,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
     >
       <motion.div 
         id='logo' 
-        className='flex flex-col justify-center items-center transition-all duration-100 ease-linear transform w-36 mx-auto'
+        className='flex flex-col justify-center items-center transition-all duration-100 ease-linear w-36 mx-auto'
       >
         <motion.img 
           src='/icons/VALTracker_Logo_default.png' 
@@ -410,7 +410,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           <span className={navbarTileTextClasses}>{LocalText(L, 'wishlist')}</span>
         </motion.div>
       </div>
-      <div className={'absolute bottom-16 w-full flex justify-around transform transition-all duration-100 ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
+      <div className={'absolute bottom-16 w-full flex justify-around transition-all duration-100 ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
         <SocialsIcon icon={'/images/coffee.svg'} tooltip={'Ko-Fi'} href={'https://ko-fi.com/valtrackergg'} />
         <SocialsIcon icon={'/images/discord.svg'} tooltip={'Discord'} href={'https://discord.gg/aJfQ4yHysG'} />
         <SocialsIcon icon={'/images/twitter.svg'} tooltip={'Twitter'} href={'https://twitter.com/valtracker_gg'} />
@@ -449,7 +449,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         </motion.div>
         <div 
           id="acc-switcher-tile" 
-          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis transform ' + switcherActive + (isNavbarMinimized ? ' -translate-x-40 opacity-0' : '  translate-x-0 opacity-100')}
+          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis ' + switcherActive + (isNavbarMinimized ? ' -translate-x-40 opacity-0' : '  translate-x-0 opacity-100')}
           onClick={toggleSwitcherMenu}
         >
           <div className='flex flex-row items-center content-center h-full justify-start'>
@@ -470,7 +470,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           <Link href={'/settings'}>
             <div 
               className={
-                'group transform transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor-light '
+                'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor-light '
                 +
                 (page == 'settings' ? 'border-2 border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
                 +

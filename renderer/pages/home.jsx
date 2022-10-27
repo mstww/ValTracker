@@ -1761,7 +1761,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               + (currentlyLoadedMatchCount <= 0 ? ' disabled ' : ' ')
             }
           >
-            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded fixed top-2 right-7'> // TODO
+            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
@@ -1843,7 +1843,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                         `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
                                       } 
                                       className={
-                                        'w-7 transform scale-75 shadow-img '
+                                        'w-7 scale-75 shadow-img '
                                         +
                                         (activeQueueTab == 'competitive' ?
                                           `w-10`
@@ -1853,7 +1853,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                       }
                                     />
                                     :
-                                    <ValIconHandler icon={'/images/standard.png'} classes={'w-7 transform scale-75 shadow-img'} />
+                                    <ValIconHandler icon={'/images/standard.png'} classes={'w-7 scale-75 shadow-img'} />
                                   }
                                 </Tooltip>
                                 <span>{LocalText(L, "bot_l.gamemodes." + match.matchInfo.queueID)}</span>
