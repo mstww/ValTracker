@@ -298,6 +298,27 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     img.setAttribute('data-card', new_inv.Identity.PlayerCardID);
   }
 
+  const weapons = [
+    { "name": "Classic", "imgClasses": "pointer-events-none mx-auto w-4/6", "uuid": "29a0cfab-485b-f5d5-779a-b59f85e204a8" },
+    { "name": "Shorty", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "42da8ccc-40d5-affc-beec-15aa47b42eda" },
+    { "name": "Frenzy", "imgClasses": "pointer-events-none mx-auto w-3/5", "uuid": "44d4e95c-4157-0037-81b2-17841bf2e8e3" },
+    { "name": "Ghost", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "1baa85b4-4c70-1284-64bb-6481dfc3bb4e" },
+    { "name": "Sheriff", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "e336c6b8-418d-9340-d77f-7a9e4cfe0702" },
+    { "name": "Stinger", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "f7e1b454-4ad4-1063-ec0a-159e56b58941" },
+    { "name": "Spectre", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "462080d1-4035-2937-7c09-27aa2a5c27a7" },
+    { "name": "Bucky", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "910be174-449b-c412-ab22-d0873436b21b" },
+    { "name": "Judge", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "ec845bf4-4f79-ddda-a3da-0db3774b2794" },
+    { "name": "Guardian", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "ae3de142-4d85-2547-dd26-4e90bed35cf7" },
+    { "name": "Bulldog", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "4ade7faa-4cf1-8376-95ef-39884480959b" },
+    { "name": "Phantom", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a" },
+    { "name": "Vandal", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "9c82e19d-4575-0200-1a81-3eacf00cf872" },
+    { "name": "Marshal", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "c4883e50-4494-202c-3ec3-6b8a9284f00b" },
+    { "name": "Operator", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "a03b24d3-4319-996d-0f8c-94bbfba1dfc7" },
+    { "name": "Ares", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "55d8a0f4-4274-ca67-fe2c-06ab45efdf58" },
+    { "name": "Odin", "imgClasses": "pointer-events-none mx-auto w-5/6", "uuid": "63e6c2b6-4a8e-869c-3d4c-e38355226584" },
+    { "name": "Melee", "imgClasses": "pointer-events-none mx-auto w-2/5", "uuid": "2f59173c-4bed-b6c3-2191-dea9b58be9c7" }
+  ]
+
   return (
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <motion.div 
@@ -399,377 +420,34 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </div>
         <div id='inv-main' className='w-5/6 mx-auto'>
-          <div 
-            id="classic" 
-            className={ tile_classes }
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/classic.png' data-weapontype='29a0cfab-485b-f5d5-779a-b59f85e204a8' alt='Classic' className='pointer-events-none mx-auto w-4/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Classic</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10 pointer-events-none block'>
-              <img data-weaponforbuddy='29a0cfab-485b-f5d5-779a-b59f85e204a8' className='pointer-events-none block' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div
-            id="shorty" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/shorty.png' data-weapontype='42da8ccc-40d5-affc-beec-15aa47b42eda' alt='Shorty' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Shorty</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='42da8ccc-40d5-affc-beec-15aa47b42eda' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div id="frenzy" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/frenzy.png' data-weapontype='44d4e95c-4157-0037-81b2-17841bf2e8e3' alt='Frenzy' className='pointer-events-none mx-auto w-3/5' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Frenzy</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='44d4e95c-4157-0037-81b2-17841bf2e8e3' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="ghost" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/ghost.png' data-weapontype='1baa85b4-4c70-1284-64bb-6481dfc3bb4e' alt='Ghost' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Ghost</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='1baa85b4-4c70-1284-64bb-6481dfc3bb4e' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="sheriff" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/sheriff.png' data-weapontype='e336c6b8-418d-9340-d77f-7a9e4cfe0702' alt='Sheriff' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Sheriff</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='e336c6b8-418d-9340-d77f-7a9e4cfe0702' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="stinger"
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/stinger.png' data-weapontype='f7e1b454-4ad4-1063-ec0a-159e56b58941' alt='Stinger' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Stinger</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='f7e1b454-4ad4-1063-ec0a-159e56b58941' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="spectre" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/spectre.png' data-weapontype='462080d1-4035-2937-7c09-27aa2a5c27a7' alt='Spectre' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Spectre</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='462080d1-4035-2937-7c09-27aa2a5c27a7' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="bucky" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/bucky.png' data-weapontype='910be174-449b-c412-ab22-d0873436b21b' alt='Bucky' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Bucky</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='910be174-449b-c412-ab22-d0873436b21b' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="judge" 
-            className={ tile_classes }
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/judge.png' data-weapontype='ec845bf4-4f79-ddda-a3da-0db3774b2794' alt='Judge' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Judge</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='ec845bf4-4f79-ddda-a3da-0db3774b2794' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="bulldog" 
-            className={ tile_classes } 
-            onClick={
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-                )
-              }
-            >
-            <img src='/invisible_weapons/bulldog.png' data-weapontype='ae3de142-4d85-2547-dd26-4e90bed35cf7' alt='Bulldog' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Bulldog</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='ae3de142-4d85-2547-dd26-4e90bed35cf7' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="guardian" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/guardian.png' data-weapontype='4ade7faa-4cf1-8376-95ef-39884480959b' alt='Guardian' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Guardian</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='4ade7faa-4cf1-8376-95ef-39884480959b' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="phantom" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/phantom.png' data-weapontype='ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a' alt='Phantom' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Phantom</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='ee8e8d15-496b-07ac-e5f6-8fae5d4c7b1a' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="vandal" 
-            className={ tile_classes }
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/vandal.png' data-weapontype='9c82e19d-4575-0200-1a81-3eacf00cf872' alt='Vandal' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Vandal</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='9c82e19d-4575-0200-1a81-3eacf00cf872' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="marshal" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/marshal.png' data-weapontype='c4883e50-4494-202c-3ec3-6b8a9284f00b' alt='Marshal' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Marshal</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='c4883e50-4494-202c-3ec3-6b8a9284f00b' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="operator" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/operator.png' data-weapontype='a03b24d3-4319-996d-0f8c-94bbfba1dfc7' alt='Operator' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Operator</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='a03b24d3-4319-996d-0f8c-94bbfba1dfc7' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="ares" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/ares.png' data-weapontype='55d8a0f4-4274-ca67-fe2c-06ab45efdf58' alt='Ares' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Ares</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='55d8a0f4-4274-ca67-fe2c-06ab45efdf58' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="odin" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/odin.png' data-weapontype='63e6c2b6-4a8e-869c-3d4c-e38355226584' alt='Odin' className='pointer-events-none mx-auto w-5/6' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Odin</span>
-            <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10'>
-              <img data-weaponforbuddy='63e6c2b6-4a8e-869c-3d4c-e38355226584' src='/invisible_weapons/melee.png' />
-            </div>
-          </div>
-          <div 
-            id="melee" 
-            className={ tile_classes } 
-            onClick={
-              isClickable ? 
-              (e) => redirectToSkinChanger(
-                e.target.firstChild.getAttribute('data-weapontype'), 
-                e.target.firstChild.getAttribute('data-skin'), 
-                e.target.firstChild.getAttribute('data-skinchroma'), 
-                e.target.firstChild.getAttribute('data-skinlevel')
-              )
-              :
-              null
-            }
-          >
-            <img src='/invisible_weapons/melee.png' data-weapontype='2f59173c-4bed-b6c3-2191-dea9b58be9c7' alt='Melee' className='pointer-events-none mx-auto w-2/5' />
-            <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>Melee</span>
-          </div>
+          {weapons.map((weapon, index) => {
+            return (
+              <div
+                id={weapon.name.toLowerCase()}
+                className={tile_classes}
+                onClick={
+                  isClickable ? 
+                  (e) => redirectToSkinChanger(
+                    e.target.firstChild.getAttribute('data-weapontype'), 
+                    e.target.firstChild.getAttribute('data-skin'), 
+                    e.target.firstChild.getAttribute('data-skinchroma'), 
+                    e.target.firstChild.getAttribute('data-skinlevel')
+                  )
+                  :
+                  null
+                }
+              >
+                <img src={`/invisible_weapons/${weapon.name.toLowerCase()}.png`} data-weapontype={weapon.uuid} alt={weapon.name} className={weapon.imgClasses} />
+                <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>{weapon.name}</span>
+                {
+                  weapon.name !== "Melee" &&
+                  <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10 pointer-events-none'>
+                    <img data-weaponforbuddy={weapon.uuid} src='/invisible_weapons/melee.png' />
+                  </div>
+                }
+              </div>
+            )
+          })}
 
           <div id='save-inv' className='flex flex-col items-center justify-center'>
             <button className={'w-5/6 button default mb-2 ' + (isSaveButtonShown ? 'block' : "hidden")} onClick={() => { toggleSaveInvDialogue() }}>
