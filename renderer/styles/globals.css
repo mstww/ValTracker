@@ -492,74 +492,6 @@ input:checked + .slider:before {
   @apply border-2 bg-opacity-60;
 }
 
-.text-button {
-  background-color: none;
-  background: none;
-  cursor: pointer;
-  margin: 15px 40px;
-  padding: 0;
-  padding-left: 0rem;
-  padding-right: 0rem;
-  padding-top: 0rem;
-  padding-bottom: 0rem;
-  @apply bg-transparent text-sm;
-}
-
-.text-button:hover {
-  text-decoration: underline;
-  background-color: none;
-  background: none;
-  cursor: pointer;
-  margin: 15px 40px;
-  padding: 0;
-  padding-left: 0rem;
-  padding-right: 0rem;
-  padding-top: 0rem;
-  padding-bottom: 0rem;
-}
-
-button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.normal-buttons button):not(.skinchanger-add-to-wishlist-button):not(.change-color-btn):not(.setup-button):not(.disabled) {
-  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
-  padding: 8px 10px;
-  border-radius: 4px;
-  outline: none;
-  position: relative;
-  transition: all 0.3s;
-}
-
-button:not(button.text-button):not(button[aria-label='next']):not(button[aria-label='previous']):not(.awssld__bullets button):not(.change-color-btn):not(.normal-buttons button):not(.setup-button):not(.disabled):hover {
-  @apply bg-button-color border-button-color-hover bg-opacity-75;
-}
-
-.setup-button {
-  position: absolute;
-  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
-  padding: 8px 10px;
-  border-radius: 4px;
-  outline: none;
-  transition: all 0.3s;
-}
-
-button.disabled {
-  @apply border-2 border-gray-600 hover:border-gray-500 bg-gray-800 hover:bg-gray-600 cursor-not-allowed text-sm;
-  padding: 8px 10px;
-  border-radius: 4px;
-  transition: all 0.3s;
-}
-
-.setup-button:hover {
-  @apply bg-button-color border-button-color-hover bg-opacity-75;
-}
-
-.change-color-btn {
-  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
-  padding: 8px 10px;
-  border-radius: 4px;
-  outline: none;
-  position: relative;
-  transition: all 0.3s;
-}
-
 select {
   @apply border-2 border-button-color bg-tile-color text-button-text font-light shadow-lg hover:shadow-2xl cursor-pointer relative outline-none;
   padding: 6px 10px 6px 10px;
@@ -1497,7 +1429,27 @@ tr td:last-child {
   @apply hover:bg-tile-color border-2 border-tile-color transition-all duration-100 ease-linear;
 }
 
-.button.default, .button.select {
+.button.default, .button.select, .button.highlight, .button.setup {
+  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
+  height: 2.5rem;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.button.default, .button.select, .button.highlight {
+  position: relative;
+}
+
+.button.setup {
+  position: absolute;
+}
+
+.button.default {
+  padding: 4px 30px;
+}
+
+.button.wishlist {
   @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
   height: 2.5rem;
   border-radius: 4px;
@@ -1506,12 +1458,16 @@ tr td:last-child {
   transition: all 0.3s;
 }
 
-.button.default {
-  padding: 4px 30px;
+.button.default:hover, .button.select:hover, .button.select.opened, .button.highlight:hover {
+  @apply bg-button-color border-button-color-hover bg-opacity-75;
 }
 
-.button.default:hover, .button.select:hover, .button.select.opened {
-  @apply bg-button-color border-button-color-hover bg-opacity-75;
+.button.highlight.highlight-green {
+  @apply border-2 border-green-500 bg-green-500 bg-opacity-20 text-button-text text-sm text-center;
+}
+
+.button.highlight.highlight-green:hover {
+  @apply bg-green-500 border-green-500 bg-opacity-75;
 }
 
 .button.default.disabled {
@@ -1536,8 +1492,11 @@ tr td:last-child {
 }
 
 .modal-backdrop {
-  @apply absolute overflow-hidden top-0 h-screen flex flex-col justify-center items-center pointer-events-none z-50 bg-black bg-opacity-60 text-white;
-  width: calc(50% - 1px);
+  @apply absolute overflow-hidden top-0 h-full flex flex-col justify-center items-center pointer-events-none z-30 bg-black bg-opacity-60 text-white w-full;
+}
+
+.modal-backdrop.priority {
+  z-index: 50 !important;
 }
 
 .modal {
@@ -1545,7 +1504,23 @@ tr td:last-child {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(5px) !important;
   -webkit-backdrop-filter: blur(5px) !important;
-  @apply border-2 border-tile-color w-96 rounded p-4 pointer-events-auto relative;
+  @apply border-2 border-tile-color rounded p-4 pointer-events-auto relative;
+}
+
+.modal-decoy {
+  @apply 2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 relative z-40;
+}
+
+.modal.fixed {
+  @apply w-96;
+}
+
+.modal.responsive {
+  @apply 2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5;
+}
+
+.modal.summary {
+  @apply w-1/2;
 }
 
 .close-icon-wrapper {

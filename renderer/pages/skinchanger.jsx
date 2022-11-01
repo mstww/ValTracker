@@ -575,8 +575,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <OverlayWrapper useRef={overlayRef} isShown={showVideo}>
         <motion.div 
-          id='settings-overlay-card' 
-          className='w-2/3 rounded bg-maincolor mb-8 flex flex-col justify-between p-2 pointer-events-auto shadow-lg relative'
+          className='w-2/3 mb-8 flex flex-col justify-between card'
           variants={card_variants}
           initial="hidden"
           animate={ showVideo ? "enter" : "exit"}
@@ -667,9 +666,9 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               <div className='flex flex-row justify-around items-center'>
                 <button 
                   onClick={() => { setSkin() }} 
-                  className={'w-full h-12 mt-2 block change-color-btn ' 
+                  className={'w-full h-12 mt-2 block button highlight ' 
                   + (showSetSkinButton ? '' : 'hidden') 
-                  + (setSkinSuccess ? ' bg-green-500 hover:bg-green-400 pointer-events-none cursor-default' : ' bg-button-color hover:bg-button-color-hover')}
+                  + (setSkinSuccess ? ' highlight-green' : '')}
                   id='equip-skin-button'
                 >
                   {setSkinSuccess ? LocalText(L, "skins.equip_button.state_2") : LocalText(L, "skins.equip_button.state_1")}
@@ -678,14 +677,14 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   onClick={() => { 
                     setShowVideo(true);
                   }} 
-                  className={'text-button w-full h-12 mt-2 relative top-1 block ' + (isVideoAvailable ? '' : 'hidden')}
+                  className={'button text w-full h-12 mt-2 mb-2 relative top-1 block ' + (isVideoAvailable ? '' : 'hidden')}
                 >
                   {LocalText(L, "skins.video_button")}
                 </button>
               </div>
               <div className='flex flex-row w-full mt-2'>
                 <button 
-                  className={'w-2/3 mr-2 flex flex-row items-center justify-center ' + (showWishlistButton === true && lockWishlistButton === false ? '' : 'hidden')}
+                  className={'w-2/3 mr-2 flex flex-row items-center justify-center button default ' + (showWishlistButton === true && lockWishlistButton === false ? '' : 'hidden')}
                   onClick={async () => {
                     if(isWishlisted === true) {
                       var wishlist = await rmSkinFromWishlist(wishlistedItems[wishlistPosition]);

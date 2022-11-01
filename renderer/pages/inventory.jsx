@@ -225,10 +225,10 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     
     var result = await createThing(`preset`, loadoutToSave);
     
-    var currentPresetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
+    var currentPresetList = await executeQuery(`SELECT (SELECT id FROM $parent.presets.id) AS presets FROM presetCollection:⟨${puuid}⟩`);
     console.log(result);
 
-    currentPresetList[0].presets.push(result[0].id);
+    currentPresetList[0].presets.push(result[0] ? result[0].id : (result.id ? result.id : result[0].result[0].id));
     await updateThing(`presetCollection:⟨${puuid}⟩`, currentPresetList[0]);
   
     var presetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
@@ -247,11 +247,14 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var result = await executeQuery(`SELECT id FROM preset WHERE name = "${currentPresetName}"`)
     await executeQuery(`DELETE ${result[0].id}`);
     
-    var currentPresetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
+    var currentPresetList = await executeQuery(`SELECT (SELECT id FROM $parent.presets.id) AS presets FROM presetCollection:⟨${puuid}⟩`);
 
-    currentPresetList[0].presets = currentPresetList[0].presets.filter(e => e !== result[0].id);
+    currentPresetList[0].presets = currentPresetList[0].presets.filter(function (el) { return el != null; });
+    console.log(currentPresetList[0].presets);
 
     await updateThing(`presetCollection:⟨${puuid}⟩`, currentPresetList[0]);
+    
+    var currentPresetList = await executeQuery(`SELECT * FROM presetCollection:⟨${puuid}⟩ FETCH presets.preset`);
 
     setPresetList(currentPresetList[0].presets);
     
@@ -298,7 +301,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   return (
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <motion.div 
-        className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
+        className='modal-backdrop'
         key={"InventoryBackdrop"}
         variants={backdrop_variants}
         initial="hidden"
@@ -306,7 +309,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <motion.div 
-          className="w-96 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+          className="flex flex-col justify-between p-4 pb-2 modal fixed"
           key={"SavePresetCard"}
           variants={card_variants}
           initial="hidden"
@@ -325,12 +328,12 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             ref={loadoutNameRef}
           />
           <div className='mt-4'>
-            <button onClick={() => { saveInventory() }}>{LocalText(L, "modals.save_modal.button_1_text")}</button>
-            <button className='text-button' onClick={() => { toggleSaveInvDialogue() }}>{LocalText(L, "modals.save_modal.button_2_text")}</button>
+            <button className='button default' onClick={() => { saveInventory() }}>{LocalText(L, "modals.save_modal.button_1_text")}</button>
+            <button className='button text' onClick={() => { toggleSaveInvDialogue() }}>{LocalText(L, "modals.save_modal.button_2_text")}</button>
           </div>
         </motion.div>
         <motion.div 
-          className="w-96 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+          className="flex flex-col justify-between p-4 pb-2 modal fixed"
           key={"DeletePresetCard"}
           variants={card_variants}
           initial="hidden"
@@ -347,8 +350,8 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </p>
           
           <div className='mt-4'>
-            <button onClick={() => { deleteCurrentPreset() }}>{LocalText(L, "modals.remove_modal.button_1_text")}</button>
-            <button className='text-button' onClick={() => { toggleDeleteCurrentPresetDialogue() }}>{LocalText(L, "modals.remove_modal.button_2_text")}</button>
+            <button className='button default' onClick={() => { deleteCurrentPreset() }}>{LocalText(L, "modals.remove_modal.button_1_text")}</button>
+            <button className='button text' onClick={() => { toggleDeleteCurrentPresetDialogue() }}>{LocalText(L, "modals.remove_modal.button_2_text")}</button>
           </div>
         </motion.div>
       </motion.div>
@@ -769,7 +772,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
 
           <div id='save-inv' className='flex flex-col items-center justify-center'>
-            <button className={'w-5/6 ' + (isSaveButtonShown ? 'block' : "hidden")} onClick={() => { toggleSaveInvDialogue() }}>
+            <button className={'w-5/6 button default mb-2 ' + (isSaveButtonShown ? 'block' : "hidden")} onClick={() => { toggleSaveInvDialogue() }}>
               {LocalText(L, "save_loadout_button_text")}
             </button>
             <Select 
@@ -796,7 +799,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
           <div id='inv_selector' className='flex items-center justify-center'>
             <div className={'w-full flex items-center justify-center ' + (showDeletePresetButton ? '' : 'hidden')}>
-              <button className={'w-5/6 '} onClick={() => { toggleDeleteCurrentPresetDialogue() }}>
+              <button className={'w-5/6 button default'} onClick={() => { toggleDeleteCurrentPresetDialogue() }}>
                 {LocalText(L, "delete_preset_button")}
               </button>
             </div>

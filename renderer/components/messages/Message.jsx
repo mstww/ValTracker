@@ -52,7 +52,7 @@ export default function Message({ message, unix, delay }) {
 
   return(
     <motion.div 
-      className="message border-2 border-tile-color text-gray-500 w-96 p-2 min-h-40 h-auto mx-4 mb-4 rounded bg-maincolor-lightest pointer-events-auto shadow-xl relative"
+      className="message text-gray-500 w-96 min-h-40 h-auto mx-4 mb-4 card"
       variants={variants}
       initial="hidden"
       animate={isMessageShown ? "enter" : "exit"}

@@ -89,7 +89,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
 
   return(
     <motion.div 
-      className='absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-center items-center pointer-events-none z-50 bg-black bg-opacity-80'
+      className='absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-center items-center pointer-events-none z-50 bg-black bg-opacity-60'
       key={"ModalBackdrop"}
       variants={backdrop_variants}
       initial="hidden"
@@ -97,7 +97,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
       transition={{ type: 'ease-in', duration: 0.3 }}
     >
       <motion.div 
-        className='flex flex-col border-2 border-tile-color justify-center items-center w-96 bg-maincolor-light rounded p-4 pointer-events-auto relative'
+        className='flex flex-col justify-center items-center modal fixed'
         key={"ModalCard"}
         variants={card_base_variants}
         initial="hidden"
@@ -161,8 +161,8 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
           </ul>
         </div>
         <div className='mt-4'>
-          <button className='' onClick={() => { setSearchShown(false); setIsOverlayShown(false); handlePlayerSearch({key: "Enter", target: inputRef.current}); }}>{LocalText(L, "search_modal.button_1")}</button>
-          <button className='text-button' onClick={() => { setSearchShown(false); setIsOverlayShown(false); }}>{LocalText(L, "search_modal.button_2")}</button>
+          <button className='button default' onClick={() => { setSearchShown(false); setIsOverlayShown(false); handlePlayerSearch({key: "Enter", target: inputRef.current}); }}>{LocalText(L, "search_modal.button_1")}</button>
+          <button className='button text' onClick={() => { setSearchShown(false); setIsOverlayShown(false); }}>{LocalText(L, "search_modal.button_2")}</button>
         </div>
       </motion.div>
     </motion.div>

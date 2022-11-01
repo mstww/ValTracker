@@ -4,7 +4,14 @@ import React from 'react';
 const ipcRenderer = electron.ipcRenderer || false;
 
 export default function WindowControls({ setup, migrate }) {
-
+  function toggleMaxRestoreButtons(isMaximized) {
+    if(isMaximized == true) {
+      document.body.classList.add('maximized');
+    } else {
+      document.body.classList.remove('maximized');
+    }
+  }
+  
   const handleMin = async () => {
     var args = await ipcRenderer.invoke("min-window");
     toggleMaxRestoreButtons(args);
@@ -24,14 +31,6 @@ export default function WindowControls({ setup, migrate }) {
   
   const handleClose = () => {
     ipcRenderer.send("close-window");
-  }
-  
-  function toggleMaxRestoreButtons(isMaximized) {
-    if(isMaximized == true) {
-      document.body.classList.add('maximized');
-    } else {
-      document.body.classList.remove('maximized');
-    }
   }
   
   React.useEffect(() => {

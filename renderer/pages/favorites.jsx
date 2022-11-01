@@ -571,7 +571,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
   return (
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <motion.div 
-        className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
+        className='modal-backdrop'
         key={"FavMatchesBackdrop"}
         variants={backdrop_variants}
         initial="hidden"
@@ -579,7 +579,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <motion.div 
-          className="w-96 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+          className="modal fixed"
           key={"DeleteMatchCard"}
           variants={card_variants}
           initial="hidden"
@@ -648,10 +648,11 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                   removeFavMatch(MatchData.MatchID, MatchData.key, MatchData.index, MatchData.fixedQueueName);
                 }, 310);
               }}
+              className="button default"
             >
               {LocalText(L, "modals.remove_match.button_1")}
             </button>
-            <button className='text-button' onClick={() => { toggleDeleteMatchDialogue() }}>{LocalText(L, "modals.remove_match.button_2")}</button>
+            <button className='button text' onClick={() => { toggleDeleteMatchDialogue() }}>{LocalText(L, "modals.remove_match.button_2")}</button>
           </div>
         </motion.div>
       </motion.div>

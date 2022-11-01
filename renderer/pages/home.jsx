@@ -1684,7 +1684,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               >
                 <div>{LocalText(L, "component_err.err_text")}</div>
                 <button 
-                  className='mt-2' 
+                  className='mt-2 button default' 
                   onClick={async () => { 
                     fetchContractData(true);
                   }}
@@ -1733,7 +1733,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           >
             <div>{LocalText(L, "component_err.err_text")}</div>
             <button 
-              className='mt-2' 
+              className='mt-2 button default' 
               onClick={async () => { 
                 fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
               }}
@@ -1945,7 +1945,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           >
             <div>{LocalText(L, "component_err.err_text")}</div>
             <button 
-              className='mt-2' 
+              className='mt-2 button default' 
               onClick={async () => { 
                 fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
               }}
@@ -2031,7 +2031,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           >
             <div>{LocalText(L, "component_err.err_text")}</div>
             <button 
-              className='mt-2' 
+              className='mt-2 button default' 
               onClick={async () => { 
                 fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false);
               }}

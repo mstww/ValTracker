@@ -54,7 +54,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
 
   return(
     <motion.div 
-      className='absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-center items-center pointer-events-none z-50 bg-black bg-opacity-80'
+      className='modal-backdrop priority'
       key={"WhatsNewBackdrop"}
       variants={backdrop_variants}
       initial="hidden"
@@ -63,7 +63,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
       id={'whats-new-backdrop'}
     >
       <motion.div 
-        className='relative flex flex-col justify-center items-center w-1/2 bg-maincolor rounded p-4 pointer-events-auto'
+        className='modal summary'
         key={"WhatsNewCard"}
         variants={card_variants}
         initial="hidden"

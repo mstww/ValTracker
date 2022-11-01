@@ -237,7 +237,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
 
   return(
     <motion.div 
-      className='absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-center items-center pointer-events-none z-50 bg-black bg-opacity-80'
+      className='modal-backdrop priority'
       key={"LoginBackdrop"}
       variants={backdrop_variants}
       initial="hidden"
@@ -245,7 +245,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
       transition={{ type: 'ease-in', duration: 0.3 }}
     >
       <motion.div 
-        className='flex flex-col justify-center items-center border-2 border-tile-color w-96 bg-maincolor-light rounded p-4 pointer-events-auto'
+        className='modal fixed'
         key={"InfoCard"}
         variants={card_base_variants}
         initial="hidden"
@@ -254,7 +254,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
       >
         <h2 className='mb-2'>{LocalText(L, "first_card.header")}</h2>
         <p className='font-normal text-base'>{LocalText(L, "first_card.desc", reauthQueue.length)}</p>
-        <button className='w-full mt-8' onClick={() => { setCurrentReauthStep(currentReauthStep+1) }}>{LocalText(L, "first_card.button_text")}</button>
+        <button className='w-full mt-8 button default' onClick={() => { setCurrentReauthStep(currentReauthStep+1) }}>{LocalText(L, "first_card.button_text")}</button>
       </motion.div>
       {
         reauthQueue.map((accountData, index) => {
@@ -272,7 +272,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
               <h2 className='mb-2'>{LocalText(L, "account_card.header", localReauthStep, (userData.name + '#' + userData.tag))}</h2>
               <p>{LocalText(L, "account_card.desc")}</p>
               <button 
-                className='w-full mt-4' 
+                className='w-full mt-4 button default' 
                 onClick={async () => {
                   await invokeLoginWindow();
                   setCurrentReauthStep(currentReauthStep+1);
@@ -294,7 +294,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
       >
         <h2 className='mb-2'>{LocalText(L, "final_card.header")}</h2>
         <p>{LocalText(L, "final_card.desc")}</p>
-        <button className='w-full mt-4' onClick={() => { restartAuthCycle() }}>{LocalText(L, "final_card.button_text")}</button>
+        <button className='w-full mt-4 button default' onClick={() => { restartAuthCycle() }}>{LocalText(L, "final_card.button_text")}</button>
       </motion.div>
     </motion.div>
   )

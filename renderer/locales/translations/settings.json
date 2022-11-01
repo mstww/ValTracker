@@ -62,12 +62,7 @@
             {
               "displayName": "Default Theme",
               "name": "normal",
-              "color": "#12171d"
-            },
-            {
-              "displayName": "Legacy Theme",
-              "name": "legacy",
-              "color": "#2d2d2d"
+              "color": "#090909"
             },
             {
               "displayName": "Light Theme",
@@ -75,9 +70,14 @@
               "color": "#d1d1d1"
             },
             {
-              "displayName": "Dark Theme",
-              "name": "dark",
-              "color": "#090909"
+              "displayName": "Legacy Theme (Beta)",
+              "name": "legacyBeta",
+              "color": "#12171d"
+            },
+            {
+              "displayName": "Legacy Theme (Alpha)",
+              "name": "legacyAlpha",
+              "color": "#2d2d2d"
             }
           ]
         }
@@ -261,12 +261,7 @@
             {
               "displayName": "Normal",
               "name": "normal",
-              "color": "#12171d"
-            },
-            {
-              "displayName": "Legacy",
-              "name": "legacy",
-              "color": "#2d2d2d"
+              "color": "#090909"
             },
             {
               "displayName": "Hell",
@@ -274,9 +269,14 @@
               "color": "#d1d1d1"
             },
             {
-              "displayName": "Dunkel",
-              "name": "dark",
-              "color": "#090909"
+              "displayName": "Legacy (Beta)",
+              "name": "legacyBeta",
+              "color": "#12171d"
+            },
+            {
+              "displayName": "Legacy (Alpha)",
+              "name": "legacyAlpha",
+              "color": "#2d2d2d"
             }
           ]
         }
@@ -460,12 +460,7 @@
             {
               "displayName": "Thème par défaut",
               "name": "normal",
-              "color": "#12171d"
-            },
-            {
-              "displayName": "Thème légacy",
-              "name": "legacy",
-              "color": "#2d2d2d"
+              "color": "#090909"
             },
             {
               "displayName": "Thème lumière",
@@ -473,9 +468,14 @@
               "color": "#d1d1d1"
             },
             {
-              "displayName": "Thème noir",
-              "name": "dark",
-              "color": "#090909"
+              "displayName": "Thème légacy (Beta)",
+              "name": "legacyBeta",
+              "color": "#12171d"
+            },
+            {
+              "displayName": "Thème légacy (Alpha)",
+              "name": "legacyAlpha",
+              "color": "#2d2d2d"
             }
           ]
         }

@@ -349,7 +349,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                 setLastPage('1');
                 setOverallProgress(overallProgressValues[1]);
               }}
-              className={'setup-button bottom-2 left-2'}
+              className={'button default relative bottom-2 left-2'}
             >
               {LocalText(L, currentSelectedLanguage, 'page_1.button_1_text')}
             </button>
@@ -366,7 +366,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             <span className='text-lg'>{LocalText(L, currentSelectedLanguage, 'page_2.header')}</span>
             <hr className='bg-maincolor-lightest h-0.5 border-none mb-4' />
             <div className='flex flex-col items-center justify-center h-4/6 w-full mb-4'>
-              <button className={'flex flex-row items-center mb-6 ' + (isLoginCompleted ? 'disabled' : '')} disabled={isLoginCompleted} onClick={() => ( login() )}><img src='/images/riot_fist.png' className='w-6 mr-2' /> {isLoginCompleted ? LocalText(L, currentSelectedLanguage, "page_2.login_button_text_2") : LocalText(L, currentSelectedLanguage, "page_2.login_button_text_1")}</button>
+              <button className={'flex flex-row items-center mb-6 button default ' + (isLoginCompleted ? 'disabled' : '')} disabled={isLoginCompleted} onClick={() => ( login() )}><img src='/images/riot_fist.png' className='w-6 mr-2' /> {isLoginCompleted ? LocalText(L, currentSelectedLanguage, "page_2.login_button_text_2") : LocalText(L, currentSelectedLanguage, "page_2.login_button_text_1")}</button>
               <Progress value={progress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-2/6 ' + (isProgressShown ? '' : 'hidden')} />
               <div className={'relative bottom-3.5 font-thin text-gray-500 text-left w-2/6 ' + (isProgressShown ? 'text-left w-2/6' : 'text-center')}>{loadingState}</div>
             </div>
@@ -381,7 +381,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                       setCurrentPage("3");
                       setOverallProgress(overallProgressValues[2]);
                     }}
-                    className={'bottom-0.5 relative'}
+                    className={'bottom-0.5 relative button default'}
                   >
                     {LocalText(L, currentSelectedLanguage, "page_2.button_1_text")}
                   </button>
@@ -396,7 +396,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                   setCurrentPage("1");
                   setOverallProgress(overallProgressValues[0]);
                 }}
-                className={'text-button relative inline-flex flex-row items-center ' + (isLoginCompleted ? 'right-5 top-0.5' : ' right-8 top-0.5')}
+                className={'button text relative inline-flex flex-row items-center button setup ' + (isLoginCompleted ? 'right-5 top-0.5' : ' right-8 top-0.5')}
               >
                 <BackArrow className='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, "page_2.button_2_text")}
               </button>
@@ -443,7 +443,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                   setLastPage("3");
                   setCurrentPage("4");
                 }}
-                className={''}
+                className={'button default'}
               >
                 {LocalText(L, currentSelectedLanguage, 'page_3.button_1_text')}
               </button>
@@ -454,7 +454,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                   setCurrentPage("2");
                   setIsPage2Shown(true);
                 }}
-                className={'text-button relative inline-flex flex-row items-center right-5'}
+                className={'button text relative inline-flex flex-row items-center right-5'}
               >
                 <BackArrow className='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, 'page_3.button_2_text')}
               </button>
@@ -476,7 +476,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                 onClick={() => {
                   finishSetup();
                 }}
-                className={'relative bottom-8'}
+                className={'relative bottom-8 button default'}
               >
                 {LocalText(L, currentSelectedLanguage, 'page_4.finish_button_text')}
               </button>

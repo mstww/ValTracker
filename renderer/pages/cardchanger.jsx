@@ -290,12 +290,9 @@ function Cardchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           <div className={'h-full w-1/6 flex flex-col justify-center mr-32'}>
             <button 
               onClick={() => { setSkin() }} 
-              className={
-              'w-full h-12 mt-2 block change-color-btn ' 
-              + 
-              (showSetSkinButton ? '' : 'hidden')
-              + 
-              (setSkinSuccess ? ' bg-green-500 hover:bg-green-500 pointer-events-none cursor-default' : ' bg-button-color hover:bg-button-color-hover')}
+              className={'w-full h-12 mt-2 block button highlight ' 
+              + (showSetSkinButton ? '' : 'hidden')
+              + (setSkinSuccess ? ' highlight-green' : '')}
               id='equip-skin-button'
             >
               {setSkinSuccess ? LocalText(L, "cards.equip_button.state_2") : LocalText(L, "cards.equip_button.state_1")}

@@ -54,7 +54,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <motion.div 
-          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded mb-8 flex flex-col justify-between p-4 pointer-events-none relative'
+          className='modal-decoy'
           variants={card_variants}
           initial="hidden"
           animate={isThisSkinsOverlayShown ? "enter" : "exit"}
@@ -62,7 +62,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         >
           <div id='levels-chromas' className='absolute bottom-4 left-4 w-64 text-white z-20'>
             <button 
-              className={'w-full mt-2 flex flex-row items-center justify-center pointer-events-auto ' + (isThisSkinsOverlayShown ? '' : 'hidden')}
+              className={'w-full mt-2 flex flex-row items-center justify-center pointer-events-auto button default ' + (isThisSkinsOverlayShown ? '' : 'hidden')}
               onClick={async () => {
                 if(isWishlisted === true) {
                   var wishlist = await rmSkinFromWishlist(wishlistItem);
@@ -110,7 +110,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
           }
         }}
       >
-        <div className='absolute bottom-4 left-4 flex flex-row items-center'>
+        <div className='absolute bottom-4 left-4 flex flex-row items-center z-30'>
           {
             isWishlisted === true ?
             <StarFilled 

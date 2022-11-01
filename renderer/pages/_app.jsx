@@ -15,19 +15,8 @@ const normal = createTheme({
   type: "dark",
   theme: {
     colors: {
-      background: '#1b222b',
-      gradient: 'linear-gradient(to right, #c80043, #6f00ff)',
-      text: '#ffffff',
-    },
-  }
-});
-
-const legacy = createTheme({
-  type: "dark",
-  theme: {
-    colors: {
-      background: '#222222',
-      gradient: 'linear-gradient(to right, #c80043, #6f00ff)',
+      background: '#363636',
+      gradient: 'linear-gradient(to right, #FF047E, #832CFF)',
       text: '#ffffff',
     },
   }
@@ -45,12 +34,23 @@ const light = createTheme({
   }
 });
 
-const dark = createTheme({
+const legacyAlpha = createTheme({
   type: "dark",
   theme: {
     colors: {
-      background: '#363636',
-      gradient: 'linear-gradient(to right, #FF047E, #832CFF)',
+      background: '#222222',
+      gradient: 'linear-gradient(to right, #c80043, #6f00ff)',
+      text: '#ffffff',
+    },
+  }
+});
+
+const legacyBeta = createTheme({
+  type: "dark",
+  theme: {
+    colors: {
+      background: '#1b222b',
+      gradient: 'linear-gradient(to right, #c80043, #6f00ff)',
       text: '#ffffff',
     },
   }
@@ -58,9 +58,9 @@ const dark = createTheme({
 
 const themes = {
   normal,
-  legacy,
+  legacyAlpha,
   light,
-  dark
+  legacyBeta
 }
 
 function MyApp({ Component, pageProps }) {

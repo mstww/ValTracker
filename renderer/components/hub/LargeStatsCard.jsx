@@ -1,6 +1,6 @@
 export default function LargeStatsCard({ img_src, header, win_percent, avg_kda, stat_1_locale, stat_2_locale, extraClasses }) {
   return(
-    <div className={'w-full border-2 rounded border-tile-color flex flex-row ' + (extraClasses ? extraClasses : '')}>
+    <div className={'w-full border-2 rounded border-maincolor-lightest flex flex-row ' + (extraClasses ? extraClasses : '')}>
       <div className={"p-2 w-1/2"}>
         <img src={img_src} className={'rounded shadow-img'} />
       </div>

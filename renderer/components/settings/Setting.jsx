@@ -16,7 +16,7 @@ export default function Setting({ title, desc, desc2, inputType, buttonText, isC
           ('')
         }
         { inputType == "button" ?
-          <button onClick={() => { onClick(!isChecked) }} id={id ? id : ''} className="w-full">{buttonText}</button>
+          <button onClick={() => { onClick(!isChecked) }} id={id ? id : ''} className="w-full button default">{buttonText}</button>
           :
           ('')
         }
@@ -31,7 +31,7 @@ export default function Setting({ title, desc, desc2, inputType, buttonText, isC
           ('')
         }
         { extraButton ?
-          <button className='mt-2 w-full' onClick={ inputVal.length > 0 ? extraButtonClick : null } id={id ? id : ''}>{extraButtonText}</button>
+          <button className='mt-2 w-full button default' onClick={ inputVal.length > 0 ? extraButtonClick : null } id={id ? id : ''}>{extraButtonText}</button>
           :
           ('')
         }

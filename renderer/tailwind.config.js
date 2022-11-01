@@ -1,6 +1,6 @@
 var themeSwapper = require('tailwindcss-theme-swapper');
 
-var mainTheme = { 
+var legacyBeta = { 
   colors: {
     "maincolor": "#12171d", 
     "maincolor-light": "#1b222b", 
@@ -19,7 +19,7 @@ var mainTheme = {
   }
 };
 
-var legacy_theme = {
+var legacyAlpha = {
   colors: {
     "maincolor": "#2d2d2d",
     "maincolor-light": "#222222",
@@ -38,7 +38,7 @@ var legacy_theme = {
   },
 }
 
-var light_theme = {
+var light = {
   colors: {
     "maincolor": "#b3b3b3",
     "maincolor-light": "#d1d1d1",
@@ -57,7 +57,7 @@ var light_theme = {
   }
 }
 
-var dark_theme = {
+var normal = {
   colors: {
     "maincolor": "#090909",
     "maincolor-light": "#141414",
@@ -83,22 +83,22 @@ module.exports = {
         {
           name: 'base',
           selectors: [':root'],
-          theme: mainTheme,
-        },
-        {
-          name: 'legacy',
-          selectors: ['.legacy'],
-          theme: legacy_theme,
+          theme: normal,
         },
         {
           name: 'light',
           selectors: ['.light'],
-          theme: light_theme,
+          theme: light,
         },
         {
-          name: 'dark',
-          selectors: ['.dark'],
-          theme: dark_theme,
+          name: 'legacyBeta',
+          selectors: ['.legacyBeta'],
+          theme: legacyBeta,
+        },
+        {
+          name: 'legacyAlpha',
+          selectors: ['.legacyAlpha'],
+          theme: legacyAlpha,
         }
       ]
     })

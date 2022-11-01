@@ -151,7 +151,7 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
   return (
     <>
       <motion.div 
-        className='absolute bottom-0 left-0 w-screen h-screen flex items-center justify-center z-40 bg-black bg-opacity-80 pointer-events-none'
+        className='modal-backdrop priority'
         key={"UpdateBackground"}
         variants={backdrop_variants}
         initial="hidden"
@@ -159,7 +159,7 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <motion.div 
-          className="w-96 rounded bg-maincolor-light border-2 border-tile-color mb-8 flex flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+          className="modal fixed"
           key={"UpdateCard"}
           variants={update_card_variants}
           initial="hidden"
@@ -172,14 +172,14 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
             <p className='mb-4 mt-2' id="update-desc">{ desc }</p>
           </div>
           <div id="update-buttons" className=''>
-            <button onClick={() => { fetchUpdate() }}>{LocalText(L, "info_card.button_1")}</button>
-            <button className="text-button" onClick={() => { declineUpdate() }}>{LocalText(L, "info_card.button_2")}</button>
+            <button className='button default' onClick={() => { fetchUpdate() }}>{LocalText(L, "info_card.button_1")}</button>
+            <button className="button text" onClick={() => { declineUpdate() }}>{LocalText(L, "info_card.button_2")}</button>
           </div>
         </motion.div>
       </motion.div>
 
       <motion.div 
-        className="w-96 absolute z-20 bottom-6 right-6 rounded bg-maincolor-light border-2 border-tile-color flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+        className="w-96 absolute z-20 bottom-6 right-6 card pb-2 pointer-events-auto"
         key={"FinishedCard"}
         variants={slider_card_variants}
         initial="hidden"
@@ -191,13 +191,13 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
           <p className='text-gray-500'>{LocalText(L, "finished_card.desc")}</p>
         </div>
         <div className="progress-bar-wrapper">
-          <button onClick={() => { finishUpdate() }}>{LocalText(L, "finished_card.button_1")}</button>
-          <button className="text-button" onClick={() => { restartLater() }}>{LocalText(L, "finished_card.button_2")}</button>
+          <button className='button default' onClick={() => { finishUpdate() }}>{LocalText(L, "finished_card.button_1")}</button>
+          <button className="button text" onClick={() => { restartLater() }}>{LocalText(L, "finished_card.button_2")}</button>
         </div>
       </motion.div>
 
       <motion.div 
-        className="w-96 absolute z-20 bottom-6 right-6 rounded bg-maincolor-light border-2 border-tile-color flex-col justify-between p-4 pb-2 pointer-events-auto shadow-lg"
+        className="w-96 absolute z-20 bottom-6 right-6 card pb-2 pointer-events-auto"
         key={"DownloadCard"}
         variants={slider_card_variants}
         initial="hidden"

@@ -790,7 +790,7 @@ function PlayerInfo({ isNavbarMinimized }) {
         >
           <span className='text-3xl'>Whoops!</span><br />
           <span className='text-xl'>{errorReason}</span><br />
-          <button className={isReloadable ? '' : 'hidden'} onClick={() => { router.push(`/player?name=${router.query.name}&tag=${router.query.tag}&lang=${router.query.lang}`) }}>{LocalText(L, "reload_button_text")}</button>
+          <button className={isReloadable ? 'button default' : 'hidden'} onClick={() => { router.push(`/player?name=${router.query.name}&tag=${router.query.tag}&lang=${router.query.lang}`) }}>{LocalText(L, "reload_button_text")}</button>
         </motion.div>
       </div>
     </>

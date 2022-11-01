@@ -39,7 +39,7 @@ function Textboxes() {
         textboxes.map(textbox => {
           return (
             <motion.div 
-              className='w-1/4 mb-4 textbox-card mx-auto border-2 border-button-color bg-maincolor-light shadow-2xl p-2 rounded flex flex-row relative z-50'
+              className='w-1/4 mb-4 textbox-card mx-auto card flex flex-row relative z-50'
               key={textboxKeys + textbox + (Math.random()) + Math.random()}
               variants={update_card_variants}
               initial="hidden"

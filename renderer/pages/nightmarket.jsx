@@ -230,14 +230,14 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   return (
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <motion.div 
-        className='absolute bottom-0 left-0 w-full h-full flex items-center justify-center z-30 bg-black bg-opacity-80 pointer-events-none'
+        className='modal-backdrop'
         variants={backdrop_variants}
         initial="hidden"
         animate={showBackground ? 'enter' : 'exit'}
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <motion.div 
-          className='2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5 rounded bg-maincolor mb-8 flex flex-col justify-between p-4 pointer-events-auto shadow-lg relative'
+          className='modal responsive'
           variants={card_variants}
           initial="hidden"
           animate={showCard ? "enter" : "exit"}

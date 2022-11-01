@@ -1,10 +1,7 @@
-import { ipcRenderer } from "electron";
 import Surreal from "surrealdb.js";
 import { v5 as uuidv5 } from "uuid";
 
 var db = false;
-
-const isProd = process.env.NODE_ENV === 'production';
 
 async function connectToDB() {
   var sdb = new Surreal(process.env.DB_URL);
@@ -31,11 +28,13 @@ export async function executeQuery(queryStr) {
 export async function createThing(thing, obj) {
   if(db === false) await connectToDB();
 
-  var result = await db.query(`SELECT 1 FROM ${thing}`);
-  if(!result[0].result[0]) {
-    var result = await db.create(thing, obj);
+  if(thing.split(":")[1]) {
+    var result = await db.query(`SELECT * FROM ${thing}`);
+    if(!result[0].result[0]) {
+      var result = await db.create(thing, obj);
+    }
   } else {
-    var result = await db.update(thing, obj);
+    var result = await db.create(thing, obj);
   }
 
   return result;
