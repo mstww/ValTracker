@@ -16,7 +16,7 @@
         "button_2_text": "Cancel"
       }
     },
-    "save_loadout_button_text": "Save current loadout",
+    "save_loadout_button_text": "Save Inventory",
     "delete_preset_button": "Delete current preset",
     "preset_select_placeholder": "Select Preset"
   },
