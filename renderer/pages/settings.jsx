@@ -100,12 +100,11 @@ async function requestUserCreds(region, puuid) {
 
 const fetchPatchnotes = async (lang, version) => {
   try {
-    const response = await fetch(`https://api.valtracker.gg/patchnotes/${version}`, { keepalive: true });
-    const json = await response.json();
+    const json = await(await fetch(`http://localhost:4000/v1/changelog/${version}`, { keepalive: true })).json();
 
-    const patchnotes = md_conv.makeHtml(json.data.patchnotes);
+    const patchnotes = md_conv.makeHtml(json.data.changelog);
     moment.locale(lang);
-    const releaseDate = moment(json.data.release_date).format('D. MMMM, YYYY');
+    const releaseDate = moment(json.data.date).format('D. MMMM, YYYY');
 
     return { errored: false, patchnotes: patchnotes, releaseDate: releaseDate, version: json.data.version };
   } catch(err) {
@@ -154,7 +153,7 @@ function Patchnotes({ showVersionModal, shownPatchnotes }) {
 
   return (
     <div className='patchnotes prose'>
-      <h1>Patchnotes for { version }</h1>
+      <h1>Changelog for { version }</h1>
       <p className='text-gray-500'>
         Released {releaseDate} | <span onClick={showVersionModal} className='text-button-color text-opacity-70 cursor-pointer hover:underline'>Change Version</span>
       </p>
@@ -477,7 +476,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
           "skins": []
         });
       
-        var bundle = await (await fetch('https://api.valtracker.gg/featured-bundle')).json();
+        var bundle = await (await fetch(`http://localhost:4000/v1/bundles/featured`)).json();
         var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
       
         await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
@@ -651,10 +650,10 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   }, [ general_changeLangPopupOpen ]);
 
   React.useEffect(async () => {
-    var versionsData = await(await fetch('https://api.valtracker.gg/all-versions')).json();
-    setPatchnotes_versionSwitcherSelectedPatchnotesVersion(versionsData.data[0]);
+    var versionsData = await(await fetch('http://localhost:4000/v1/versions')).json();
+    setPatchnotes_versionSwitcherSelectedPatchnotesVersion(versionsData.data[versionsData.data.length-1]);
     setPatchnotes_versionSwitcherFallback(versionsData.data[0]);
-    setPatchnotesVersions(versionsData.data.splice(0, 15));
+    setPatchnotesVersions(versionsData.data.reverse().splice(0, 15));
   }, []);
 
   var s2_bt2 = LocalText(L, 'pg_5.grp_1.setting_2.button_text_2');

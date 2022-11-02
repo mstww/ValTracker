@@ -33,8 +33,7 @@ const fetchPatchnotes = async (lang) => {
 
   if(!updateDenied) {
     try {
-      const response = await fetch(`https://api.valtracker.gg/patchnotes`);
-      const json = await response.json();
+      const json = await(await fetch(`http://localhost:4000/v1/changelog`)).json();
 
       var newest_version = json.data.version;
       var current_version = pjson.version;

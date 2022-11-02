@@ -33,14 +33,14 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     if(localStorage.getItem('show-whats-new')) {
-      var whats_new_data = await(await fetch('http://api.valtracker.gg/whats-new')).json();
+      var data = await(await fetch('http://localhost:4000/v1/changelog/summary')).json();
       
-      setNewVALTrackerVersion(whats_new_data.data.version.version);
+      setNewVALTrackerVersion(data.data.version);
       
-      var newAdditions = md_conv.makeHtml(whats_new_data.data.whats_new.additions);
-      setIsAdditionsShown(!(whats_new_data.data.whats_new.additions === "- " || whats_new_data.data.whats_new.additions === null));
-      var newFixes = md_conv.makeHtml(whats_new_data.data.whats_new.fixes);
-      setIsFixesShown(!(whats_new_data.data.whats_new.fixes === "- " || whats_new_data.data.whats_new.fixes === null));
+      var newAdditions = md_conv.makeHtml(data.data.additions);
+      setIsAdditionsShown(!(data.data.additions === "- " || data.data.additions === null));
+      var newFixes = md_conv.makeHtml(data.data.fixes);
+      setIsFixesShown(!(data.data.fixes === "- " || data.data.fixes === null));
 
       setWhatsNewAdditions(newAdditions);
       setWhatsNewFixes(newFixes);

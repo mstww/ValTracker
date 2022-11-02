@@ -7,7 +7,7 @@
     "bottom_text": {
       "text_1": "Click",
       "link_text": "here",
-      "text_2": "to see all Patchnotes"
+      "text_2": "to see the complete Changelog."
     }
   },
   "de-DE": {
@@ -18,7 +18,7 @@
     "bottom_text": {
       "text_1": "Klicke",
       "link_text": "hier",
-      "text_2": "um die kompletten Patchnotes zu sehen."
+      "text_2": "um den kompletten Changelog zu sehen."
     }
   },
   "fr-FR": {
@@ -29,7 +29,7 @@
     "bottom_text": {
       "text_1": "Cliquez",
       "link_text": "ici",
-      "text_2": "pour voir toutes les notes de mise à jour"
+      "text_2": "pour voir toutes les notes de mise à jour."
     }
   }
 }

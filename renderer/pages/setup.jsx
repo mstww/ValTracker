@@ -271,7 +271,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
           "skins": []
         });
       
-        var bundle = await (await fetch('https://api.valtracker.gg/featured-bundle')).json();
+        var bundle = await (await fetch(`http://localhost:4000/v1/bundles/featured`)).json();
         var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
         
         var instancetoken = await ipcRenderer.invoke("requestInstanceToken", [name, tag]);
@@ -370,7 +370,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
               <Progress value={progress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-2/6 ' + (isProgressShown ? '' : 'hidden')} />
               <div className={'relative bottom-3.5 font-thin text-gray-500 text-left w-2/6 ' + (isProgressShown ? 'text-left w-2/6' : 'text-center')}>{loadingState}</div>
             </div>
-            <div className='absolute bottom-0.5 left-2'>
+            <div className='absolute bottom-1 left-2'>
               {
                 isLoginCompleted ? 
                 (
@@ -381,7 +381,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                       setCurrentPage("3");
                       setOverallProgress(overallProgressValues[2]);
                     }}
-                    className={'bottom-0.5 relative button default'}
+                    className={'bottom-0.5 relative button default mr-2'}
                   >
                     {LocalText(L, currentSelectedLanguage, "page_2.button_1_text")}
                   </button>
@@ -396,7 +396,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                   setCurrentPage("1");
                   setOverallProgress(overallProgressValues[0]);
                 }}
-                className={'button text relative inline-flex flex-row items-center button setup ' + (isLoginCompleted ? 'right-5 top-0.5' : ' right-8 top-0.5')}
+                className={'button text relative inline-flex flex-row items-center button text ' + (isLoginCompleted ? 'top-0.5' : ' right-8 top-0.5')}
               >
                 <BackArrow className='w-4 mr-2' />{LocalText(L, currentSelectedLanguage, "page_2.button_2_text")}
               </button>

@@ -109,6 +109,10 @@ export async function getCurrentPUUID() {
 
 export async function getInstanceToken() {
   if(db === false) await connectToDB();
+  
+  var Q = `SELECT instancetoken FROM services:⟨${process.env.SERVICE_UUID}⟩`;
+  var result = await db.query(Q);
+  return result[0].result[0].instancetoken;
 }
 
 export async function getServiceData() {

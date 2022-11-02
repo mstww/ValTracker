@@ -204,7 +204,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
         "skins": []
       });
     
-      var bundle = await (await fetch('https://api.valtracker.gg/featured-bundle')).json();
+      var bundle = await (await fetch('http://localhost:4000/v1/bundles/featured')).json();
       var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
     
       await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {

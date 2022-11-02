@@ -115,7 +115,7 @@ export async function calculateDailyStore(puuid, shopData) {
     }
     
     try {
-      var bundleData = await (await fetch(`https://api.valtracker.gg/featured-bundle?language=${APIi18n(appLang)}`)).json();
+      var bundleData = await (await fetch(`http://localhost:4000/v1/bundles/featured`, { headers: { "x-valtracker-lang": APIi18n(appLang) } })).json();
       
       data.featuredBundle = {
         bundleUUID,

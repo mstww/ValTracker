@@ -1488,9 +1488,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     const refetchFeaturedBundle = async () => {
-      var featured_bundle_raw = await fetch('https://api.valtracker.gg/featured-bundle?language=' + router.query.lang, { 'Content-Type': 'application/json' });
-      var featured_bundle = await featured_bundle_raw.json();
-
+      var featured_bundle = await (await fetch(`http://localhost:4000/v1/bundles/featured`, { headers: { "x-valtracker-lang": router.query.lang } })).json();
+      
       setFeaturedBundleName(featured_bundle.data.name);
       setFeaturedBundlePrice(featured_bundle.data.price);
       setFeaturedBundleImage(featured_bundle.data.displayIcon);
@@ -1507,7 +1506,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     } else {
       refetchFeaturedBundle();
     }
-  }, []);
+  }, [router.query]);
 
   React.useEffect(async () => {
     if(!firstRender) {
@@ -1758,7 +1757,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             className={
               'relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1 ' 
               + (loading || errored ? 'hidden' : '')
-              + (currentlyLoadedMatchCount <= 0 ? ' disabled ' : ' ')
+              + (currentlyLoadedMatchCount <= 0 ? ' disabled hidden ' : ' ')
             }
           >
             <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
@@ -1925,7 +1924,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               <span>{LocalText(L, "bot_l.errors.no_matches_found")}</span>
             }
           </div>
-          <div className={'' + (loading || errored ? 'hidden' : '')}>
+          <div className={'' + (loading || errored || currentlyLoadedMatchCount <= 0 ? 'hidden' : '')}>
             <div id='match-loading-error' className={'mt-4 ml-6 w-full flex flex-row justify-center ' + (matchFetchingError ? '' : 'hidden')}>
               <span id='' className='text-gray-500'>{LocalText(L, "bot_l.errors.err_while_fetching")}</span>
             </div>

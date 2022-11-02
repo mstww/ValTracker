@@ -8,7 +8,7 @@
       "el_1": "General",
       "el_2": "Rich Presences",
       "el_3": "Riot Account Management",
-      "el_4": "Patchnotes",
+      "el_4": "Changelog",
       "el_5": "Other"
     },
     "pg_1": {
@@ -192,7 +192,7 @@
       },
       "change_patchnotes_ver": {
         "header": "Select a Version",
-        "desc": "Select a Version you would like to see the patchnotes of.",
+        "desc": "Select a Version you would like to see the changelog of.",
         "button_1": "Confirm",
         "button_2": "Cancel"
       }
@@ -207,7 +207,7 @@
       "el_1": "Allgemein",
       "el_2": "Rich Presences",
       "el_3": "Riot-Konto Verwaltung",
-      "el_4": "Patchnotes",
+      "el_4": "Changelog",
       "el_5": "Sonstiges"
     },
     "pg_1": {
@@ -391,7 +391,7 @@
       },
       "change_patchnotes_ver": {
         "header": "Wähle eine Version",
-        "desc": "Wähle die Version, von der du die Patchnotes sehen möchtest.",
+        "desc": "Wähle die Version, von der du den Changelog sehen möchtest.",
         "button_1": "Bestätigen",
         "button_2": "Abbruch"
       }
@@ -406,7 +406,7 @@
       "el_1": "Général",
       "el_2": "Présences riches",
       "el_3": "Gestion du compte Riot",
-      "el_4": "Patchnotes",
+      "el_4": "Changelog",
       "el_5": "Autre"
     },
     "pg_1": {
@@ -590,7 +590,7 @@
       },
       "change_patchnotes_ver": {
         "header": "Sélectionnez une version",
-        "desc": "Choisissez la version pour laquelle vous souhaitez voir les patchnotes.",
+        "desc": "Choisissez la version pour laquelle vous souhaitez voir les changelog.",
         "button_1": "Confirmer",
         "button_2": "Annuler"
       }

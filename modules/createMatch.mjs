@@ -2,7 +2,6 @@ import { workerData, parentPort } from "worker_threads";
 
 async function createMatch() {
   const { data, db } = workerData;
-  console.log(db);
 
   await db.wait();
 

@@ -279,7 +279,7 @@ async function getAccessTokens(ssid) {
   return (await fetch("https://auth.riotgames.com/api/v1/authorization", {
     method: 'POST',
     headers: {
-      "User-Agent": "RiotClient/46.0.0.4265023.4253280 rso-auth (Windows;10;;Professional, x64)",
+      "User-Agent": "RiotClient/60.0.6.4770705.4749685 rso-auth (Windows;10;;Professional, x64)",
       'Content-Type': 'application/json',
       Cookie: ssid,
     },
@@ -1145,13 +1145,13 @@ async function checkStoreForWishlistItems() {
     await noFilesFound();
   }
 
-  var appStatus = await(await fetch('https://api.valtracker.gg/status/app', {
+  var appStatus = await(await fetch('http://localhost:4000/v1/status/main', {
     headers: {
-      "auth": 'v' + pjson.version,
+      "x-valtracker-version": 'v' + pjson.version,
     }
   })).json();
 
-  if(appStatus.data.operational === false) {
+  if(appStatus.data.startup.operational === false) {
     autoUpdater.checkForUpdates();
     
     autoUpdater.on("update-not-available", () => {
@@ -1169,7 +1169,7 @@ async function checkStoreForWishlistItems() {
     autoUpdater.on("error", (err) => {
       notifier.notify({
         title: LocalText(L, 'disabled_notifs.update_err.header'),
-        message: appStatus.data.desc,
+        message: appStatus.data.startup.desc,
         icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
@@ -1192,14 +1192,8 @@ async function checkStoreForWishlistItems() {
 
     return;
   }
-
-  var featureStatus = await(await fetch('https://api.valtracker.gg/status/features/main_process', {
-    headers: {
-      "auth": 'v' + pjson.version,
-    }
-  })).json();
   
-  if(featureStatus.data.app_discord_rp.enabled) {
+  if(appStatus.data.appRP.enabled === true) {
     //Login with Discord client 
     discordClient.login({
       clientId: "1018145263761764382",
@@ -1216,7 +1210,7 @@ async function checkStoreForWishlistItems() {
     RPState = 'disabled'
   }
 
-  if(featureStatus.data.valorant_discord_rp.enabled === true) {
+  if(appStatus.data.gameRP.enabled === true) {
     var uuid = uuidv5("useGameRP", process.env.SETTINGS_UUID);
     let useGameRP = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
     useGameRP = useGameRP.length > 0 ? useGameRP[0] : {value: false};
@@ -1811,5 +1805,22 @@ ipcMain.handle('changeSetting', async (event, args) => {
 });
 
 ipcMain.handle('requestInstanceToken', async (event, args) => {
+  console.log(args);
   return await await requestInstanceToken(args[0], args[1]);
+});
+
+var instanceToken = await getInstanceToken();
+    
+var instanceComms = new Worker(new URL("../modules/instanceSocketComms.mjs", import.meta.url), { workerData: instanceToken });
+
+instanceComms.on("message", async (msg) => {
+  console.log(msg);
+});
+
+instanceComms.on("error", err => {
+  console.log(err);
+});
+
+instanceComms.on("exit", exitCode => {
+  console.log(exitCode);
 });

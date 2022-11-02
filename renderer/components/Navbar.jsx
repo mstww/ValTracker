@@ -152,24 +152,27 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   React.useEffect(async () => {
     var pjson = require('../../package.json');
 
-    var featureStatus = await(await fetch('https://api.valtracker.gg/status/features/pages', {
+    console.log(pjson.version);
+
+    var featureStatus = await(await fetch('http://localhost:4000/v1/status/renderer', {
       headers: {
-        "auth": 'v' + pjson.version,
-        "bearer": "test"
+        "x-valtracker-version": 'v' + pjson.version
       }
     })).json();
 
-    setIsInvShown(featureStatus.data.inventory_manager.enabled);
-    setInvHiddenDesc(featureStatus.data.inventory_manager.desc);
+    console.log(featureStatus);
 
-    setIsFavsShown(featureStatus.data.favorite_matches.enabled);
-    setFavsHiddenDesc(featureStatus.data.favorite_matches.desc);
+    setIsInvShown(featureStatus.data.inv.enabled);
+    setInvHiddenDesc(featureStatus.data.inv.desc);
 
-    setIsShopShown(featureStatus.data.player_store.enabled);
-    setShopHiddenDesc(featureStatus.data.player_store.desc);
+    setIsFavsShown(featureStatus.data.favs.enabled);
+    setFavsHiddenDesc(featureStatus.data.favs.desc);
 
-    setIsSearchShown(featureStatus.data.player_search.enabled);
-    setSearchHiddenDesc(featureStatus.data.player_search.desc);
+    setIsShopShown(featureStatus.data.shop.enabled);
+    setShopHiddenDesc(featureStatus.data.shop.desc);
+
+    setIsSearchShown(featureStatus.data.search.enabled);
+    setSearchHiddenDesc(featureStatus.data.search.desc);
 
     setIsSettingsShown(featureStatus.data.settings.enabled);
     setSettingsHiddenDesc(featureStatus.data.settings.desc);
