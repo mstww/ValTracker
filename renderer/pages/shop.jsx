@@ -192,7 +192,6 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     setBundlePrice(data.featuredBundle.bundlePrice);
 
     var user_creds = raw[1];
-    var tokenData = raw[2];
 
     // Start Timer
     var bundleTimer = Math.abs(moment().diff(data.featuredBundle.expiresIn, 'seconds'));
@@ -345,7 +344,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='z-20 absolute top-4 right-4 hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear'
+            className='close-icon-wrapper'
             onClick={() => {
               setShowBackground(false);
               setIsOverlayShown(false);

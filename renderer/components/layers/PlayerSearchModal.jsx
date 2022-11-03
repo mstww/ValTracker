@@ -105,7 +105,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <div 
-          className='absolute z-30 top-4 right-4 ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
+          className='close-icon-wrapper'
           onClick={() => {
             setSearchShown(false);
             setIsOverlayShown(false);

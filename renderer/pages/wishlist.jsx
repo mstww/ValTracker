@@ -139,7 +139,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                       </div>
                       <div className={'py-1 text-xl border-t-2 border-b-2 border-r-2 rounded-r border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col justify-center items-center'}>
                         <button 
-                          className="flex items-center relative right-9"
+                          className="flex items-center relative right-7 button default"
                           onClick={async () => {
                             for(var i = 0; i < unsortedPlayerWishlistSkins.length; i++) {
                               if(unsortedPlayerWishlistSkins[i].uuid === skin.uuid) {

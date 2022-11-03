@@ -575,14 +575,14 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <OverlayWrapper useRef={overlayRef} isShown={showVideo}>
         <motion.div 
-          className='w-2/3 mb-8 flex flex-col justify-between card'
+          className='w-2/3 mb-8 flex flex-col z-30 pointer-events-auto justify-between card'
           variants={card_variants}
           initial="hidden"
           animate={ showVideo ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='absolute top-4 right-4 hover:bg-black z-30 rounded cursor-pointer transition-all duration-100 ease-linear'
+            className='close-icon-wrapper'
             onClick={() => { setShowVideo(false) }}
           >
             <Close className='w-8 p-1' />

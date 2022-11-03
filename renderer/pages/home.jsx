@@ -1488,7 +1488,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     const refetchFeaturedBundle = async () => {
-      var featured_bundle = await (await fetch(`http://localhost:4000/v1/bundles/featured`, { headers: { "x-valtracker-lang": router.query.lang } })).json();
+      var featured_bundle = await (await fetch(`http://localhost:4000/v1/bundles/featured`, { headers: { "x-valtracker-lang": APIi18n(router.query.lang) } })).json();
       
       setFeaturedBundleName(featured_bundle.data.name);
       setFeaturedBundlePrice(featured_bundle.data.price);
@@ -1506,7 +1506,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     } else {
       refetchFeaturedBundle();
     }
-  }, [router.query]);
+  }, []);
 
   React.useEffect(async () => {
     if(!firstRender) {

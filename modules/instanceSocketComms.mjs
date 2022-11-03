@@ -4,7 +4,6 @@ import { workerData } from "worker_threads";
 
 (async () => {
   var instanceToken = workerData;
-  console.log(instanceToken);
   var data = await(await fetch("http://localhost:4000/v1/instancesocket", {
     method: "POST",
     headers: {
@@ -31,7 +30,11 @@ import { workerData } from "worker_threads";
     console.log(data);
   });
   
-  ws.on('close', () => {
-    console.log("Connection closed.");
+  ws.on('close', (ee) => {
+    console.log("Connection to WebSocket closed.");
+  });
+
+  ws.on("error", (err) => {
+    console.log(err);
   });
 })();

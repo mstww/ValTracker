@@ -244,7 +244,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           transition={{ type: 'ease-in', duration: 0.2 }}
         > 
           <div 
-            className='z-20 absolute top-4 right-4 hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear'
+            className='close-icon-wrapper'
             onClick={() => {
               setShowBackground(false);
               setIsOverlayShown(false);
