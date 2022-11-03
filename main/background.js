@@ -844,7 +844,7 @@ async function checkForMatch() {
   return;
 }
 
-const gamemodes = LocalText(L, 'gamemodes');
+const gamemodes = await LocalText(L, 'gamemodes');
 
 async function decideRichPresenceData(data) {
   if(db === false) await connectToDB();
@@ -888,15 +888,16 @@ async function decideRichPresenceData(data) {
           var smallImage = user_data.rank.split("/")[5];
         }
 
+        var detailsText = await LocalText(L, 'val_rp_details.in_match');
         if(settingsValues.showGameRPMode === true) {
-          var details = `${gamemodes['custom']} - ${LocalText(L, 'val_rp_details.in_match')}`;
+          var details = `${gamemodes['custom']} - ${detailsText}`;
         } else {
-          var details = LocalText(L, 'val_rp_details.in_match');
+          var details = detailsText;
         }
 
         if(settingsValues.showGameRPScore === true) {
           if(data.teamScore === null && data.enemyScore === null) {
-            var scores = LocalText(L, 'val_rp_details.waiting_for_round');
+            var scores = await LocalText(L, 'val_rp_details.waiting_for_round');
           } else {
             var scores = data.teamScore + " - " + data.enemyScore;
           }
@@ -909,7 +910,7 @@ async function decideRichPresenceData(data) {
 
         setRichPresence(details, scores, map, agent, ingameTimestamp);
       } else if(data.isRange === true) {
-        var details = LocalText(L, 'val_rp_details.the_range');
+        var details = await LocalText(L, 'val_rp_details.the_range');
         var map = "range";
         var mode = 'unrated';
 
@@ -932,10 +933,11 @@ async function decideRichPresenceData(data) {
           var smallImage = undefined;
         }
 
+        var detailsText = await LocalText(L, 'val_rp_details.in_match');
         if(settingsValues.showGameRPMode === true) {
-          var details = gamemodes[data.gameMode] + ` - ${LocalText(L, 'val_rp_details.in_match')}`;
+          var details = gamemodes[data.gameMode] + ` - ${detailsText}`;
         } else {
-          var details = LocalText(L, 'val_rp_details.in_match');
+          var details = detailsText;
         }
 
         if(settingsValues.showGameRPScore === true) {
@@ -964,12 +966,13 @@ async function decideRichPresenceData(data) {
       if(pregameTimestamp === null && settingsValues.showGameRPTimer === true) pregameTimestamp = Date.now();
 
       var map = data.mapPath.split("/").pop().toLowerCase();
-
+      
+      var detailsText = await LocalText(L, 'val_rp_details.agent_select');
       if(settingsValues.showGameRPMode === true) {
-        var details = gamemodes[data.gameMode] + ` - ${LocalText(L, 'val_rp_details.agent_select')}`;
+        var details = gamemodes[data.gameMode] + ` - ${detailsText}`;
         var mode = data.gameMode;
       } else {
-        var details = LocalText(L, 'val_rp_details.agent_select');
+        var details = detailsText;
         var mode = null;
       }
 
@@ -989,7 +992,7 @@ async function decideRichPresenceData(data) {
 
       playerAgent = false;
 
-      var details = LocalText(L, 'val_rp_details.menus');
+      var details = await LocalText(L, 'val_rp_details.menus');
       var image = 'valorant';
 
       setRichPresence(details, null, image, null, menusTimestamp);
@@ -1000,10 +1003,11 @@ async function decideRichPresenceData(data) {
   }
 }
 
-function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
+async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
+  var lg_txt = await LocalText(L, 'val_rp_details.playing_val');
   var obj = {
     assets: {
-      large_text: LocalText(L, 'val_rp_details.playing_val'),
+      large_text: lg_txt,
     },
     timestamps: {},
   };
@@ -1058,14 +1062,14 @@ async function checkStoreForWishlistItems() {
     var singleSkinsExpirationDate = now.setSeconds(now.getSeconds() + singleSkinsTime);
 
     var hoursLeft = (Math.abs(singleSkinsExpirationDate - Date.now()) / 36e5);
-    var hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.h_1');
+    var hoursStr = await LocalText(L, 'skin_wishlist_notifications.timer.h_2');
 
     if(hoursLeft < 1) {
       hoursLeft = (Math.abs(singleSkinsExpirationDate - Date.now()) / 60000).toFixed(0);
-      hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.m');
+      hoursStr = await LocalText(L, 'skin_wishlist_notifications.timer.m');
     } else if(hoursLeft > 1 && hoursLeft < 2) {
       hoursLeft = '1';
-      hoursStr = LocalText(L, 'skin_wishlist_notifications.timer.h_2');
+      hoursStr = await LocalText(L, 'skin_wishlist_notifications.timer.h_1');
     } else {
       hoursLeft = hoursLeft.toFixed(0);
     }
@@ -1080,15 +1084,18 @@ async function checkStoreForWishlistItems() {
       }
     }
 
+    var title1 = await LocalText(L, 'skin_wishlist_notifications.notif_1.header');
+    var message1_1 = await LocalText(L, 'skin_wishlist_notifications.notif_1.desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr)
+    var message1_2 = await LocalText(L, 'skin_wishlist_notifications.notif_1.melee_desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr);
+    var message1 = wishlistedSkinsInShop[0].isMelee ? message1_1 : message1_2
+
+    var title2 = await LocalText(L, 'skin_wishlist_notifications.notif_2.header');
+    var message2 = await LocalText(L, 'skin_wishlist_notifications.notif_2.desc', hoursLeft, hoursStr);
+
     if(wishlistedSkinsInShop.length === 1) {
       notifier.notify({
-        title: LocalText(L, 'skin_wishlist_notifications.notif_1.header'),
-        message: (
-          wishlistedSkinsInShop[0].isMelee ? 
-          LocalText(L, 'skin_wishlist_notifications.notif_1.desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr) 
-          : 
-          LocalText(L, 'skin_wishlist_notifications.notif_1.melee_desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr)
-        ),
+        title: title1,
+        message: message1,
         icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
@@ -1099,8 +1106,8 @@ async function checkStoreForWishlistItems() {
       });
     } else if(wishlistedSkinsInShop.length > 1) {
       notifier.notify({
-        title: LocalText(L, 'skin_wishlist_notifications.notif_2.header'),
-        message: LocalText(L, 'skin_wishlist_notifications.notif_2.desc', hoursLeft, hoursStr),
+        title: title2,
+        message: message2,
         icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
@@ -1154,9 +1161,10 @@ async function checkStoreForWishlistItems() {
   if(appStatus.data.startup.operational === false) {
     autoUpdater.checkForUpdates();
     
+    var title1 = await LocalText(L, 'disabled_notifs.no_update.header');
     autoUpdater.on("update-not-available", () => {
       notifier.notify({
-        title: LocalText(L, 'disabled_notifs.no_update.header'),
+        title: title1,
         message: appStatus.data.desc,
         icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
@@ -1166,9 +1174,10 @@ async function checkStoreForWishlistItems() {
       app.quit();
     });
     
+    var title2 = await LocalText(L, 'disabled_notifs.no_update.header');
     autoUpdater.on("error", (err) => {
       notifier.notify({
-        title: LocalText(L, 'disabled_notifs.update_err.header'),
+        title: title2,
         message: appStatus.data.startup.desc,
         icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
@@ -1178,10 +1187,12 @@ async function checkStoreForWishlistItems() {
       app.quit();
     });
     
+    var title3 = await LocalText(L, 'disabled_notifs.no_update.header');
+    var message = await LocalText(L, 'disabled_notifs.no_update.header');
     autoUpdater.on("update-downloaded", () => {
       notifier.notify({
-        title: LocalText(L, 'disabled_notifs.update_downloaded.header'),
-        message: LocalText(L, 'disabled_notifs.update_downloaded.desc'),
+        title: title3,
+        message: message,
         icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
         wait: 3,
         appID: 'VALTracker'
