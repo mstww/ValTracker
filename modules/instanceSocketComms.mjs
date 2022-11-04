@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
 import fetch from 'node-fetch';
-import { workerData } from "worker_threads";
+import { parentPort, workerData } from "worker_threads";
 
 (async () => {
   var instanceToken = workerData;
@@ -24,13 +24,16 @@ import { workerData } from "worker_threads";
   
   ws.on('open', () => {
     console.log("Connected to WebSocket!");
+    parentPort.on("message", () => {
+      ws.send(JSON.stringify({ "type": "updating" }));
+    });
   });
   
   ws.on('message', data => {
-    console.log(data);
+    parentPort.postMessage(JSON.parse(data));
   });
   
-  ws.on('close', (ee) => {
+  ws.on('close', () => {
     console.log("Connection to WebSocket closed.");
   });
 

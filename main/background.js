@@ -1481,7 +1481,30 @@ async function checkStoreForWishlistItems() {
       } else {
         const port = process.argv[2];
         await mainWindow.loadURL(`http://localhost:${port}/home?usedTheme=${theme}&lang=${appLang}`);
-      } 
+      }
+      
+      var instanceToken = await getInstanceToken();
+      
+      var instanceComms = new Worker(new URL("../modules/instanceSocketComms.mjs", import.meta.url), { workerData: instanceToken });
+
+      ipcMain.on('fetch-update', function() {
+        instanceComms.postMessage("Fetching Update");
+      });
+      
+      instanceComms.on("message", async (msg) => {
+        console.log(msg);
+        if(msg.type === "message") {
+          sendMessageToWindow("newMessage", msg.content);
+        }
+        if(msg.type === "update") {
+          console.log("Here");
+          sendMessageToWindow("newUpdate", msg.content);
+        }
+      });
+      
+      instanceComms.on("error", err => {
+        console.log(err);
+      });
     } else {
       if (isProd) {
         await mainWindow.loadURL(`app://./home.html?reauth_failed=true&reauthArray=${JSON.stringify(reauthArray)}&usedTheme=${theme}&lang=${appLang}`);
@@ -1820,20 +1843,4 @@ ipcMain.handle('changeSetting', async (event, args) => {
 ipcMain.handle('requestInstanceToken', async (event, args) => {
   console.log(args);
   return await await requestInstanceToken(args[0], args[1]);
-});
-
-var instanceToken = await getInstanceToken();
-    
-var instanceComms = new Worker(new URL("../modules/instanceSocketComms.mjs", import.meta.url), { workerData: instanceToken });
-
-instanceComms.on("message", async (msg) => {
-  console.log(msg);
-});
-
-instanceComms.on("error", err => {
-  console.log(err);
-});
-
-instanceComms.on("exit", exitCode => {
-  console.log(exitCode);
 });

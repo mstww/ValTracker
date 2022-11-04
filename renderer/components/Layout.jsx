@@ -1,13 +1,7 @@
 import { motion } from "framer-motion"
 import { useRouter } from "next/router";
 import React from "react";
-import MessageLayer from "./layers/MessageLayer";
-import UpdatingLayer from "./layers/UpdatingLayer";
-import ReauthLayer from "./layers/ReauthLayer"; 
-import TextboxLayer from "./layers/TextboxLayer"
-import WhatsNewLayer from "./layers/WhatsNewLayer";
 import IpcLayer from "./layers/ipcLayer";
-import PlayerSearchModal from "./layers/PlayerSearchModal";
 
 const contentVariants = {
   hidden: { opacity: 0, x: 0, y: 0 },
@@ -65,13 +59,7 @@ export default function Layout({ children, classNames, setup, migrate, isNavbarM
       initial="initial"
       animate={isNavbarMinimized ? "minimize" : "maximize"}
     >
-      <UpdatingLayer setIsOverlayShown={setIsOverlayShown} />
-      {setup || migrate ? '' : <MessageLayer />}
-      {setup || migrate ? '' : <ReauthLayer setIsOverlayShown={setIsOverlayShown} />}
-      {setup || migrate ? '' : <TextboxLayer />}
-      {setup || migrate ? '' : <WhatsNewLayer setIsOverlayShown={setIsOverlayShown} />}
       {setup || migrate ? '' : <IpcLayer />}
-      {setup || migrate ? '' : <PlayerSearchModal setIsOverlayShown={setIsOverlayShown} />}
       <div className={"bg-maincolor-light relative left-0 z-40 overflow-auto " + (isNavbarMinimized ? ' strech' : ' no-strech')} id={setup || migrate ? 'layout-setup' : "Layout"}>
         <motion.main
           key={"E"}

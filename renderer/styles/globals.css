@@ -1504,7 +1504,7 @@ tr td:last-child {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(5px) !important;
   -webkit-backdrop-filter: blur(5px) !important;
-  @apply border-2 border-tile-color rounded p-4 pointer-events-auto relative;
+  @apply border-2 border-tile-color rounded p-4 pointer-events-auto relative !text-white;
 }
 
 .modal-decoy {

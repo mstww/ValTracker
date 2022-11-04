@@ -22,6 +22,7 @@ export default function Message({ message, unix, delay }) {
   const contentRef = React.useRef(null);
 
   const [ isMessageShown, setIsMessageShown ] = React.useState(true);
+  const [ doesMessageExist, setDoesMessageExist ] = React.useState(true);
   
   var title = message.title;
 
@@ -39,6 +40,10 @@ export default function Message({ message, unix, delay }) {
     if(data.lastMessageUnix < message_date.textContent) {
       await updateMessageDate(message_date.textContent);
     }
+
+    setTimeout(async () => {
+      setDoesMessageExist(false);
+    }, 600);
   }
 
   React.useEffect(() => {
@@ -48,28 +53,32 @@ export default function Message({ message, unix, delay }) {
         shell.openExternal(e.target.href);
       }
     })
-  });
+  }, []);
 
   return(
-    <motion.div 
-      className="message text-gray-500 w-96 min-h-40 h-auto mx-4 mb-4 card"
-      variants={variants}
-      initial="hidden"
-      animate={isMessageShown ? "enter" : "exit"}
-      transition={{ type: 'ease', duration: 0.3, delay: delay }}
-    >
-      <div
-        ref={messageRef}
-        className='absolute top-2 right-2 cursor-pointer rounded hover:bg-black transition-all duration-100 ease-in p-1 z-10'
-        onClick={() => {closeMessage(messageRef)}}
-      >
-        <Close className='w-4' />
-      </div>
-      <h2 className='text-white relative flex flex-row'><MessageIcon className="w-6 h-6 mr-2 relative top-1" /> { title }</h2>
-      <span className='text-gray-500 relative bottom-1'>{ date }</span>
-      <hr className='relative bottom-0.5 w-full' />
-      <div className='messageContent' ref={contentRef} dangerouslySetInnerHTML={{ __html: message }} />
-      <span className='hidden'>{ unix }</span>
-    </motion.div>
+    <>
+      {doesMessageExist && 
+        <motion.div 
+          className="message text-gray-500 border-2 !border-button-color w-96 min-h-40 h-auto !p-2 mx-4 mb-4 modal pointer-events-auto"
+          variants={variants}
+          initial="hidden"
+          animate={isMessageShown ? "enter" : "exit"}
+          transition={{ type: 'ease', duration: 0.3, delay: delay }}
+        >
+          <div
+            ref={messageRef}
+            className='absolute top-2 right-2 cursor-pointer rounded hover:bg-black transition-all duration-100 ease-in p-1 z-10'
+            onClick={() => {closeMessage(messageRef)}}
+          >
+            <Close className='w-4' />
+          </div>
+          <h2 className='text-white relative flex flex-row'><MessageIcon className="w-6 h-6 mr-2 relative top-1" /> { title }</h2>
+          <span className='text-gray-500 relative bottom-1'>{ date }</span>
+          <hr className='relative bottom-0.5 w-full' />
+          <div className='messageContent' ref={contentRef} dangerouslySetInnerHTML={{ __html: message }} />
+          <span className='hidden'>{ unix }</span>
+        </motion.div>
+      }
+    </>
   )
 }

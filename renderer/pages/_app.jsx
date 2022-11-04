@@ -11,6 +11,13 @@ import '../styles/globals.css';
 import { executeQuery } from '../js/dbFunctions';
 import { useFirstRender } from '../components/useFirstRender';
 
+import MessageLayer from "../components/layers/MessageLayer";
+import UpdatingLayer from "../components/layers/UpdatingLayer";
+import ReauthLayer from "../components/layers/ReauthLayer"; 
+import TextboxLayer from "../components/layers/TextboxLayer"
+import WhatsNewLayer from "../components/layers/WhatsNewLayer";
+import PlayerSearchModal from "../components/layers/PlayerSearchModal";
+
 const normal = createTheme({
   type: "dark",
   theme: {
@@ -103,7 +110,13 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <NextUIProvider theme={theme ? themes[theme] : themes['normal']}>
         <WindowControls setup={setup} migrate={migrate} />
+        <UpdatingLayer setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown} />
         {setup || migrate ? '' : <Navbar isNavbarMinimized={isNavbarMinimized} setIsNavbarMinimized={setIsNavbarMinimized} />}
+        {setup || migrate ? '' : <MessageLayer />}
+        {setup || migrate ? '' : <ReauthLayer setIsOverlayShown={setIsOverlayShown} />}
+        {setup || migrate ? '' : <TextboxLayer />}
+        {setup || migrate ? '' : <WhatsNewLayer setIsOverlayShown={setIsOverlayShown} />}
+        {setup || migrate ? '' : <PlayerSearchModal setIsOverlayShown={setIsOverlayShown} />}
         <AnimatePresence
           exitBeforeEnter={true}
           onExitComplete={() => window.scrollTo(0, 0)}

@@ -1,11 +1,8 @@
 import React from 'react';
-import pjson from '../../../package.json';
-import compareVersions from 'compare-versions';
 import moment from 'moment';
 import { ipcRenderer } from 'electron';
 import { motion } from 'framer-motion';
 import { Progress } from '@nextui-org/react';
-import fetch from 'node-fetch';
 import L from '../../locales/translations/updates.json';
 import LocalText from '../translation/LocalText';
 import { useRouter } from 'next/router';
@@ -28,44 +25,6 @@ const backdrop_variants = {
   exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
 }
 
-const fetchPatchnotes = async (lang) => {
-  var updateDenied = false;
-
-  if(!updateDenied) {
-    try {
-      const json = await(await fetch(`http://localhost:4000/v1/changelog`)).json();
-
-      var newest_version = json.data.version;
-      var current_version = pjson.version;
-    
-      var newest_date = json.data.date;
-      var newest_desc = json.data.desc;
-    
-      var version_compare = compareVersions(current_version, newest_version);
-    
-      if(version_compare == -1) {
-        moment.locale(lang);
-        var formatted_date = moment(newest_date).format('D. MMMM, YYYY');
-    
-        var info = `${newest_version} (${formatted_date})`;
-
-        var obj = {
-          update_info: info,
-          desc: newest_desc,
-          unix_date: newest_date
-        }
-  
-        return { errored: false, items: obj };
-      }
-      
-      return { errored: true, items: false };
-    } catch(err) {
-      return { errored: true, items: err };
-    }
-  }
-  return { errored: true, items: 'denied' };
-}
-
 function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
@@ -85,47 +44,46 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
     setUpdateCardShown(false);
     setBackgroundShown(false);
     setIsOverlayShown(false);
-
-    sessionStorage.setItem('update-denied', false);
   }
 
   const declineUpdate = () => {
     setUpdateCardShown(false);
     setBackgroundShown(false);
     setIsOverlayShown(false);
-
-    sessionStorage.setItem('update-denied', true);
   }
 
   const finishUpdate = () => {
     ipcRenderer.send('quit-app-and-install');
-  } 
+  }
 
   const restartLater = () => {
     setFinishedCardShown(false);
   }
 
   React.useEffect(() => {
-    const fetchApi = async () => {
-      const { errored, items } = await fetchPatchnotes(router.query.lang);
+    console.log("UseEffect!");
+    var e = ipcRenderer.on('newUpdate', (event, args) => {
+      console.log("Hello?");
+      console.log(args);
+      moment.locale(router.query.lang);
 
-      if(!errored) {
-        setInfo(items.update_info);
-        setDesc(items.desc);
-        
-        setUpdateCardShown(true);
-        setBackgroundShown(true);
-        setIsOverlayShown(true);
-      } else {
-        setUpdateCardShown(false);
-        setBackgroundShown(false);
-        setIsOverlayShown(false);
-      }
-    }
-    if(!sessionStorage.getItem('update-denied')) {
-      fetchApi();
-    }
+      var formatted_date = moment(args.date).format('D. MMMM, YYYY');
+  
+      var info = `${args.version} (${formatted_date})`;
+
+      setInfo(info);
+      setDesc(args.desc);
+      
+      setUpdateCardShown(true);
+      setBackgroundShown(true);
+      setIsOverlayShown(true);
+    });
+    console.log(e);
   }, []);
+
+  React.useEffect(() => {
+    console.log("OverlayShown:", isOverlayShown);
+  }, [isOverlayShown]);
 
   React.useEffect(() => {
     ipcRenderer.on('update-found', () => {
@@ -145,7 +103,7 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
       ipcRenderer.removeAllListeners('update-download-percent');
       ipcRenderer.removeAllListeners('update-download-finished');
     }
-  })
+  }, []);
 
   return (
     <>
