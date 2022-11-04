@@ -1084,6 +1084,8 @@ async function checkStoreForWishlistItems() {
       }
     }
 
+    if(wishlistedSkinsInShop.length === 0) return;
+
     var title1 = await LocalText(L, 'skin_wishlist_notifications.notif_1.header');
     var message1_1 = await LocalText(L, 'skin_wishlist_notifications.notif_1.desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr)
     var message1_2 = await LocalText(L, 'skin_wishlist_notifications.notif_1.melee_desc', wishlistedSkinsInShop[0].displayName, hoursLeft, hoursStr);
