@@ -15,7 +15,7 @@ export default function MatchTypeTile({ type, text, delay, active, onClick }) {
       animate="enter"
       exit="exit"
       transition={{ type: 'ease-in', duration: 0.2, delay: delay }}
-      onClick={onClick}
+      onClick={active == type ? null : onClick}
     >
       <span>{ text }</span>
     </motion.div>

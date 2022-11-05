@@ -16,7 +16,6 @@ import UpdatingLayer from "../components/layers/UpdatingLayer";
 import ReauthLayer from "../components/layers/ReauthLayer"; 
 import TextboxLayer from "../components/layers/TextboxLayer"
 import WhatsNewLayer from "../components/layers/WhatsNewLayer";
-import PlayerSearchModal from "../components/layers/PlayerSearchModal";
 
 const normal = createTheme({
   type: "dark",
@@ -116,7 +115,6 @@ function MyApp({ Component, pageProps }) {
         {setup || migrate ? '' : <ReauthLayer setIsOverlayShown={setIsOverlayShown} />}
         {setup || migrate ? '' : <TextboxLayer />}
         {setup || migrate ? '' : <WhatsNewLayer setIsOverlayShown={setIsOverlayShown} />}
-        {setup || migrate ? '' : <PlayerSearchModal setIsOverlayShown={setIsOverlayShown} />}
         <AnimatePresence
           exitBeforeEnter={true}
           onExitComplete={() => window.scrollTo(0, 0)}

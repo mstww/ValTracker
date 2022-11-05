@@ -76,7 +76,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   // -------------------- PLAYER INFO --------------------
 
   const [ name, setname ] = React.useState('');
-  const [ uuid, setuuid ] = React.useState('');
+  const [ uuid, setUUID ] = React.useState('');
   const [ playerAgentUUID, setPlayerAgentUUID ] = React.useState('');
   const [ playerKDA, setPlayerKDA ] = React.useState('');
   const [ playerKD, setPlayerKD ] = React.useState('');
@@ -296,7 +296,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setMatchGameVersion(knownMatchData.gameVersion);
   
         setname(knownMatchData.name);
-        setuuid(knownMatchData.uuid);
+        setUUID(knownMatchData.uuid);
         setPlayerAgentUUID(knownMatchData.playerAgent);
         setPlayerKDA(knownMatchData.playerKDA);
         setPlayerKD(knownMatchData.playerKD);
@@ -360,7 +360,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setPlayerMatchResult(knownMatchData.matchOutcome);
   
         setname(knownMatchData.name);
-        setuuid(knownMatchData.uuid);
+        setUUID(knownMatchData.uuid);
         setPlayerAgentUUID(knownMatchData.playerAgent);
         setPlayerKDA(knownMatchData.playerKDA);
         setPlayerKD(knownMatchData.playerKD);
@@ -389,7 +389,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   return (
     <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''} isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div 
-        className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
+        className='close-icon-wrapper' 
         onClick={() => { router.back() }}
       >
         <BackArrow className='w-8 p-1 shadow-img' />

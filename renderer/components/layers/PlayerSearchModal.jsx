@@ -26,6 +26,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
   
   const [ searchShown, setSearchShown ] = React.useState(false);
   const [ searchHistory, setSearchHistory ] = React.useState([]);
+  const [ toggle, setToggle ] = React.useState(false);
 
   const inputRef = React.useRef();
 
@@ -38,11 +39,14 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
   }, []);
 
   const handleHistoryClick = (name, tag, name_encoded) => {
+    setSearchShown(false);
+    setIsOverlayShown(false);
     router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
   }
 
-  const removeItemFromHistory = async (e, name_encoded) => {
+  const removeItemFromHistory = async (name_encoded) => {
     await executeQuery(`DELETE FROM searchHistoryResult WHERE encoded_user = "${name_encoded}"`);
+    setSearchHistory(current => current.filter((x) => x.encoded_user !== name_encoded));
   }
 
   React.useEffect(() => {
@@ -82,8 +86,8 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
       if(user_found === false) {
         await executeQuery(`CREATE searchHistoryResult SET name = "${name}", tag = "${tag}", encoded_user = "${name_encoded}", unix = ${Date.now()}`);
       }
-
       router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
+      setToggle(!toggle);
     }
   }
 
@@ -150,7 +154,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
                     id='remove-el'
                     className='ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
                     onClick={() => {
-                      removeItemFromHistory(e, searchValue.encoded_user);
+                      removeItemFromHistory(searchValue.encoded_user);
                     }}
                   >
                     <Close className='w-8 p-1' />

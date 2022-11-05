@@ -152,15 +152,11 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   React.useEffect(async () => {
     var pjson = require('../../package.json');
 
-    console.log(pjson.version);
-
     var featureStatus = await(await fetch('http://localhost:4000/v1/status/renderer', {
       headers: {
         "x-valtracker-version": 'v' + pjson.version
       }
     })).json();
-
-    console.log(featureStatus);
 
     setIsInvShown(featureStatus.data.inv.enabled);
     setInvHiddenDesc(featureStatus.data.inv.desc);
@@ -253,6 +249,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         await executeQuery(`CREATE searchHistoryResult SET name = "${name}", tag = "${tag}", encoded_user = "${name_encoded}", unix = ${Date.now()}`);
       }
 
+      setHistoryNotifSwitch(!historyNotifSwitch);
       router.push(`/player?name=${name}&tag=${tag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
     }
   }

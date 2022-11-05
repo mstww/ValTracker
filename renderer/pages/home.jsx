@@ -716,9 +716,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
 // ------------------------------- MISC. -------------------------------
   
-  const [ homePrefs, setHomePrefs ] = React.useState({});
   const [ favMatches, setFavMatches ] = React.useState([]);
-  const [ ranks, setranks ] = React.useState([]);
+  const [ ranks, setRanks ] = React.useState([]);
 
   const [ userCreds, setUserCreds ] = React.useState({});
 
@@ -1598,7 +1597,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     if(!firstRender) {
       try {
         var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
-        setranks(ranksRaw.data[ranksRaw.data.length-1].tiers);
+        setRanks(ranksRaw.data[ranksRaw.data.length-1].tiers);
       } catch(e) {
         console.log(e);
       }
@@ -1827,7 +1826,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               <span className='text-xl'>{matchData.mapName}</span>
                               <span className='text-base font-light flex flex-row items-center'> 
                                 <Tooltip 
-                                  content={matchData.playerCurrentTier > 3 ? matchData.rankFixed : ''}
+                                  content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
                                   color="error" 
                                   placement={'top'} 
                                   className={'rounded'}

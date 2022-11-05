@@ -90,16 +90,16 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
 const fetchPlayer = async (pname, ptag, lang) => {
   try {
     const playerInfoRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${pname}/${ptag}`, { keepalive: true });
-    const playerInfo = await playerInfoRaw.json();
+    const pInfo = await playerInfoRaw.json();
 
-    if(playerInfo.status !== 200) {
-      return { errored: true, items: {status: playerInfo.status, message: playerInfo.message }};
+    if(pInfo.status !== 200) {
+      return { errored: true, items: {status: pInfo.status, message: pInfo.message }};
     }
 
-    const puuid = playerInfo.data.puuid;
-    const region = playerInfo.data.region;
-    const name = playerInfo.data.name;
-    const tag = playerInfo.data.tag;
+    const puuid = pInfo.data.puuid;
+    const region = pInfo.data.region;
+    const name = pInfo.data.name;
+    const tag = pInfo.data.tag;
 
     const bearer = await getUserAccessToken();
     const entitlement_token = await getUserEntitlement();
@@ -144,13 +144,13 @@ const fetchPlayer = async (pname, ptag, lang) => {
     }
       
     var json = {
-      playerInfo: {
+      pInfo: {
         "name": name,
         "tag": tag,
         "puuid": puuid,
         "region": region.toUpperCase(),
-        "account_level": playerInfo.data.account_level,
-        "card": playerInfo.data.card.small,
+        "account_level": pInfo.data.account_level,
+        "card": pInfo.data.card.small,
         "rankNum": currenttier,
         "rank": rank,
         "rankIcon": rankIcon,
@@ -224,11 +224,11 @@ function PlayerInfo({ isNavbarMinimized }) {
   const [ isReloadable, setIsReloadable ] = React.useState(false);
 
   const [ playerCard, setPlayerCard ] = React.useState(null);
-  const [ nameTag, setnameTag ] = React.useState(null);
-  const [ rankImg, setrankImage ] = React.useState(null);
-  const [ region, setregion ] = React.useState(null);
+  const [ nameTag, setNameTag ] = React.useState(null);
+  const [ rankImg, setRankImage ] = React.useState(null);
+  const [ region, setRegion ] = React.useState(null);
   const [ playerLevel, setPlayerLevel ] = React.useState(null);
-  const [ uuid, setuuid ] = React.useState(null);
+  const [ uuid, setUUID ] = React.useState(null);
   const [ matches, setMatches ] = React.useState([]);
 
   const [ shownMatches, setShownMatches ] = React.useState(5);
@@ -242,7 +242,7 @@ function PlayerInfo({ isNavbarMinimized }) {
 
   const [ mapData, setMapData ] = React.useState({});
 
-  const [ ranks, setranks ] = React.useState([]);
+  const [ ranks, setRanks ] = React.useState([]);
 
   React.useEffect(() => {
     const fetchApi = async () => {
@@ -257,12 +257,12 @@ function PlayerInfo({ isNavbarMinimized }) {
       if(!errored) {
         setMatches(items.matches.games);
 
-        setPlayerCard(items.playerInfo.card);
-        setnameTag(items.playerInfo.name + '#' + items.playerInfo.tag);
-        setrankImage(items.playerInfo.rankIcon);
-        setregion(items.playerInfo.region);
-        setPlayerLevel(items.playerInfo.account_level);
-        setuuid(items.playerInfo.puuid);
+        setPlayerCard(items.pInfo.card);
+        setNameTag(items.pInfo.name + '#' + items.pInfo.tag);
+        setRankImage(items.pInfo.rankIcon);
+        setRegion(items.pInfo.region);
+        setPlayerLevel(items.pInfo.account_level);
+        setUUID(items.pInfo.puuid);
 
         setMaxMatches(items.matches.totalMatches);
         setShownMatches(items.matches.endIndex);
@@ -306,7 +306,7 @@ function PlayerInfo({ isNavbarMinimized }) {
 
   React.useEffect(async () => {
     var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json()
-    setranks(ranksRaw.data[ranksRaw.data.length-1].tiers);
+    setRanks(ranksRaw.data[ranksRaw.data.length-1].tiers);
   }, []);
 
   const fetchFurtherMatches = async () => {
@@ -475,7 +475,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                         var searchedNameTag = `${router.query.name.toLowerCase()}#${router.query.tag.toLowerCase()}`;
                         
                         if(nameTag == searchedNameTag) {
-                          var playerInfo = match.players[i];
+                          var pInfo = match.players[i];
                           var playerCurrentTier = match.players[i].competitiveTier;
                           var rankFixed = ranks[playerCurrentTier];
                         }
@@ -483,9 +483,9 @@ function PlayerInfo({ isNavbarMinimized }) {
                     }
   
                     // Again, Boilerplate if-statement to make sure JS doesnt cry about undefined
-                    if(playerInfo) {
-                      var uuid = playerInfo.subject;
-                      var playerTeam = playerInfo.teamId;
+                    if(pInfo) {
+                      var uuid = pInfo.subject;
+                      var playerTeam = pInfo.teamId;
     
                       if(playerTeam == winning_team) {
                         var matchOutcome = "VICTORY";
@@ -508,13 +508,13 @@ function PlayerInfo({ isNavbarMinimized }) {
                         var matchScore = losingTeamScore + ' - ' + winningTeamScore;
                       }
     
-                      var playerAgent = playerInfo.characterId; 
+                      var playerAgent = pInfo.characterId; 
     
-                      var playerKills = playerInfo.stats.kills;
-                      var playerDeaths = playerInfo.stats.deaths;
-                      var playerAssists = playerInfo.stats.assists;
+                      var playerKills = pInfo.stats.kills;
+                      var playerDeaths = pInfo.stats.deaths;
+                      var playerAssists = pInfo.stats.assists;
     
-                      var playerScore = playerInfo.stats.score;
+                      var playerScore = pInfo.stats.score;
     
                       var playerKdRaw = playerKills / playerDeaths;
                       var playerKD = playerKdRaw.toFixed(2);
@@ -635,7 +635,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                             <span className='text-2xl'>{mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
-                                content={playerCurrentTier > 3 ? rankFixed : ''}
+                                content={playerCurrentTier > 3 ? rankFixed.tierName : ''}
                                 color="error" 
                                 placement={'top'} 
                                 className={'rounded'}
@@ -661,7 +661,6 @@ function PlayerInfo({ isNavbarMinimized }) {
                                     )
                                   }
                                 />
-                                
                               </Tooltip>
                               <span>{activeQueueTab != 'spikerush' ? (activeQueueTab[0].toUpperCase() + activeQueueTab.slice(1)) : ('Spike Rush')}</span>
                             </span>
@@ -800,7 +799,7 @@ function PlayerInfo({ isNavbarMinimized }) {
 function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   React.useEffect(() => {
     ipcRenderer.send('changeDiscordRP', 'pprofile_activity');
-  });
+  }, []);
 
   return (
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>

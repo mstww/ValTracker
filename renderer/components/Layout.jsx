@@ -2,6 +2,7 @@ import { motion } from "framer-motion"
 import { useRouter } from "next/router";
 import React from "react";
 import IpcLayer from "./layers/ipcLayer";
+import PlayerSearchModal from "./layers/PlayerSearchModal";
 
 const contentVariants = {
   hidden: { opacity: 0, x: 0, y: 0 },
@@ -60,6 +61,7 @@ export default function Layout({ children, classNames, setup, migrate, isNavbarM
       animate={isNavbarMinimized ? "minimize" : "maximize"}
     >
       {setup || migrate ? '' : <IpcLayer />}
+      {setup || migrate ? '' : <PlayerSearchModal setIsOverlayShown={setIsOverlayShown} />}
       <div className={"bg-maincolor-light relative left-0 z-40 overflow-auto " + (isNavbarMinimized ? ' strech' : ' no-strech')} id={setup || migrate ? 'layout-setup' : "Layout"}>
         <motion.main
           key={"E"}

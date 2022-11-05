@@ -69,7 +69,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
   const [ matchInfo, setMatchInfo ] = React.useState({});
 
-  const [ ranks, setranks ] = React.useState([]);
+  const [ ranks, setRanks ] = React.useState([]);
 
   const [ userCreds, setUserCreds ] = React.useState({});
 
@@ -212,15 +212,15 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
       var homenameTag_LowerCase = `${user_creds.name.toLowerCase()}#${user_creds.tag.toLowerCase()}`;
       
       if(nameTag == homenameTag_LowerCase) {
-        var playerInfo = match.players[i];
+        var pInfo = match.players[i];
         var playerCurrentTier = match.players[i].competitiveTier;
         var rankFixed = ranks[playerCurrentTier];
       }
     }
 
-    if(playerInfo) {
-      var uuid = playerInfo.subject;
-      var playerTeam = playerInfo.teamId;
+    if(pInfo) {
+      var uuid = pInfo.subject;
+      var playerTeam = pInfo.teamId;
 
       if(playerTeam == winning_team) {
         var matchOutcome = "VICTORY";
@@ -242,16 +242,16 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         var matchScore = losingTeamScore + ' - ' + winningTeamScore;
       }
 
-      var playerAgent = playerInfo.characterId; 
+      var playerAgent = pInfo.characterId; 
 
-      var playerKills = playerInfo.stats.kills;
-      var playerDeaths = playerInfo.stats.deaths;
-      var playerAssists = playerInfo.stats.assists;
+      var playerKills = pInfo.stats.kills;
+      var playerDeaths = pInfo.stats.deaths;
+      var playerAssists = pInfo.stats.assists;
 
       var playerKdRaw = playerKills / playerDeaths;
       var playerKD = playerKdRaw.toFixed(2);
 
-      var playerScore = playerInfo.stats.score;
+      var playerScore = pInfo.stats.score;
       var playerACS = playerScore / match.roundResults.length;
       var playerACS = playerACS.toFixed(0);
 
@@ -397,21 +397,21 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
       var homenameTag_LowerCase = `${user_creds.name.toLowerCase()}#${user_creds.tag.toLowerCase()}`;
       
       if(nameTag == homenameTag_LowerCase) {
-        var playerInfo = match.players[i];
+        var pInfo = match.players[i];
         var playerCurrentTier = match.players[i].competitiveTier;
       }
     }
 
-    if(playerInfo) {
-      var uuid = playerInfo.subject;
+    if(pInfo) {
+      var uuid = pInfo.subject;
 
-      var playerKills = playerInfo.stats.kills;
-      var playerDeaths = playerInfo.stats.deaths;
+      var playerKills = pInfo.stats.kills;
+      var playerDeaths = pInfo.stats.deaths;
 
       var playerKdRaw = playerKills / playerDeaths;
       var playerKD = playerKdRaw.toFixed(2);
 
-      var playerScore = playerInfo.stats.score;
+      var playerScore = pInfo.stats.score;
       var playerACS = playerScore / match.roundResults.length;
       var playerACS = playerACS.toFixed(0);
 
@@ -560,7 +560,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
   React.useEffect(async () => {
     var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query ? router.query.lang : 'en-US'))).json()
-    setranks(ranksRaw.data[ranksRaw.data.length-1].tiers);
+    setRanks(ranksRaw.data[ranksRaw.data.length-1].tiers);
   }, []);
 
   React.useEffect(async () => {
@@ -744,7 +744,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                   <span className='text-xl'>{matchData.mapName}</span>
                                   <span className='text-base font-light flex flex-row items-center'> 
                                     <Tooltip 
-                                      content={matchData.playerCurrentTier > 3 ? matchData.rankFixed : ''}
+                                      content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
                                       color="error" 
                                       placement={'top'} 
                                       className={'rounded'}
@@ -916,7 +916,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                             <span className='text-xl'>{matchData.mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
-                                content={matchData.playerCurrentTier > 3 ? matchData.rankFixed : ''}
+                                content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
                                 color="error" 
                                 placement={'top'} 
                                 className={'rounded'}

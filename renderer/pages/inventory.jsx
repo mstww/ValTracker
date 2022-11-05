@@ -226,7 +226,6 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var result = await createThing(`preset`, loadoutToSave);
     
     var currentPresetList = await executeQuery(`SELECT (SELECT id FROM $parent.presets.id) AS presets FROM presetCollection:⟨${puuid}⟩`);
-    console.log(result);
 
     currentPresetList[0].presets.push(result[0] ? result[0].id : (result.id ? result.id : result[0].result[0].id));
     await updateThing(`presetCollection:⟨${puuid}⟩`, currentPresetList[0]);
@@ -250,7 +249,6 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var currentPresetList = await executeQuery(`SELECT (SELECT id FROM $parent.presets.id) AS presets FROM presetCollection:⟨${puuid}⟩`);
 
     currentPresetList[0].presets = currentPresetList[0].presets.filter(function (el) { return el != null; });
-    console.log(currentPresetList[0].presets);
 
     await updateThing(`presetCollection:⟨${puuid}⟩`, currentPresetList[0]);
     

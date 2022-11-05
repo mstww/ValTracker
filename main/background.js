@@ -942,7 +942,7 @@ async function decideRichPresenceData(data) {
 
         if(settingsValues.showGameRPScore === true) {
           if(data.teamScore === null && data.enemyScore === null) {
-            var scores = LocalText(L, 'val_rp_details.waiting_for_round');
+            var scores = await LocalText(L, 'val_rp_details.waiting_for_round');
           } else {
             var scores = data.teamScore + " - " + data.enemyScore;
           }
@@ -1492,12 +1492,10 @@ async function checkStoreForWishlistItems() {
       });
       
       instanceComms.on("message", async (msg) => {
-        console.log(msg);
         if(msg.type === "message") {
           sendMessageToWindow("newMessage", msg.content);
         }
         if(msg.type === "update") {
-          console.log("Here");
           sendMessageToWindow("newUpdate", msg.content);
         }
       });
@@ -1841,6 +1839,5 @@ ipcMain.handle('changeSetting', async (event, args) => {
 });
 
 ipcMain.handle('requestInstanceToken', async (event, args) => {
-  console.log(args);
   return await await requestInstanceToken(args[0], args[1]);
 });

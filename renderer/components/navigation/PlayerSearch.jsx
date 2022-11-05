@@ -57,6 +57,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
   const removeItemFromHistory = async (name_encoded) => {
     await executeQuery(`DELETE FROM searchHistoryResult WHERE encoded_user = "${name_encoded}"`);
     setIsHistoryLocked(false);
+    setSearchHistory(current => current.filter((x) => x.encoded_user !== name_encoded));
   }
 
   return (
@@ -66,7 +67,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
       >
         <motion.div 
           className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover hover:shadow-2xl flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden ' + (isNavbarMinimized ? 'rounded-full w-10 h-10 px-0' : 'w-full h-8 px-2')}
-          onClick={() => { isNavbarMinimized ? ipcRenderer.send("relayOpenPlayerSearchModal", searchHistory) : (playerSearchRef.current ? playerSearchRef.current.focus() : null) }}
+          onClick={() => { isNavbarMinimized === true ? ipcRenderer.send("relayOpenPlayerSearchModal", searchHistory) : (playerSearchRef.current ? playerSearchRef.current.focus() : null) }}
           variants={variants}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -129,12 +130,6 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
                   onClick={() => {
                     removeItemFromHistory(item.encoded_user);
                     playerSearchRef.current.focus();
-                  }}
-                  onMouseEnter={() => {
-                    setIsHistoryLocked(true);
-                  }}
-                  onMouseLeave={() => {
-                    setIsHistoryLocked(true);
                   }}
                 >
                   <Close className='w-4' />

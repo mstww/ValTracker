@@ -61,10 +61,7 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
   }
 
   React.useEffect(() => {
-    console.log("UseEffect!");
     var e = ipcRenderer.on('newUpdate', (event, args) => {
-      console.log("Hello?");
-      console.log(args);
       moment.locale(router.query.lang);
 
       var formatted_date = moment(args.date).format('D. MMMM, YYYY');
@@ -80,10 +77,6 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
     });
     console.log(e);
   }, []);
-
-  React.useEffect(() => {
-    console.log("OverlayShown:", isOverlayShown);
-  }, [isOverlayShown]);
 
   React.useEffect(() => {
     ipcRenderer.on('update-found', () => {
