@@ -47,7 +47,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
               <>
                 <div className='w-16 h-16 flex items-center justify-center'>
                   {
-                    reward_1.image === "/images/radianite_icon.png" ?
+                    reward_1 && reward_1.image === "/images/radianite_icon.png" ?
                     <ValIconHandler icon={"/images/radianite_icon.png"} classes={'object-cover shadow-img'} />
                     :
                     <img src={reward_1 ? reward_1.image : null} className='object-cover shadow-img' />
@@ -56,7 +56,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
                 <span className='relative bottom-0 opacity-0 select-none'>{level_1}</span>
               </>
             }
-            <span className='absolute bottom-1'>{level_locale} {parseInt(level_1) + 1}</span>
+            <span className='absolute bottom-1'>{level_locale} {parseInt(level_1)}</span>
           </div>
 
           <div className='w-1/2 mx-auto h-full p-2 flex flex-col justify-center text-center relative'>
@@ -81,7 +81,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
                 <span className='relative bottom-0 opacity-0 select-none'>{level_1}</span>
               </>
             }
-            <span className='absolute bottom-1'>{level_locale} {parseInt(level_2)+ 1}</span>
+            <span className='absolute bottom-1'>{level_locale} {parseInt(level_2)}</span>
           </div>
 
         </div>

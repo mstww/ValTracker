@@ -470,23 +470,32 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     
     for(var j = 0; j < current_chapter.levels.length; j++) {
       var next_level = undefined;
-      var current_level = current_chapter.levels[j];
+      var current_level = current_chapter.levels[j-1];
+
+      if(current_level === undefined && tierCount === 5) {
+        var prev_chapter = agentContractData.data.content.chapters[i-1];
+        console.log(current_chapter);
+        console.log(j);
+        current_level = prev_chapter.levels[prev_chapter.levels.length-1];
+      }
 
       if(current_chapter.levels[j+1]) {
-        next_level = current_chapter.levels[j+1];
+        next_level = current_chapter.levels[j];
       }
 
       if(next_level === undefined && next_chapter !== undefined) {
+        current_level = current_chapter.levels[current_chapter.levels.length-1];
         next_level = next_chapter.levels[0];
       }
 
       if(next_level === undefined) {
         next_level = current_level;
-        var current_level = current_chapter.levels[j-1];
+        current_level = current_chapter.levels[j-1];
         var atEnd = true;
       }
 
       if(tierCount == agentContractProgressionLevel) {
+        console.log(tierCount);
         if(current_level) {
           if(atEnd === true) {
             var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
@@ -495,6 +504,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
             agentContractProgression.current_level.levelNum = tierCount -1;
           } else {
             var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
+            console.log("LevelReward:", current_level_data);
   
             agentContractProgression.current_level.reward = current_level_data;
             agentContractProgression.current_level.levelNum = tierCount;
@@ -1898,7 +1908,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               (
                                 <>
                                   <div className='w-1/2 flex flex-col items-center'>
-                                    <span className='text-lg'>HS%</span>
+                                    <span className='text-lg'>HS%</span> 
                                     <span className='text-lg font-light text-gray-500'>{matchData.headShotsPercentRounded}%</span>
                                   </div>
                                   <div className='w-1/2 flex flex-col items-center'>
