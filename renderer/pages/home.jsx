@@ -838,7 +838,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         
         // Get newest 4 Matches from Match history
         var data = await fetchMatches(0, 5, [], mode, user_creds.uuid, user_creds.region, router.query.lang, true);
-  
+        console.log("Data:", data);
         setMaxMatchesFound(data.items.totalMatches);
   
         var new_matches = [];
@@ -848,7 +848,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             new_matches.push(data.items.games[key][i])
           }
         }
-  
+        
+        if(new_matches.length === 0) {
+
+        }
+
         new_matches.sort(function(a, b) {
           return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
         });
