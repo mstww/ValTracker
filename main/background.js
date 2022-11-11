@@ -728,7 +728,7 @@ async function fetchPlayerAgent() {
   var puuid = user_data.uuid;
   var region = user_data.region;
 
-  var bearer = getUserAccessToken();
+  var bearer = await getUserAccessToken();
 
   var entitlement_token = await getUserEntitlement();
 

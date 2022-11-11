@@ -845,15 +845,16 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   
         for(var key in data.items.games) {
           for(var i = 0; i < data.items.games[key].length; i++) {
-            new_matches.push(data.items.games[key][i])
+            new_matches.push(data.items.games[key][i]);
           }
         }
         
-        if(new_matches.length === 0) {
+        if(new_matches.length === 0) return;
 
-        }
-
+        console.log(new_matches);
         new_matches.sort(function(a, b) {
+          if(b.matchInfo.gameStartMillis === undefined) return a;
+          if(a.matchInfo.gameStartMillis === undefined) return b;
           return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
         });
   
