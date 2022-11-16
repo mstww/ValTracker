@@ -474,8 +474,6 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
 
       if(current_level === undefined && tierCount === 5) {
         var prev_chapter = agentContractData.data.content.chapters[i-1];
-        console.log(current_chapter);
-        console.log(j);
         current_level = prev_chapter.levels[prev_chapter.levels.length-1];
       }
 
@@ -495,7 +493,6 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
       }
 
       if(tierCount == agentContractProgressionLevel) {
-        console.log(tierCount);
         if(current_level) {
           if(atEnd === true) {
             var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
@@ -504,7 +501,6 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
             agentContractProgression.current_level.levelNum = tierCount -1;
           } else {
             var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-            console.log("LevelReward:", current_level_data);
   
             agentContractProgression.current_level.reward = current_level_data;
             agentContractProgression.current_level.levelNum = tierCount;
@@ -838,7 +834,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         
         // Get newest 4 Matches from Match history
         var data = await fetchMatches(0, 5, [], mode, user_creds.uuid, user_creds.region, router.query.lang, true);
-        console.log("Data:", data);
         setMaxMatchesFound(data.items.totalMatches);
   
         var new_matches = [];
@@ -851,10 +846,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         
         if(new_matches.length === 0) return;
 
-        console.log(new_matches);
         new_matches.sort(function(a, b) {
-          if(b.matchInfo.gameStartMillis === undefined) return a;
-          if(a.matchInfo.gameStartMillis === undefined) return b;
+          if(b.matchInfo === undefined) return a;
+          if(a.matchInfo === undefined) return b;
           return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
         });
   
@@ -874,7 +868,13 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var new_old_matches = old_matches.slice(0, (15 - new_matches_amount));
         var new_new_matches = new_matches.slice(0, new_matches_amount);
 
-        var newMatchesArray = new_new_matches.concat(new_old_matches);
+        var allOldMatches = [];
+        for(var i = 0; i < new_old_matches.length; i++) {
+          var match = await executeQuery(`SELECT * FROM match:⟨${new_old_matches[i]}⟩`);
+          allOldMatches.push(match[0]);
+        }
+
+        var newMatchesArray = new_new_matches.concat(allOldMatches);
 
         newMatchesArray.sort(function(a, b) {
           return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
