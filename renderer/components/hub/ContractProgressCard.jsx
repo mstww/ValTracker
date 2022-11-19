@@ -33,7 +33,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
     }
   }, [ reward_2 ]);
 
-  return(
+  return (
     <>
       <span className='px-1 pt-1'>{title}</span>
       <div className='home-top-info-half relative px-2'>

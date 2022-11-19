@@ -435,7 +435,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
             {switchableAccounts.map((acc, index) => {
               return (
                 <AccountTile 
-                  key={acc.user_puuid} 
+                  key={index} 
                   currenttier={acc.usertier} 
                   username={acc.username} 
                   usertag={acc.usertag} 
