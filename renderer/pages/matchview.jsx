@@ -432,7 +432,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       >
         <div id='left' className='w-3/5 flex flex-col mr-4'>
           <motion.div 
-            className='h-3/5 border-2 border-maincolor-lightest p-2 relative w-full rounded mb-4 shadow-xl'
+            className='h-3/5 border border-maincolor-lightest p-2 relative w-full rounded mb-4 shadow-xl'
             variants={lastTab == '' ? overview_vars_first_load : overview_vars}
             initial="hidden"
             animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -480,7 +480,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             className='h-2/5 flex flex-row'
           >
             <motion.div 
-              className='w-1/2 border-2 border-maincolor-lightest p-1 rounded shadow-xl mr-4 relative overflow-hidden'
+              className='w-1/2 border border-maincolor-lightest p-1 rounded shadow-xl mr-4 relative overflow-hidden'
               variants={lastTab == '' ? overview_vars_first_load_noflex : overview_vars_noflex}
               initial="hidden"
               animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -571,7 +571,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </motion.div>
 
             <motion.div 
-              className='w-1/2 border-2 border-maincolor-lightest p-1 rounded shadow-xl overflow-auto'
+              className='w-1/2 border border-maincolor-lightest p-1 rounded shadow-xl overflow-auto'
               variants={lastTab == '' ? overview_vars_first_load_noflex : overview_vars_noflex}
               initial="hidden"
               animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -608,7 +608,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <>
                       <div 
                         key={index}
-                        className='h-14 border-2 border-maincolor-lightest rounded p-1 mb-1 flex flex-row items-center pl-2 relative overflow-hidden hover:bg-maincolor-lightest transition-all duration-100 ease-linear'
+                        className='h-14 border border-maincolor-lightest rounded p-1 mb-1 flex flex-row items-center pl-2 relative overflow-hidden hover:bg-maincolor-lightest transition-all duration-100 ease-linear'
                       >
                         <div className='h-full flex flex-row items-center w-2/4'>
                           {
@@ -661,7 +661,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </div>
         <motion.div 
-          className='w-2/5 h-full border-2 border-maincolor-lightest p-4 relative overflow-hidden shadow-xl'
+          className='w-2/5 h-full border border-maincolor-lightest p-4 relative overflow-hidden shadow-xl'
           variants={lastTab == '' ? overview_vars_first_load : overview_vars}
           initial="hidden"
           animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -859,7 +859,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               return(
                 <>
                   <motion.tr 
-                    className={'border-2 border-maincolor-lightest rounded'} key={index + 'tr'}
+                    className={'border border-maincolor-lightest rounded'} key={index + 'tr'}
                     variants={scoreboard_vars_initial}
                     initial="hidden"
                     animate={activeTab === 'scoreboard' ? "enter" : "exit"}

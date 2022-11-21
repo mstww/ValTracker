@@ -46,7 +46,7 @@ export default function ChromaSwatch({ image, onClick, chromaUUID, activeChroma,
   return (
     <div 
       className={
-        "chroma-swatch w-1/5 border-2 border-button-color shadow-lg cursor-pointer relative rounded " +
+        "chroma-swatch w-1/5 border border-button-color shadow-lg cursor-pointer relative rounded " +
         (chromaUUID == activeChroma ? 'border-opacity-100' : 'border-opacity-0')
       }
         onClick={() => { onClick(chromaUUID, isOwned, isBaseColor) }}

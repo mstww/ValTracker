@@ -724,7 +724,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 </button>
                 {
                   activeSkinPrice ? 
-                  <div className={'flex flex-row items-center text-center border-2 border-maincolor-lightest rounded py-2 ' + (showWishlistButton === true && lockWishlistButton === false ? 'w-1/3' : 'w-full')}>
+                  <div className={'flex flex-row items-center text-center border border-maincolor-lightest rounded py-2 ' + (showWishlistButton === true && lockWishlistButton === false ? 'w-1/3' : 'w-full')}>
                     <span className='flex flex-row w-full text-center items-center justify-center'>{activeSkinPrice} <img src='/images/vp_icon.png' className='w-6 ml-1' /></span>
                   </div>
                   :

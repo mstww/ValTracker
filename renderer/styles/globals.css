@@ -485,15 +485,15 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline;
-  @apply rounded border-2 border-tile-color bg-maincolor-lightest bg-opacity-0;
+  @apply rounded border border-tile-color bg-maincolor-lightest bg-opacity-0;
 }
 
 .tab-tile:hover {
-  @apply border-2 bg-opacity-60;
+  @apply border bg-opacity-60;
 }
 
 select {
-  @apply border-2 border-button-color bg-tile-color text-button-text font-light shadow-lg hover:shadow-2xl cursor-pointer relative outline-none;
+  @apply border border-button-color bg-tile-color text-button-text font-light shadow-lg hover:shadow-2xl cursor-pointer relative outline-none;
   padding: 6px 10px 6px 10px;
   border-radius: 4px;
   outline: none;
@@ -1233,7 +1233,7 @@ h5 {
 }
 
 .language-checkbox span {
-  @apply border-2 border-tile-color rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+  @apply border border-tile-color rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
 }
 
 .language-checkbox span:hover {
@@ -1241,7 +1241,7 @@ h5 {
 }
 
 .language-checkbox span.active {
-  @apply border-2 border-button-color cursor-default;
+  @apply border border-button-color cursor-default;
 }
 
 .setup-content {
@@ -1390,7 +1390,7 @@ body[lang="fr-FR"] #equip-skin-button {
 }
 
 .version-selector span {
-  @apply border-2 border-tile-color bg-tile-color bg-opacity-60 h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+  @apply border border-tile-color bg-tile-color bg-opacity-60 h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
 }
 
 .version-selector span:hover {
@@ -1398,7 +1398,7 @@ body[lang="fr-FR"] #equip-skin-button {
 }
 
 .version-selector span.active {
-  @apply border-2 border-button-color cursor-default;
+  @apply border border-button-color cursor-default;
 }
 
 .version-selector span.active:hover {
@@ -1422,15 +1422,15 @@ tr td:last-child {
 }
 
 .card {
-  @apply rounded border-2 border-maincolor-lightest bg-maincolor-light p-2 relative overflow-hidden;
+  @apply rounded border border-maincolor-lightest bg-maincolor-light p-2 relative overflow-hidden;
 }
 
 .card.hoverable {
-  @apply hover:bg-tile-color border-2 border-tile-color transition-all duration-100 ease-linear;
+  @apply hover:bg-tile-color border border-tile-color transition-all duration-100 ease-linear;
 }
 
 .button.default, .button.select, .button.highlight, .button.setup {
-  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
+  @apply border border-button-color bg-tile-color text-button-text text-sm text-center;
   height: 2.5rem;
   border-radius: 4px;
   outline: none;
@@ -1450,7 +1450,7 @@ tr td:last-child {
 }
 
 .button.wishlist {
-  @apply border-2 border-button-color bg-tile-color text-button-text text-sm text-center;
+  @apply border border-button-color bg-tile-color text-button-text text-sm text-center;
   height: 2.5rem;
   border-radius: 4px;
   outline: none;
@@ -1463,7 +1463,7 @@ tr td:last-child {
 }
 
 .button.highlight.highlight-green {
-  @apply border-2 border-green-500 bg-green-500 bg-opacity-20 text-button-text text-sm text-center;
+  @apply border border-green-500 bg-green-500 bg-opacity-20 text-button-text text-sm text-center;
 }
 
 .button.highlight.highlight-green:hover {
@@ -1471,7 +1471,7 @@ tr td:last-child {
 }
 
 .button.default.disabled {
-  @apply border-2 border-gray-600 hover:border-gray-500 bg-gray-800 hover:bg-gray-600 cursor-not-allowed text-sm;
+  @apply border border-gray-600 hover:border-gray-500 bg-gray-800 hover:bg-gray-600 cursor-not-allowed text-sm;
   padding: 4px 30px;
   height: 2.5rem;
   border-radius: 4px;
@@ -1504,7 +1504,7 @@ tr td:last-child {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(5px) !important;
   -webkit-backdrop-filter: blur(5px) !important;
-  @apply border-2 border-tile-color rounded p-4 pointer-events-auto relative !text-white;
+  @apply border border-tile-color rounded p-4 pointer-events-auto relative !text-white;
 }
 
 .modal-decoy {

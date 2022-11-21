@@ -314,7 +314,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
   return (
     <Layout setup={true} classNames={'overflow-hidden'} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className='flex flex-col items-center p-4 h-full w-full'>
-        <div id='setup-timeline' className='border-2 border-maincolor-lightest w-full p-2 h-14 rounded'>
+        <div id='setup-timeline' className='border border-maincolor-lightest w-full p-2 h-14 rounded'>
           <div className='flex flex-row items-center mb-1 justify-between'>
             <span>{LocalText(L, currentSelectedLanguage, 'progress.lang')}</span>
             <span>{LocalText(L, currentSelectedLanguage, 'progress.riot')}</span>
@@ -323,7 +323,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
           </div>
           <Progress value={overallProgress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-full'} />
         </div>
-        <div className='setup-content border-2 border-maincolor-lightest w-full mt-4 rounded p-2 relative overflow-hidden'>
+        <div className='setup-content border border-maincolor-lightest w-full mt-4 rounded p-2 relative overflow-hidden'>
           <motion.div 
             className='h-full relative'
             variants={lastPage === '0' ? slides_first_load : slides_vars}

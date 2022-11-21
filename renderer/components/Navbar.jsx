@@ -472,7 +472,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
               className={
                 'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor-light '
                 +
-                (page == 'settings' ? 'border-2 border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
+                (page == 'settings' ? 'border border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
                 +
                 (isNavbarMinimized ? ' -translate-x-4 mr-1' : '  translate-x-0 mr-0')
               }
