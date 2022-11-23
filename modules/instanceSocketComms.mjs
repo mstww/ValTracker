@@ -4,7 +4,7 @@ import { parentPort, workerData } from "worker_threads";
 
 (async () => {
   var instanceToken = workerData;
-  var data = await(await fetch("http://localhost:4000/v1/instancesocket", {
+  var data = await(await fetch("https://beta-api.valtracker.gg/v1/instancesocket", {
     method: "POST",
     headers: {
       "authentication": instanceToken

@@ -152,7 +152,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   React.useEffect(async () => {
     var pjson = require('../../package.json');
 
-    var featureStatus = await(await fetch('http://localhost:4000/v1/status/renderer', {
+    var featureStatus = await(await fetch('https://beta-api.valtracker.gg/v1/status/renderer', {
       headers: {
         "x-valtracker-version": 'v' + pjson.version
       }

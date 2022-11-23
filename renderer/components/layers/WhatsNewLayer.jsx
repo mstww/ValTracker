@@ -33,7 +33,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     if(localStorage.getItem('show-whats-new')) {
-      var data = await(await fetch('http://localhost:4000/v1/changelog/summary')).json();
+      var data = await(await fetch('https://beta-api.valtracker.gg/v1/changelog/summary')).json();
       
       setNewVALTrackerVersion(data.data.version);
       
