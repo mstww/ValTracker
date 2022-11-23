@@ -13,7 +13,7 @@ import { parentPort, workerData } from "worker_threads";
   
   var poolID = data.data;
   
-  const ws = new WebSocket(`ws://localhost:4000/v1/instancepool`, {
+  const ws = new WebSocket(`wss://beta-api.valtracker.gg/v1/instancepool`, {
     rejectUnauthorized: false,
     followRedirects: true,
     headers: {
