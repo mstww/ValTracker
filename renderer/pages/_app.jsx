@@ -86,8 +86,10 @@ function MyApp({ Component, pageProps }) {
   var setup = router.pathname.split("/").pop() === "setup";
   var migrate = router.pathname.split("/").pop() === "migration";
 
-  router.events.on("routeChangeComplete", () => {
-    setIsOverlayShown(false);
+  React.useEffect(() => {
+    router.events.on("routeChangeComplete", () => {
+      setIsOverlayShown(false);
+    });
   });
 
   React.useEffect(async () => {
