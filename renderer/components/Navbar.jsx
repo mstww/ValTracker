@@ -217,11 +217,11 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   var showMenu = open ? 'block' : '';
   var switcherActive = open ? 'bg-maincolor-light border-maincolor-lightest' : '';
 
-  var activeClasses = 'bg-button-color hover:bg-button-color-hover';
-  var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer';
+  var activeClasses = 'bg-button-color hover:bg-button-color-hover border-button-color';
+  var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer border-tile-color';
   var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
   var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
-  var navbarTileBaseClasses = ' h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
+  var navbarTileBaseClasses = ' border shadow-2xl drop-shadow-2xl h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
   var navbarTileTextClasses = 'text-sm font-light relative top-px ml-2 nav-txt transition-all ease-in duration-75 ml-8 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100');
 
   if(page == "home") var isHome = true;
@@ -281,7 +281,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           transition={{ delay: isNavbarMinimized ? 0 : 0.92, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
         />
         <motion.h1 
-          className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear font-bold ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
           variants={navbarVariants.logo}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}

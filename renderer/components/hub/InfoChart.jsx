@@ -51,7 +51,7 @@ export default function InfoChart({ label, data, LocalLatest }) {
   
   return(
     <>
-      <span className='top-1 left-1 absolute'>{ label }</span>
+      <span className='top-1 left-1 absolute font-bold'>{ label }</span>
       <div className='ml-4 hub-chart'>
         <svg style={{ height: 0 }}>
           <defs>
@@ -85,9 +85,15 @@ export default function InfoChart({ label, data, LocalLatest }) {
                 stroke: colors[theme].stroke
               },
               tickLabels: {
-                fontSize: 18,
-                fill: colors[theme].text
-              }, 
+                fontSize: 16,
+                fill: colors[theme].text,
+                fontWeight: 300
+              },
+              ticks: {
+                fontSize: 16,
+                fill: colors[theme].text,
+                fontWeight: 300
+              },
               grid: {
                 stroke: 'transparent'
               }

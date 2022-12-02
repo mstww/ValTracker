@@ -371,7 +371,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <span className='relative top-px'>{cardSkinPrice}</span>
             <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
           </div>
-          <h1 className='z-20 text-2xl flex flex-row items-center'><img src={cardSkinTier} className='w-9 mr-2 shadow-img' /> { cardSkinName }</h1>
+          <h1 className='z-20 text-2xl flex flex-row items-center font-bold'><img src={cardSkinTier} className='w-9 mr-2 shadow-img' /> { cardSkinName }</h1>
           <div id='skin-image' className='z-10 bottom-0 left-0 absolute w-full h-full flex justify-center items-center'>
             <img src={ cardSkinImage } className='shadow-img' />
           </div>
@@ -440,7 +440,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       >
         <div className='flex flex-row'>
           <div id='featured-bundle' className='w-3/4'>
-            <h1 className='text-2xl' id='bundle-header'>{bundleHeader}</h1>
+            <h1 className='text-2xl font-bold' id='bundle-header'>{bundleHeader}</h1>
             <span id='bundle-timer' className='text-gray-500'>{bundleTimer}</span>
             <motion.div 
               id='bundle-img-wrapper' 
@@ -479,7 +479,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               id='wallet'
               className='bg-maincolor-lightest bg-opacity-60 border border-maincolor-lightest p-4 flex flex-col rounded shadow-lg mb-4'
             >
-              <h1 className='text-2xl mb-2'>{LocalText(L, "wallet_header")}</h1>
+              <h1 className='text-2xl mb-2 font-bold'>{LocalText(L, "wallet_header")}</h1>
               <span className='flex flex-row text-center items-center mb-2'>
                 <ValIconHandler icon='/images/vp_icon.png' classes='w-8 mr-2' />
                 <span id="wallet-vp">{walletVP}</span>
@@ -504,7 +504,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </motion.div>
         </div>
         <div id='daily-shop' className='mt-4 pb-4'>
-          <h1 className='text-2xl'>{LocalText(L, "daily_shop_header")}</h1>
+          <h1 className='text-2xl font-bold'>{LocalText(L, "daily_shop_header")}</h1>
           <span id='single-skin-timer' className='text-gray-500'>{dailyTimer}</span>
           <div 
             id='single-items-wrapper' 

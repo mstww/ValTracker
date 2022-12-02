@@ -181,7 +181,7 @@
       "best_agent": {
         "header": "Bester Agent",
         "stat_1": "Score/Match",
-        "stat_2": "KDA",
+        "stat_2": "Durchschn. KDA",
         "stat_3": "Kills/Runde",
         "stat_4": "Kills/Match"
       },

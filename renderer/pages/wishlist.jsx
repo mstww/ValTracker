@@ -119,25 +119,25 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                       exir="exit"
                       transition={{ type: 'linear', duration: 0.5, delay: (index / 100) }}
                     >
-                      <div className='py-1 pl-1 flex flex-col items-center justify-center border-l-2 border-t-2 border-b-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/4 h-full rounded-l'>
+                      <div className='py-1 pl-1 flex flex-col items-center justify-center border-l border-t border-b border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/4 h-full rounded-l'>
                         <div className="w-full flex items-center justify-center h-12 relative top-0 right-5">
                           <img src={skin.displayIcon} className='shadow-img max-h-full scale-90' />
                         </div>
                         <span className={'ml-4 text-lg relative right-5 text-center'}>{skin.displayName}</span>
                       </div>
-                      <div className={'py-1 pl-1 border-t-2 border-b-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col items-center justify-center'}>
+                      <div className={'py-1 pl-1 border-t border-b border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col items-center justify-center'}>
                         <div className="inline-flex flex-row items-center w-full relative left-8">
                           <span className="w-10 text-right relative top-px text-lg">{skin.price}</span>
                           <img src="/images/vp_icon.png" className="w-6 ml-2 mr-auto" />
                         </div>
                       </div>
-                      <div className={'py-1 text-xl border-t-2 border-b-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col justify-center'}>
+                      <div className={'py-1 text-xl border-t border-b border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col justify-center'}>
                         <span className="relative right-2.5">{dateAdded}</span>
                       </div>
-                      <div className={'py-1 text-xl border-t-2 border-b-2 border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col justify-center items-center'}>
+                      <div className={'py-1 text-xl border-t border-b border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col justify-center items-center'}>
                         <span className="relative right-10">{daysSinceAdded}</span>
                       </div>
-                      <div className={'py-1 text-xl border-t-2 border-b-2 border-r-2 rounded-r border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col justify-center items-center'}>
+                      <div className={'py-1 text-xl border-t border-b border-r rounded-r border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/5 h-full flex flex-col justify-center items-center'}>
                         <button 
                           className="flex items-center relative right-7 button default"
                           onClick={async () => {
@@ -170,7 +170,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
           </>
           
           : 
-          <div className="w-full text-center">{LocalText(L, "content.empty_text")}</div>
+          <div className="w-full text-center font-bold mt-4">{LocalText(L, "content.empty_text")}</div>
         }
       </div>
     </Layout>

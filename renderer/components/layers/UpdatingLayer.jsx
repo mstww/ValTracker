@@ -117,7 +117,7 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
           transition={{ type: 'ease-in', duration: 0.3 }}
         >
           <div className="mb-0">
-            <h2 className="mb-0">{LocalText(L, "info_card.header")}</h2>
+            <h2 className="mb-0 font-bold">{LocalText(L, "info_card.header")}</h2>
             <p id="update-info" className='text-gray-500 m-0'>{ info }</p>
             <p className='mb-4 mt-2' id="update-desc">{ desc }</p>
           </div>

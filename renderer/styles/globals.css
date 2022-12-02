@@ -450,6 +450,10 @@ input:checked + .slider:before {
   height: 85%;
 }
 
+.tab-tile {
+  font-weight: 300;
+}
+
 .tab-tile.active {
   position: relative;
   padding: 0.5rem 1rem;
@@ -475,7 +479,7 @@ input:checked + .slider:before {
   left: 0;
   width: auto;
   height: 50%;
-  @apply border-b-2 border-gradient-right rounded-b-sm;
+  @apply border-b border-gradient-right rounded-b-sm;
   padding: 0.5rem 50%;
 }
 
@@ -566,33 +570,33 @@ h5 {
 #match-timeline:not(#match-timeline.disabled)::after {
   content: '';
   position: absolute;
-  width: 4px;
+  width: 2px;
   background-color: white;
   top: 1rem;
   bottom: 0;
   left: -0.8rem;
   margin-left: -3px;
-  border-radius: 9999px;
+  border-radius: 4px;
 }
 
 .day::after {
   content: '';
   position: absolute;
-  width: 1rem;
-  height: 1rem; 
-  top: 0.3rem;
+  width: 0.8rem;
+  height: 0.8rem; 
+  top: 0.4rem;
   bottom: 0;
-  left: -1.2rem;
+  left: -1.1rem;
   margin-left: -3px;
-  @apply bg-white border-4 border-button-color z-10 rounded;
+  @apply bg-white border-[3px] border-button-color z-10 rounded;
 }
 
 .day::before {
   content: '';
   position: absolute;
   width: 1rem;
-  height: 0.2rem;
-  top: 0.7rem;
+  height: 0.15rem;
+  top: 0.75rem;
   bottom: 0;
   left: -0.4rem;
   margin-left: -3px;

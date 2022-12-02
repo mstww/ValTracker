@@ -586,7 +586,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
           animate={deleteMatchCardShown ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.3 }}
         >
-          <h1>{LocalText(L, "modals.remove_match.header")}</h1>
+          <h1 className='font-bold'>{LocalText(L, "modals.remove_match.header")}</h1>
           <p>
             {LocalText(L, "modals.remove_match.desc")}
             <div 
@@ -674,7 +674,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                     var today = startdate.format("D. MMMM");
                     return (
                       <div className={'day relative ' + (shownMatchesPerDay[key].isShown === false ? 'hidden' : '')} key={index}>
-                        <div id='day-header' className='text-lg ml-4 day-header'>{today === key ? 'Today' : key}</div>
+                        <div id='day-header' className='text-lg ml-4 day-header font-bold'>{today === key ? 'Today' : key}</div>
                         {favMatches[key].map((match, index) => {
                           var { matchData, matchViewData } = calculateMatchStats(match, '');
     
@@ -787,7 +787,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                   (
                                     <div 
                                       id='scoreboard-pos' 
-                                      className={'rounded text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
+                                      className={'rounded text-base h-8 py-0.5 px-1 ml-4 font-thin ' + matchData.playerPositionColor}
                                     >
                                       {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                     </div>
@@ -798,7 +798,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                               </div>
                               <div id='match-stats-1' className='w-1/3 flex flex-row items-center pl-4'>
                                 <div id='left-side' className='flex flex-col'>
-                                  <span className='text-xl'>KDA</span>
+                                  <span className='text-lg'>KDA</span>
                                   <span className='text-lg font-light'>KD</span>
                                 </div>
                                 <div id='right-side' className='flex flex-col ml-4'>
@@ -846,7 +846,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
               :
               <>
                 <div className={'day relative'}>
-                  <div id='day-header' className='text-lg ml-4 day-header'>Sorted by {activeSort[0].toUpperCase() + activeSort.slice(1)}</div>
+                  <div id='day-header' className='text-lg ml-4 day-header font-bold'>Sorted by {activeSort[0].toUpperCase() + activeSort.slice(1)}</div>
                   {sortableFavMatches.map((match, index) => {
                     var { matchData, matchViewData } = calculateMatchStats(match, '');
 
@@ -959,7 +959,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                             (
                               <div 
                                 id='scoreboard-pos' 
-                                className={'rounded text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
+                                className={'rounded text-base h-8 py-0.5 px-1 ml-4 font-thin ' + matchData.playerPositionColor}
                               >
                               {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                               </div>
@@ -970,7 +970,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                         </div>
                         <div id='match-stats-1' className='w-1/3 flex flex-row items-center pl-4'>
                           <div id='left-side' className='flex flex-col'>
-                            <span className='text-xl'>KDA</span>
+                            <span className='text-lg'>KDA</span>
                             <span className='text-lg font-light'>KD</span>
                           </div>
                           <div id='right-side' className='flex flex-col ml-4'>
@@ -1012,10 +1012,10 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
               </>
             }
           </div>
-          <span className='text-center text-lg'>{isLoadingNewMatches ? LocalText(L, "loading") : LocalText(L, "matches_bottom")}</span>
+          <span className='text-center text-lg font-thin'>{isLoadingNewMatches ? LocalText(L, "loading") : LocalText(L, "matches_bottom")}</span>
         </div>
         <div className='w-1/4 favs-right border border-maincolor-lightest p-4 mt-7 rounded'>
-          <span className='text-lg'>{LocalText(L, "filters.header")}</span>
+          <span className='text-lg font-bold'>{LocalText(L, "filters.header")}</span>
           <hr />
           <span className='text-gray-500 mb-0 relative top-4 text-lg'>{LocalText(L, "filters.filters.header")}</span>
           <Radio.Group 

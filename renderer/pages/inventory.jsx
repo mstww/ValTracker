@@ -335,7 +335,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           animate={saveInvCardShown ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.3 }}
         >
-          <h1>{LocalText(L, "modals.save_modal.header")}</h1>
+          <h1 className='font-bold'>{LocalText(L, "modals.save_modal.header")}</h1>
           <p>{LocalText(L, "modals.save_modal.desc")}</p>
           <input
             type='text'
@@ -385,7 +385,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               onClick={(e) => { redirectToCardChanger(e.target.getAttribute('data-card')) }}
             />
             <div 
-              className='absolute bottom-20 bg-tile-color bg-opacity-60 hover:bg-opacity-100 w-full mx-auto text-global-text h-8 border-t-2 border-b-2 border-tile-color flex items-center justify-center transition-all duration-100 ease-linear cursor-pointer'
+              className='absolute bottom-20 bg-tile-color bg-opacity-60 hover:bg-opacity-100 w-full mx-auto text-global-text h-8 border-t border-b border-tile-color flex items-center justify-center transition-all duration-100 ease-linear cursor-pointer'
             >
               <span className='text-global-text'>{playerTitle}</span>
             </div>

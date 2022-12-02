@@ -271,7 +271,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <span className='relative top-px'>{cardSkinPrice}</span>
             <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
           </div>
-          <h1 className='z-20 text-2xl'>{ cardSkinName }</h1>
+          <h1 className='z-20 text-2xl font-bold'>{ cardSkinName }</h1>
           <div id='skin-image' className='z-10 bottom-0 left-0 absolute w-full h-full flex justify-center items-center'>
             <img src={ cardSkinImage } className='shadow-img' />
           </div>

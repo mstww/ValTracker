@@ -252,7 +252,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
         animate={reauthShown && currentReauthStep === 0 ? "enter" : "exit"}
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
-        <h2 className='mb-2'>{LocalText(L, "first_card.header")}</h2>
+        <h2 className='mb-2 font-bold'>{LocalText(L, "first_card.header")}</h2>
         <p className='font-normal text-base'>{LocalText(L, "first_card.desc", reauthQueue.length)}</p>
         <button className='w-full mt-8 button default' onClick={() => { setCurrentReauthStep(currentReauthStep+1) }}>{LocalText(L, "first_card.button_text")}</button>
       </motion.div>
@@ -292,7 +292,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
         animate={currentReauthStep > reauthQueue.length ? "enter" : "exit"}
         transition={{ type: 'ease-in', duration: 0.3, delay: 0.35 }}
       >
-        <h2 className='mb-2'>{LocalText(L, "final_card.header")}</h2>
+        <h2 className='mb-2 font-bold'>{LocalText(L, "final_card.header")}</h2>
         <p>{LocalText(L, "final_card.desc")}</p>
         <button className='w-full mt-4 button default' onClick={() => { restartAuthCycle() }}>{LocalText(L, "final_card.button_text")}</button>
       </motion.div>

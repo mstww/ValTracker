@@ -9,7 +9,7 @@ export default function ModeSelectionCard({ mode_name, display_name, active, set
       id={id}
       onClick={() => { setActive(mode_name) }}
     >
-      <span className='break-normal'>{display_name}</span>
+      <span className='break-normal font-thin'>{display_name}</span>
     </div>
   )
 }

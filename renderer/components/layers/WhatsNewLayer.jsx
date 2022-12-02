@@ -80,7 +80,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
         >
           <Close className='w-8 p-1' />
         </div>
-        <h2 className='mb-0 pb-0'>{LocalText(L, "header")}</h2>
+        <h2 className='mb-0 pb-0 font-bold'>{LocalText(L, "header")}</h2>
         <p className='relative bottom-2 mt-0 pt-0 text-gray-500'>{LocalText(L, "desc", newVALTrackerVersion)}</p>
         {
           isAdditionsShown ? 

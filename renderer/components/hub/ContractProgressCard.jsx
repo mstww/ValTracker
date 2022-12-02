@@ -35,10 +35,9 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
 
   return (
     <>
-      <span className='px-1 pt-1'>{title}</span>
+      <span className='px-1 pt-1 font-bold'>{title}</span>
       <div className='home-top-info-half relative px-2'>
         <div className='flex flex-row h-5/6 mt-1.5'>
-
           <div className='w-1/4 h-full flex flex-col text-center items-center justify-center'>
             {
               level_1_isTextReward ?
@@ -56,7 +55,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
                 <span className='relative bottom-0 opacity-0 select-none'>{level_1}</span>
               </>
             }
-            <span className='absolute bottom-1'>{level_locale} {parseInt(level_1)}</span>
+            <span className='absolute bottom-1 font-light'>{level_locale} {parseInt(level_1)}</span>
           </div>
 
           <div className='w-1/2 mx-auto h-full p-2 flex flex-col justify-center text-center relative'>
@@ -81,9 +80,8 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
                 <span className='relative bottom-0 opacity-0 select-none'>{level_1}</span>
               </>
             }
-            <span className='absolute bottom-1'>{level_locale} {parseInt(level_2)}</span>
+            <span className='absolute bottom-1 font-light'>{level_locale} {parseInt(level_2)}</span>
           </div>
-
         </div>
       </div>
     </>

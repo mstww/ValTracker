@@ -383,56 +383,60 @@ function calculatePlayerStatsFromMatches(matchdays, puuid) {
 }
 
 const getLevelRewardData = async (uuid, rewardType, lang) => {
-  switch(rewardType) {
-    case "EquippableSkinLevel":
-      return {
-        isText: false,
-        image: 'https://media.valorant-api.com/weaponskinlevels/' + uuid + '/displayicon.png',
-        uuid: uuid,
-        text: null
-      }
-    case "EquippableCharmLevel":
-      return {
-        isText: false, 
-        image: 'https://media.valorant-api.com/buddylevels/' + uuid + '/displayicon.png',
-        uuid: uuid,
-        text: null
-      }
-    case "Currency":
-      return {
-        isText: false, 
-        image: '/images/radianite_icon.png',
-        text: null
-      }
-    case "PlayerCard":
-      return { 
-        isText: false, 
-        image: 'https://media.valorant-api.com/playercards/' + uuid + '/smallart.png' ,
-        uuid: uuid,
-        text: null
-      }
-    case "Spray":
-      return { 
-        isText: false, 
-        image: 'https://media.valorant-api.com/sprays/' + uuid + '/fulltransparenticon.png',
-        uuid: uuid,
-        text: null
-      }
-    case "Title":
-      var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid + `?language=${APIi18n(lang)}`, { 'Content-Type': 'application/json' })).json();
-      return {
-        isText: true,
-        image: null,
-        uuid: uuid,
-        text: titleData.data.displayName
-      }
-    case "Character":
-      return {
-        isText: false,
-        image: 'https://media.valorant-api.com/agents/' + uuid + '/displayicon.png',
-        uuid: uuid,
-        text: null
-      }
+  try {
+    switch(rewardType) {
+      case "EquippableSkinLevel":
+        return {
+          isText: false,
+          image: 'https://media.valorant-api.com/weaponskinlevels/' + uuid + '/displayicon.png',
+          uuid: uuid,
+          text: null
+        }
+      case "EquippableCharmLevel":
+        return {
+          isText: false, 
+          image: 'https://media.valorant-api.com/buddylevels/' + uuid + '/displayicon.png',
+          uuid: uuid,
+          text: null
+        }
+      case "Currency":
+        return {
+          isText: false, 
+          image: '/images/radianite_icon.png',
+          text: null
+        }
+      case "PlayerCard":
+        return { 
+          isText: false, 
+          image: 'https://media.valorant-api.com/playercards/' + uuid + '/smallart.png' ,
+          uuid: uuid,
+          text: null
+        }
+      case "Spray":
+        return { 
+          isText: false, 
+          image: 'https://media.valorant-api.com/sprays/' + uuid + '/fulltransparenticon.png',
+          uuid: uuid,
+          text: null
+        }
+      case "Title":
+        var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid + `?language=${APIi18n(lang)}`, { 'Content-Type': 'application/json' })).json();
+        return {
+          isText: true,
+          image: null,
+          uuid: uuid,
+          text: titleData.data.displayName
+        }
+      case "Character":
+        return {
+          isText: false,
+          image: 'https://media.valorant-api.com/agents/' + uuid + '/displayicon.png',
+          uuid: uuid,
+          text: null
+        }
+    } 
+  } catch(e) {
+    console.log(e);
   }
 }
 
@@ -1631,7 +1635,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           <div className='home-top-info-tile border rounded border-maincolor-lightest h-full p-1 relative'>
             <div className='flex flex-col h-full'>
               <div>
-                <span className='leading-none px-1'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
+                <span className='leading-none px-1 font-bold'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
                 <hr className='mb-1' />
               </div>
               <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border border-tile-color rounded shadow-img'>
@@ -1786,7 +1790,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 var today = startdate.format("D. MMMM");
                 return (
                   <div className='day relative' key={index}>
-                    <div id='day-header' className='text-lg ml-4 day-header'>{today === key ? 'Today' : key}</div>
+                    <div id='day-header' className='text-lg ml-4 day-header font-bold'>{today === key ? 'Today' : key}</div>
                     {currentMatches[key].map((match, index) => {
                       var { matchData, matchViewData } = calculateMatchStats(match);
 
@@ -1882,7 +1886,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               (
                                 <div 
                                   id='scoreboard-pos' 
-                                  className={'rounded text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
+                                  className={'rounded text-base h-8 py-0.5 px-1 ml-7 font-light ' + matchData.playerPositionColor}
                                 >
                                   {LocalText(L, "bot_l.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                 </div>
@@ -1893,7 +1897,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           </div>
                           <div id='match-stats-1' className='w-1/3 flex flex-row items-center pl-4'>
                             <div id='left-side' className='flex flex-col'>
-                              <span className='text-xl'>KDA</span>
+                              <span className='text-lg'>KDA</span>
                               <span className='text-lg font-light'>KD</span>
                             </div>
                             <div id='right-side' className='flex flex-col ml-4'>
@@ -1984,7 +1988,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             {
               currentlyLoadedMatchCount > 0 ?
               <div className={'p-0 m-0' + (areStatsActive ? '' : ' hidden ')}>
-                <span>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
+                <span className='font-bold'>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
                 <hr />
                 <div className='flex flex-row justify-between mt-1.5'>
                   <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} />
@@ -1996,7 +2000,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} />
                 </div>
 
-                <span className='mt-1'>{LocalText(L, "bot_r.best_map.header")}</span>
+                <span className='mt-1 font-bold'>{LocalText(L, "bot_r.best_map.header")}</span>
                 <hr className='mb-2' />
                 <LargeStatsCard 
                   header={bestMapName}
@@ -2008,7 +2012,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   extraClasses={'mb-3'} 
                 />
 
-                <span className='mt-1'>{LocalText(L, "bot_r.best_agent.header")}</span>
+                <span className='mt-1 font-bold'>{LocalText(L, "bot_r.best_agent.header")}</span>
                 <hr className='mb-2' />
                 <FlatLargeStatsCard
                   img_src={bestAgentImage}
@@ -2026,7 +2030,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               : 
               null
             }
-            <span>{LocalText(L, "bot_r.match_filter.header")}</span>
+            <span className='font-bold'>{LocalText(L, "bot_r.match_filter.header")}</span>
             <hr className='mb-2' />
             <div className='flex flex-row flex-wrap justify-between' id='hub-match-filter'>
               <ModeSelectionCard id="unrated" mode_name={'unrated'} display_name={LocalText(L, "bot_r.match_filter.fl_1")} active={activeQueueTab} setActive={setActiveQueueTab} />

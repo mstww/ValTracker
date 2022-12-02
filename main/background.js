@@ -421,15 +421,16 @@ async function reauthAccount(puuid) {
 
     var { ssid } = rgConfig;
 
-    console.log(ssid);
     const access_tokens = await getAccessTokens(ssid);
-    console.log(access_tokens);
+
+    var newSSID = access_tokens.headers.get('set-cookie').split("ssid=").pop().split(";")[0];
+    newSSID = `ssid=${newSSID}`;
 
     const url_params = await access_tokens.json();
-    console.log(url_params);
 
     var newTokenData = getTokenDataFromURL(url_params.response.parameters.uri);
 
+    rgConfig.ssid = newSSID;
     rgConfig.accesstoken = newTokenData.accessToken;
     rgConfig.idtoken = newTokenData.id_token;
 
