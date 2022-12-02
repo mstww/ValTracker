@@ -349,7 +349,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
             animate={isNavbarMinimized ? "minimize" : "maximize"}
             transition={{ delay: isNavbarMinimized ? 0.25 : 0.35, duration: 0.2, ease: "easeOut" }}
           >
-            <Home className='ml-0.5 w-5 absolute' />
+            <Home className={'ml-px bottom-[27%] w-5 absolute'} />
             <span className={navbarTileTextClasses}>{LocalText(L, 'home')}</span>
           </motion.div>
         </Link>
@@ -364,7 +364,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.3 : 0.3, duration: 0.2, ease: "easeOut" }}
         >
-          <Store className='ml-0.5 w-5 absolute' />
+          <Store className={'ml-px bottom-[27%] w-5 absolute'} />
           <span className={navbarTileTextClasses}>{LocalText(L, 'shop')}</span>
         </motion.div>
 
@@ -378,7 +378,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.35 : 0.25, duration: 0.2, ease: "easeOut" }}
         >
-          <User className='ml-0.5 w-5 absolute' />
+          <User className={'ml-px bottom-[27%] w-5 absolute'} />
           <span className={navbarTileTextClasses}>{LocalText(L, 'inventory')}</span>
         </motion.div>
 
@@ -392,7 +392,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.4 : 0.2, duration: 0.2, ease: "easeOut" }}
         >
-          <Star className='ml-0.5 w-5 absolute' />
+          <Star className={'ml-px bottom-[27%] w-5 absolute'} />
           <span className={navbarTileTextClasses}>{LocalText(L, 'fav_matches')}</span>
         </motion.div>
 
@@ -406,7 +406,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.45 : 0.15, duration: 0.2, ease: "easeOut" }}
         >
-          <Clipboard className='ml-0.5 w-5 absolute' />
+          <Clipboard className={'ml-px bottom-[27%] w-5 absolute'} />
           <span className={navbarTileTextClasses}>{LocalText(L, 'wishlist')}</span>
         </motion.div>
       </div>
