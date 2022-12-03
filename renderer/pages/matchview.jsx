@@ -111,6 +111,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   const [ isDeathmatch, setIsDeathmatch ] = React.useState(false);
   const [ isEscalation, setIsEscalation ] = React.useState(false);
+  const [ isComp, setIsComp ] = React.useState(false);
 
   // DATA NEEDED: MapUUID, Map Name, Match Date, Match Length, Match Mode, Region, Server, Game Version, 
   // AgentUUID, Player KDA, Player KD, Player Score, Player ACS, Player Rank, HS%, BS%, LS%, is Player MVP, Player ADR
@@ -126,6 +127,10 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       if(knownMatchData.gameMode !== 'deathmatch' && knownMatchData.gameMode !== 'ggteam' && knownMatchData.gameMode !== 'onefa') {
         const allPlayerAwardStats = [];
         var playerAbilityUsage = {};
+        console.log(knownMatchData);
+        if(knownMatchData.gameMode === "competitive") {
+          setIsComp(true);
+        }
   
         for(var i = 0; i < playerData.length; i++) {
           if(playerData[i].subject === user_data.uuid) {
@@ -136,6 +141,9 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           }
 
           allPlayerAwardStats[playerData[i].subject] = {};
+          if(knownMatchData.gameMode === "competitive") {
+            allPlayerAwardStats[playerData[i].subject].competitiveTier = playerData[i].competitiveTier;
+          }
   
           allPlayerAwardStats[playerData[i].subject].subject = playerData[i].subject;
           allPlayerAwardStats[playerData[i].subject].subjectName = playerData[i].gameName;
@@ -867,6 +875,9 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   >
                     <td className='py-1 pl-1 flex flex-row items-center h-14'>
                       <img src={'https://media.valorant-api.com/agents/' + playerStats.subjectAgent + '/displayicon.png'} className='h-full shadow-img' />
+                      {isComp === true && (
+                        <img src={`https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${playerStats.competitiveTier}/smallicon.png`} className={`w-8 ml-2`} />
+                      )}
                       <Tooltip 
                         content={playerStats.subjectName + '#' + playerStats.subjectTag} 
                         color="error" 
@@ -874,7 +885,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                         className='rounded'
                       >
                         <span 
-                          className={'ml-4 text-xl text-val-' + (playerStats.subjectTeam.toLowerCase())} 
+                          className={'ml-2 text-xl text-val-' + (playerStats.subjectTeam.toLowerCase())} 
                           onClick={() => {
                             var name_encoded = encodeURIComponent(playerStats.subjectName + '#' + playerStats.subjectTag);
                             router.push(`/player?name=${playerStats.subjectName}&tag=${playerStats.subjectTag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);

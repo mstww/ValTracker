@@ -1296,6 +1296,21 @@ body[lang="de-DE"] #rotated-side-text.awards {
   @apply mb-2.5 relative right-4;
 }
 
+.outcome-text.text-val-blue {
+  position: relative;
+  right: 0.75rem;
+}
+
+.outcome-text.text-val-red {
+  position: relative;
+  right: 0.25rem;
+}
+
+.maximized .outcome-text {
+  position: relative;
+  right: 0 !important;
+}
+
 body[lang="de-DE"] .german-won-round {
   @apply w-20;
 }

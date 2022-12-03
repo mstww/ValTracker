@@ -1879,7 +1879,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           </div>
                           <div id='match-score' className='w-1/3 flex flex-row items-center'>
                             <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                              <span className={'text-xl font-semibold ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
+                              <span className={'text-xl font-semibold outcome-text ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
                               {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                             </div>
                             {activeQueueTab != 'deathmatch' ? 

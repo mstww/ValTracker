@@ -58,7 +58,7 @@ const fetchSkins = async (weaponType, lang) => {
   }
 }
 
-function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
+function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, setLockWishlistButton }) {
   const router = useRouter();
   const weaponType = router.query.weaponType;
 
@@ -141,6 +141,7 @@ function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef }) {
             extraClasses={(activeSkin == weapon.uuid && isOwned ? ' button-border ' : '') + (isOwned ? '' : ' border-none unowned-skin') + (showUnowned && !isOwned ? 'shown' : '')}
             onClick={() => {
               setActiveSkin(weapon.uuid);
+              setLockWishlistButton(false);
             }}
             isOwned={isOwned}
             contentTier={contentImage}
@@ -175,7 +176,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   const [ showSetSkinButton, setShowSetSkinButton ] = React.useState(true);
   const [ showWishlistButton, setShowWishlistButton ] = React.useState(false);
-  const [ lockWishlistButton, setLockWishlistButton ] = React.useState(false);
+  const [ lockWishlistButton, setLockWishlistButton ] = React.useState(true);
 
   const [ showUnownedSkins, setShowUnownedSkins ] = React.useState(false);
 
@@ -417,7 +418,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   
   const changeSkinChroma = (chromaUUID, isOwned, isBaseColor) => {
     setShowSetSkinButton(isOwned);
-    setShowWishlistButton(!isOwned);
+
     if(chromaUUID == ingameChroma) {
       setShowSetSkinButton(false);
       setShowWishlistButton(false);
@@ -451,7 +452,6 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   const changeSkinLevel = (levelUUID, isOwned) => {
     setShowSetSkinButton(isOwned);
-    setShowWishlistButton(!isOwned);
 
     if(levelUUID == ingameLevel && ingameChroma == activeChroma) {
       setShowSetSkinButton(false);
@@ -619,7 +619,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <span className='ml-2 text-sm'>{LocalText(L, "skins.switch_label")}</span>
           </div>
           <div id='skin-list' className='mt-4 overflow-y-auto pr-1'>
-            <SkinTiles setActiveSkin={setShownSkin} activeSkin={shownSkin} useRef={skinTilesRef} showUnowned={showUnownedSkins} />
+            <SkinTiles setActiveSkin={setShownSkin} activeSkin={shownSkin} useRef={skinTilesRef} showUnowned={showUnownedSkins} setLockWishlistButton={setLockWishlistButton} />
           </div>
         </div>
         <div id='skin-viewer' className='h-full w-4/5 flex flex-row items-center justify-center'>

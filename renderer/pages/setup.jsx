@@ -316,10 +316,10 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
       <div className='flex flex-col items-center p-4 h-full w-full'>
         <div id='setup-timeline' className='border border-maincolor-lightest w-full p-2 h-14 rounded'>
           <div className='flex flex-row items-center mb-1 justify-between'>
-            <span>{LocalText(L, currentSelectedLanguage, 'progress.lang')}</span>
-            <span>{LocalText(L, currentSelectedLanguage, 'progress.riot')}</span>
-            <span>{LocalText(L, currentSelectedLanguage, 'progress.confirm')}</span>
-            <span>{LocalText(L, currentSelectedLanguage, 'progress.finish')}</span>
+            <span className='font-medium'>{LocalText(L, currentSelectedLanguage, 'progress.lang')}</span>
+            <span className='font-medium'>{LocalText(L, currentSelectedLanguage, 'progress.riot')}</span>
+            <span className='font-medium'>{LocalText(L, currentSelectedLanguage, 'progress.confirm')}</span>
+            <span className='font-medium'>{LocalText(L, currentSelectedLanguage, 'progress.finish')}</span>
           </div>
           <Progress value={overallProgress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-full'} />
         </div>
@@ -332,7 +332,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             transition={{ type: 'linear', duration: 0.5, delay: (currentPage === '1' && lastPage !== '0' ? 0.5 : 0)}}
             id='pg-1'
           >
-            <span className='text-lg'>{LocalText(L, currentSelectedLanguage, 'page_1.header')}</span>
+            <span className='text-lg font-bold'>{LocalText(L, currentSelectedLanguage, 'page_1.header')}</span>
             <hr className='bg-maincolor-lightest h-0.5 border-none mb-0' />
             <span className='text-sm text-gray-500'>{LocalText(L, currentSelectedLanguage, 'page_1.info')}</span>
             <div className='flex flex-row flex-wrap w-full mb-4 mt-2'>
@@ -349,7 +349,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
                 setLastPage('1');
                 setOverallProgress(overallProgressValues[1]);
               }}
-              className={'button default relative bottom-2 left-2'}
+              className={'button default relative top-8 -bottom-0.5 left-0'}
             >
               {LocalText(L, currentSelectedLanguage, 'page_1.button_1_text')}
             </button>
@@ -363,7 +363,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             id='pg-2'
             className='h-full relative'
           >
-            <span className='text-lg'>{LocalText(L, currentSelectedLanguage, 'page_2.header')}</span>
+            <span className='text-lg font-bold'>{LocalText(L, currentSelectedLanguage, 'page_2.header')}</span>
             <hr className='bg-maincolor-lightest h-0.5 border-none mb-4' />
             <div className='flex flex-col items-center justify-center h-4/6 w-full mb-4'>
               <button className={'flex flex-row items-center mb-6 button default ' + (isLoginCompleted ? 'disabled' : '')} disabled={isLoginCompleted} onClick={() => ( login() )}><img src='/images/riot_fist.png' className='w-6 mr-2' /> {isLoginCompleted ? LocalText(L, currentSelectedLanguage, "page_2.login_button_text_2") : LocalText(L, currentSelectedLanguage, "page_2.login_button_text_1")}</button>
@@ -411,7 +411,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             id='pg-3'
             className='h-full relative'
           >
-            <span className='text-lg'>{LocalText(L, currentSelectedLanguage, 'page_3.header')}</span>
+            <span className='text-lg font-bold'>{LocalText(L, currentSelectedLanguage, 'page_3.header')}</span>
             <hr className='bg-maincolor-lightest h-0.5 border-none mb-2' />
             <div className='flex flex-col items-center'>
               <div className='flex flex-row items-center mb-4 mt-8'>
@@ -469,7 +469,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             id='pg-4'
             className='h-full relative'
           >
-            <span className='text-lg'>{LocalText(L, currentSelectedLanguage, 'page_4.header')}</span>
+            <span className='text-lg font-bold'>{LocalText(L, currentSelectedLanguage, 'page_4.header')}</span>
             <hr />
             <div className='h-full w-full flex items-center justify-center'>
               <button 
