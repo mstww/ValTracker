@@ -1842,7 +1842,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                             </div>
                             <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                              <span className='text-xl'>{matchData.mapName}</span>
+                              <span className='text-xl font-semibold'>{matchData.mapName}</span>
                               <span className='text-base font-light flex flex-row items-center'> 
                                 <Tooltip 
                                   content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
@@ -1879,7 +1879,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           </div>
                           <div id='match-score' className='w-1/3 flex flex-row items-center'>
                             <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                              <span className={'text-xl ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
+                              <span className={'text-xl font-semibold ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
                               {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                             </div>
                             {activeQueueTab != 'deathmatch' ? 

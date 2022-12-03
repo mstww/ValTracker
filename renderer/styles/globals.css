@@ -2,8 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Mona Sans';
+  src:
+    url('./fonts/Mona-Sans.woff2') format('woff2 supports variations'),
+    url('./fonts/Mona-Sans.woff2') format('woff2-variations');
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
+}
+
 * {
-  font-family: Bahnschrift, sans-serif;
+  font-family: 'Mona Sans', sans-serif;
   user-select: none;
   @apply text-global-text;
 }
@@ -451,7 +460,7 @@ input:checked + .slider:before {
 }
 
 .tab-tile {
-  font-weight: 300;
+  @apply font-medium;
 }
 
 .tab-tile.active {

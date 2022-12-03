@@ -413,8 +413,8 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
       <div className={'absolute bottom-16 w-full flex justify-around transition-all duration-100 ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
         <SocialsIcon icon={'/images/coffee.svg'} tooltip={'Ko-Fi'} href={'https://ko-fi.com/valtrackergg'} />
         <SocialsIcon icon={'/images/discord.svg'} tooltip={'Discord'} href={'https://discord.gg/aJfQ4yHysG'} />
-        <SocialsIcon icon={'/images/twitter.svg'} tooltip={'Twitter'} href={'https://twitter.com/valtracker_gg'} />
         <SocialsIcon icon={'/images/github.svg'} tooltip={'GitHub'} href={'https://github.com/orgs/valtracker'} />
+        <SocialsIcon icon={'/images/twitter.svg'} tooltip={'Twitter'} href={'https://twitter.com/valtracker_gg'} />
       </div>
       <div id="nav-bottom" className='absolute bottom-0 left-0 w-full h-16 p-2 flex flex-row'>
         <motion.div 

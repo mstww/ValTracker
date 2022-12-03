@@ -416,7 +416,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                         }}
                       >
                         <span className="text-lg">Level { cardSkinLevels.length - index }</span>
-                        <span className="text-base font-thin">
+                        <span className="text-base font-light">
                           {
                             level.levelItem ?
                               level.levelItem.split('::').pop()

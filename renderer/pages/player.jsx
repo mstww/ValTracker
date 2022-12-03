@@ -415,7 +415,7 @@ function PlayerInfo({ isNavbarMinimized }) {
           <div id='player-info' className='text-2xl flex flex-col ml-4 py-auto'>
             <div id='rank-name' className=''>
               <span id='player-name-region' className='font-bold'>{nameTag}</span><br /> 
-              <span id='player-name-region' className='flex items-center font-thin mt-1'>
+              <span id='player-name-region' className='flex items-center font-normal mt-1'>
                 <img 
                   src={rankImg}
                   className='w-12 inline-block shadow-img p-1 mr-1 relative bottom-0.5' 
@@ -632,7 +632,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                             <img className='h-full shadow-img' src={playerAgent ? `https://media.valorant-api.com/agents/${playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                            <span className='text-xl'>{mapName}</span>
+                            <span className='text-xl font-semibold'>{mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
                                 content={playerCurrentTier > 3 ? rankFixed.tierName : ''}
@@ -668,14 +668,14 @@ function PlayerInfo({ isNavbarMinimized }) {
                         </div>
                         <div id='match-score' className='w-1/4 flex flex-row items-center'>
                           <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                            <span className={'text-xl ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
+                            <span className={'text-xl font-semibold ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
                             {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchScore}</span>) : ''}
                           </div>
                           {activeQueueTab != 'deathmatch' ? 
                             (
                               <div 
                                 id='scoreboard-pos' 
-                                className={'rounded h-9 py-1 px-2 ml-6 !font-thin' + playerPositionColor}
+                                className={'rounded h-9 py-1 px-2 ml-6 !font-light ' + playerPositionColor}
                               >
                                 {LocalText(L, "matches.match_pos." + (playerPositionText ? playerPositionText.replace(" ", "-") : ''))}
                               </div>

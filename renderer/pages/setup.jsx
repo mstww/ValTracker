@@ -368,7 +368,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             <div className='flex flex-col items-center justify-center h-4/6 w-full mb-4'>
               <button className={'flex flex-row items-center mb-6 button default ' + (isLoginCompleted ? 'disabled' : '')} disabled={isLoginCompleted} onClick={() => ( login() )}><img src='/images/riot_fist.png' className='w-6 mr-2' /> {isLoginCompleted ? LocalText(L, currentSelectedLanguage, "page_2.login_button_text_2") : LocalText(L, currentSelectedLanguage, "page_2.login_button_text_1")}</button>
               <Progress value={progress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-2/6 ' + (isProgressShown ? '' : 'hidden')} />
-              <div className={'relative bottom-3.5 font-thin text-gray-500 text-left w-2/6 ' + (isProgressShown ? 'text-left w-2/6' : 'text-center')}>{loadingState}</div>
+              <div className={'relative bottom-3.5 font-light text-gray-500 text-left w-2/6 ' + (isProgressShown ? 'text-left w-2/6' : 'text-center')}>{loadingState}</div>
             </div>
             <div className='absolute bottom-1 left-2'>
               {

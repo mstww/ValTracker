@@ -32,7 +32,7 @@ export default function LevelTile({ name, effect, onClick, levelUUID, activeLeve
       onClick={() => { onClick(levelUUID, isOwned) }}
     >
       <span className="text-lg">{name}</span>
-      <span className="text-base font-thin">{effect}</span>
+      <span className="text-base font-light">{effect}</span>
       {
         isOwned ?
         ''
