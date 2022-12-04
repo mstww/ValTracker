@@ -4,7 +4,7 @@ export default function FLatLargeStatsCard({ extraClasses, img_src, header, top_
       <div className="w-full">
         <div className="flex flex-row items-center mb-1 relative">
           <img src={img_src} className="h-12 shadow-img" />
-          <h3 className="ml-2">{header}</h3>
+          <h3 className="ml-2 font-medium">{header}</h3>
           <div className="ml-auto">
             <h3 className="mb-5">{top_num}</h3>
             <p className='text-gray-500 absolute bottom-1 right-0'>{top_desc}</p>
@@ -13,15 +13,15 @@ export default function FLatLargeStatsCard({ extraClasses, img_src, header, top_
         <hr />
         <div className="flex flex-row">
           <div className='w-1/3 relative top-1'>
-            <h2 className='mt-1'>{stat_1_num}</h2>
+            <h2 className='mt-1 text-xl'>{stat_1_num}</h2>
             <p className='relative bottom-2 text-sm text-gray-500'>{stat_1_desc}</p>
           </div>
           <div className='w-1/3 relative top-1'>
-            <h2 className='mt-1'>{stat_2_num}</h2>
+            <h2 className='mt-1 text-xl'>{stat_2_num}</h2>
             <p className='relative bottom-2 text-sm text-gray-500'>{stat_2_desc}</p>
           </div>
           <div className='w-1/3 relative top-1'>
-            <h2 className='mt-1'>{stat_3_num}</h2>
+            <h2 className='mt-1 text-xl'>{stat_3_num}</h2>
             <p className='relative bottom-2 text-sm text-gray-500'>{stat_3_desc}</p>
           </div>
         </div>

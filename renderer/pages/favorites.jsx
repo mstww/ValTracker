@@ -598,7 +598,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                   <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear w-full' src={matchInfo.agent ? `https://media.valorant-api.com/agents/${matchInfo.agent}/displayicon.png` : ''} />
                 </div>
                 <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                  <span className='text-xl'>{matchInfo.map}</span>
+                  <span className='text-lg'>{matchInfo.map}</span>
                   <span className='text-base font-light flex flex-row items-center'> 
                     <img 
                       src={
@@ -629,7 +629,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                 </div>
               </div>
               <div id='match-score' className='w-1/2 flex flex-row items-center'>
-                <div id='scoreline' className='flex flex-col text-center w-full'>
+                <div id='scoreline' className='flex flex-col text-center w-1/2'>
                   <span className={'text-xl ' + matchInfo.matchOutcomeColor}>{matchInfo.matchOutcome}</span>
                   {matchInfo.fixedQueueName != 'deathmatch' ? (<span className='text-lg'>{matchInfo.matchScore}</span>) : ''}
                 </div>
@@ -741,7 +741,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                   <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                                 </div>
                                 <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                                  <span className='text-xl font-semibold'>{matchData.mapName}</span>
+                                  <span className='text-lg font-semibold'>{matchData.mapName}</span>
                                   <span className='text-base font-light flex flex-row items-center'> 
                                     <Tooltip 
                                       content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
@@ -779,7 +779,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                 </div>
                               </div>
                               <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                                <div id='scoreline' className='flex flex-col text-center w-1/3'>
+                                <div id='scoreline' className='flex flex-col text-center w-1/2'>
                                   <span className={'text-xl font-semibold ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
                                   {match.matchInfo.queueID != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                                 </div>
@@ -913,7 +913,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                             <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                            <span className='text-xl font-semibold'>{matchData.mapName}</span>
+                            <span className='text-lg font-semibold'>{matchData.mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
                                 content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
@@ -951,7 +951,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                           </div>
                         </div>
                         <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                          <div id='scoreline' className='flex flex-col text-center w-1/3'>
+                          <div id='scoreline' className='flex flex-col text-center w-1/2'>
                             <span className={'text-xl font-semibold ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
                             {match.matchInfo.queueID != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                           </div>

@@ -44,8 +44,8 @@
         "load_more": "Load more Matches"
       },
       "match_pos": {
-        "Match-MVP": "Match MVP",
-        "Team-MVP": "Team MVP",
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
         "2nd": "2nd",
         "3rd": "3rd",
         "4th": "4th",
@@ -103,8 +103,8 @@
         "load_more": "Lade mehr Matches"
       },
       "match_pos": {
-        "Match-MVP": "Match MVP",
-        "Team-MVP": "Team MVP",
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
         "2nd": "2ter",
         "3rd": "3ter",
         "4th": "4ter",
@@ -162,8 +162,8 @@
         "load_more": "Charge plus de match"
       },
       "match_pos": {
-        "Match-MVP": "MVP du match",
-        "Team-MVP": "MVP de l'équipe",
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
         "2nd": "2ème",
         "3rd": "3ème",
         "4th": "4ème",
