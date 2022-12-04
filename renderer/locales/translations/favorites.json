@@ -28,8 +28,8 @@
         "DRAW": "DRAW"
       },
       "match_pos": {
-        "Match-MVP": "Match MVP",
-        "Team-MVP": "Team MVP",
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
         "2nd": "2nd",
         "3rd": "3rd",
         "4th": "4th",
@@ -94,8 +94,8 @@
         "DRAW": "GLEICHST."
       },
       "match_pos": {
-        "Match-MVP": "Match MVP",
-        "Team-MVP": "Team MVP",
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
         "2nd": "2ter",
         "3rd": "3ter",
         "4th": "4ter",
@@ -160,8 +160,8 @@
         "DRAW": "EGALITE"
       },
       "match_pos": {
-        "Match-MVP": "MVP du match",
-        "Team-MVP": "MVP de l'équipe",
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
         "2nd": "2ème",
         "3rd": "3ème",
         "4th": "4ème",

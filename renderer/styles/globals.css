@@ -1298,12 +1298,16 @@ body[lang="de-DE"] #rotated-side-text.awards {
 
 .outcome-text.text-val-blue {
   position: relative;
-  right: 0.75rem;
+  right: 0rem;
 }
 
 .outcome-text.text-val-red {
   position: relative;
-  right: 0.25rem;
+  right: 0rem;
+}
+
+#scoreboard-pos {
+  @apply mx-auto;
 }
 
 .maximized .outcome-text {
