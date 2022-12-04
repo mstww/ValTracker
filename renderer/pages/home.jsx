@@ -383,56 +383,60 @@ function calculatePlayerStatsFromMatches(matchdays, puuid) {
 }
 
 const getLevelRewardData = async (uuid, rewardType, lang) => {
-  switch(rewardType) {
-    case "EquippableSkinLevel":
-      return {
-        isText: false,
-        image: 'https://media.valorant-api.com/weaponskinlevels/' + uuid + '/displayicon.png',
-        uuid: uuid,
-        text: null
-      }
-    case "EquippableCharmLevel":
-      return {
-        isText: false, 
-        image: 'https://media.valorant-api.com/buddylevels/' + uuid + '/displayicon.png',
-        uuid: uuid,
-        text: null
-      }
-    case "Currency":
-      return {
-        isText: false, 
-        image: '/images/radianite_icon.png',
-        text: null
-      }
-    case "PlayerCard":
-      return { 
-        isText: false, 
-        image: 'https://media.valorant-api.com/playercards/' + uuid + '/smallart.png' ,
-        uuid: uuid,
-        text: null
-      }
-    case "Spray":
-      return { 
-        isText: false, 
-        image: 'https://media.valorant-api.com/sprays/' + uuid + '/fulltransparenticon.png',
-        uuid: uuid,
-        text: null
-      }
-    case "Title":
-      var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid + `?language=${APIi18n(lang)}`, { 'Content-Type': 'application/json' })).json();
-      return {
-        isText: true,
-        image: null,
-        uuid: uuid,
-        text: titleData.data.displayName
-      }
-    case "Character":
-      return {
-        isText: false,
-        image: 'https://media.valorant-api.com/agents/' + uuid + '/displayicon.png',
-        uuid: uuid,
-        text: null
-      }
+  try {
+    switch(rewardType) {
+      case "EquippableSkinLevel":
+        return {
+          isText: false,
+          image: 'https://media.valorant-api.com/weaponskinlevels/' + uuid + '/displayicon.png',
+          uuid: uuid,
+          text: null
+        }
+      case "EquippableCharmLevel":
+        return {
+          isText: false, 
+          image: 'https://media.valorant-api.com/buddylevels/' + uuid + '/displayicon.png',
+          uuid: uuid,
+          text: null
+        }
+      case "Currency":
+        return {
+          isText: false, 
+          image: '/images/radianite_icon.png',
+          text: null
+        }
+      case "PlayerCard":
+        return { 
+          isText: false, 
+          image: 'https://media.valorant-api.com/playercards/' + uuid + '/smallart.png' ,
+          uuid: uuid,
+          text: null
+        }
+      case "Spray":
+        return { 
+          isText: false, 
+          image: 'https://media.valorant-api.com/sprays/' + uuid + '/fulltransparenticon.png',
+          uuid: uuid,
+          text: null
+        }
+      case "Title":
+        var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid + `?language=${APIi18n(lang)}`, { 'Content-Type': 'application/json' })).json();
+        return {
+          isText: true,
+          image: null,
+          uuid: uuid,
+          text: titleData.data.displayName
+        }
+      case "Character":
+        return {
+          isText: false,
+          image: 'https://media.valorant-api.com/agents/' + uuid + '/displayicon.png',
+          uuid: uuid,
+          text: null
+        }
+    } 
+  } catch(e) {
+    console.log(e);
   }
 }
 
@@ -470,19 +474,25 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     
     for(var j = 0; j < current_chapter.levels.length; j++) {
       var next_level = undefined;
-      var current_level = current_chapter.levels[j];
+      var current_level = current_chapter.levels[j-1];
+
+      if(current_level === undefined && tierCount === 5) {
+        var prev_chapter = agentContractData.data.content.chapters[i-1];
+        current_level = prev_chapter.levels[prev_chapter.levels.length-1];
+      }
 
       if(current_chapter.levels[j+1]) {
-        next_level = current_chapter.levels[j+1];
+        next_level = current_chapter.levels[j];
       }
 
       if(next_level === undefined && next_chapter !== undefined) {
+        current_level = current_chapter.levels[current_chapter.levels.length-1];
         next_level = next_chapter.levels[0];
       }
 
       if(next_level === undefined) {
         next_level = current_level;
-        var current_level = current_chapter.levels[j-1];
+        current_level = current_chapter.levels[j-1];
         var atEnd = true;
       }
 
@@ -828,18 +838,21 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         
         // Get newest 4 Matches from Match history
         var data = await fetchMatches(0, 5, [], mode, user_creds.uuid, user_creds.region, router.query.lang, true);
-  
         setMaxMatchesFound(data.items.totalMatches);
   
         var new_matches = [];
   
         for(var key in data.items.games) {
           for(var i = 0; i < data.items.games[key].length; i++) {
-            new_matches.push(data.items.games[key][i])
+            new_matches.push(data.items.games[key][i]);
           }
         }
-  
+        
+        if(new_matches.length === 0) return;
+
         new_matches.sort(function(a, b) {
+          if(b.matchInfo === undefined) return a;
+          if(a.matchInfo === undefined) return b;
           return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
         });
   
@@ -859,7 +872,13 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var new_old_matches = old_matches.slice(0, (15 - new_matches_amount));
         var new_new_matches = new_matches.slice(0, new_matches_amount);
 
-        var newMatchesArray = new_new_matches.concat(new_old_matches);
+        var allOldMatches = [];
+        for(var i = 0; i < new_old_matches.length; i++) {
+          var match = await executeQuery(`SELECT * FROM match:⟨${new_old_matches[i]}⟩`);
+          allOldMatches.push(match[0]);
+        }
+
+        var newMatchesArray = new_new_matches.concat(allOldMatches);
 
         newMatchesArray.sort(function(a, b) {
           return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
@@ -1298,7 +1317,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
       if(playerPosition == 1) {
         // Player is Match MVP
-        var playerPositionColor = 'yellow-glow bg-yellow-300 bg-opacity-50 border-2 border-yellow-400';
+        var playerPositionColor = 'yellow-glow bg-yellow-300 bg-opacity-50 border border-yellow-400';
         var playerPositionText = 'Match MVP';
       } else {
         // Player is not Match MVP, check for Team MVP
@@ -1313,11 +1332,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
         if(teamPlayerPosition == 1) {
           // Player is Team MVP
-          var playerPositionColor = 'silver-glow bg-gray-600 bg-opacity-80 border-2 border-slate-400';
+          var playerPositionColor = 'silver-glow bg-gray-600 bg-opacity-80 border border-slate-400';
           var playerPositionText = 'Team MVP';
         } else {
           // Player is not Team MVP
-          var playerPositionColor = 'bg-tile-color bg-opacity-60 border-2 border-tile-color border-opacity-60';
+          var playerPositionColor = 'bg-tile-color bg-opacity-60 border border-tile-color border-opacity-60';
 
           if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
           else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
@@ -1487,7 +1506,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     const refetchFeaturedBundle = async () => {
-      var featured_bundle = await (await fetch(`http://localhost:4000/v1/bundles/featured`, { headers: { "x-valtracker-lang": APIi18n(router.query.lang) } })).json();
+      var featured_bundle = await (await fetch(`https://beta-api.valtracker.gg/v1/bundles/featured`, { headers: { "x-valtracker-lang": APIi18n(router.query.lang) } })).json();
       
       setFeaturedBundleName(featured_bundle.data.name);
       setFeaturedBundlePrice(featured_bundle.data.price);
@@ -1613,13 +1632,13 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div id='home-container' className='flex flex-row flex-wrap'>
         <div id='top-left-container' className='relative bg-maincolor-lightest bg-opacity-60 rounded p-1.5 flex flex-wrap'>
-          <div className='home-top-info-tile border-2 rounded border-maincolor-lightest h-full p-1 relative'>
+          <div className='home-top-info-tile border rounded border-maincolor-lightest h-full p-1 relative'>
             <div className='flex flex-col h-full'>
               <div>
-                <span className='leading-none px-1'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
+                <span className='leading-none px-1 font-bold'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
                 <hr className='mb-1' />
               </div>
-              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border-2 border-tile-color rounded shadow-img'>
+              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border border-tile-color rounded shadow-img'>
                 <div className='relative'>
                   <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img rounded' />
                 </div>
@@ -1638,7 +1657,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               </div>
             </div>
           </div>
-          <div className='home-top-info-tile relative border-2 rounded border-maincolor-lightest flex flex-col'>
+          <div className='home-top-info-tile relative border rounded border-maincolor-lightest flex flex-col'>
             <Tooltip content={LocalText(L, "top_l.contracts.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-4 right-7'>
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
@@ -1701,7 +1720,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         <div id='top-right-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded p-1.5'>
           <div className={'flex-row items-center justify-center h-full ' + (chartsLoading || chartsError ? 'hidden ' : 'flex') + (areChartsActive ? '' : ' hidden')}>
             <AwesomeSlider 
-              className={'AwesomeSliderMainContainer border-2 border-maincolor-lightest rounded h-full z-10'}
+              className={'AwesomeSliderMainContainer border border-maincolor-lightest rounded h-full z-10'}
             >
               <div>
                 <InfoChart
@@ -1771,14 +1790,14 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 var today = startdate.format("D. MMMM");
                 return (
                   <div className='day relative' key={index}>
-                    <div id='day-header' className='text-lg ml-4 day-header'>{today === key ? 'Today' : key}</div>
+                    <div id='day-header' className='text-lg ml-4 day-header font-bold'>{today === key ? 'Today' : key}</div>
                     {currentMatches[key].map((match, index) => {
                       var { matchData, matchViewData } = calculateMatchStats(match);
 
                       return (
                         <div 
                           id='match'
-                          className='group relative flex flex-row h-20 border-2 p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-tile-color cursor-default transition-all duration-100 ease-linear' 
+                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-tile-color cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
                             if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -1823,7 +1842,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                             </div>
                             <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                              <span className='text-xl'>{matchData.mapName}</span>
+                              <span className='text-xl font-semibold'>{matchData.mapName}</span>
                               <span className='text-base font-light flex flex-row items-center'> 
                                 <Tooltip 
                                   content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
@@ -1860,14 +1879,14 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           </div>
                           <div id='match-score' className='w-1/3 flex flex-row items-center'>
                             <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                              <span className={'text-xl ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
+                              <span className={'text-xl font-semibold outcome-text ' + matchData.matchOutcomeColor}>{LocalText(L, "bot_l.match_outcomes." + matchData.matchOutcome)}</span>
                               {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                             </div>
                             {activeQueueTab != 'deathmatch' ? 
                               (
                                 <div 
                                   id='scoreboard-pos' 
-                                  className={'rounded text-base h-8 py-0.5 px-1 ml-7 ' + matchData.playerPositionColor}
+                                  className={'rounded text-base h-8 py-0.5 px-1 ml-7 font-light ' + matchData.playerPositionColor}
                                 >
                                   {LocalText(L, "bot_l.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                 </div>
@@ -1878,7 +1897,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           </div>
                           <div id='match-stats-1' className='w-1/3 flex flex-row items-center pl-4'>
                             <div id='left-side' className='flex flex-col'>
-                              <span className='text-xl'>KDA</span>
+                              <span className='text-lg'>KDA</span>
                               <span className='text-lg font-light'>KD</span>
                             </div>
                             <div id='right-side' className='flex flex-col ml-4'>
@@ -1898,7 +1917,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               (
                                 <>
                                   <div className='w-1/2 flex flex-col items-center'>
-                                    <span className='text-lg'>HS%</span>
+                                    <span className='text-lg'>HS%</span> 
                                     <span className='text-lg font-light text-gray-500'>{matchData.headShotsPercentRounded}%</span>
                                   </div>
                                   <div className='w-1/2 flex flex-col items-center'>
@@ -1969,7 +1988,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             {
               currentlyLoadedMatchCount > 0 ?
               <div className={'p-0 m-0' + (areStatsActive ? '' : ' hidden ')}>
-                <span>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
+                <span className='font-bold'>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
                 <hr />
                 <div className='flex flex-row justify-between mt-1.5'>
                   <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} />
@@ -1981,7 +2000,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} />
                 </div>
 
-                <span className='mt-1'>{LocalText(L, "bot_r.best_map.header")}</span>
+                <span className='mt-1 font-bold'>{LocalText(L, "bot_r.best_map.header")}</span>
                 <hr className='mb-2' />
                 <LargeStatsCard 
                   header={bestMapName}
@@ -1993,7 +2012,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   extraClasses={'mb-3'} 
                 />
 
-                <span className='mt-1'>{LocalText(L, "bot_r.best_agent.header")}</span>
+                <span className='mt-1 font-bold'>{LocalText(L, "bot_r.best_agent.header")}</span>
                 <hr className='mb-2' />
                 <FlatLargeStatsCard
                   img_src={bestAgentImage}
@@ -2011,7 +2030,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               : 
               null
             }
-            <span>{LocalText(L, "bot_r.match_filter.header")}</span>
+            <span className='font-bold'>{LocalText(L, "bot_r.match_filter.header")}</span>
             <hr className='mb-2' />
             <div className='flex flex-row flex-wrap justify-between' id='hub-match-filter'>
               <ModeSelectionCard id="unrated" mode_name={'unrated'} display_name={LocalText(L, "bot_r.match_filter.fl_1")} active={activeQueueTab} setActive={setActiveQueueTab} />

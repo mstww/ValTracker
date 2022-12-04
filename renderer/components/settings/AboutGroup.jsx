@@ -16,7 +16,7 @@ export default function AboutGroup({ header, children }) {
       exit="exit"
       transition={{ type: 'ease-in', duration: 0.2 }}
     >
-      <span className={"text-gray-500"}>{ header }</span>
+      <span className={"text-gray-500 font-medium"}>{ header }</span>
       <div className="ml-4">
         {children}
       </div>

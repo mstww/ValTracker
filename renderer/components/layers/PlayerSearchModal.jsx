@@ -117,7 +117,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
         >
           <Close className='w-8 p-1' />
         </div>
-        <h2 className='mb-2'>{LocalText(L, "search_modal.header")}</h2>
+        <h2 className='mb-2 font-bold'>{LocalText(L, "search_modal.header")}</h2>
         <div 
           className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover hover:shadow-2xl flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden'}
           onClick={() => { inputRef.current ? inputRef.current.focus() : null }}
@@ -135,13 +135,13 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
           />
         </div>
         <div className={(searchHistory.length > 0 ? 'block' : 'hidden' )}>
-          <span className='text-lg block mt-4'>{LocalText(L, "search_modal.history_header")}</span>
+          <span className='text-lg block mt-4 font-bold'>{LocalText(L, "search_modal.history_header")}</span>
           <hr className='h-0.5 bg-black' />
           <ul className='w-full mt-1'>
             {searchHistory.map((searchValue, index) => {
               return(
                 <li 
-                  className='w-full flex items-center p-2 border-2 border-tile-color bg-tile-color bg-opacity-60 rounded hover:bg-opacity-100 transition-all duration-100 ease-linear'
+                  className='w-full flex items-center font-light p-2 border border-tile-color bg-tile-color bg-opacity-60 rounded hover:bg-opacity-100 transition-all duration-100 ease-linear'
                   onClick={(e) => {
                     if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                       handleHistoryClick(searchValue.name, searchValue.tag, searchValue.encoded_user);

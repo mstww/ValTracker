@@ -33,7 +33,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     if(localStorage.getItem('show-whats-new')) {
-      var data = await(await fetch('http://localhost:4000/v1/changelog/summary')).json();
+      var data = await(await fetch('https://beta-api.valtracker.gg/v1/changelog/summary')).json();
       
       setNewVALTrackerVersion(data.data.version);
       
@@ -80,7 +80,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
         >
           <Close className='w-8 p-1' />
         </div>
-        <h2 className='mb-0 pb-0'>{LocalText(L, "header")}</h2>
+        <h2 className='mb-0 pb-0 font-bold'>{LocalText(L, "header")}</h2>
         <p className='relative bottom-2 mt-0 pt-0 text-gray-500'>{LocalText(L, "desc", newVALTrackerVersion)}</p>
         {
           isAdditionsShown ? 

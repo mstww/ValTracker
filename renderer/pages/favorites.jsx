@@ -271,7 +271,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
       if(playerPosition == 1) {
         // Player is Match MVP
-        var playerPositionColor = 'yellow-glow bg-yellow-300 bg-opacity-50 border-2 border-yellow-400';
+        var playerPositionColor = 'yellow-glow bg-yellow-300 bg-opacity-50 border border-yellow-400';
         var playerPositionText = 'Match MVP';
       } else {
         // Player is not Match MVP, check for Team MVP
@@ -286,11 +286,11 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
         if(teamPlayerPosition == 1) {
           // Player is Team MVP
-          var playerPositionColor = 'silver-glow bg-gray-600 bg-opacity-80 border-2 border-slate-400';
+          var playerPositionColor = 'silver-glow bg-gray-600 bg-opacity-80 border border-slate-400';
           var playerPositionText = 'Team MVP';
         } else {
           // Player is not Team MVP
-          var playerPositionColor = 'bg-tile-color bg-opacity-60 border-2 border-tile-color border-opacity-60';
+          var playerPositionColor = 'bg-tile-color bg-opacity-60 border border-tile-color border-opacity-60';
 
           if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
           else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
@@ -586,12 +586,12 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
           animate={deleteMatchCardShown ? "enter" : "exit"}
           transition={{ type: 'ease-in', duration: 0.3 }}
         >
-          <h1>{LocalText(L, "modals.remove_match.header")}</h1>
+          <h1 className='font-bold'>{LocalText(L, "modals.remove_match.header")}</h1>
           <p>
             {LocalText(L, "modals.remove_match.desc")}
             <div 
               id='match'
-              className={'relative flex flex-row h-20 border-2 p-1.5 my-2 border-maincolor-lightest rounded mr-2 cursor-default w-full'}
+              className={'relative flex flex-row h-20 border p-1.5 my-2 border-maincolor-lightest rounded mr-2 cursor-default w-full'}
             >
               <div className='w-1/2 flex flex-row'>
                 <div id='agent-img'>
@@ -674,7 +674,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                     var today = startdate.format("D. MMMM");
                     return (
                       <div className={'day relative ' + (shownMatchesPerDay[key].isShown === false ? 'hidden' : '')} key={index}>
-                        <div id='day-header' className='text-lg ml-4 day-header'>{today === key ? 'Today' : key}</div>
+                        <div id='day-header' className='text-lg ml-4 day-header font-bold'>{today === key ? 'Today' : key}</div>
                         {favMatches[key].map((match, index) => {
                           var { matchData, matchViewData } = calculateMatchStats(match, '');
     
@@ -702,7 +702,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                           return (
                             <div 
                               id='match'
-                              className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-60 border-2 p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-100 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                              className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-60 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-100 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                               key={index}
                               onClick={(e) => {
                                 if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -741,7 +741,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                   <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                                 </div>
                                 <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                                  <span className='text-xl'>{matchData.mapName}</span>
+                                  <span className='text-xl font-semibold'>{matchData.mapName}</span>
                                   <span className='text-base font-light flex flex-row items-center'> 
                                     <Tooltip 
                                       content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
@@ -780,14 +780,14 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                               </div>
                               <div id='match-score' className='w-1/3 flex flex-row items-center'>
                                 <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                                  <span className={'text-xl ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
+                                  <span className={'text-xl font-semibold ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
                                   {match.matchInfo.queueID != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                                 </div>
                                 {match.matchInfo.queueID != 'deathmatch' ? 
                                   (
                                     <div 
                                       id='scoreboard-pos' 
-                                      className={'rounded text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
+                                      className={'rounded text-base h-8 py-0.5 px-1 ml-4 font-light ' + matchData.playerPositionColor}
                                     >
                                       {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                                     </div>
@@ -798,7 +798,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                               </div>
                               <div id='match-stats-1' className='w-1/3 flex flex-row items-center pl-4'>
                                 <div id='left-side' className='flex flex-col'>
-                                  <span className='text-xl'>KDA</span>
+                                  <span className='text-lg'>KDA</span>
                                   <span className='text-lg font-light'>KD</span>
                                 </div>
                                 <div id='right-side' className='flex flex-col ml-4'>
@@ -846,7 +846,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
               :
               <>
                 <div className={'day relative'}>
-                  <div id='day-header' className='text-lg ml-4 day-header'>Sorted by {activeSort[0].toUpperCase() + activeSort.slice(1)}</div>
+                  <div id='day-header' className='text-lg ml-4 day-header font-bold'>Sorted by {activeSort[0].toUpperCase() + activeSort.slice(1)}</div>
                   {sortableFavMatches.map((match, index) => {
                     var { matchData, matchViewData } = calculateMatchStats(match, '');
 
@@ -874,7 +874,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                     return (
                       <div 
                         id='match'
-                        className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-60 border-2 p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-100 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                        className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-60 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-100 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                         key={index}
                         onClick={(e) => {
                           if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -913,7 +913,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                             <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                            <span className='text-xl'>{matchData.mapName}</span>
+                            <span className='text-xl font-semibold'>{matchData.mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
                                 content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
@@ -952,14 +952,14 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                         </div>
                         <div id='match-score' className='w-1/3 flex flex-row items-center'>
                           <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                            <span className={'text-xl ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
+                            <span className={'text-xl font-semibold ' + matchData.matchOutcomeColor}>{matchData.matchOutcome}</span>
                             {match.matchInfo.queueID != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                           </div>
                           {match.matchInfo.queueID != 'deathmatch' ? 
                             (
                               <div 
                                 id='scoreboard-pos' 
-                                className={'rounded text-base h-8 py-0.5 px-1 ml-4 ' + matchData.playerPositionColor}
+                                className={'rounded text-base h-8 py-0.5 px-1 ml-4 font-light ' + matchData.playerPositionColor}
                               >
                               {LocalText(L, "matches.match_pos." + (matchData.playerPositionText.replace(" ", "-")))}
                               </div>
@@ -970,7 +970,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                         </div>
                         <div id='match-stats-1' className='w-1/3 flex flex-row items-center pl-4'>
                           <div id='left-side' className='flex flex-col'>
-                            <span className='text-xl'>KDA</span>
+                            <span className='text-lg'>KDA</span>
                             <span className='text-lg font-light'>KD</span>
                           </div>
                           <div id='right-side' className='flex flex-col ml-4'>
@@ -1012,16 +1012,16 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
               </>
             }
           </div>
-          <span className='text-center text-lg'>{isLoadingNewMatches ? LocalText(L, "loading") : LocalText(L, "matches_bottom")}</span>
+          <span className='text-center text-lg font-light'>{isLoadingNewMatches ? LocalText(L, "loading") : LocalText(L, "matches_bottom")}</span>
         </div>
-        <div className='w-1/4 favs-right border-2 border-maincolor-lightest p-4 mt-7 rounded'>
-          <span className='text-lg'>{LocalText(L, "filters.header")}</span>
+        <div className='w-1/4 favs-right border border-maincolor-lightest p-4 mt-7 rounded'>
+          <span className='text-lg font-bold'>{LocalText(L, "filters.header")}</span>
           <hr />
           <span className='text-gray-500 mb-0 relative top-4 text-lg'>{LocalText(L, "filters.filters.header")}</span>
           <Radio.Group 
             value={activeQueueTab}
             onChange={setActiveQueueTab}
-            className={'mt-0 pt-0 top-0 ml-4 font-thin'}
+            className={'mt-0 pt-0 top-0 ml-4 font-light'}
           >
             <Radio value="all" color={'error'} size='md'>{LocalText(L, "filters.modes.fm_1")}</Radio>
             <Radio value="unrated" color={'error'}>{LocalText(L, "filters.modes.fm_2")}</Radio>
@@ -1037,7 +1037,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
           <Radio.Group 
             value={activeSort}
             onChange={sortMatchesAndSetActiveSort}
-            className={'mt-0 pt-0 top-0 ml-4 font-thin'}
+            className={'mt-0 pt-0 top-0 ml-4 font-light'}
           >
             <Radio value="none" color={'error'}>{LocalText(L, "filters.sort_by.fs_1")}</Radio>
             <Radio value="KD" color={'error'}>{LocalText(L, "filters.sort_by.fs_2")}</Radio>

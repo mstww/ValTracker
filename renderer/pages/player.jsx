@@ -414,13 +414,13 @@ function PlayerInfo({ isNavbarMinimized }) {
           </div>
           <div id='player-info' className='text-2xl flex flex-col ml-4 py-auto'>
             <div id='rank-name' className=''>
-              <span id='player-name-region'>{nameTag}</span><br /> 
-              <span id='player-name-region' className='flex items-center'>
+              <span id='player-name-region' className='font-bold'>{nameTag}</span><br /> 
+              <span id='player-name-region' className='flex items-center font-normal mt-1'>
                 <img 
                   src={rankImg}
-                  className='w-12 inline-block shadow-img p-1 mr-1' 
+                  className='w-12 inline-block shadow-img p-1 mr-1 relative bottom-0.5' 
                 /> 
-                - {region}
+                | {region}
                 </span>
             </div>
           </div>
@@ -442,7 +442,7 @@ function PlayerInfo({ isNavbarMinimized }) {
               var today = startdate.format("D. MMMM");
               return (
                 <div className='day relative' key={index}>
-                  <div id='day-header' className='text-lg ml-4 day-header'>{today === key ? 'Today' : key}</div>
+                  <div id='day-header' className='text-lg ml-4 day-header font-bold'>{today === key ? 'Today' : key}</div>
                   {matches[key].map((match, index) => {
                     /* MATCH INFO */
                     var winningTeamScore;
@@ -535,7 +535,7 @@ function PlayerInfo({ isNavbarMinimized }) {
   
                       if(playerPosition == 0) {
                         // Player is Match MVP
-                        var playerPositionColor = 'yellow-glow bg-yellow-300 bg-opacity-50 border-2 border-yellow-400';
+                        var playerPositionColor = 'yellow-glow bg-yellow-300 bg-opacity-50 border border-yellow-400';
                         var playerPositionText = 'Match MVP';
                       } else {
                         // Player is not Match MVP, check for Team MVP
@@ -550,11 +550,11 @@ function PlayerInfo({ isNavbarMinimized }) {
   
                         if(teamPlayerPosition == 1) {
                           // Player is Team MVP
-                          var playerPositionColor = 'silver-glow bg-gray-600 bg-opacity-80 border-2 border-slate-400';
+                          var playerPositionColor = 'silver-glow bg-gray-600 bg-opacity-80 border border-slate-400';
                           var playerPositionText = 'Team MVP';
                         } else {
                           // Player is not Team MVP
-                          var playerPositionColor = 'bg-tile-color bg-opacity-60 border-2 border-tile-color border-opacity-60';
+                          var playerPositionColor = 'bg-tile-color bg-opacity-60 border border-tile-color border-opacity-60';
 
                           if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
                           else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
@@ -626,13 +626,13 @@ function PlayerInfo({ isNavbarMinimized }) {
                     }
 
                     return (
-                      <div id='match' className='relative flex flex-row h-20 border-2 p-1.5 mb-2 border-maincolor-lightest rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
+                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 border-maincolor-lightest rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
                         <div className='w-1/4 flex flex-row'>
                           <div id='agent-img'>
                             <img className='h-full shadow-img' src={playerAgent ? `https://media.valorant-api.com/agents/${playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                            <span className='text-2xl'>{mapName}</span>
+                            <span className='text-xl font-semibold'>{mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
                                 content={playerCurrentTier > 3 ? rankFixed.tierName : ''}
@@ -668,14 +668,14 @@ function PlayerInfo({ isNavbarMinimized }) {
                         </div>
                         <div id='match-score' className='w-1/4 flex flex-row items-center'>
                           <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                            <span className={'text-xl ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
+                            <span className={'text-xl font-semibold ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
                             {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchScore}</span>) : ''}
                           </div>
                           {activeQueueTab != 'deathmatch' ? 
                             (
                               <div 
                                 id='scoreboard-pos' 
-                                className={'rounded h-9 py-1 px-2 ml-6 ' + playerPositionColor}
+                                className={'rounded h-9 py-1 px-2 ml-6 !font-light ' + playerPositionColor}
                               >
                                 {LocalText(L, "matches.match_pos." + (playerPositionText ? playerPositionText.replace(" ", "-") : ''))}
                               </div>

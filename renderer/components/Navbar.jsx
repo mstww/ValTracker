@@ -152,7 +152,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   React.useEffect(async () => {
     var pjson = require('../../package.json');
 
-    var featureStatus = await(await fetch('http://localhost:4000/v1/status/renderer', {
+    var featureStatus = await(await fetch('https://beta-api.valtracker.gg/v1/status/renderer', {
       headers: {
         "x-valtracker-version": 'v' + pjson.version
       }
@@ -217,11 +217,11 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   var showMenu = open ? 'block' : '';
   var switcherActive = open ? 'bg-maincolor-light border-maincolor-lightest' : '';
 
-  var activeClasses = 'bg-button-color hover:bg-button-color-hover';
-  var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer';
+  var activeClasses = 'bg-button-color hover:bg-button-color-hover border-button-color';
+  var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer border-tile-color';
   var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
   var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
-  var navbarTileBaseClasses = ' h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
+  var navbarTileBaseClasses = ' border shadow-2xl drop-shadow-2xl h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
   var navbarTileTextClasses = 'text-sm font-light relative top-px ml-2 nav-txt transition-all ease-in duration-75 ml-8 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100');
 
   if(page == "home") var isHome = true;
@@ -281,7 +281,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           transition={{ delay: isNavbarMinimized ? 0 : 0.92, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
         />
         <motion.h1 
-          className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear font-bold ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
           variants={navbarVariants.logo}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -349,7 +349,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
             animate={isNavbarMinimized ? "minimize" : "maximize"}
             transition={{ delay: isNavbarMinimized ? 0.25 : 0.35, duration: 0.2, ease: "easeOut" }}
           >
-            <Home className='ml-0.5 w-5 absolute' />
+            <Home className={'ml-px bottom-[27%] w-5 absolute'} />
             <span className={navbarTileTextClasses}>{LocalText(L, 'home')}</span>
           </motion.div>
         </Link>
@@ -364,7 +364,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.3 : 0.3, duration: 0.2, ease: "easeOut" }}
         >
-          <Store className='ml-0.5 w-5 absolute' />
+          <Store className={'ml-px bottom-[27%] w-5 absolute'} />
           <span className={navbarTileTextClasses}>{LocalText(L, 'shop')}</span>
         </motion.div>
 
@@ -378,7 +378,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.35 : 0.25, duration: 0.2, ease: "easeOut" }}
         >
-          <User className='ml-0.5 w-5 absolute' />
+          <User className={'ml-px bottom-[27%] w-5 absolute'} />
           <span className={navbarTileTextClasses}>{LocalText(L, 'inventory')}</span>
         </motion.div>
 
@@ -392,7 +392,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.4 : 0.2, duration: 0.2, ease: "easeOut" }}
         >
-          <Star className='ml-0.5 w-5 absolute' />
+          <Star className={'ml-px bottom-[27%] w-5 absolute'} />
           <span className={navbarTileTextClasses}>{LocalText(L, 'fav_matches')}</span>
         </motion.div>
 
@@ -406,15 +406,15 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.45 : 0.15, duration: 0.2, ease: "easeOut" }}
         >
-          <Clipboard className='ml-0.5 w-5 absolute' />
+          <Clipboard className={'ml-px bottom-[27%] w-5 absolute'} />
           <span className={navbarTileTextClasses}>{LocalText(L, 'wishlist')}</span>
         </motion.div>
       </div>
       <div className={'absolute bottom-16 w-full flex justify-around transition-all duration-100 ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
         <SocialsIcon icon={'/images/coffee.svg'} tooltip={'Ko-Fi'} href={'https://ko-fi.com/valtrackergg'} />
         <SocialsIcon icon={'/images/discord.svg'} tooltip={'Discord'} href={'https://discord.gg/aJfQ4yHysG'} />
-        <SocialsIcon icon={'/images/twitter.svg'} tooltip={'Twitter'} href={'https://twitter.com/valtracker_gg'} />
         <SocialsIcon icon={'/images/github.svg'} tooltip={'GitHub'} href={'https://github.com/orgs/valtracker'} />
+        <SocialsIcon icon={'/images/twitter.svg'} tooltip={'Twitter'} href={'https://twitter.com/valtracker_gg'} />
       </div>
       <div id="nav-bottom" className='absolute bottom-0 left-0 w-full h-16 p-2 flex flex-row'>
         <motion.div 
@@ -435,7 +435,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
             {switchableAccounts.map((acc, index) => {
               return (
                 <AccountTile 
-                  key={acc.user_puuid} 
+                  key={index} 
                   currenttier={acc.usertier} 
                   username={acc.username} 
                   usertag={acc.usertag} 
@@ -472,7 +472,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
               className={
                 'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor-light '
                 +
-                (page == 'settings' ? 'border-2 border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
+                (page == 'settings' ? 'border border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
                 +
                 (isNavbarMinimized ? ' -translate-x-4 mr-1' : '  translate-x-0 mr-0')
               }

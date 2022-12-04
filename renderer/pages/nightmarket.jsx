@@ -271,7 +271,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <span className='relative top-px'>{cardSkinPrice}</span>
             <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
           </div>
-          <h1 className='z-20 text-2xl'>{ cardSkinName }</h1>
+          <h1 className='z-20 text-2xl font-bold'>{ cardSkinName }</h1>
           <div id='skin-image' className='z-10 bottom-0 left-0 absolute w-full h-full flex justify-center items-center'>
             <img src={ cardSkinImage } className='shadow-img' />
           </div>
@@ -284,7 +284,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <img 
                       key={index}
                       className={
-                        'w-1/5 chroma-swatch border-2 rounded shadow-lg cursor-pointer relative ' 
+                        'w-1/5 chroma-swatch border rounded shadow-lg cursor-pointer relative ' 
                         + (activeCardSkinChroma == index ? 'border-button-color' : 'border-maincolor')
                       }
                       src={chroma.swatch}
@@ -307,7 +307,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       <div 
                         id='level' 
                         className={
-                          'h-14 bg-maincolor-lightest mb-1 relative chroma-swatch rounded w-full border-2 shadow-lg flex flex-col p-px cursor-pointer hover:bg-opacity-70 '
+                          'h-14 bg-maincolor-lightest mb-1 relative chroma-swatch rounded w-full border shadow-lg flex flex-col p-px cursor-pointer hover:bg-opacity-70 '
                           + (activeCardSkinLevel == index ? 'border-button-color' : 'border-maincolor')
                         }
                         key={index}
@@ -318,7 +318,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                         }}
                       >
                         <span className="text-lg">Level { cardSkinLevels.length - index }</span>
-                        <span className="text-base font-thin">
+                        <span className="text-base font-light">
                           {
                             level.levelItem ?
                               level.levelItem.split('::').pop()

@@ -22,7 +22,7 @@ export default function ThemeSelector({ currentTheme, setCurrentTheme, L }) {
                 key={index}
               >
                 <div 
-                  className={"w-9 h-9 border-2 rounded " + (currentTheme === theme.name ? 'border-button-color' : 'border-black border-opacity-70')} 
+                  className={"w-9 h-9 border rounded " + (currentTheme === theme.name ? 'border-button-color' : 'border-black border-opacity-70')} 
                   style={{ background: theme.color }}
                   onClick={() => { setCurrentTheme(theme.name) }}
                 />

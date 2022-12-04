@@ -423,10 +423,14 @@ async function reauthAccount(puuid) {
 
     const access_tokens = await getAccessTokens(ssid);
 
+    var newSSID = access_tokens.headers.get('set-cookie').split("ssid=").pop().split(";")[0];
+    newSSID = `ssid=${newSSID}`;
+
     const url_params = await access_tokens.json();
 
     var newTokenData = getTokenDataFromURL(url_params.response.parameters.uri);
 
+    rgConfig.ssid = newSSID;
     rgConfig.accesstoken = newTokenData.accessToken;
     rgConfig.idtoken = newTokenData.id_token;
 
@@ -493,6 +497,7 @@ async function reauthAllAccounts() {
     // Check if promise the promise was rejected
     var account_data = await promise.then(function({ data_array, reauth_array }) {
       if(reauth_array.length > 0) {
+        console.log(reauth_array);
         console.log("Error while reauthing accounts.");
         return { error: true, items: false, reauthArray: reauth_array }; 
       } else {
@@ -724,7 +729,7 @@ async function fetchPlayerAgent() {
   var puuid = user_data.uuid;
   var region = user_data.region;
 
-  var bearer = getUserAccessToken();
+  var bearer = await getUserAccessToken();
 
   var entitlement_token = await getUserEntitlement();
 
@@ -1154,7 +1159,7 @@ async function checkStoreForWishlistItems() {
     await noFilesFound();
   }
 
-  var appStatus = await(await fetch('http://localhost:4000/v1/status/main', {
+  var appStatus = await(await fetch('https://beta-api.valtracker.gg/v1/status/main', {
     headers: {
       "x-valtracker-version": 'v' + pjson.version,
     }

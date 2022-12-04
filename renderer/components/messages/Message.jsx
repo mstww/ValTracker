@@ -59,7 +59,7 @@ export default function Message({ message, unix, delay }) {
     <>
       {doesMessageExist && 
         <motion.div 
-          className="message text-gray-500 border-2 !border-button-color w-96 min-h-40 h-auto !p-2 mx-4 mb-4 modal pointer-events-auto"
+          className="message text-gray-500 border !border-button-color w-96 min-h-40 h-auto !p-2 mx-4 mb-4 modal pointer-events-auto"
           variants={variants}
           initial="hidden"
           animate={isMessageShown ? "enter" : "exit"}

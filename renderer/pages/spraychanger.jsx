@@ -8,6 +8,7 @@ import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Search } from '../components/SVGs';
 import Layout from '../components/Layout';
 import { getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
+import { executeQuery } from '../js/dbFunctions.mjs';
 
 async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
   if(region === 'latam' || region === 'br') region = 'na';

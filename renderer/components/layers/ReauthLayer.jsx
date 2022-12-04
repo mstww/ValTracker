@@ -5,7 +5,7 @@ import { ipcRenderer } from 'electron';
 import fetch from 'node-fetch';
 import L from '../../locales/translations/reauth.json';
 import LocalText from '../translation/LocalText';
-import { createThing, executeQuery, getCurrentUserData } from '../../js/dbFunctions.mjs';
+import { createThing, executeQuery, getCurrentUserData, updateThing } from '../../js/dbFunctions.mjs';
 
 const card_base_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -176,7 +176,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
 
       var ssidObj = data.riotcookies.find(obj => obj.name === "ssid");
     
-      await createThing(`rgConfig:⟨${puuid}⟩`, {
+      await updateThing(`rgConfig:⟨${puuid}⟩`, {
         "accesstoken": data.tokenData.accessToken,
         "idtoken": data.tokenData.id_token,
         "ssid": "ssid=" + ssidObj.value,
@@ -204,7 +204,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
         "skins": []
       });
     
-      var bundle = await (await fetch('http://localhost:4000/v1/bundles/featured')).json();
+      var bundle = await (await fetch('https://beta-api.valtracker.gg/v1/bundles/featured')).json();
       var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
     
       await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
@@ -252,7 +252,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
         animate={reauthShown && currentReauthStep === 0 ? "enter" : "exit"}
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
-        <h2 className='mb-2'>{LocalText(L, "first_card.header")}</h2>
+        <h2 className='mb-2 font-bold'>{LocalText(L, "first_card.header")}</h2>
         <p className='font-normal text-base'>{LocalText(L, "first_card.desc", reauthQueue.length)}</p>
         <button className='w-full mt-8 button default' onClick={() => { setCurrentReauthStep(currentReauthStep+1) }}>{LocalText(L, "first_card.button_text")}</button>
       </motion.div>
@@ -262,7 +262,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
 
           return(
             <motion.div 
-              className='flex flex-col justify-center items-center w-96 border-2 border-tile-color bg-maincolor-light rounded p-4 pointer-events-auto'
+              className='modal fixed'
               key={"LoginCard_" + localReauthStep}
               variants={card_step_variants}
               initial="hidden"
@@ -285,14 +285,14 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
         })
       }
       <motion.div 
-        className='flex flex-col justify-center items-center w-96 border-2 border-tile-color bg-maincolor-light rounded p-4 pointer-events-auto'
+        className='modal fixed'
         key={"FinalCard"}
         variants={card_step_variants}
         initial="hidden"
         animate={currentReauthStep > reauthQueue.length ? "enter" : "exit"}
         transition={{ type: 'ease-in', duration: 0.3, delay: 0.35 }}
       >
-        <h2 className='mb-2'>{LocalText(L, "final_card.header")}</h2>
+        <h2 className='mb-2 font-bold'>{LocalText(L, "final_card.header")}</h2>
         <p>{LocalText(L, "final_card.desc")}</p>
         <button className='w-full mt-4 button default' onClick={() => { restartAuthCycle() }}>{LocalText(L, "final_card.button_text")}</button>
       </motion.div>
