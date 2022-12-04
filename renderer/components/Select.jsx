@@ -80,7 +80,7 @@ export function Select({ items, className, value, setValue, onChange }) {
   return (
     <div className={"inline-block relative h-10 rounded " + (className ? className : '')} ref={ref}>
       <div className={`group button select relative w-full text-left inline-block py-3 align-baseline ${open === true ? 'opened' : ''}`} onClick={() => { toggleMenu() }}>
-        <span className="block relative bottom-1 w-full text-left px-4">{internalValue.text}</span>
+        <span className="block relative bottom-0.5 w-full text-left px-4">{internalValue.text}</span>
         <CircleArrowDown className={`w-6 h-6 absolute right-2 top-1.5 transition-all duration-100 ease-linear group-hover:text-white ${open ? "rotate-180 text-white" : "text-button-color"}`} />
       </div>
       <div 

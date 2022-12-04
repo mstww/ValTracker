@@ -17,7 +17,7 @@ export default function PopupCard({ useRef, header, text, button_1, button_2, bu
       animate={ isOpen ? "enter" : "exit"}
       transition={{ type: 'ease-in', duration: 0.2 }}
     >
-      <h1>{ header }</h1>
+      <h1 className="font-bold">{ header }</h1>
       <p>{ text }</p>
       { children }
       <div className='mt-4'>

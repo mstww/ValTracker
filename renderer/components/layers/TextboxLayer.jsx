@@ -19,11 +19,10 @@ function removeItemOnce(arr, value) {
 
 function Textboxes() {
   const [ textboxes, setTextboxes ] = React.useState([]);
-  const [ textboxKeys, setTextboxKeys ] = React.useState(0);
 
   React.useEffect(() => {
     ipcRenderer.on('createTextbox', function(event, args) {
-      setTextboxKeys(textboxKeys+1);
+      console.log(args);
       setTextboxes(current => [...current, args ]);
       setTimeout(function() {
         var newArray = removeItemOnce(textboxes, args);
@@ -31,16 +30,20 @@ function Textboxes() {
         setTextboxes(newArray);
       }, 5000);
     });
+
+    return () => {
+      ipcRenderer.removeAllListeners('createTextbox');
+    }
   }, []);
 
   return (
     <>
       {
-        textboxes.map(textbox => {
+        textboxes.map((textbox, index) => {
           return (
             <motion.div 
-              className='w-1/4 mb-4 textbox-card mx-auto card flex flex-row relative z-50'
-              key={textboxKeys + textbox + (Math.random()) + Math.random()}
+              className='w-1/4 mb-4 textbox-card mx-auto card flex flex-row relative z-50 !border-button-color'
+              key={index + textbox + (Math.random()) + Math.random()}
               variants={update_card_variants}
               initial="hidden"
               animate={"enter"}

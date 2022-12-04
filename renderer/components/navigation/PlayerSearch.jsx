@@ -112,7 +112,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
           {searchHistory.map((item, index) => {
             return (
               <div 
-                className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-100 border-b border-maincolor-lightest rounded"}
+                className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-100 border-b border-maincolor-lightest hover:!rounded"}
                 id="search-history-tile"
                 onClick={(e) => {
                   if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
