@@ -613,11 +613,11 @@ h5 {
 }
 
 .yellow-glow {
-  box-shadow: 0 0 7px rgba(255, 255, 0, 0.8);
+  text-shadow: 0 0 7px rgba(255, 255, 0, 0.8);
 }
 
 .silver-glow {
-  box-shadow: 0 0 7px rgba(192, 192, 192, 0.8);
+  text-shadow: 0 0 7px rgba(192, 192, 192, 0.8);
 }
 
 .kda-display-span {
@@ -1561,4 +1561,8 @@ tr td:last-child {
 
 .modal-wrapper {
   @apply flex flex-col justify-center items-center;
+}
+
+.shop-item-name {
+  text-shadow: 0 2px 7px rgba(0, 0, 0, 0.8);
 }

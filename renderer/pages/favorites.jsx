@@ -271,7 +271,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
       if(playerPosition == 1) {
         // Player is Match MVP
-        var playerPositionColor = 'yellow-glow bg-yellow-300 bg-opacity-50 border border-yellow-400';
+        var playerPositionColor = 'yellow-glow text-yellow-300 font-medium';
         var playerPositionText = 'Match MVP';
       } else {
         // Player is not Match MVP, check for Team MVP
@@ -286,11 +286,11 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
         if(teamPlayerPosition == 1) {
           // Player is Team MVP
-          var playerPositionColor = 'silver-glow bg-gray-600 bg-opacity-80 border border-slate-400';
+          var playerPositionColor = 'silver-glow text-gray-300 font-medium';
           var playerPositionText = 'Team MVP';
         } else {
           // Player is not Team MVP
-          var playerPositionColor = 'bg-tile-color bg-opacity-60 border border-tile-color border-opacity-60';
+          var playerPositionColor = 'font-medium';
 
           if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
           else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
@@ -1017,32 +1017,32 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         <div className='w-1/4 favs-right border border-maincolor-lightest p-4 mt-7 rounded'>
           <span className='text-lg font-bold'>{LocalText(L, "filters.header")}</span>
           <hr />
-          <span className='text-gray-500 mb-0 relative top-4 text-lg'>{LocalText(L, "filters.filters.header")}</span>
           <Radio.Group 
             value={activeQueueTab}
             onChange={setActiveQueueTab}
-            className={'mt-0 pt-0 top-0 ml-4 font-light'}
+            className={'mt-0 pt-0 top-0 ml-4 font-light mb-4'}
           >
-            <Radio value="all" color={'error'} size='md'>{LocalText(L, "filters.modes.fm_1")}</Radio>
-            <Radio value="unrated" color={'error'}>{LocalText(L, "filters.modes.fm_2")}</Radio>
-            <Radio value="competitive" color={'error'}>{LocalText(L, "filters.modes.fm_3")}</Radio>
-            <Radio value="deathmatch" color={'error'}>{LocalText(L, "filters.modes.fm_4")}</Radio>
-            <Radio value="spikerush" color={'error'}>{LocalText(L, "filters.modes.fm_5")}</Radio>
-            <Radio value="replication" color={'error'}>{LocalText(L, "filters.modes.fm_6")}</Radio>
-            <Radio value="escalation" color={'error'}>{LocalText(L, "filters.modes.fm_7")}</Radio>
-            <Radio value="custom" color={'error'}>{LocalText(L, "filters.modes.fm_8")}</Radio>
+            <Radio value="all" color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_1")}</Radio>
+            <Radio value="unrated" color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_2")}</Radio>
+            <Radio value="competitive" color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_3")}</Radio>
+            <Radio value="deathmatch" color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_4")}</Radio>
+            <Radio value="spikerush" color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_5")}</Radio>
+            <Radio value="replication" color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_6")}</Radio>
+            <Radio value="escalation" color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_7")}</Radio>
+            <Radio value="custom" color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_8")}</Radio>
           </Radio.Group>
 
-          <span className='text-gray-500 mb-0 relative top-4 text-lg'>{LocalText(L, "filters.sort_by.header")}</span>
+          <span className='text-lg font-bold mb-0'>{LocalText(L, "filters.sort_by.header")}</span>
+          <hr className='!mb-0 !pt-0' />
           <Radio.Group 
             value={activeSort}
             onChange={sortMatchesAndSetActiveSort}
             className={'mt-0 pt-0 top-0 ml-4 font-light'}
           >
-            <Radio value="none" color={'error'}>{LocalText(L, "filters.sort_by.fs_1")}</Radio>
-            <Radio value="KD" color={'error'}>{LocalText(L, "filters.sort_by.fs_2")}</Radio>
-            <Radio value="HS%" color={'error'}>{LocalText(L, "filters.sort_by.fs_3")}</Radio>
-            <Radio value="ACS" color={'error'}>{LocalText(L, "filters.sort_by.fs_4")}</Radio>
+            <Radio value="none" color={'error'} size='sm'>{LocalText(L, "filters.sort_by.fs_1")}</Radio>
+            <Radio value="KD" color={'error'} size='sm'>{LocalText(L, "filters.sort_by.fs_2")}</Radio>
+            <Radio value="HS%" color={'error'} size='sm'>{LocalText(L, "filters.sort_by.fs_3")}</Radio>
+            <Radio value="ACS" color={'error'} size='sm'>{LocalText(L, "filters.sort_by.fs_4")}</Radio>
           </Radio.Group>
 
         </div>

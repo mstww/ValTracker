@@ -472,7 +472,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   <li className='flex flex-row items-center mb-6'>
                     <Tooltip content={LocalText(L, "match_info.tooltips.region_server")} color="error" placement={'left'} className='rounded'><Globe className='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2 font-light'>
-                      {matchServer ? matchServer.split(".")[2].split("-")[0].toUpperCase() : ''} // {matchServer ? (matchServer.split("-")[4].charAt(0).toUpperCase() + matchServer.split("-")[4].slice(1)) : ''}
+                      {matchServer ? matchServer.split(".")[2].split("-")[0].toUpperCase() : ''} // {matchServer ? ((matchServer.split("-")[4].charAt(0).toUpperCase() + matchServer.split("-")[4].slice(1)) == "Gp" ? "Warsaw" : matchServer.split("-")[4].charAt(0).toUpperCase() + matchServer.split("-")[4].slice(1)) : ''}
                     </span>
                   </li>
                   <li className='flex flex-row items-center mb-8'>
@@ -630,7 +630,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                             </Tooltip>
                           }
                           <div className='ml-2.5 flex flex-col relative'>
-                            <span className={'text-xl relative bottom-1.5 font-semibold ' + (hasPlayerTeamWonRound ? 'text-val-blue german-won-round' : 'text-val-red')}>
+                            <span className={'text-lg relative bottom-1.5 font-medium ' + (hasPlayerTeamWonRound ? 'text-val-blue german-won-round' : 'text-val-red')}>
                               {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : (LocalText(L, "match_outcomes.DEFEAT") === "VERLOREN" ? LocalText(L, "match_outcomes.DEFEAT").split("O")[0] + '.' : LocalText(L, "match_outcomes.DEFEAT"))}
                             </span>
                             <span className='absolute -bottom-2 w-20 font-light text-sm'>{LocalText(L, "round_results.round_text")} {index+1}</span>

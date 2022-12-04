@@ -535,7 +535,7 @@ function PlayerInfo({ isNavbarMinimized }) {
   
                       if(playerPosition == 0) {
                         // Player is Match MVP
-                        var playerPositionColor = 'yellow-glow bg-yellow-300 bg-opacity-50 border border-yellow-400';
+                        var playerPositionColor = 'yellow-glow text-yellow-300 font-medium';
                         var playerPositionText = 'Match MVP';
                       } else {
                         // Player is not Match MVP, check for Team MVP
@@ -550,11 +550,11 @@ function PlayerInfo({ isNavbarMinimized }) {
   
                         if(teamPlayerPosition == 1) {
                           // Player is Team MVP
-                          var playerPositionColor = 'silver-glow bg-gray-600 bg-opacity-80 border border-slate-400';
+                          var playerPositionColor = 'silver-glow text-gray-300 font-medium';
                           var playerPositionText = 'Team MVP';
                         } else {
                           // Player is not Team MVP
-                          var playerPositionColor = 'bg-tile-color bg-opacity-60 border border-tile-color border-opacity-60';
+                          var playerPositionColor = 'font-medium';
 
                           if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
                           else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
