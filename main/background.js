@@ -25,6 +25,15 @@ dotenv.config();
 const discord_rps = require("../modules/discordRPs.js");
 const pjson = require('../package.json');
 
+/**
+ * An asynchronous timeout function. Works by returning a promise that gets resolved after the delay
+ * that is passed into the function with a parameter.
+
+ * @param {Number} delay Amount of time to wait for. (Milliseconds)
+
+ * @returns A promise that can be awaited.
+ */
+
 async function asyncTimeout(delay) {
   return new Promise(resolve => {
     setTimeout(resolve, delay);
@@ -48,6 +57,22 @@ var isInSetup = false;
 
 var inMigrationProgress = false;
 var db = false;
+
+/**
+ * A function that returns the correct localization of a given JSON Key/Path. Works by connecting to
+ * the database, grabbing the current language, turning the given string that resembles a JSON
+ * path into an actual path and replacing possible variables, then returning the result. If no 
+ * preferred language is found or the requested text does not have a translation, the english
+ * result will get returned. 
+
+ * @param {Object} json The translation object read from the file.
+ * @param {String} path The JSON path to the wanted translation.
+ * @param {String} num1replace The text to replace the first variable.
+ * @param {String} num2replace The text to replace the second variable.
+ * @param {String} num3replace The text to replace the third variable.
+
+ * @returns The requested, localized string.
+ */
 
 export default async function LocalText(json, path, num1replace, num2replace, num3replace) {
   var uuid = uuidv5("appLang", process.env.SETTINGS_UUID);
@@ -76,10 +101,17 @@ export default async function LocalText(json, path, num1replace, num2replace, nu
   return res;
 }
 
+/**
+ * A function that sends the given argument to the renderer process in the given channel.
+ * @param {String} channel The channel the message will be sent in.
+ * @param {*} args The message to pass. Can by anything.
+ */
+
 const sendMessageToWindow = (channel, args) => {
   mainWindow.webContents.send(channel, args);
 }
 
+// Request an InstanceLock to prevent the app from being opened twice at the same time.
 const gotTheLock = app.requestSingleInstanceLock(); 
 
 if(!gotTheLock) {
@@ -101,18 +133,24 @@ if(!gotTheLock) {
   });
 }
 
+// Select which directory to serve
 if (isProd) {
   serve({ directory: 'app' });
 } else {
   app.setPath('userData', `${app.getPath('userData')}`);
 }
 
+// Assemble the file path to the database
 const execFilePath = path.join(
   __dirname,
   "..",
   "lib",
   "VALTrackerDB.exe"
 ).replace("app.asar", "app.asar.unpacked");
+
+/**
+ * A function to start the database. While starting, the app also checks for any left-over log files.
+ */
 
 async function startDB() {
   try {
@@ -141,6 +179,10 @@ async function startDB() {
 
 startDB();
 
+/**
+ * A function to connect to the database.
+ */
+
 async function connectToDB() {
   try {
     var sdb = new Surreal(process.env.DB_URL);
@@ -161,6 +203,11 @@ async function connectToDB() {
   return;
 }
 
+/**
+ * A function to disable hardware acceleration. First checks if the setting is enabled, if yes,
+ * turns off hardware acceleration.
+ */
+
 async function disableHardwareAcceleration() {
   if(db === false) await connectToDB();
   var uuid = uuidv5("hardwareAccel", process.env.SETTINGS_UUID);
@@ -173,6 +220,7 @@ async function disableHardwareAcceleration() {
 
 await disableHardwareAcceleration();
 
+// Set a protocol for the app. This is not currently used.
 if(process.defaultApp) {
   if(process.argv.length >= 2) {
     app.setAsDefaultProtocolClient("x-valtracker-client", process.execPath, [
@@ -182,6 +230,10 @@ if(process.defaultApp) {
 } else {
   app.setAsDefaultProtocolClient("x-valtracker-client");
 }
+
+/**
+ * A function to connect to the Discord RPC (VALORANT Game Presence)
+ */
 
 async function connectGamePresence() {
   try {
@@ -198,6 +250,10 @@ async function connectGamePresence() {
 }
 
 connectGamePresence();
+
+/**
+ * A function to connect to the Discord RPC (App Presence)
+ */
 
 async function connectAppPresence() {
   try {
@@ -217,23 +273,33 @@ connectAppPresence();
 
 await app.whenReady();
 
+// Handler that returns the state of the current window.
 ipcMain.handle("checkWindowState", () => {
   return migrateWin !== false && migrateWin !== null ? migrateWin.isMaximized() : mainWindow.isMaximized();
 });
 
+// Handler to minimize the main window
 ipcMain.handle("min-window", async function() {
   mainWindow.minimize();
 });
 
+// Handler to maximize the main window
 ipcMain.handle("max-window", async function() {
   mainWindow.maximize();
   return mainWindow.isMaximized();
 });
 
+// Handler to restore the window to it's former state.
 ipcMain.handle("restore-window", async function() {
   mainWindow.unmaximize();
   return mainWindow.isMaximized();
 });
+
+/* 
+  Check if there are any files from before the transition from the local fs to a 
+  database. If any files are found, the app will load a seperate window and migrate all of the 
+  files into the database, after which it restarts.
+*/
 
 if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json')) {
   var on_load = JSON.parse(fs.readFileSync(process.env.APPDATA + '/VALTracker/user_data/load_files/on_load.json'));
@@ -246,7 +312,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'))
 
   inMigrationProgress = true;
 
-  migrateWin = createWindow('migrate-test', {
+  migrateWin = createWindow('migrate-main-window', {
     width: 620,
     height: 400,
     minWidth: 620,
@@ -275,6 +341,12 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'))
   migrateWin = false;
 }
 
+/**
+ * Function that fetches a user's access tokens based on an SSID token from their last authentication.
+ * @param {String} ssid The SSID Token returned from the last authentication.
+ * @returns The response from the server. 
+ */
+
 async function getAccessTokens(ssid) {
   return (await fetch("https://auth.riotgames.com/api/v1/authorization", {
     method: 'POST',
@@ -287,6 +359,21 @@ async function getAccessTokens(ssid) {
     keepalive: true
   }));
 }
+
+/*
+  
+*/
+/**
+ * Function that returns the match history of a user.
+ * @param {String} region 
+ * @param {String} puuid 
+ * @param {Number} startIndex 
+ * @param {Number} endIndex 
+ * @param {String} queue 
+ * @param {String} entitlement_token 
+ * @param {String} bearer 
+ * @returns Returns the match history of the user. If this request fails, it returns the HTML response from the server.
+ */
 
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
@@ -301,6 +388,15 @@ async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entit
     keepalive: true
   })).json());
 }
+
+/**
+ * Funtion that returns a single match based on it's UUID.
+ * @param {String} region 
+ * @param {String} matchId 
+ * @param {String} entitlement_token 
+ * @param {String} bearer 
+ * @returns 
+ */
 
 async function getMatch(region, matchId, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
@@ -318,6 +414,15 @@ async function getMatch(region, matchId, entitlement_token, bearer) {
   })).json());
 }
 
+/**
+ * A function that returns a users rank based on their current match history.
+ * @param {String} region 
+ * @param {String} puuid 
+ * @param {String} entitlement_token 
+ * @param {String} bearer 
+ * @returns The current tier of the user as a number.
+ */
+
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var matches = await getMatchHistory(region, puuid, 0, 1, 'competitive', entitlement_token, bearer);
   if(matches.History.length > 0) {
@@ -332,30 +437,59 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   }
 }
 
+/**
+ * A function that downloads an image from a URL to a specific path.
+ * @param {String} url The URL of the image.
+ * @param {String} new_path The path the image will be saved at.
+ */
+
 const download_image = (url, new_path) => {
   fetch(url)
     .then(res => res.body.pipe(fs.createWriteStream(new_path)));
 }
 
-async function quitApp() {
+/**
+ * A function that quits the app after processing all matches in queue.
+ * @param {Boolean} isUpdate If the reason to quit is an update or a regular quit.
+ */
+
+async function quitApp(isUpdate) {
   if(mainWindow) mainWindow.close();
 
   console.log("Matches left to process: ", allCurrentlyProcessingMatchIDs.length);
   
   if(allCurrentlyProcessingMatchIDs.length === 0) {
     console.log("Quitting...");
+
+    if(isUpdate === true) {
+      autoUpdater.quitAndInstall(true, true);
+      return;
+    }
+
     app.quit();
     return;
   }
+
   var processingInterval = setInterval(() => {
     console.log("Matches left to process: ", allCurrentlyProcessingMatchIDs.length);
     if(allCurrentlyProcessingMatchIDs.length === 0) {
       console.log("Quitting...");
+
       clearInterval(processingInterval);
-      app.quit();
+
+      if(isUpdate === true) {
+        autoUpdater.quitAndInstall(true, true);
+      } else {
+        app.quit();
+      }
     }
   }, 5000);
 }
+
+/**
+ * A function that gets run if no files are found, meaning the app just got started for the first 
+ * time. Creates all of the necessary data for the app to function.
+ */
 
 async function noFilesFound() {
   if(db === false) await connectToDB();
@@ -412,6 +546,13 @@ async function noFilesFound() {
   };
 }
 
+/**
+ * 
+ * @param {String} puuid 
+ * @returns An object containing if the reauthentication failed, if yes the reason and if no the 
+ * new tokens for the authenticated user.
+ */
+
 async function reauthAccount(puuid) {
   try {
     if(db === false) await connectToDB();
@@ -462,6 +603,13 @@ async function reauthAccount(puuid) {
   }
 }
 
+/**
+ * A function that reauthenticates all accounts in the app. If any accounts fail their 
+ * reauthentication process, the app will show a modal prompting the user to sign back in.
+ * @returns An object containing if the reauthentication failed, if yes the reason and if no the 
+ * new tokens for all users.
+ */
+
 async function reauthAllAccounts() {
   if(db === false) await connectToDB();
   var puuid = await getCurrentPUUID();
@@ -511,8 +659,12 @@ async function reauthAllAccounts() {
   }
 }
 
+/**
+ * A function that refreshes the entitlement token of a user based on their PUUID.
+ * @param {String} uuid 
+ */
+
 async function refreshEntitlementToken(uuid) {
-  // Get entitlement for every account and write to file
   var data = await db.query(`SELECT * FROM rgConfig:⟨${uuid}⟩`);
   var rgConfig = data[0].result[0];
 
@@ -521,6 +673,11 @@ async function refreshEntitlementToken(uuid) {
 
   await db.update(`rgConfig:⟨${uuid}⟩`, rgConfig);
 }
+
+/**
+ * A function that refreshes the entitlement tokens of all users.
+ * @returns An object containing if the reauthentication failed and if yes the reason.
+ */
 
 async function refreshAllEntitlementTokens() {
   if(db === false) await connectToDB();
@@ -572,6 +729,13 @@ var lastGameMode = null;
 
 // -------------------- END RICH PRESENCE STATES --------------------
 
+/**
+ * A function that reads a WebSocket event sent by the VALORANT local websocket and returns the
+ * current state of the player.
+ * @param {Object|Array} eventData The data recieved from the WebSocket event. 
+ * @returns 
+ */
+
 async function getDataFromWebSocketEvent(eventData) {
   eventData = eventData.toString();
 
@@ -612,6 +776,15 @@ async function getDataFromWebSocketEvent(eventData) {
   return returnObj;
 }
 
+/**
+ * A function that returns a user's daily store based on their PUUID.
+ * @param {String} region The region of the user.
+ * @param {String} puuid The PUUID of the user.
+ * @param {String} entitlement_token The entitlement token of the user.
+ * @param {String} bearer The access token of the user.
+ * @returns An object containing the data for the user's store.
+ */
+
 async function getShopData(region, puuid, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v2/storefront/' + puuid, {
@@ -626,6 +799,15 @@ async function getShopData(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
+/**
+ * A function that returns all of a user's items that they own based on their PUUID.
+ * @param {String} region The region of the user.
+ * @param {String} puuid The PUUID of the user.
+ * @param {String} entitlement_token The entitlement token of the user.
+ * @param {String} bearer The access token of the user.
+ * @returns An object containing the data for the user's items.
+ */
+
 async function getPlayerItems(region, puuid, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/store/v1/entitlements/${puuid}/e7c63390-eda7-46e0-bb7a-a6abdacd2433`, {
@@ -637,6 +819,12 @@ async function getPlayerItems(region, puuid, entitlement_token, bearer) {
     keepalive: true
   })).json());
 }
+
+/**
+ * A function that fetches a user's entitlement based on their access token.
+ * @param {String} bearer The access token of the user.
+ * @returns The new entitlements token.
+ */
 
 async function getEntitlement(bearer) {
   return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
@@ -650,6 +838,15 @@ async function getEntitlement(bearer) {
   })).json())['entitlements_token'];
 }
 
+/**
+ * A function that fetches a user's pregame status based on their PUUID.
+ * @param {String} region The region of the user.
+ * @param {String} puuid The PUUID of the user.
+ * @param {String} entitlement_token The entitlement token of the user.
+ * @param {String} bearer The access token of the user.
+ * @returns An object containing the data about the current pregame.
+ */
+
 async function getPlayer_PreGame(region, puuid, entitlement_token, bearer) {
   return (await (await fetch(`https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${puuid}`, {
     method: 'GET',
@@ -661,6 +858,15 @@ async function getPlayer_PreGame(region, puuid, entitlement_token, bearer) {
     keepalive: true
   })).json());
 }
+
+/**
+ * A function that fetches a matches pregame based on it's ID.
+ * @param {String} region The region of the user/match.
+ * @param {String} MatchID The ID of the match.
+ * @param {String} entitlement_token The entitlement token of the user.
+ * @param {String} bearer The access token of the user.
+ * @returns An object containing the data about the current pregame.
+ */
 
 async function getMatch_PreGame(region, MatchID, entitlement_token, bearer) {
   return (await (await fetch(`https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/matches/${MatchID}`, {
@@ -674,6 +880,15 @@ async function getMatch_PreGame(region, MatchID, entitlement_token, bearer) {
   })).json());
 }
 
+/**
+ * A function that fetches a matches ongoing game based on it's ID.
+ * @param {String} region The region of the user.
+ * @param {String} puuid The PUUID of the user.
+ * @param {String} entitlement_token The entitlement token of the user.
+ * @param {String} bearer The access token of the user.
+ * @returns An object containing the data about the current match.
+ */
+
 async function getPlayer_CoreGame(region, puuid, entitlement_token, bearer) {
   return (await (await fetch(`https://glz-${region}-1.${region}.a.pvp.net/core-game/v1/players/${puuid}`, {
     method: 'GET',
@@ -686,6 +901,15 @@ async function getPlayer_CoreGame(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
+/**
+ * A function that fetches a matches ongoing game based on it's ID.
+ * @param {String} region The region of the user/match.
+ * @param {String} MatchID The ID of the match.
+ * @param {String} entitlement_token The entitlement token of the user.
+ * @param {String} bearer The access token of the user.
+ * @returns An object containing the data about the current match.
+ */
+
 async function getMatch_CoreGame(region, MatchID, entitlement_token, bearer) {
   return (await (await fetch(`https://glz-${region}-1.${region}.a.pvp.net/core-game/v1/matches/${MatchID}`, {
     method: 'GET',
@@ -697,6 +921,15 @@ async function getMatch_CoreGame(region, MatchID, entitlement_token, bearer) {
     keepalive: true
   })).json());
 }
+
+/**
+ * A function that fetches a player's party based on their PUUID.
+ * @param {String} region The region of the user.
+ * @param {String} puuid The PUUID of the user.
+ * @param {String} entitlement_token The entitlement token of the user.
+ * @param {String} bearer The access token of the user.
+ * @returns An object containing the data about the current user's party.
+ */
 
 async function getPlayer_Party(region, puuid, entitlement_token, bearer) {
   var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
@@ -712,6 +945,15 @@ async function getPlayer_Party(region, puuid, entitlement_token, bearer) {
   })).json());
 }
 
+/**
+ * A function that fetches a party's data based on it's ID.
+ * @param {String} region The region of the user/party.
+ * @param {String} puuid The ID of the party.
+ * @param {String} entitlement_token The entitlement token of the user.
+ * @param {String} bearer The access token of the user.
+ * @returns An object containing the data about the party.
+ */
+
 async function getParty(region, PartyID, entitlement_token, bearer) {
   return (await (await fetch(`https://glz-${region}-1.${region}.a.pvp.net/parties/v1/parties/${PartyID}`, {
     method: 'GET',
@@ -723,6 +965,11 @@ async function getParty(region, PartyID, entitlement_token, bearer) {
     keepalive: true
   })).json());
 }
+
+/**
+ * A function that fetches the user's agent if they are in an ongoing match.
+ * @returns An object containing the agent's UUID and data about the current match.
+ */
 
 async function fetchPlayerAgent() {
   var user_data = await getCurrentUserData();
@@ -749,11 +996,18 @@ async function fetchPlayerAgent() {
   }
 }
 
+/**
+ * A function that returns the name of the mode the user is currently playing.
+ * @param {String} url 
+ * @param {Boolean} isRanked 
+ * @returns The mode that the user is playing.
+ */
+
 function decideMatchModeFromURL(url, isRanked) {
   switch(url) {
     case("/Game/GameModes/Bomb/BombGameMode.BombGameMode_C"): { // Standard, decide bewtween ranked or not
       if(isRanked === true) return "competitive";
-      return "unrated";
+      else return "unrated";
     }
     case("/Game/GameModes/QuickBomb/QuickBombGameMode.QuickBombGameMode_C"): {
       return "spikerush";
@@ -775,6 +1029,11 @@ function decideMatchModeFromURL(url, isRanked) {
     }
   }
 }
+
+/**
+ * A function that checks if the current user is in a match. If yes, it sets the user's rich 
+ * presence to the current mode.
+ */
 
 async function checkForMatch() {
   var user_data = await getCurrentUserData();
@@ -849,7 +1108,13 @@ async function checkForMatch() {
   return;
 }
 
+// Get the localizations for all gamemodes
 const gamemodes = await LocalText(L, 'gamemodes');
+
+/**
+ * A function that completes the rich presence data.
+ * @param {Object} data The data about the user's current state. 
+ */
 
 async function decideRichPresenceData(data) {
   if(db === false) await connectToDB();
@@ -1008,6 +1273,16 @@ async function decideRichPresenceData(data) {
   }
 }
 
+/**
+ * A function that takes the formatted info about the user's current match and sends it to Discord
+ * for the rich presence to function.
+ * @param {String} mode_and_info 
+ * @param {String} scores 
+ * @param {String} map 
+ * @param {String} agent_or_mode 
+ * @param {Number} timestamp 
+ */
+
 async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
   var lg_txt = await LocalText(L, 'val_rp_details.playing_val');
   var obj = {
@@ -1028,6 +1303,11 @@ async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timest
     activity: obj,
   });
 }
+
+/**
+ * A function that checks all user accounts for wishlisted items. If any items are found, the app
+ * will send a desktop notification.
+ */
 
 async function checkStoreForWishlistItems() {
   if(db === false) await connectToDB();
@@ -1149,6 +1429,7 @@ async function checkStoreForWishlistItems() {
   });
 }
 
+// Main function that starts the app
 (async () => {
   if(db === false) await connectToDB();
 
@@ -1541,34 +1822,41 @@ async function checkStoreForWishlistItems() {
   });
 })();
 
+// Handler that quits the app if all windows are closed
 app.on("window-all-closed", function() {
   if(inMigrationProgress === false) {
     quitApp();
   }
 });
 
+// Handler that informs the user of an available update
 autoUpdater.on("update-available", () => {
   sendMessageToWindow("update-found");
 });
 
+// Handler that informs the user of the current download progress of an update.
 autoUpdater.on("download-progress", (progressObj) => {
   sendMessageToWindow("update-download-percent", progressObj.percent);
 });
 
+// Handler that informs the user that the download of an update has completed.
 autoUpdater.on("update-downloaded", () => {
   sendMessageToWindow("update-download-finished");
 });
 
+// Handler to look for updates
 ipcMain.on('fetch-update', function() {
   if(!isDev) {
     autoUpdater.checkForUpdates();
   }
 });
 
+// Handler to quit the app and install 
 ipcMain.on('quit-app-and-install', function() {
-  autoUpdater.quitAndInstall(true, true);
+  quitApp(true);
 });
 
+// Handler to change the app's discord presence to the requested activity.
 ipcMain.on("changeDiscordRP", async function (event, arg) {
   var uuid = uuidv5("useAppRP", process.env.SETTINGS_UUID);
   var rpObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
@@ -1584,7 +1872,8 @@ ipcMain.on("changeDiscordRP", async function (event, arg) {
   }
 });
 
-ipcMain.handle("getTdidCookie", function (event, arg) {
+// Handler to return the tdid cookie saved by the app.
+ipcMain.handle("getTdidCookie", function () {
   session.defaultSession.cookies.get({})
   .then((cookies) => {
     var data = cookies.forEach((cookie) => {
@@ -1595,11 +1884,18 @@ ipcMain.handle("getTdidCookie", function (event, arg) {
     return data;
   })
   .catch((error) => {
-    log.info(error);
+    console.log(error);
   });
 });
 
+// URL used in sign-in windows
 var signInUrl = 'https://auth.riotgames.com/authorize?redirect_uri=http%3A%2F%2Flocalhost%2Fredirect&client_id=riot-client&response_type=token%20id_token&nonce=1&scope=openid%20link%20ban';
+
+/**
+ * A function that extracts the token data from the redirect URL that is recieved by Riot's Servers.
+ * @param {String} url 
+ * @returns The token data included in the URL.
+ */
 
 function getTokenDataFromURL(url) {
   try {
@@ -1614,7 +1910,11 @@ function getTokenDataFromURL(url) {
   }
 }
 
-async function showSignIn(writeToFile) {
+/**
+ * A function to open a login window, in which the user can enter their credentials.
+ * @returns An object containing all cookies and access tokens that have been recieved.
+ */
+async function showSignIn() {
   return new Promise((resolve, reject) => {
     const loginWindow = createWindow('riot-login', { 
       show: false,
@@ -1670,10 +1970,12 @@ async function showSignIn(writeToFile) {
   });
 }
 
+// Handler to open a login window
 ipcMain.handle('loginWindow', async (event, args) => {
   return await showSignIn(args);
 });
 
+// Handler to change the autostart setting
 ipcMain.on('openAppOnLogin', async function(event, arg) {
   if(!isDev) {
     app.setLoginItemSettings({
@@ -1687,6 +1989,7 @@ ipcMain.on('openAppOnLogin', async function(event, arg) {
   }
 });
 
+// Handler to change the setting that lets the app start hidden when starting on system boot
 ipcMain.on('hideAppOnLogin', async function(event, arg) {
   if(!isDev) {
     if(arg === true) {
@@ -1706,11 +2009,13 @@ ipcMain.on('hideAppOnLogin', async function(event, arg) {
   }
 });
 
+// Handler to restart the app
 ipcMain.on('restartApp', function() {
   app.relaunch();
   quitApp();
 });
 
+// Handler to completely reset the app
 ipcMain.on('resetApp', function() {
   if(child) {
     child.kill();
@@ -1720,62 +2025,77 @@ ipcMain.on('resetApp', function() {
   app.exit(0); 
 }); 
 
+// Handler to relay a textbox
 ipcMain.on('relayTextbox', function(event, args) {
   sendMessageToWindow('createTextbox', args);
 });
 
+// Handler to relay the command to open the player search modal
 ipcMain.on('relayOpenPlayerSearchModal', function(event, args) {
   sendMessageToWindow('openPlayerSearchModal', args);
 });
 
+// Handler to execute a query on the database
 ipcMain.handle('executeQuery', async (event, args) => {
   return await executeQuery(args);
 });
 
+// Handler to create a thing in the database
 ipcMain.handle('createThing', async (event, args) => {
   return await createThing(args[0], args[1]);
 });
 
+// Handler to update a thing in the database
 ipcMain.handle('updateThing', async (event, args) => {
   return await updateThing(args[0], args[1]);
 });
 
+// Handler to switch the user to a different account
 ipcMain.handle('switchPlayer', async (event, args) => {
   return await switchPlayer(args);
 });
 
+// Handler that returns the entitlement of the current user
 ipcMain.handle('getUserEntitlement', async (event, args) => {
   return await getUserEntitlement(args);
 });
 
+// Handler that returns the access token of the current user
 ipcMain.handle('getUserAccessToken', async (event, args) => {
   return await getUserAccessToken(args);
 });
 
-ipcMain.handle('getCurrentUserData', async (event, args) => {
+// Handler that returns all data about the current user
+ipcMain.handle('getCurrentUserData', async () => {
   return await getCurrentUserData();
 });
 
-ipcMain.handle('getCurrentPUUID', async (event, args) => {
+// Handler that returns the PUUID of the current user
+ipcMain.handle('getCurrentPUUID', async () => {
   return await getCurrentPUUID();
 });
 
-ipcMain.handle('getInstanceToken', async (event, args) => {
+// Handler that returns the instance token
+ipcMain.handle('getInstanceToken', async () => {
   return await getInstanceToken();
 });
 
-ipcMain.handle('getServiceData', async (event, args) => {
+// Handler that returns all service data
+ipcMain.handle('getServiceData', async () => {
   return await getServiceData();
 });
 
+// Handler that updates the message date
 ipcMain.handle('updateMessageDate', async (event, args) => {
   return await updateMessageDate(args);
 });
 
+// Handler that fetches a match and returns it
 ipcMain.handle('fetchMatch', async (event, args) => {
   return await fetchMatch(args);
 });
 
+// Handler that creates a match in the database, if it does not yet exist
 ipcMain.on('createMatch', async (event, args) => {
   if(allCurrentlyProcessingMatchIDs.includes(args.matchInfo.matchId)) return;
 
@@ -1823,26 +2143,32 @@ ipcMain.on('createMatch', async (event, args) => {
   db.close();
 });
 
+// Handler that removes a match from the database
 ipcMain.handle('removeMatch', async (event, args) => {
   return await removeMatch(args[0], args[1]);
 });
 
+// Handler that adds a skin to the wishlist
 ipcMain.handle('addSkinToWishlist', async (event, args) => {
   return await addSkinToWishlist(args);
 });
 
+// Handler that removes a skin from the wishlist
 ipcMain.handle('rmSkinFromWishlist', async (event, args) => {
   return await rmSkinFromWishlist(args);
 });
 
+// Handler that returns all settings
 ipcMain.handle('getAllSettings', async (event, args) => {
   return await getAllSettings();
 });
 
+// Handler that changes a setting
 ipcMain.handle('changeSetting', async (event, args) => {
   return await changeSetting(args[0], args[1]);
 });
 
+// Handler that requests a new instance token
 ipcMain.handle('requestInstanceToken', async (event, args) => {
   return await await requestInstanceToken(args[0], args[1]);
 });
