@@ -65,7 +65,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
               :
               null
             }
-            <p className='text-gray-500 mt-0'>{numberWithCommas(progress_max - progress_value)}<span className="ml-0.5 inline font-light">XP</span> {xp_locale}</p>
+            <p className='text-gray-500 mt-0'>{numberWithCommas(progress_max - progress_value)}<p className="ml-0.5 mr-0.5 inline">XP</p> {xp_locale}</p>
           </div>
 
           <div className='w-1/4 h-full flex flex-col text-center items-center justify-center'>

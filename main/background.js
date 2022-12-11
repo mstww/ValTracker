@@ -426,7 +426,7 @@ async function getMatch(region, matchId, entitlement_token, bearer) {
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var matches = await getMatchHistory(region, puuid, 0, 1, 'competitive', entitlement_token, bearer);
   if(matches.History.length > 0) {
-    var match_data = await getMatch(matches.History[0].MatchID);
+    var match_data = await getMatch(region, matches.History[0].MatchID, entitlement_token, bearer);
     for(var i = 0; i < match_data.players.length; i++) {
       if(match_data.players[i].subject === puuid) {
         return match_data.players[i].competitiveTier;
@@ -584,11 +584,14 @@ async function reauthAccount(puuid) {
         var ent = rgConfig.entitlement;
         
         var currenttier = await getPlayerMMR(user_data.region, puuid, ent, bearer);
+        console.log(currenttier);
   
         user_data.rank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
   
         await db.update(`player:⟨${puuid}⟩`, user_data);
-      } catch(unused) {}
+      } catch(unused) {
+        console.log(unused);
+      }
   
       await db.update(`rgConfig:⟨${puuid}⟩`, rgConfig);
   
@@ -1666,6 +1669,10 @@ async function checkStoreForWishlistItems() {
     sendMessageToWindow("togglerestore", mainWindow.isMaximized());
   });
 
+  mainWindow.on("restore", () => {
+    sendMessageToWindow("togglerestore", mainWindow.isMaximized());
+  });
+
   ipcMain.on("close-window", async function () {
     var settings = {
       "minOnClose": null,
@@ -1693,8 +1700,10 @@ async function checkStoreForWishlistItems() {
     appIcon.setToolTip("VALTracker");
   
     appIcon.on("click", function() {
-      RPState = 'app';
-      sendMessageToWindow('setDRPtoCurrentPage');
+      if(RPState === 'ClientHidden') {
+        RPState = 'app';
+        sendMessageToWindow('setDRPtoCurrentPage');
+      }
       appIcon.destroy();
       mainWindow.show();
     });
@@ -1706,8 +1715,10 @@ async function checkStoreForWishlistItems() {
       {
         label: showText,
         click: function () {
-          RPState = 'app';
-          sendMessageToWindow('setDRPtoCurrentPage');
+          if(RPState === 'ClientHidden') {
+            RPState = 'app';
+            sendMessageToWindow('setDRPtoCurrentPage');
+          }
           appIcon.destroy();
           mainWindow.show();
         }

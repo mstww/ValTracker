@@ -481,18 +481,18 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
         current_level = prev_chapter.levels[prev_chapter.levels.length-1];
       }
 
-      if(current_chapter.levels[j+1]) {
+      if(current_chapter.levels[j]) {
         next_level = current_chapter.levels[j];
       }
 
       if(next_level === undefined && next_chapter !== undefined) {
         current_level = current_chapter.levels[current_chapter.levels.length-1];
-        next_level = next_chapter.levels[0];
+        next_level = next_chapter.levels[0]; 
       }
 
       if(next_level === undefined) {
-        next_level = current_level;
-        current_level = current_chapter.levels[j-1];
+        next_level = current_chapter.levels[j+1];
+        current_level = current_chapter.levels[j];
         var atEnd = true;
       }
 
@@ -535,6 +535,7 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
           agentContractProgression.totalXPneeded = next_level.xp;
           agentContractProgression.currentXPowned = agentContractXpRemaining;
         }
+        break;
       }
 
       tierCount++;
@@ -1845,7 +1846,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               <span className='text-lg font-semibold'>{matchData.mapName}</span>
                               <span className='text-base font-light flex flex-row items-center'> 
                                 <Tooltip 
-                                  content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
+                                  content={matchData.playerCurrentTier > 3 && matchData.rankFixed !== undefined ? matchData.rankFixed.tierName : ''}
                                   color="error" 
                                   placement={'top'} 
                                   className={'rounded'}

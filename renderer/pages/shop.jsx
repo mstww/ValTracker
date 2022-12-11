@@ -204,12 +204,12 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     setDailyTimer(initialSkins);
 
     if(data.nightMarket) {
-      var nmTimer = Math.abs(moment().diff(data.nightMarket.expiresIn, 'seconds'));
+      var nmTimer = Math.abs(moment().diff(data.nightMarket.nightMarketExpiresIn, 'seconds'));
       nmTimer = nmTimer-1;
       var initialNM = bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
 
       setNightMarketTimer(initialNM);
-      setNightMarketEnd(data.nightMarket.expiresIn);
+      setNightMarketEnd(data.nightMarket.nightMarketExpiresIn);
     }
 
     timerInterval = setInterval(function() {
@@ -224,7 +224,6 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         router.reload();
       }
 
-      console.log(data);
       if(data.nightMarket && nmTimer <= 0) {
         //router.reload();
       }

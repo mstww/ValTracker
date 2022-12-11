@@ -127,7 +127,6 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       if(knownMatchData.gameMode !== 'deathmatch' && knownMatchData.gameMode !== 'ggteam' && knownMatchData.gameMode !== 'onefa') {
         const allPlayerAwardStats = [];
         var playerAbilityUsage = {};
-        console.log(knownMatchData);
         if(knownMatchData.gameMode === "competitive") {
           setIsComp(true);
         }

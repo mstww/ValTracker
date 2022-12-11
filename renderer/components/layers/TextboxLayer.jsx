@@ -22,7 +22,6 @@ function Textboxes() {
 
   React.useEffect(() => {
     ipcRenderer.on('createTextbox', function(event, args) {
-      console.log(args);
       setTextboxes(current => [...current, args ]);
       setTimeout(function() {
         var newArray = removeItemOnce(textboxes, args);

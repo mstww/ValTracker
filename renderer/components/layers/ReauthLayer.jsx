@@ -269,7 +269,7 @@ export default function ReauthLayer({ isOverlayShown, setIsOverlayShown }) {
               animate={currentReauthStep === localReauthStep ? "enter" : "exit"}
               transition={{ type: 'ease-in', duration: 0.3, delay: (currentReauthStep === localReauthStep ? 0.35 : 0) }}
             >
-              <h2 className='mb-2'>{LocalText(L, "account_card.header", localReauthStep, (userData.name + '#' + userData.tag))}</h2>
+              <h2 className='mb-2 font-semibold'>{LocalText(L, "account_card.header", localReauthStep, (userData.name + '#' + userData.tag))}</h2>
               <p>{LocalText(L, "account_card.desc")}</p>
               <button 
                 className='w-full mt-4 button default' 
