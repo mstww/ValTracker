@@ -14,7 +14,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
   }
 
   React.useEffect(async () => {
-    if(reward_1.image && reward_1.image !== "/images/radianite_icon.png") {
+    if(reward_1 && reward_1.image && reward_1.image !== "/images/radianite_icon.png") {
       const res1 = await fetch(reward_1.image, { method: "HEAD" });
     
       if(!res1.ok) {
@@ -24,7 +24,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
   }, [ reward_1 ]);
 
   React.useEffect(async () => {
-    if(reward_2.image&& reward_2.image !== "/images/radianite_icon.png") {
+    if(reward_2 && reward_2.image&& reward_2.image !== "/images/radianite_icon.png") {
       const res2 = await fetch(reward_2.image, { method: "HEAD" });
     
       if(!res2.ok) {

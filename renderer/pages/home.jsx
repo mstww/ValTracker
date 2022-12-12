@@ -464,81 +464,102 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     next_level: {},
   };
 
-  for(var i = 0; i < agentContractData.data.content.chapters.length; i++) {
-    var current_chapter = agentContractData.data.content.chapters[i];
-    var next_chapter = undefined;
-
-    if(agentContractData.data.content.chapters[i+1]) {
-      next_chapter = agentContractData.data.content.chapters[i+1];
-    }
+  if(agentContractProgressionLevel === 10) {
+    var current_chapter = agentContractData.data.content.chapters[agentContractData.data.content.chapters.length-1];
     
-    for(var j = 0; j < current_chapter.levels.length; j++) {
-      var next_level = undefined;
-      var current_level = current_chapter.levels[j-1];
+    var current_level = current_chapter.levels[current_chapter.levels.length-2];
+    var next_level = current_chapter.levels[current_chapter.levels.length-1];
 
-      if(current_level === undefined && tierCount === 5) {
-        var prev_chapter = agentContractData.data.content.chapters[i-1];
-        current_level = prev_chapter.levels[prev_chapter.levels.length-1];
-      }
+    var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
+    console.log(current_level_data);
 
-      if(current_chapter.levels[j]) {
-        next_level = current_chapter.levels[j];
-      }
+    agentContractProgression.current_level.reward = current_level_data;
+    agentContractProgression.current_level.levelNum = 9;
 
-      if(next_level === undefined && next_chapter !== undefined) {
-        current_level = current_chapter.levels[current_chapter.levels.length-1];
-        next_level = next_chapter.levels[0]; 
-      }
+    var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
 
-      if(next_level === undefined) {
-        next_level = current_chapter.levels[j+1];
-        current_level = current_chapter.levels[j];
-        var atEnd = true;
-      }
+    agentContractProgression.next_level.reward = next_level_data;
+    agentContractProgression.next_level.levelNum = 10;
 
-      if(tierCount == agentContractProgressionLevel) {
-        if(current_level) {
-          if(atEnd === true) {
-            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
+    agentContractProgression.totalXPneeded = 1;
+    agentContractProgression.currentXPowned = 1;
+  } else {
+    for(var i = 0; i < agentContractData.data.content.chapters.length; i++) {
+      var current_chapter = agentContractData.data.content.chapters[i];
+      var next_chapter = undefined;
   
-            agentContractProgression.current_level.reward = current_level_data;
-            agentContractProgression.current_level.levelNum = tierCount -1;
-          } else {
+      if(agentContractData.data.content.chapters[i+1]) {
+        next_chapter = agentContractData.data.content.chapters[i+1];
+      }
+      
+      for(var j = 0; j < current_chapter.levels.length; j++) {
+        var next_level = undefined;
+        var current_level = current_chapter.levels[j-1];
+  
+        if(current_level === undefined && tierCount === 5) {
+          var prev_chapter = agentContractData.data.content.chapters[i-1];
+          current_level = prev_chapter.levels[prev_chapter.levels.length-1];
+        }
+  
+        if(current_chapter.levels[j]) {
+          next_level = current_chapter.levels[j];
+        }
+  
+        if(next_level === undefined && next_chapter !== undefined) {
+          current_level = current_chapter.levels[current_chapter.levels.length-1];
+          next_level = next_chapter.levels[0]; 
+        }
+  
+        if(next_level === undefined) {
+          next_level = current_chapter.levels[j+1];
+          current_level = current_chapter.levels[j];
+          var atEnd = true;
+        }
+  
+        if(tierCount == agentContractProgressionLevel) {
+          if(current_level) {
+            if(atEnd === true) {
+              var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
+    
+              agentContractProgression.current_level.reward = current_level_data;
+              agentContractProgression.current_level.levelNum = tierCount -1;
+            } else {
+              var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
+    
+              agentContractProgression.current_level.reward = current_level_data;
+              agentContractProgression.current_level.levelNum = tierCount;
+            }
             var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
   
             agentContractProgression.current_level.reward = current_level_data;
             agentContractProgression.current_level.levelNum = tierCount;
+          } else {
+            agentContractProgression.current_level.reward = null;
+            agentContractProgression.current_level.levelNum = 0;
           }
-          var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-
-          agentContractProgression.current_level.reward = current_level_data;
-          agentContractProgression.current_level.levelNum = tierCount;
-        } else {
-          agentContractProgression.current_level.reward = null;
-          agentContractProgression.current_level.levelNum = 0;
+          
+          if(atEnd === true) {
+            var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
+  
+            agentContractProgression.next_level.reward = next_level_data;
+            agentContractProgression.next_level.levelNum = tierCount;
+  
+            agentContractProgression.totalXPneeded = 1;
+            agentContractProgression.currentXPowned = 1;
+          } else {
+            var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
+  
+            agentContractProgression.next_level.reward = next_level_data;
+            agentContractProgression.next_level.levelNum = tierCount + 1;
+  
+            agentContractProgression.totalXPneeded = next_level.xp;
+            agentContractProgression.currentXPowned = agentContractXpRemaining;
+          }
+          break;
         }
-        
-        if(atEnd === true) {
-          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
-
-          agentContractProgression.next_level.reward = next_level_data;
-          agentContractProgression.next_level.levelNum = tierCount;
-
-          agentContractProgression.totalXPneeded = 1;
-          agentContractProgression.currentXPowned = 1;
-        } else {
-          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
-
-          agentContractProgression.next_level.reward = next_level_data;
-          agentContractProgression.next_level.levelNum = tierCount + 1;
-
-          agentContractProgression.totalXPneeded = next_level.xp;
-          agentContractProgression.currentXPowned = agentContractXpRemaining;
-        }
-        break;
+  
+        tierCount++;
       }
-
-      tierCount++;
     }
   }
 
