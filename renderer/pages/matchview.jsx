@@ -449,7 +449,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               <img src={'https://media.valorant-api.com/maps/' + matchMap + '/splash.png'} className='h-full' />
             </div>
             <div id='map-name-text' className='z-30 absolute -bottom-6 left-0'>
-              <span id='rotated-side-text' className='text-6xl font-bold text-black text-opacity-80 ml-10'>{matchMapName ? matchMapName.toUpperCase() : ''}</span>
+              <span id='rotated-side-text' className='text-5xl font-bold text-black text-opacity-80 ml-8 mb-2'>{matchMapName ? matchMapName.toUpperCase() : ''}</span>
             </div>
             <div id='matchview-gradient-overlay' className='absolute top-0 h-full w-full left-0 z-30'>
               <div className='w-1/2 ml-auto p-4'>
@@ -497,7 +497,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <img src={'/images/6k_new.png'} className='h-full relative right-4 shadow-img' />
               </div>
               <div id='map-name-text' className='z-30 absolute -bottom-6 left-0'>
-                <span id='rotated-side-text' className='awards text-6xl font-bold text-black text-opacity-80 ml-10 relative top-0.5'>{LocalText(L, "awards.rotated_text")}</span>
+                <span id='rotated-side-text' className='awards text-5xl font-bold text-black text-opacity-80 ml-8 mb-2 relative top-0.5'>{LocalText(L, "awards.rotated_text")}</span>
               </div>
               <div id='matchview-gradient-overlay-small' className='absolute top-0 h-full w-full left-0 z-30 overflow-auto'>
                 <div className='w-2/3 ml-auto p-2'>
@@ -680,7 +680,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           <div id='map-name-text' className='z-40 absolute -bottom-2 left-0'>
             <span 
               id='rotated-side-text' 
-              className='text-6xl font-bold text-black text-opacity-80 ml-11 flex relative top-2 '
+              className='text-5xl font-bold text-black text-opacity-80 ml-6 flex relative top-4 '
             >
               {
                 router.query.isCompetitive 
