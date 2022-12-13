@@ -19,6 +19,7 @@
         "ggteam": "Escalation",
         "onefa": "Replication",
         "snowball": "Snowball Fight", 
+        "swiftplay": "Swiftplay",
         "custom": "Custom",
         "": "Custom"
       },
@@ -85,6 +86,7 @@
         "ggteam": "Eskalation",
         "onefa": "Klon-Programm",
         "snowball": "Schneeballschlacht", 
+        "swiftplay": "Schnelles Spiel",
         "custom": "Eigenes Spiel",
         "": "Eigenes Spiel"
       },
@@ -148,11 +150,12 @@
         "unrated": "Non classé",
         "spikerush": "Spike Rush",
         "deathmatch": "Combat à mort",
-        "ggteam": "Intensification",
+        "ggteam": "Escalation",
         "onefa": "Réplication",
         "snowball": "Snowball Fight", 
-        "custom": "Partie Personnalisée",
-        "": "Partie Personnalisée"
+        "swiftplay": "Vélocité",
+        "custom": "Partie Personalisée",
+        "": "Partie Personalisée"
       },
       "match_outcomes": {
         "VICTORY": "VICTOIRE",
