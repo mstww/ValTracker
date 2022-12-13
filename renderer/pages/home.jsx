@@ -2059,9 +2059,10 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               <ModeSelectionCard id="competitive" mode_name={'competitive'} display_name={LocalText(L, "bot_r.match_filter.fl_2")} active={activeQueueTab} setActive={setActiveQueueTab} />
               <ModeSelectionCard id="deathmatch" mode_name={'deathmatch'} display_name={LocalText(L, "bot_r.match_filter.fl_3")} active={activeQueueTab} setActive={setActiveQueueTab} />
               <ModeSelectionCard id="spikerush" mode_name={'spikerush'} display_name={LocalText(L, "bot_r.match_filter.fl_4")} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard id="custom" mode_name={'custom'} display_name={LocalText(L, "bot_r.match_filter.fl_7")} active={activeQueueTab} setActive={setActiveQueueTab} />
+              <ModeSelectionCard id="swiftplay" mode_name={'swiftplay'} display_name={LocalText(L, "bot_r.match_filter.fl_8")} active={activeQueueTab} setActive={setActiveQueueTab} />
               <ModeSelectionCard id="onefa" mode_name={'onefa'} display_name={LocalText(L, "bot_r.match_filter.fl_5")} active={activeQueueTab} setActive={setActiveQueueTab} />
               <ModeSelectionCard id="ggteam" mode_name={'ggteam'} display_name={LocalText(L, "bot_r.match_filter.fl_6")} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard id="custom" mode_name={'custom'} display_name={LocalText(L, "bot_r.match_filter.fl_7")} active={activeQueueTab} setActive={setActiveQueueTab} />
             </div>
           </div>
           <div 

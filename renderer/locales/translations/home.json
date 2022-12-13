@@ -95,7 +95,8 @@
         "fl_4": "Spike Rush",
         "fl_5": "Replication",
         "fl_6": "Escalation",
-        "fl_7": "Custom"
+        "fl_7": "Custom",
+        "fl_8": "Swiftplay"
       }
     }
   },
@@ -195,7 +196,8 @@
         "fl_4": "Spike-Ansturm",
         "fl_5": "Klon-Programm",
         "fl_6": "Eskalation",
-        "fl_7": "Eigenes Spiel"
+        "fl_7": "Eigenes Spiel",
+        "fl_8": "Schnelles Spiel"
       }
     }
   },
@@ -295,7 +297,8 @@
         "fl_4": "Spike Rush",
         "fl_5": "Réplication",
         "fl_6": "Intensification",
-        "fl_7": "Partie Personnalisée"
+        "fl_7": "Partie Personnalisée",
+        "fl_8": "Vélocité"
       }
     }
   }
