@@ -1025,7 +1025,10 @@ function decideMatchModeFromURL(url, isRanked) {
       return "ggteam";
     }
     case("/Game/GameModes/ShootingRange/ShootingRangeGameMode.ShootingRangeGameMode_C"): {
-      return "ggteam";
+      return "range";
+    }
+    case("/Game/GameModes/_Development/Swiftplay_EndOfRoundCredits/Swiftplay_EoRCredits_GameMode.Swiftplay_EoRCredits_GameMode_C"): {
+      return "swiftplay";
     }
     default: {
       return "unrated";

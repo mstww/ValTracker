@@ -9,6 +9,7 @@
       "ggteam": "Escalation",
       "onefa": "Replication",
       "snowball": "Snowball Fight", 
+      "swiftplay": "Swiftplay",
       "custom": "Custom",
       "": "Custom"
     },
@@ -63,6 +64,7 @@
       "ggteam": "Eskalation",
       "onefa": "Klon-Programm",
       "snowball": "Schneeballschlacht", 
+      "swiftplay": "Schnelles Spiel",
       "custom": "Eigenes Spiel",
       "": "Eigenes Spiel"
     },
@@ -117,6 +119,7 @@
       "ggteam": "Escalation",
       "onefa": "Réplication",
       "snowball": "Snowball Fight", 
+      "swiftplay": "Vélocité",
       "custom": "Partie Personalisée",
       "": "Partie Personalisée"
     },
