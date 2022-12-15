@@ -351,11 +351,11 @@ async function getAccessTokens(ssid) {
   return (await fetch("https://auth.riotgames.com/api/v1/authorization", {
     method: 'POST',
     headers: {
-      "User-Agent": "RiotClient/60.0.6.4770705.4749685 rso-auth (Windows;10;;Professional, x64)",
+      "User-Agent": "RiotClient/61.0.6.4847198.4789131 rso-auth (Windows;11;;Professional, x64)",
       'Content-Type': 'application/json',
       Cookie: ssid,
     },
-    body: JSON.stringify({"client_id":"riot-client","nonce":"1","redirect_uri":"http://localhost/redirect","response_type":"token id_token","scope":"openid link ban"}),
+    body: JSON.stringify({"client_id":"play-valorant-web-prod","nonce":"1","redirect_uri":"https://playvalorant.com/opt_in","response_type":"token id_token","scope":"openid link ban"}),
     keepalive: true
   }));
 }
@@ -562,12 +562,16 @@ async function reauthAccount(puuid) {
 
     var { ssid } = rgConfig;
 
+    console.log(ssid);
+
     const access_tokens = await getAccessTokens(ssid);
+    console.log(access_tokens);
 
     var newSSID = access_tokens.headers.get('set-cookie').split("ssid=").pop().split(";")[0];
     newSSID = `ssid=${newSSID}`;
 
     const url_params = await access_tokens.json();
+    console.log(url_params);
 
     var newTokenData = getTokenDataFromURL(url_params.response.parameters.uri);
 
