@@ -6,7 +6,7 @@ const update_card_variants = {
   exit: { opacity: 0, x: 0, y: 0, scale: 0.8, transitionEnd: { display: 'none' } },
 }
 
-export default function PopupCard({ useRef, header, text, button_1, button_2, button_1_onClick, button_2_onClick, isOpen, isButtonClickable, isWideCard, children }) {
+export default function PopupCard({ useRef, header, text, text_2, button_1, button_2, button_1_onClick, button_2_onClick, isOpen, isButtonClickable, isWideCard, children }) {
   return(
     <motion.div 
       id='settings-overlay-card' 
@@ -19,6 +19,7 @@ export default function PopupCard({ useRef, header, text, button_1, button_2, bu
     >
       <h1 className="font-bold">{ header }</h1>
       <p>{ text }</p>
+      <p>{text_2 ? text_2 : null}</p>
       { children }
       <div className='mt-4'>
         <button 

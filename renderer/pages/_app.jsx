@@ -16,6 +16,7 @@ import UpdatingLayer from "../components/layers/UpdatingLayer";
 import ReauthLayer from "../components/layers/ReauthLayer"; 
 import TextboxLayer from "../components/layers/TextboxLayer"
 import WhatsNewLayer from "../components/layers/WhatsNewLayer";
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const normal = createTheme({
   type: "dark",
@@ -125,7 +126,9 @@ function MyApp({ Component, pageProps }) {
           exitBeforeEnter={true}
           onExitComplete={() => window.scrollTo(0, 0)}
         >
-          <Component key={router.asPath} {...pageProps} />
+          <ErrorBoundary>
+            <Component key={router.asPath} {...pageProps} />
+          </ErrorBoundary>
         </AnimatePresence>
       </NextUIProvider>
     </>
