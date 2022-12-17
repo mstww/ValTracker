@@ -471,7 +471,6 @@ const calculateContractProgress = async (region, puuid, bearer, entitlement, cli
     var next_level = current_chapter.levels[current_chapter.levels.length-1];
 
     var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-    console.log(current_level_data);
 
     agentContractProgression.current_level.reward = current_level_data;
     agentContractProgression.current_level.levelNum = 9;

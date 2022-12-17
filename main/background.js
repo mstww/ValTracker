@@ -562,16 +562,12 @@ async function reauthAccount(puuid) {
 
     var { ssid } = rgConfig;
 
-    console.log(ssid);
-
     const access_tokens = await getAccessTokens(ssid);
-    console.log(access_tokens);
 
     var newSSID = access_tokens.headers.get('set-cookie').split("ssid=").pop().split(";")[0];
     newSSID = `ssid=${newSSID}`;
 
     const url_params = await access_tokens.json();
-    console.log(url_params);
 
     var newTokenData = getTokenDataFromURL(url_params.response.parameters.uri);
 
@@ -588,13 +584,12 @@ async function reauthAccount(puuid) {
         var ent = rgConfig.entitlement;
         
         var currenttier = await getPlayerMMR(user_data.region, puuid, ent, bearer);
-        console.log(currenttier);
   
         user_data.rank = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/largeicon.png`;
   
         await db.update(`player:⟨${puuid}⟩`, user_data);
-      } catch(unused) {
-        console.log(unused);
+      } catch(err) {
+        console.log(err);
       }
   
       await db.update(`rgConfig:⟨${puuid}⟩`, rgConfig);
@@ -652,7 +647,6 @@ async function reauthAllAccounts() {
     // Check if promise the promise was rejected
     var account_data = await promise.then(function({ data_array, reauth_array }) {
       if(reauth_array.length > 0) {
-        console.log(reauth_array);
         console.log("Error while reauthing accounts.");
         return { error: true, items: false, reauthArray: reauth_array }; 
       } else {
@@ -1792,7 +1786,11 @@ async function checkStoreForWishlistItems() {
       var instanceComms = new Worker(new URL("../modules/instanceSocketComms.mjs", import.meta.url), { workerData: instanceToken });
 
       ipcMain.on('fetch-update', function() {
-        instanceComms.postMessage("Fetching Update");
+        instanceComms.postMessage({channel:"fetchingUpdate"});
+      });
+
+      ipcMain.on("rendererProcessError", (event, args) => {
+        instanceComms.postMessage({channel:"rendererProcessError", data: args});
       });
       
       instanceComms.on("message", async (msg) => {

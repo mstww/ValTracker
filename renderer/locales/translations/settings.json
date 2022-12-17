@@ -2,7 +2,7 @@
   "en-US": {
     "errors": {
       "acc_already_added": "This account has already been added.",
-      "invalid_settings_code": "Invalid Profile Code."
+      "invalid_settings_code": "Invalid Setting Profile Code."
     },
     "nav": {
       "el_1": "General",
