@@ -1582,13 +1582,7 @@ async function checkStoreForWishlistItems() {
       minHeight: 400,
       maxWidth: 620,
       maxHeight: 400,
-      //frame: false,
-      titleBarStyle: 'hidden',
-      titleBarOverlay: {
-        color: '#2f3241',
-        symbolColor: '#74b1be',
-        height: 60
-      },
+      frame: false,
       webPreferences: {
         nodeIntegration: true,
         enableRemoteModule: false,
@@ -1619,18 +1613,12 @@ async function checkStoreForWishlistItems() {
       height: 840,
       minWidth: 1400,
       minHeight: 840,
-      //frame: false,
+      frame: false,
       webPreferences: {
         nodeIntegration: true,
         enableRemoteModule: false,
         contextIsolation: false,
         devTools: true
-      },
-      titleBarStyle: 'hidden',
-      titleBarOverlay: {
-        color: '#2f3241',
-        symbolColor: '#74b1be',
-        height: 60
       },
       show: startedHidden === undefined,
     });
