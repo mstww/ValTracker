@@ -498,7 +498,7 @@ input:checked + .slider:before {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline;
-  @apply rounded border border-tile-color bg-maincolor-lightest bg-opacity-0;
+  @apply rounded border border-tile-color bg-tile-color bg-opacity-30;
 }
 
 .tab-tile:hover {

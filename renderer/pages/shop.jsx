@@ -403,7 +403,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       <div 
                         id='level' 
                         className={
-                          "relative chroma-swatch w-full h-14 border border-tile-color bg-tile-color bg-opacity-60 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-100 rounded pl-1 transition-all duration-100 ease-linear "
+                          "relative chroma-swatch w-full h-14 border border-tile-color bg-tile-color bg-opacity-30 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-60 rounded pl-1 transition-all duration-100 ease-linear "
                           + (activeCardSkinLevel == index ? 'border-button-color' : 'border-tile-color')
                         }
                         key={index}
@@ -477,7 +477,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           >
             <div 
               id='wallet'
-              className='bg-maincolor-lightest bg-opacity-60 border border-maincolor-lightest p-4 flex flex-col rounded shadow-lg mb-4'
+              className='border border-maincolor-lightest bg-tile-color bg-opacity-10 p-4 flex flex-col rounded shadow-lg mb-4'
             >
               <h1 className='text-2xl mb-2 font-bold'>{LocalText(L, "wallet_header")}</h1>
               <span className='flex flex-row text-center items-center mb-2'>
@@ -493,13 +493,13 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               onClick={() => { switchToNM() }}
               id='night-market'
               className={
-                'bg-opacity-60 bg-tile-color border border-tile-color p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:shadow-2xl hover:bg-opacity-100 transition-all duration-100 ease-in cursor-pointer ' 
+                'bg-opacity-30 bg-tile-color border border-tile-color p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:shadow-2xl hover:bg-opacity-60 transition-all duration-100 ease-in cursor-pointer ' 
                 + 
                 (nightMarketShown ? 'flex' : 'hidden')
               }
             >
-              <h1 className='text-2xl mb-2'>{LocalText(L, "night_market_header")}</h1>
-              <span id='nm-timer' className='flex flex-row text-center items-center mb-2 text-gray-500'>{nightMarketTimer}</span>
+              <h1 className='text-2xl mb-2 font-bold'>{LocalText(L, "night_market_header")}</h1>
+              <span id='nm-timer' className='flex flex-row text-center px-4 items-center mb-2 text-gray-500'>{nightMarketTimer}</span>
             </div>
           </motion.div>
         </div>

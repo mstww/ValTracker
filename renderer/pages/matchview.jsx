@@ -615,7 +615,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <>
                       <div 
                         key={index}
-                        className='h-14 border border-maincolor-lightest rounded p-1 mb-1 flex flex-row items-center pl-2 relative overflow-hidden hover:bg-maincolor-lightest transition-all duration-100 ease-linear'
+                        className='h-14 border border-tile-color rounded p-1 mb-1 flex flex-row items-center pl-2 relative overflow-hidden bg-tile-color bg-opacity-10 transition-all duration-100 ease-linear'
                       >
                         <div className='h-full flex flex-row items-center w-2/4'>
                           {
@@ -866,7 +866,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               return(
                 <>
                   <motion.tr 
-                    className={'border border-maincolor-lightest rounded'} key={index + 'tr'}
+                    className={'border border-tile-color bg-tile-color bg-opacity-10 rounded'} key={index + 'tr'}
                     variants={scoreboard_vars_initial}
                     initial="hidden"
                     animate={activeTab === 'scoreboard' ? "enter" : "exit"}

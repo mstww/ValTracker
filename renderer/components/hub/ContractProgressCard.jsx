@@ -49,7 +49,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
                     reward_1 && reward_1.image === "/images/radianite_icon.png" ?
                     <ValIconHandler icon={"/images/radianite_icon.png"} classes={'object-cover shadow-img'} />
                     :
-                    <img src={reward_1 ? reward_1.image : null} className='object-cover shadow-img' />
+                    <img src={reward_1 ? reward_1.image : null} className='object-cover shadow-img rounded' />
                   }
                 </div>
                 <span className='relative bottom-0 opacity-0 select-none'>{level_1}</span>

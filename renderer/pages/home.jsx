@@ -1652,12 +1652,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   return (
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div id='home-container' className='flex flex-row flex-wrap'>
-        <div id='top-left-container' className='relative bg-maincolor-lightest bg-opacity-60 rounded p-1.5 flex flex-wrap'>
+        <div id='top-left-container' className='relative rounded flex flex-wrap'>
           <div className='home-top-info-tile border rounded border-maincolor-lightest h-full p-1 relative'>
             <div className='flex flex-col h-full'>
               <div>
                 <span className='leading-none px-1 font-bold'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
-                <hr className='mb-1' />
               </div>
               <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border border-tile-color rounded shadow-img'>
                 <div className='relative'>
@@ -1684,7 +1683,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <Loading color={'error'} size={'sm'} />
               </div>
             </Tooltip>
-            <div className={'flex flex-col h-full ' + (contractsLoading || contractsError ? 'hidden' : '')}>
+            <div className={'flex flex-col h-full p-1 ' + (contractsLoading || contractsError ? 'hidden' : '')}>
               <ContractProgressCard 
                 title={LocalText(L, "top_l.contracts.battle_pass_header")} 
                 level_locale={LocalText(L, "top_l.contracts.level_text")}
@@ -1700,7 +1699,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 isVisible={!contractsLoading}
               />
 
-              <hr className='bg-maincolor-lightest h-0.5 border-none' />
+              <hr className='bg-maincolor-lightest h-px border-none' />
+
               <ContractProgressCard 
                 title={LocalText(L, "top_l.contracts.agent_contract_header")}
                 level_locale={LocalText(L, "top_l.contracts.level_text")}
@@ -1738,10 +1738,10 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </div>
           </div>
         </div>
-        <div id='top-right-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded p-1.5'>
+        <div id='top-right-container' className='relative overflow-y-auto rounded p-1.5 border border-maincolor-lightest'>
           <div className={'flex-row items-center justify-center h-full ' + (chartsLoading || chartsError ? 'hidden ' : 'flex') + (areChartsActive ? '' : ' hidden')}>
             <AwesomeSlider 
-              className={'AwesomeSliderMainContainer border border-maincolor-lightest rounded h-full z-10'}
+              className={'AwesomeSliderMainContainer rounded h-full z-10'}
             >
               <div>
                 <InfoChart
@@ -1790,7 +1790,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
-        <div id='bottom-left-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded p-2'>
+        <div id='bottom-left-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-lightest'>
           <div 
             id='match-timeline' 
             className={
@@ -1818,7 +1818,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       return (
                         <div 
                           id='match'
-                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-tile-color cursor-default transition-all duration-100 ease-linear' 
+                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-30 rounded mr-2 hover:bg-opacity-60 cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
                             if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -2004,13 +2004,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
-        <div id='bottom-right-container' className='relative overflow-y-auto bg-maincolor-lightest bg-opacity-60 rounded p-2'>
+        <div id='bottom-right-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-lightest'>
           <div className={'overflow-y-auto ' + (loading || errored ? 'hidden' : '')}>
             {
               currentlyLoadedMatchCount > 0 ?
               <div className={'p-0 m-0' + (areStatsActive ? '' : ' hidden ')}>
                 <span className='font-bold'>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
-                <hr />
                 <div className='flex flex-row justify-between mt-1.5'>
                   <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} />
                   <SmallStatsCard number={avgKillsPerRound} desc={LocalText(L, "bot_r.stats.stat_2")} />
@@ -2022,7 +2021,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 </div>
 
                 <span className='mt-1 font-bold'>{LocalText(L, "bot_r.best_map.header")}</span>
-                <hr className='mb-2' />
                 <LargeStatsCard 
                   header={bestMapName}
                   stat_1_locale={LocalText(L, "bot_r.best_map.stats.stat_1")}
@@ -2034,7 +2032,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 />
 
                 <span className='mt-1 font-bold'>{LocalText(L, "bot_r.best_agent.header")}</span>
-                <hr className='mb-2' />
                 <FlatLargeStatsCard
                   img_src={bestAgentImage}
                   header={bestAgentName}
@@ -2052,7 +2049,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               null
             }
             <span className='font-bold'>{LocalText(L, "bot_r.match_filter.header")}</span>
-            <hr className='mb-2' />
             <div className='flex flex-row flex-wrap justify-between' id='hub-match-filter'>
               <ModeSelectionCard id="unrated" mode_name={'unrated'} display_name={LocalText(L, "bot_r.match_filter.fl_1")} active={activeQueueTab} setActive={setActiveQueueTab} />
               <ModeSelectionCard id="competitive" mode_name={'competitive'} display_name={LocalText(L, "bot_r.match_filter.fl_2")} active={activeQueueTab} setActive={setActiveQueueTab} />

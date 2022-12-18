@@ -218,7 +218,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   var switcherActive = open ? 'bg-maincolor-light border-maincolor-lightest' : '';
 
   var activeClasses = 'bg-button-color hover:bg-button-color-hover border-button-color';
-  var inactiveClasses = 'bg-maincolor-light hover:bg-maincolor-lightest cursor-pointer border-tile-color';
+  var inactiveClasses = 'bg-tile-color bg-opacity-30 hover:bg-opacity-60 cursor-pointer border-tile-color';
   var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
   var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
   var navbarTileBaseClasses = ' border shadow-2xl drop-shadow-2xl h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');

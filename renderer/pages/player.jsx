@@ -626,7 +626,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                     }
 
                     return (
-                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 border-maincolor-lightest rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
+                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 border-maincolor-lightest bg-tile-color bg-opacity-30 hover:bg-opacity-60 rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
                         <div className='w-1/4 flex flex-row'>
                           <div id='agent-img'>
                             <img className='h-full shadow-img' src={playerAgent ? `https://media.valorant-api.com/agents/${playerAgent}/displayicon.png` : ''} />

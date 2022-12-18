@@ -119,7 +119,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                       exir="exit"
                       transition={{ type: 'linear', duration: 0.5, delay: (index / 100) }}
                     >
-                      <div className='py-1 pl-1 flex flex-col items-center justify-center border-l border-t border-b border-maincolor-lightest bg-maincolor-lightest bg-opacity-60 w-1/4 h-full rounded-l'>
+                      <div className='py-1 pl-1 flex flex-col items-center justify-center border-l border-t border-b border-maincolor-lightest bg-maincolor-lightest bg-opacity-10 w-1/4 h-full rounded-l'>
                         <div className="w-full flex items-center justify-center h-12 relative top-0 right-5">
                           <img src={skin.displayIcon} className='shadow-img max-h-full scale-90' />
                         </div>
@@ -168,7 +168,6 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
               })}
             </>
           </>
-          
           : 
           <div className="w-full text-center font-bold mt-4">{LocalText(L, "content.empty_text")}</div>
         }
