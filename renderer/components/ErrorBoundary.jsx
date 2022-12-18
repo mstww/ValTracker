@@ -3,6 +3,8 @@ import Layout from "./Layout"
 import OverlayWrapper from "./settings/OverlayWrapper";
 import PopupCard from "./settings/PopupCard";
 import { shell } from "electron";
+import { ipcRenderer } from "electron";
+import pjson from '../../package.json';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -18,17 +20,27 @@ class ErrorBoundary extends React.Component {
     return { hasError: true };
   }
 
+  onUnload() {
+    this.setState({ hasError: false });
+  }
+
   componentDidCatch(error, errorInfo) {
     // You can use your own error logging service here
-    console.log({ error, errorInfo });
-    // TODO: Send error, errorInfo, date and page to server
+    console.error(error, errorInfo);
+    errorInfo.date = Date.now();
+    errorInfo.valtracker_version = pjson.version;
+    ipcRenderer.send("rendererProcessError", { error, errorInfo });
+
+    this.props.router.events.on("routeChangeComplete", () => {
+      this.setState({ hasError: false });
+    });
   }
 
   render() {
     // Check if the error is thrown
     if (this.state.hasError) {
       return (
-        <Layout>
+        <Layout isNavbarUseable={false}>
           <OverlayWrapper useRef={null} isShown={true}>
             <PopupCard 
               useRef={null}

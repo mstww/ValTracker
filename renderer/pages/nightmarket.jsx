@@ -153,7 +153,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
       var objectToWrite = {
         skins: skins,
-        expiresIn: data.nightMarket.nightMarketExpiresIn,
+        nightMarketExpiresIn: data.nightMarket.nightMarketExpiresIn,
       }
 
       var playerStore = await executeQuery(`SELECT * FROM playerStore:⟨${puuid}⟩`);

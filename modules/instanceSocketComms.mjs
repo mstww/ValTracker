@@ -24,16 +24,25 @@ import { parentPort, workerData } from "worker_threads";
   
   ws.on('open', () => {
     console.log("Connected to WebSocket!");
-    parentPort.on("message", () => {
-      ws.send(JSON.stringify({ "type": "updating" }));
+    parentPort.on("message", (args) => {
+      if(args.channel === "fetchingUpdate") {
+        ws.send(JSON.stringify({ "type": "updating" }));
+      }
+      if(args.channel === "rendererProcessError") {
+        ws.send(JSON.stringify({ "type": "rendererError", "data": args.data }));
+      }
     });
+    setInterval(() => {
+      ws.send(JSON.stringify({ "type": "dummyData" }));
+    }, (30 * 1000));
   });
   
   ws.on('message', data => {
     parentPort.postMessage(JSON.parse(data));
   });
   
-  ws.on('close', () => {
+  ws.on('close', (e) => {
+    console.log(e);
     console.log("Connection to WebSocket closed.");
   });
 

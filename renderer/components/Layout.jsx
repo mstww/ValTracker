@@ -10,7 +10,7 @@ const contentVariants = {
   exit: { opacity: 0, x: 0, y: 0 },
 }
 
-export default function Layout({ children, classNames, setup, migrate, isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
+export default function Layout({ children, classNames, setup, migrate, isNavbarMinimized, isOverlayShown, setIsOverlayShown, isNavbarUsable }) {
   const router = useRouter();
 
   var theme = false;
