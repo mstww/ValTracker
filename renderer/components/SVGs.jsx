@@ -141,3 +141,7 @@ export const MessageIcon = ({ className, click }) => {
 export const CircleArrowDown = ({ className }) => {
   return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 14 14"><g><polyline points="10 6 7 9 4 6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><circle cx={7} cy={7} r={6.5} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /></g></svg>
 }
+
+export const Reload = ({ className, onClick }) => {
+  return <svg xmlns="http://www.w3.org/2000/svg" className={className} onClick={onClick} viewBox="0 0 14 14"><g><path d="M7,.5A6.5,6.5,0,1,1,.5,7a7.23,7.23,0,0,1,2-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><polyline points="0.5 2.5 2.5 2 3 4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><polyline points="7 3.5 7 7.5 9.6 8.8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /></g></svg>
+}

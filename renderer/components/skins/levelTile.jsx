@@ -26,7 +26,7 @@ export default function LevelTile({ name, effect, onClick, levelUUID, activeLeve
   return (
     <div 
       className={
-        "relative w-full h-14 border shadow-lg mb-2 flex flex-col p-px cursor-pointer rounded pl-1 transition-all duration-100 ease-linear bg-tile-color hover:bg-opacity-60 bg-opacity-30 " +
+        "relative w-full h-14 border shadow-lg mb-2 flex flex-col p-px cursor-pointer rounded pl-1 transition-all duration-100 ease-linear bg-tile-color hover:bg-opacity-50 bg-opacity-20 " +
         (levelUUID == activeLevel ? 'border-button-color ' : 'border-tile-color ')
         +
         (isOwned ? ' ' : 'text-gray-500')

@@ -360,9 +360,6 @@ async function getAccessTokens(ssid) {
   }));
 }
 
-/*
-  
-*/
 /**
  * Function that returns the match history of a user.
  * @param {String} region 
@@ -1294,6 +1291,10 @@ async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timest
       large_text: lg_txt,
     },
     timestamps: {},
+    buttons: [{
+      "label": "What is this?",
+      "url": "https://valtracker.gg"
+    }]
   };
 
   if(mode_and_info) obj.details = mode_and_info;

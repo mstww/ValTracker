@@ -403,7 +403,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       <div 
                         id='level' 
                         className={
-                          "relative chroma-swatch w-full h-14 border border-tile-color bg-tile-color bg-opacity-30 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-60 rounded pl-1 transition-all duration-100 ease-linear "
+                          "relative chroma-swatch w-full h-14 border border-tile-color bg-tile-color bg-opacity-20 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-50 rounded pl-1 transition-all duration-100 ease-linear "
                           + (activeCardSkinLevel == index ? 'border-button-color' : 'border-tile-color')
                         }
                         key={index}

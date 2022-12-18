@@ -16,7 +16,7 @@ import L from '../locales/translations/home.json';
 import LocalText from '../components/translation/LocalText';
 import Layout from '../components/Layout';
 import APIi18n from '../components/translation/ValApiFormatter';
-import { StarFilled, Star } from '../components/SVGs';
+import { StarFilled, Star, Reload } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
@@ -1658,9 +1658,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               <div>
                 <span className='leading-none px-1 font-bold'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
               </div>
-              <div className='flex w-full relative max-h-full h-auto my-auto justify-center items-center overflow-hidden border border-tile-color rounded shadow-img'>
-                <div className='relative'>
-                  <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img rounded' />
+              <div className='flex w-full relative max-h-full my-auto justify-center items-center overflow-hidden border border-tile-color rounded shadow-img h-[calc(100%-28px)]'>
+                <div className='relative h-full'>
+                  <img src={featuredBundleImage ? featuredBundleImage : '/images/bundle_invisible.png'} className='shadow-img rounded object-cover min-h-full' />
                 </div>
                 {
                   featuredBundlePrice ?
@@ -1683,6 +1683,13 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <Loading color={'error'} size={'sm'} />
               </div>
             </Tooltip>
+            <Reload 
+              className={`w-5 h-5 absolute top-2 right-2 cursor-pointer ${isSilentLoading === true || contractsLoading === true || contractsError === true ? "hidden" : ""}`}
+              onClick={() => {
+                setContractsLoading(true);
+                fetchContractData(true);
+              }}
+            />
             <div className={'flex flex-col h-full p-1 ' + (contractsLoading || contractsError ? 'hidden' : '')}>
               <ContractProgressCard 
                 title={LocalText(L, "top_l.contracts.battle_pass_header")} 
@@ -1723,7 +1730,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <div>{LocalText(L, "component_err.err_text")}</div>
                 <button 
                   className='mt-2 button default' 
-                  onClick={async () => { 
+                  onClick={async () => {
+                    setIsLoa
                     fetchContractData(true);
                   }}
                 >
@@ -1790,7 +1798,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
-        <div id='bottom-left-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-lightest'>
+        <div id='bottom-left-container' className='relative overflow-y-auto rounded p-1 border border-maincolor-lightest'>
           <div 
             id='match-timeline' 
             className={
@@ -1818,7 +1826,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       return (
                         <div 
                           id='match'
-                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-30 rounded mr-2 hover:bg-opacity-60 cursor-default transition-all duration-100 ease-linear' 
+                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
                             if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {

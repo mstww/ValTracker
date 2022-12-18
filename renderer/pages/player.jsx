@@ -70,21 +70,27 @@ function getDifferenceInDays(date1, date2) {
   return Math.round(diffInMs / (1000 * 60 * 60 * 24));
 }
 
+/**
+ * A function that returns a users rank based on their current match history.
+ * @param {String} region 
+ * @param {String} puuid 
+ * @param {String} entitlement_token 
+ * @param {String} bearer 
+ * @returns The current tier of the user as a number.
+ */
+
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
-  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
-      'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
+  var matches = await getMatchHistory(region, puuid, 0, 1, 'competitive', entitlement_token, bearer);
+  if(matches.History.length > 0) {
+    var match_data = await getMatch(region, matches.History[0].MatchID, entitlement_token, bearer);
+    for(var i = 0; i < match_data.players.length; i++) {
+      if(match_data.players[i].subject === puuid) {
+        return match_data.players[i].competitiveTier;
+      }
+    }
+  } else {
+    return 0;
+  }
 }
 
 const fetchPlayer = async (pname, ptag, lang) => {
@@ -104,15 +110,14 @@ const fetchPlayer = async (pname, ptag, lang) => {
     const bearer = await getUserAccessToken();
     const entitlement_token = await getUserEntitlement();
 
-    const playerMmr = await getPlayerMMR(region, puuid, entitlement_token, bearer);
+    const currenttier = await getPlayerMMR(region, puuid, entitlement_token, bearer);
 
-    const currenttier = playerMmr.LatestCompetitiveUpdate.TierAfterUpdate;
     if(!currenttier) currenttier = 0;
 
     var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(lang))).json()
     var ranks = ranksRaw.data[ranksRaw.data.length-1].tiers
 
-    const rank = ranks[playerMmr.LatestCompetitiveUpdate.TierAfterUpdate];
+    const rank = ranks[currenttier];
     const rankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
 
     const playerMatches = await getMatchHistory(region, puuid, 0, 5, 'unrated', entitlement_token, bearer);
@@ -272,6 +277,8 @@ function PlayerInfo({ isNavbarMinimized }) {
         setLoading(false);
         setError(true);
 
+        console.log(items);
+
         if(items.status) {
           setErrorReason(errorReasons[items.status]);
           if( 
@@ -396,6 +403,216 @@ function PlayerInfo({ isNavbarMinimized }) {
     fetchApi();
   }
 
+  const calculateMatchStats = (match) => {
+    var gameStartUnix = match.matchInfo.gameStartMillis;
+    var gameLengthMS = match.matchInfo.gameLengthMillis;
+    var gameMode = match.matchInfo.queueID;
+    var gameServer = match.matchInfo.gamePodId;
+    var gameVersion = match.matchInfo.gameVersion;
+
+    /* MATCH INFO */
+    var winningTeamScore;
+    var losingTeamScore;
+    
+    for(var i = 0; i < match.teams.length; i++) {
+      if(match.teams[i].won == true) {
+        var winning_team = match.teams[i].teamId;
+        winningTeamScore = match.teams[i].numPoints;
+      } else {
+        losingTeamScore = match.teams[i].numPoints;
+      }
+    }
+
+    if((!winningTeamScore && winningTeamScore !== 0) || (!losingTeamScore && losingTeamScore !== 0)) {
+      var winning_team = 'draw';
+    }
+
+    /* MAP INFO */
+    for(var i = 0; i < mapData.data.length; i++) {
+      if(mapData.data[i].mapUrl == match.matchInfo.mapId) {
+        var mapName = mapData.data[i].displayName;
+        var mapUUID = mapData.data[i].uuid;
+      }
+    }
+
+    /* PLAYER STATS */
+    for(var i = 0; i < match.players.length; i++) {
+      var nameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
+      var searchedNameTag = `${router.query.name.toLowerCase()}#${router.query.tag.toLowerCase()}`;
+      
+      if(nameTag === searchedNameTag) {
+        var playerInfo = match.players[i];
+        var playerCurrentTier = match.players[i].competitiveTier;
+        var rankFixed = ranks[playerCurrentTier];
+      }
+    }
+
+    if(playerInfo) {
+      var uuid = playerInfo.subject;
+      var playerTeam = playerInfo.teamId;
+
+      if(playerTeam == winning_team) {
+        var matchOutcome = "VICTORY";
+        var matchOutcomeColor = 'text-val-blue';
+        var matchScore = winningTeamScore + ' - ' + losingTeamScore;
+      } else if(winning_team == 'draw') {
+        var matchOutcome = "DRAW";
+        var matchOutcomeColor = 'text-val-yellow';
+
+        if(!winningTeamScore) {
+          winningTeamScore = losingTeamScore;
+        } else if(!losingTeamScore) {
+          losingTeamScore = winningTeamScore;
+        }
+        var matchScore = winningTeamScore + ' - ' + losingTeamScore;
+      } else {
+        var matchOutcome = "DEFEAT";
+        var matchOutcomeColor = 'text-val-red';
+        var matchScore = losingTeamScore + ' - ' + winningTeamScore;
+      }
+
+      var playerAgent = playerInfo.characterId; 
+
+      var playerKills = playerInfo.stats.kills;
+      var playerDeaths = playerInfo.stats.deaths;
+      var playerAssists = playerInfo.stats.assists;
+
+      var playerKdRaw = playerKills / playerDeaths;
+      var playerKD = playerKdRaw.toFixed(2);
+
+      var playerScore = playerInfo.stats.score;
+      var playerACS = playerScore / match.roundResults.length;
+      var playerACS = playerACS.toFixed(0);
+
+      if(playerKD >= 1) {
+        var playerKdColor = 'text-val-blue';
+      } else {
+        var playerKdColor = 'text-val-red';
+      }
+      
+      /* SCOREBOARD POSITION */
+      var players = match.players;
+      players.sort(function(a, b) {
+        return b.stats.score - a.stats.score;
+      });
+      
+      var playerPosition = players.findIndex(player => player.subject == uuid) + 1;
+
+      if(playerPosition == 1) {
+        // Player is Match MVP
+        var playerPositionColor = 'yellow-glow text-yellow-300 font-medium';
+        var playerPositionText = 'Match MVP';
+      } else {
+        // Player is not Match MVP, check for Team MVP
+        var teamPlayers = [];
+        for(var i = 0; i < players.length; i++) {
+          if(players[i].teamId == playerTeam) {
+            teamPlayers.push(players[i]);
+          }
+        }
+
+        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == uuid) + 1;
+
+        if(teamPlayerPosition == 1) {
+          // Player is Team MVP
+          var playerPositionColor = 'silver-glow text-gray-300 font-medium';
+          var playerPositionText = 'Team MVP';
+        } else {
+          // Player is not Team MVP
+          var playerPositionColor = 'font-medium';
+
+          if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
+          else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
+          else var playerPositionText = `${playerPosition}th`;
+        }
+      }
+      var playerHeadShots = 0;
+      var playerBodyShots = 0;
+      var playerLegShots = 0;
+
+      var totalDamage = 0;
+
+      for(var i = 0; i < match.roundResults.length; i++) {
+        for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
+          if(match.roundResults[i].playerStats[i2].subject == uuid) {
+            for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
+              playerHeadShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
+              playerBodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
+              playerLegShots += match.roundResults[i].playerStats[i2].damage[i3].legshots;
+
+              totalDamage += match.roundResults[i].playerStats[i2].damage[i3].damage;
+            }
+          }
+        }
+      }
+
+      // Calculate HS%
+      var totalShotsHit = playerHeadShots + playerBodyShots + playerLegShots;
+
+      var headShotsPercent = (playerHeadShots / totalShotsHit) * 100;
+      var headShotsPercentRounded = headShotsPercent.toFixed(0);
+
+      var bodyShotsPercent = (playerBodyShots / totalShotsHit) * 100;
+      var bodyShotsPercentRounded = bodyShotsPercent.toFixed(0);
+
+      var legShotsPercent = (playerLegShots / totalShotsHit) * 100;
+      var legShotsPercentRounded = legShotsPercent.toFixed(0);
+
+      // Calculate ADR
+      var averageDamage = totalDamage / match.roundResults.length;
+      var averageDamageRounded = averageDamage.toFixed(0);
+
+      // Calculate First Bloods. 
+      // For every round, add all kills to an array. Filter out the earliest kill with the "roundTime" key. If the killer's PUUID is the same as the players, add a FB.
+      var playerFBs = 0;
+      for(var i = 0; i < match.roundResults.length; i++) {
+        var totalRoundKills = [];
+        for(var j = 0; j < match.roundResults[i].playerStats.length; j++) {
+          for(var k = 0; k < match.roundResults[i].playerStats[j].kills.length; k++) {
+            totalRoundKills.push(match.roundResults[i].playerStats[j].kills[k]);
+          }
+        }
+        
+        totalRoundKills.sort(function(a, b) {
+          return a.roundTime - b.roundTime;
+        });
+
+        var firstRoundKill = totalRoundKills[0];
+        if(firstRoundKill && firstRoundKill.killer == uuid) {
+          playerFBs++;
+        }
+      }
+    }
+
+    var playerKDA = playerKills + '/' + playerDeaths + '/' + playerAssists;
+
+    var matchData = {
+      playerAgent, 
+      uuid,
+      mapName, 
+      playerCurrentTier, 
+      rankFixed, 
+      matchOutcomeColor, 
+      matchOutcome, 
+      matchScore, 
+      playerPositionColor, 
+      playerPositionText, 
+      playerKills, 
+      playerDeaths, 
+      playerAssists, 
+      playerKdColor, 
+      playerKD, 
+      playerKDA,
+      headShotsPercentRounded, 
+      averageDamageRounded,
+      playerACS,
+      playerScore,
+      matchUUID: match.matchInfo.matchId,
+    }
+
+    return { matchData };
+  }
+
   return (
     <>
       <motion.div 
@@ -444,198 +661,19 @@ function PlayerInfo({ isNavbarMinimized }) {
                 <div className='day relative' key={index}>
                   <div id='day-header' className='text-lg ml-4 day-header font-bold'>{today === key ? 'Today' : key}</div>
                   {matches[key].map((match, index) => {
-                    /* MATCH INFO */
-                    var winningTeamScore;
-                    var losingTeamScore;
-                    
-                    for(var i = 0; i < match.teams.length; i++) {
-                      if(match.teams[i].won == true) {
-                        var winning_team = match.teams[i].teamId;
-                        winningTeamScore = match.teams[i].roundsWon;
-                      } else {
-                        losingTeamScore = match.teams[i].roundsWon;
-                      }
-                    }
-
-                    if(!winningTeamScore || !losingTeamScore) {
-                      var winningTeam = 'draw';
-                    }
-  
-                    /* MAP INFO */
-                    for(var i = 0; i < mapData.data.length; i++) {
-                      if(match.matchInfo.mapId === mapData.data[i].mapUrl) {
-                        var mapName = mapData.data[i].displayName;
-                      }
-                    }
-  
-                    /* PLAYER STATS */
-                    if(router.query.name && router.query.tag) {
-                      for(var i = 0; i < match.players.length; i++) {
-                        var nameTag = `${match.players[i].gameName.toLowerCase()}#${match.players[i].tagLine.toLowerCase()}`;
-                        var searchedNameTag = `${router.query.name.toLowerCase()}#${router.query.tag.toLowerCase()}`;
-                        
-                        if(nameTag == searchedNameTag) {
-                          var pInfo = match.players[i];
-                          var playerCurrentTier = match.players[i].competitiveTier;
-                          var rankFixed = ranks[playerCurrentTier];
-                        }
-                      }
-                    }
-  
-                    // Again, Boilerplate if-statement to make sure JS doesnt cry about undefined
-                    if(pInfo) {
-                      var uuid = pInfo.subject;
-                      var playerTeam = pInfo.teamId;
-    
-                      if(playerTeam == winning_team) {
-                        var matchOutcome = "VICTORY";
-                        var matchOutcomeColor = 'text-val-blue';
-                        var matchScore = winningTeamScore + ' - ' + losingTeamScore;
-                      } else if(winningTeam == 'draw') {
-                        // check if winningTeamScore or losingTeamScore is undefined, if yes, replace with other team's score
-                        if(!winningTeamScore) {
-                          winningTeamScore = losingTeamScore;
-                        } else if(!losingTeamScore) {
-                          losingTeamScore = winningTeamScore;
-                        }
-
-                        var matchOutcome = "DRAW";
-                        var matchOutcomeColor = 'text-val-yellow';
-                        var matchScore = winningTeamScore + ' - ' + losingTeamScore;
-                      } else {
-                        var matchOutcome = "DEFEAT";
-                        var matchOutcomeColor = 'text-val-red';
-                        var matchScore = losingTeamScore + ' - ' + winningTeamScore;
-                      }
-    
-                      var playerAgent = pInfo.characterId; 
-    
-                      var playerKills = pInfo.stats.kills;
-                      var playerDeaths = pInfo.stats.deaths;
-                      var playerAssists = pInfo.stats.assists;
-    
-                      var playerScore = pInfo.stats.score;
-    
-                      var playerKdRaw = playerKills / playerDeaths;
-                      var playerKD = playerKdRaw.toFixed(2);
-    
-                      if(playerKD >= 1) {
-                        var playerKdColor = 'text-val-blue';
-                      } else {
-                        var playerKdColor = 'text-val-red';
-                      }
-                      
-                      /* SCOREBOARD POSITION */
-                      var players = match.players;
-                      players.sort(function(a, b) {
-                        return b.stats.score - a.stats.score;
-                      });
-                      
-                      var playerPosition = players.findIndex(player => player.subject == uuid);
-  
-                      if(playerPosition == 0) {
-                        // Player is Match MVP
-                        var playerPositionColor = 'yellow-glow text-yellow-300 font-medium';
-                        var playerPositionText = 'Match MVP';
-                      } else {
-                        // Player is not Match MVP, check for Team MVP
-                        var teamPlayers = [];
-                        for(var i = 0; i < players.length; i++) {
-                          if(players[i].teamId == playerTeam) {
-                            teamPlayers.push(players[i]);
-                          }
-                        }
-  
-                        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == uuid) + 1;
-  
-                        if(teamPlayerPosition == 1) {
-                          // Player is Team MVP
-                          var playerPositionColor = 'silver-glow text-gray-300 font-medium';
-                          var playerPositionText = 'Team MVP';
-                        } else {
-                          // Player is not Team MVP
-                          var playerPositionColor = 'font-medium';
-
-                          if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
-                          else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
-                          else var playerPositionText = `${playerPosition}th`;
-                        }
-                      }
-
-                      /* OTHER PLAYER STATS */
-                      if(activeQueueTab != 'deathmatch') {
-                        var headShots = 0;
-                        var bodyShots = 0;
-                        var legShots = 0;
-    
-                        var totalDamage = 0;
-    
-                        for(var i = 0; i < match.roundResults.length; i++) {
-                          for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
-                            if(match.roundResults[i].playerStats[i2].subject == uuid) {
-                              for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
-                                headShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
-                                bodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
-                                legShots += match.roundResults[i].playerStats[i2].damage[i3].legshots;
-    
-                                totalDamage += match.roundResults[i].playerStats[i2].damage[i3].damage;
-                              }
-                            }
-                          }
-                        }
-    
-                        // Calculate HS%
-                        var totalShotsHit = headShots + bodyShots + legShots;
-    
-                        var headShotsPercent = (headShots / totalShotsHit) * 100;
-                        var headShotsPercentRounded = headShotsPercent.toFixed(0);
-
-                        // Calculate ACS
-                        var averageDamageRounded = (match.players[playerPosition].stats.score / match.roundResults.length).toFixed(0);
-                      } else {
-                        var headShots = 0;
-                        var bodyShots = 0;
-                        var legShots = 0;
-    
-                        var totalDamage = 0;
-    
-                        for(var i = 0; i < match.roundResults.length; i++) {
-                          for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
-                            if(match.roundResults[i].playerStats[i2].subject == uuid) {
-                              for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
-                                headShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
-                                bodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
-                                legShots += match.roundResults[i].playerStats[i2].damage[i3].legshots;
-    
-                                totalDamage += match.roundResults[i].playerStats[i2].damage[i3].damage;
-                              }
-                            }
-                          }
-                        }
-    
-                        // Calculate HS%
-                        var totalShotsHit = headShots + bodyShots + legShots;
-    
-                        var headShotsPercent = (headShots / totalShotsHit) * 100;
-                        var headShotsPercentRounded = headShotsPercent.toFixed(0);
-    
-                        // Calculate ADR
-                        var averageDamage = totalDamage / match.roundResults.length;
-                        var averageDamageRounded = averageDamage.toFixed(0);
-                      }
-                    }
+                    var { matchData } = calculateMatchStats(match);
 
                     return (
-                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 border-maincolor-lightest bg-tile-color bg-opacity-30 hover:bg-opacity-60 rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
+                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 bg-tile-color bg-opacity-10 border-maincolor-lightest rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
                         <div className='w-1/4 flex flex-row'>
                           <div id='agent-img'>
-                            <img className='h-full shadow-img' src={playerAgent ? `https://media.valorant-api.com/agents/${playerAgent}/displayicon.png` : ''} />
+                            <img className='h-full shadow-img' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                            <span className='text-xl font-semibold'>{mapName}</span>
+                            <span className='text-xl font-semibold'>{matchData.mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
-                                content={playerCurrentTier > 3 ? rankFixed.tierName : ''}
+                                content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
                                 color="error" 
                                 placement={'top'} 
                                 className={'rounded'}
@@ -643,8 +681,8 @@ function PlayerInfo({ isNavbarMinimized }) {
                                 <img 
                                   src={
                                     activeQueueTab == 'competitive' ? 
-                                    (playerCurrentTier ? 
-                                      `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${playerCurrentTier}/smallicon.png`
+                                    (matchData.playerCurrentTier ? 
+                                      `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
                                       :
                                       `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
                                     )
@@ -667,17 +705,17 @@ function PlayerInfo({ isNavbarMinimized }) {
                           </div>
                         </div>
                         <div id='match-score' className='w-1/4 flex flex-row items-center'>
-                          <div id='scoreline' className='flex flex-col text-center w-1/2'>
-                            <span className={'text-xl font-semibold ' + matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchOutcome)}</span>
-                            {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchScore}</span>) : ''}
+                          <div id='scoreline' className='flex flex-col text-center w-1/3'>
+                            <span className={'text-xl font-semibold ' + matchData.matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchData.matchOutcome)}</span>
+                            {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                           </div>
                           {activeQueueTab != 'deathmatch' ? 
                             (
                               <div 
                                 id='scoreboard-pos' 
-                                className={'rounded h-9 py-1 px-2 ml-6 !font-light ' + playerPositionColor}
+                                className={'rounded text-base h-8 py-0.5 px-1 ml-7 font-light ' + matchData.playerPositionColor}
                               >
-                                {LocalText(L, "matches.match_pos." + (playerPositionText ? playerPositionText.replace(" ", "-") : ''))}
+                                {LocalText(L, "matches.match_pos." + (matchData.playerPositionText ? matchData.playerPositionText.replace(" ", "-") : ''))}
                               </div>
                             )
                             : 
@@ -691,19 +729,19 @@ function PlayerInfo({ isNavbarMinimized }) {
                           </div>
                           <div id='right-side' className='flex flex-col ml-8'>
                             <div className='text-lg' id='kda-display'>
-                              <span className='kda-display-span'>{playerKills}</span> 
-                              <span className='kda-display-span'>{playerDeaths}</span>
-                              <span className=''>{playerAssists}</span>
+                              <span className='kda-display-span'>{matchData.playerKills}</span> 
+                              <span className='kda-display-span'>{matchData.playerDeaths}</span>
+                              <span className=''>{matchData.playerAssists}</span>
                             </div>
-                            <div className='text-base font-light ml-2' id='score-display'>
-                              {playerScore}
+                            <div className={`text-base font-light ${matchData.playerKills.toString().length === 1 ? "ml-2" : "ml-1"}`} id='score-display'>
+                              {matchData.playerScore}
                             </div>
                           </div>
                         </div>
                         <div id='match-stats-2' className='w-1/4 flex flex-row items-center'>
                           <div className='w-1/3 flex flex-col items-center'>
                             <span className='text-lg'>KD</span>
-                            <span className={'text-base font-light ' + playerKdColor}>{playerKD}</span>
+                            <span className={'text-base font-light ' + matchData.playerKdColor}>{matchData.playerKD}</span>
                           </div>
                           {
                             activeQueueTab != 'deathmatch' ?
@@ -711,11 +749,11 @@ function PlayerInfo({ isNavbarMinimized }) {
                               <>
                                 <div className='w-1/3 flex flex-col items-center'>
                                   <span className='text-lg'>HS%</span>
-                                  <span className='text-base font-light text-gray-500'>{headShotsPercentRounded}%</span>
+                                  <span className='text-base font-light text-gray-500'>{matchData.headShotsPercentRounded}%</span>
                                 </div>
                                 <div className='w-1/3 flex flex-col items-center'>
                                   <span className='text-lg'>ACS</span>
-                                  <span className='text-base font-light text-gray-500'>{averageDamageRounded}</span>
+                                  <span className='text-base font-light text-gray-500'>{matchData.averageDamageRounded}</span>
                                 </div>
                               </>
                             )

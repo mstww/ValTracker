@@ -33,13 +33,13 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
 
   React.useEffect(async () => {
     if(!firstRender) {
-      var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
+      var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix DESC LIMIT 5`);
       setSearchHistory(search_history);
     }
   }, []);
 
   React.useEffect(async () => {
-    var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix LIMIT 5`);
+    var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix DESC LIMIT 5`);
     setSearchHistory(search_history);
   }, [historyNotifSwitch]);
 
