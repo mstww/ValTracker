@@ -75,11 +75,51 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
   // ----------------------- END STATES -----------------------
 
-  const loadAllFavMatches = async () => {
+  function sortMatches(sortedMatches) {
+    for(var i = 0; i < Object.keys(sortedMatches).length; i++) {
+      shownMatchesPerDay[Object.keys(sortedMatches)[i]] = {};
+
+      shownMatchesPerDay[Object.keys(sortedMatches)[i]].totalMatches = sortedMatches[Object.keys(sortedMatches)[i]].length;
+      shownMatchesPerDay[Object.keys(sortedMatches)[i]].shownMatches = sortedMatches[Object.keys(sortedMatches)[i]].length;
+      shownMatchesPerDay[Object.keys(sortedMatches)[i]].matchModes = [];
+
+      shownMatchesPerDay[Object.keys(sortedMatches)[i]].isShown = true;
+
+      for(var j = 0; j < sortedMatches[Object.keys(sortedMatches)[i]].length; j++) {
+        var queueID = sortedMatches[Object.keys(sortedMatches)[i]][j].matchInfo.queueID;
+      }
+
+      switch(queueID) {
+        case('ggteam'): {
+          var fixedQueueName = 'escalation';
+          break;
+        } 
+        case('onefa'): {
+          var fixedQueueName = 'replication';
+          break;
+        }
+        case('spikerush'): {
+          var fixedQueueName = 'spikerush';
+          break;
+        }
+        default: {
+          var fixedQueueName = queueID;
+          break;
+        }
+      }
+
+      shownMatchesPerDay[Object.keys(sortedMatches)[i]].matchModes.push(fixedQueueName);
+
+      // Also save the modes in an extra array, check with shownThingy what's shown, remove everything that's not shown from (copy)array, count length of remaining array to see if day should be hidden
+      
+      setShownMatchesPerDay({ ...shownMatchesPerDay })
+    }
+  }
+
+  const loadAllFavMatches = async (reload) => {
     var user_creds = await getCurrentUserData();
     setUserCreds(user_creds);
     var favMatchesData = await executeQuery(`SELECT matchIDs FROM matchIDCollection:⟨favMatches::${user_creds.uuid}⟩`);
-    var bearer = await getUserAccessToken();
 
     var allMatches = [];
 
@@ -87,15 +127,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
     for(var i = 0; i < favMatchesData[0].matchIDs.length; i++) {
       if(!allMatches.includes(favMatchesData[0].matchIDs[i])) {
-        var entitlement = await getUserEntitlement();
-        var data = await getMatch(user_creds.region, favMatchesData[0].matchIDs[i], entitlement, bearer);
-
-        await createMatch(data);
-
-        allMatches.push(data);
-      } else {
         var match = await fetchMatch(favMatchesData[0].matchIDs[i]);
-
         allMatches.push(match);
       }
     }
@@ -124,48 +156,12 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     var sortedMatches = newMatches;
 
     if(Object.keys(sortedMatches)[0]) {
-      for(var i = 0; i < Object.keys(sortedMatches).length; i++) {
-        shownMatchesPerDay[Object.keys(sortedMatches)[i]] = {};
-  
-        shownMatchesPerDay[Object.keys(sortedMatches)[i]].totalMatches = sortedMatches[Object.keys(sortedMatches)[i]].length;
-        shownMatchesPerDay[Object.keys(sortedMatches)[i]].shownMatches = sortedMatches[Object.keys(sortedMatches)[i]].length;
-        shownMatchesPerDay[Object.keys(sortedMatches)[i]].matchModes = [];
-  
-        shownMatchesPerDay[Object.keys(sortedMatches)[i]].isShown = true;
-  
-        for(var j = 0; j < sortedMatches[Object.keys(sortedMatches)[i]].length; j++) {
-          var queueID = sortedMatches[Object.keys(sortedMatches)[i]][j].matchInfo.queueID;
-        }
-  
-        switch(queueID) {
-          case('ggteam'): {
-            var fixedQueueName = 'escalation';
-            break;
-          } 
-          case('onefa'): {
-            var fixedQueueName = 'replication';
-            break;
-          }
-          case('spikerush'): {
-            var fixedQueueName = 'spikerush';
-            break;
-          }
-          default: {
-            var fixedQueueName = queueID;
-            break;
-          }
-        }
-  
-        shownMatchesPerDay[Object.keys(sortedMatches)[i]].matchModes.push(fixedQueueName);
-  
-        // Also save the modes in an extra array, check with shownThingy what's shown, remove everything that's not shown from (copy)array, count length of remaining array to see if day should be hidden
-        
-        setShownMatchesPerDay({ ...shownMatchesPerDay })
-      }
-  
+      sortMatches(sortedMatches);
+
       setFavMatches(sortedMatches);
       setIsLoadingNewMatches(false);
     } else {
+      console.log("Here2");
       setFavMatches([]);
       setIsLoadingNewMatches(false);
     }
@@ -531,7 +527,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
     var map_data = await map_data_raw.json();
     setMapData(map_data);
 
-    await loadAllFavMatches();
+    await loadAllFavMatches(false);
   }, []);
 
   React.useEffect(() => {

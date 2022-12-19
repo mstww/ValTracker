@@ -118,8 +118,8 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       var data = JSON.parse(router.query.store);
       var skins = [];
 
-      for(var i = 0; i < data.nightMarket.offers.length; i++) {
-        var skinUUID = data.nightMarket.offers[i].Offer.Rewards[0].ItemID;
+      for(var i = 0; i < data.nightMarket.skins.length; i++) {
+        var skinUUID = data.nightMarket.skins[i].Offer.Rewards[0].ItemID;
 
         var raw = await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${data.nightMarket.offers[i].Offer.Rewards[0].ItemID}?language=${APIi18n(router.query.lang)}`, { keepalive: true });
         var skin = await raw.json();
@@ -168,15 +168,8 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }
 
   React.useEffect(async () => {
-    var puuid = await getCurrentPUUID();
-    var playerStore = await executeQuery(`SELECT nightMarket FROM playerStore:⟨${puuid}⟩`);
-    var nightMarket = playerStore[0].nightMarket;
-    
-    if(Date.now() < nightMarket.expiresIn) {
-      setNightMarket(nightMarket.skins);
-    } else {
-      fetchSkins();
-    }
+    var store = JSON.parse(router.query.store);
+    setNightMarket(store.nightMarket.skins);
   }, [ router.query ]);
 
   const showShopSkin = (uuid, name, price, image, index) => {
