@@ -591,7 +591,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
             {LocalText(L, "modals.remove_match.desc")}
             <div 
               id='match'
-              className={'relative flex flex-row h-20 border p-1.5 my-2 border-maincolor-lightest rounded mr-2 cursor-default w-full'}
+              className={'relative flex flex-row h-20 border p-1.5 my-2 border-tile-color rounded mr-2 cursor-default w-full'}
             >
               <div className='w-1/2 flex flex-row'>
                 <div id='agent-img'>
@@ -702,7 +702,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                           return (
                             <div 
                               id='match'
-                              className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-20 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                              className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-20 active:bg-opacity-0 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                               key={index}
                               onClick={(e) => {
                                 if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -1014,7 +1014,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
           </div>
           <span className='text-center text-lg font-light'>{isLoadingNewMatches ? LocalText(L, "loading") : LocalText(L, "matches_bottom")}</span>
         </div>
-        <div className='w-1/4 favs-right border border-maincolor-lightest p-4 mt-7 rounded'>
+        <div className='w-1/4 favs-right border border-tile-color p-4 mt-7 rounded'>
           <span className='text-lg font-bold'>{LocalText(L, "filters.header")}</span>
           <Radio.Group 
             value={activeQueueTab}

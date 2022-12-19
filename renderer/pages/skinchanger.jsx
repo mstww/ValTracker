@@ -591,7 +591,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         </motion.div>
       </OverlayWrapper>
       <div 
-        className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' 
+        className='absolute top-4 right-4 hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear' 
         onClick={() => { router.back() }}
       >
         <BackArrow className='w-8 p-1' />
@@ -614,7 +614,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">
               <input type="checkbox" className='group' name="open-valtracker" onClick={toggleUnownedSkins} />
-              <span className="slider round my-auto bg-maincolor group-hover:bg-maincolor-lightest group-checked:bg-maincolor-lightest group-checked:group-hover:bg-button-color-hover" />
+              <span className="slider round my-auto bg-maincolor-dark group-hover:bg-tile-color group-checked:bg-tile-color group-checked:group-hover:bg-button-color-hover" />
             </label>
             <span className='ml-2 text-sm'>{LocalText(L, "skins.switch_label")}</span>
           </div>
@@ -647,6 +647,11 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               </div>
               <div id='levels'>
                 {activeSkinLevels.slice(0).reverse().map((level, index) => {
+                  for(var i = 0; i < playerItemsAll.EntitlementsByTypes.length; i++) {
+                    if(playerItemsAll.EntitlementsByTypes[i].ItemTypeID == "e7c63390-eda7-46e0-bb7a-a6abdacd2433") {
+                      var isOwned = playerItemsAll.EntitlementsByTypes[i].Entitlements.find(x => x.ItemID === level.uuid);
+                    }
+                  }
                   if(activeSkinLevels.length > 1) {
                     return (
                       <LevelTile
@@ -656,8 +661,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                         activeLevel={activeLevel}
                         onClick={changeSkinLevel}
                         key={level.uuid}
-                        playerItemsAll={playerItemsAll}
-                        count={activeSkinLevels.length - parseInt(index)}
+                        isOwned={isOwned !== undefined}
                       />
                     )
                   }
@@ -724,7 +728,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 </button>
                 {
                   activeSkinPrice ? 
-                  <div className={'flex flex-row items-center text-center bg-tile-color bg-opacity-10 border border-maincolor-lightest rounded py-2 ' + (showWishlistButton === true && lockWishlistButton === false ? 'w-1/3' : 'w-full')}>
+                  <div className={'flex flex-row items-center text-center bg-tile-color bg-opacity-10 border border-tile-color rounded py-2 ' + (showWishlistButton === true && lockWishlistButton === false ? 'w-1/3' : 'w-full')}>
                     <span className='flex flex-row w-full text-center items-center justify-center'>{activeSkinPrice} <img src='/images/vp_icon.png' className='w-6 ml-1' /></span>
                   </div>
                   :

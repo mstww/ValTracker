@@ -22,6 +22,7 @@ function Textboxes() {
 
   React.useEffect(() => {
     ipcRenderer.on('createTextbox', function(event, args) {
+      console.log(args);
       setTextboxes(current => [...current, args ]);
       setTimeout(function() {
         var newArray = removeItemOnce(textboxes, args);
@@ -50,14 +51,14 @@ function Textboxes() {
             >
               <span className='mr-9 h-full flex items-center'>{textbox}</span>
               <div 
-                className='absolute pointer-events-auto z-30 top-1.5 right-2 ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-8 h-8 flex items-center justify-center'
+                className='absolute pointer-events-auto z-30 top-2.5 right-2 ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear w-6 h-6 flex items-center justify-center'
                 onClick={() => {
                   var newArray = removeItemOnce(textboxes, textbox);
                   var newArray = newArray.filter(value => Object.keys(value).length !== 0);
                   setTextboxes(newArray);
                 }}
               >
-                <Close className='w-8 p-1' />
+                <Close className='w-6 p-1' />
               </div>
             </motion.div>
           )

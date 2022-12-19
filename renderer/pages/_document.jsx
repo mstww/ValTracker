@@ -16,7 +16,7 @@ class MyDocument extends Document {
         <Head>
           {CssBaseline.flush()}
         </Head>
-        <body className='bg-maincolor-light'>
+        <body className='bg-maincolor'>
           <Main />
           <NextScript />
         </body>

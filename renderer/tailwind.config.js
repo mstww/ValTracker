@@ -2,9 +2,10 @@ var themeSwapper = require('tailwindcss-theme-swapper');
 
 var legacyBeta = { 
   colors: {
-    "maincolor": "#12171d", 
-    "maincolor-light": "#1b222b", 
-    "maincolor-lightest": "#242e3a", 
+    "maincolor-dark": "#12171d", 
+    "maincolor": "#1b222b", 
+    "maincolor-dim": "#1b222b", 
+    "maincolor-light": "#1e2630", 
     "tile-color": "#242e3a",
     "gradient-left": "#c80043", 
     "gradient-right": "#6f00ff", 
@@ -21,9 +22,10 @@ var legacyBeta = {
 
 var legacyAlpha = {
   colors: {
-    "maincolor": "#2d2d2d",
-    "maincolor-light": "#222222",
-    "maincolor-lightest": "#101010",
+    "maincolor-dark": "#2d2d2d",
+    "maincolor": "#222222",
+    "maincolor-dim": "#161616",
+    "maincolor-light": "#101010",
     "tile-color": "#101010",
     "gradient-left": "#d61044",
     "gradient-right": "#6f00ff",
@@ -40,10 +42,11 @@ var legacyAlpha = {
 
 var light = {
   colors: {
-    "maincolor": "#b3b3b3",
-    "maincolor-light": "#d1d1d1",
-    "maincolor-lightest": "#ededed",
-    "tile-color": "#ededed",
+    "maincolor-dark": "#b3b3b3",
+    "maincolor": "#c9c9c9",
+    "maincolor-dim": "#e0e0e0",
+    "maincolor-light": "#ededed",
+    "tile-color": "#ffffff",
     "gradient-left": "#2761FF",
     "gradient-right": "#BB1CFF",
     "button-color": "#2C5AD6",
@@ -59,9 +62,10 @@ var light = {
 
 var normal = {
   colors: {
-    "maincolor": "#090909",
-    "maincolor-light": "#141414",
-    "maincolor-lightest": "#1E1E1E",
+    "maincolor-dark": "#090909",
+    "maincolor": "#121212",
+    "maincolor-dim": "#1E1E1E",
+    "maincolor-light": "#3a3d42",
     "tile-color": "#292929",
     "gradient-left": "#d61044",
     "gradient-right": "#832CFF",

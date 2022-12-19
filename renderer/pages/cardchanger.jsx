@@ -257,7 +257,7 @@ function Cardchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   return ( 
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
-      <div className='absolute top-4 z-10 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
+      <div className='absolute top-4 z-10 right-4 hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
         <BackArrow className='w-8 p-1 shadow-img' />
       </div>
       <div className='flex flex-row h-full relative'>
@@ -278,7 +278,7 @@ function Cardchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           <div className='relative mt-4 flex flew-row items-center'>
             <label className="switch">
               <input type="checkbox" className='group' name="open-valtracker" onClick={toggleUnownedSkins} />
-              <span className="slider round my-auto bg-maincolor group-hover:bg-maincolor-lightest group-checked:bg-maincolor-lightest group-checked:group-hover:bg-button-color-hover" />
+              <span className="slider round my-auto bg-maincolor group-hover:bg-tile-color group-checked:bg-tile-color group-checked:group-hover:bg-button-color-hover" />
             </label>
             <span className='ml-2 text-sm'>{LocalText(L, "cards.switch_label")}</span>
           </div>

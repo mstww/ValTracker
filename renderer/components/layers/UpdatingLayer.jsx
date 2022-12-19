@@ -129,16 +129,16 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
       </motion.div>
 
       <motion.div 
-        className="w-96 absolute z-20 bottom-6 right-6 card pb-2 pointer-events-auto"
+        className="w-96 !absolute z-20 bottom-6 right-6 card pb-2 pointer-events-auto"
         key={"FinishedCard"}
         variants={slider_card_variants}
         initial="hidden"
         animate={finishedCardShown ? "enter" : "exit"}
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
-        <div>
-          <span className='mb-4 font-bold text-lg'>{LocalText(L, "finished_card.header")}</span>
-          <p className='text-gray-500'>{LocalText(L, "finished_card.desc")}</p>
+        <div className='mb-2'>
+          <span className='!mb-2 font-bold text-lg'>{LocalText(L, "finished_card.header")}</span>
+          <p className='text-gray-500 relative bottom-1'>{LocalText(L, "finished_card.desc")}</p>
         </div>
         <div className="progress-bar-wrapper">
           <button className='button default' onClick={() => { finishUpdate() }}>{LocalText(L, "finished_card.button_1")}</button>
@@ -147,7 +147,7 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
       </motion.div>
 
       <motion.div 
-        className="w-96 absolute z-20 bottom-6 right-6 card pb-2 pointer-events-auto"
+        className="w-96 !absolute z-20 bottom-6 right-6 card pb-2 pointer-events-auto"
         key={"DownloadCard"}
         variants={slider_card_variants}
         initial="hidden"
@@ -156,7 +156,7 @@ function UpdateWindow({ isOverlayShown, setIsOverlayShown }) {
       >
         <div>
           <span className='mb-4 font-bold text-lg'>{LocalText(L, "download_card.header")}</span>
-          <Progress value={downloadBarProgress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded'} />
+          <Progress value={downloadBarProgress} color="gradient" size={'xs'} className={'my-4 bg-tile-color rounded'} />
         </div>
       </motion.div>
     </>

@@ -664,7 +664,7 @@ function PlayerInfo({ isNavbarMinimized }) {
                     var { matchData } = calculateMatchStats(match);
 
                     return (
-                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 bg-tile-color bg-opacity-10 border-maincolor-lightest rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
+                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 bg-tile-color bg-opacity-10 border-tile-color rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
                         <div className='w-1/4 flex flex-row'>
                           <div id='agent-img'>
                             <img className='h-full shadow-img' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
@@ -810,7 +810,7 @@ function PlayerInfo({ isNavbarMinimized }) {
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <div className='flex flex-row h-full justify-center items-center'>
-          <div className='spinner-border text-maincolor-lightest'>
+          <div className='spinner-border text-tile-color'>
             <Loading color={'error'} size={'lg'} />
           </div>
         </div>

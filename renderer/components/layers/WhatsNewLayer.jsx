@@ -85,7 +85,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
         {
           isAdditionsShown ? 
           <>
-            <span>{LocalText(L, "additions_header")}</span>
+            <span className='font-semibold'>{LocalText(L, "additions_header")}</span>
             <hr id='whats-new-hr' />
             <div className='ml-4 mb-2' dangerouslySetInnerHTML={{ __html: whatsNewAdditions }}></div>
           </>
@@ -95,7 +95,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
         {
           isFixesShown ? 
           <>
-            <span>{LocalText(L, "fixes_header")}</span>
+            <span className='font-semibold'>{LocalText(L, "fixes_header")}</span>
             <hr id='whats-new-hr' />
             <div className='ml-4 mb-2' dangerouslySetInnerHTML={{ __html: whatsNewFixes }}></div>
           </>

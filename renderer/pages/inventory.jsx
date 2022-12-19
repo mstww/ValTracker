@@ -195,7 +195,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
   }, [ player_loadout ]);
 
-  var tile_classes = 'weapon-tile bg-tile-color bg-opacity-20 border border-tile-color hover:bg-opacity-50 transition-all duration-100 ease-in rounded relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
+  var tile_classes = 'weapon-tile bg-tile-color bg-opacity-20 active:bg-opacity-0 border border-tile-color hover:bg-opacity-50 transition-all duration-100 ease-in rounded relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
@@ -385,7 +385,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               onClick={(e) => { redirectToCardChanger(e.target.getAttribute('data-card')) }}
             />
             <div 
-              className='absolute bottom-20 bg-tile-color bg-opacity-60 hover:bg-opacity-100 w-full mx-auto text-global-text h-8 border-t border-b border-tile-color flex items-center justify-center transition-all duration-100 ease-linear cursor-pointer'
+              className='absolute bottom-20 bg-tile-color bg-opacity-60 w-full mx-auto text-global-text h-8 border-t border-b border-tile-color flex items-center justify-center transition-all duration-100 ease-linear'
             >
               <span className='text-global-text'>{playerTitle}</span>
             </div>

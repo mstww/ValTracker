@@ -381,7 +381,7 @@ img {
   bottom: 0;
   -webkit-transition: .3s;
   transition: .3s;
-  @apply bg-maincolor;
+  @apply bg-maincolor-dim;
 }
 
 .slider::before {
@@ -402,11 +402,11 @@ img {
 }
 
 input:hover + .slider {
-  @apply bg-maincolor-lightest;
+  @apply bg-maincolor-light;
 }
 
 input:hover + .slider.disabled {
-  @apply bg-maincolor;
+  @apply bg-opacity-10;
 }
 
 input:checked + .slider {
@@ -467,7 +467,7 @@ input:checked + .slider:before {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
-  @apply bg-opacity-100 cursor-default;
+  @apply bg-opacity-70 cursor-default;
   width: fit-content;
   transition: all 0.2s ease;
 }
@@ -476,7 +476,7 @@ input:checked + .slider:before {
   position: relative;
   padding: 0.5rem 1rem;
   transition: 0s;
-  @apply bg-opacity-100;
+  @apply bg-opacity-70;
   width: fit-content;
   transition: all 0.2s ease;
 }
@@ -501,8 +501,12 @@ input:checked + .slider:before {
   @apply rounded border border-tile-color bg-tile-color bg-opacity-20;
 }
 
-.tab-tile:hover {
-  @apply border bg-opacity-60;
+.tab-tile:not(.tab-tile.active):hover {
+  @apply border bg-opacity-50;
+}
+
+.tab-tile:not(.tab-tile.active):active {
+  @apply border bg-opacity-0;
 }
 
 select {
@@ -563,6 +567,7 @@ h5 {
 
 .messageContent p {
   color: rgba(255, 255, 255, 0.8) !important;
+  @apply !font-normal;
 }
 
 .patchnotes ul {
@@ -1153,11 +1158,13 @@ h5 {
 }
 
 #matchview-gradient-overlay {
-  background-image: linear-gradient(90deg, transparent, theme(colors.maincolor-light), theme(colors.maincolor-light));
+  background-image: linear-gradient(90deg, transparent, theme(colors.maincolor), theme(colors.maincolor));
+  @apply rounded;
 }
 
 #matchview-gradient-overlay-small {
-  background-image: linear-gradient(90deg, transparent, theme(colors.maincolor-light), theme(colors.maincolor-light), theme(colors.maincolor-light));
+  background-image: linear-gradient(90deg, transparent, theme(colors.maincolor), theme(colors.maincolor), theme(colors.maincolor));
+  @apply rounded;
 }
 
 #rotated-side-text {
@@ -1454,7 +1461,7 @@ tr td:last-child {
 }
 
 .card {
-  @apply rounded border border-maincolor-lightest bg-maincolor-light p-2 relative overflow-hidden;
+  @apply rounded border border-tile-color bg-maincolor p-2 relative overflow-hidden;
 }
 
 .card.hoverable {
@@ -1490,8 +1497,12 @@ tr td:last-child {
   transition: all 0.3s;
 }
 
-.button.default:hover, .button.select:hover, .button.select.opened, .button.highlight:hover {
+.button.default:hover, .button.select:hover, .button.highlight:hover {
   @apply bg-button-color border-button-color-hover bg-opacity-75;
+}
+
+.button.default:active, .button.select:active, .button.select.opened, .button.highlight:active {
+  @apply bg-button-color border-button-color-hover bg-opacity-40;
 }
 
 .button.highlight.highlight-green {
@@ -1502,8 +1513,12 @@ tr td:last-child {
   @apply bg-green-500 border-green-500 bg-opacity-75;
 }
 
+.button.highlight.highlight-green:active {
+  @apply bg-green-500 border-green-500 bg-opacity-40;
+}
+
 .button.default.disabled {
-  @apply border border-gray-600 hover:border-gray-500 bg-gray-800 hover:bg-gray-600 cursor-not-allowed text-sm;
+  @apply border border-gray-600 bg-gray-800 cursor-not-allowed text-sm;
   padding: 4px 30px;
   height: 2.5rem;
   border-radius: 4px;

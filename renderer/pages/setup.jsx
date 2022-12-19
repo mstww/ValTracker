@@ -314,16 +314,16 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
   return (
     <Layout setup={true} classNames={'overflow-hidden'} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div className='flex flex-col items-center p-4 h-full w-full'>
-        <div id='setup-timeline' className='border border-maincolor-lightest w-full p-2 h-14 rounded'>
+        <div id='setup-timeline' className='border border-tile-color w-full p-2 h-14 rounded'>
           <div className='flex flex-row items-center mb-1 justify-between'>
             <span className='font-medium'>{LocalText(L, currentSelectedLanguage, 'progress.lang')}</span>
             <span className='font-medium'>{LocalText(L, currentSelectedLanguage, 'progress.riot')}</span>
             <span className='font-medium'>{LocalText(L, currentSelectedLanguage, 'progress.confirm')}</span>
             <span className='font-medium'>{LocalText(L, currentSelectedLanguage, 'progress.finish')}</span>
           </div>
-          <Progress value={overallProgress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-full'} />
+          <Progress value={overallProgress} color="gradient" size={'xs'} className={'my-4 bg-tile-color rounded relative bottom-0 mt-0 w-full'} />
         </div>
-        <div className='setup-content border border-maincolor-lightest w-full mt-4 rounded p-2 relative overflow-hidden'>
+        <div className='setup-content border border-tile-color w-full mt-4 rounded p-2 relative overflow-hidden'>
           <motion.div 
             className='h-full relative'
             variants={lastPage === '0' ? slides_first_load : slides_vars}
@@ -333,7 +333,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             id='pg-1'
           >
             <span className='text-lg font-bold'>{LocalText(L, currentSelectedLanguage, 'page_1.header')}</span>
-            <hr className='bg-maincolor-lightest h-0.5 border-none mb-0' />
+            <hr className='bg-tile-color h-0.5 border-none mb-0' />
             <span className='text-sm text-gray-500'>{LocalText(L, currentSelectedLanguage, 'page_1.info')}</span>
             <div className='flex flex-row flex-wrap w-full mb-4 mt-2'>
               {Object.keys(Langs).map((lang, index) => {
@@ -364,10 +364,10 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             className='h-full relative'
           >
             <span className='text-lg font-bold'>{LocalText(L, currentSelectedLanguage, 'page_2.header')}</span>
-            <hr className='bg-maincolor-lightest h-0.5 border-none mb-4' />
+            <hr className='bg-tile-color h-0.5 border-none mb-4' />
             <div className='flex flex-col items-center justify-center h-4/6 w-full mb-4'>
               <button className={'flex flex-row items-center mb-6 button default ' + (isLoginCompleted ? 'disabled' : '')} disabled={isLoginCompleted} onClick={() => ( login() )}><img src='/images/riot_fist.png' className='w-6 mr-2' /> {isLoginCompleted ? LocalText(L, currentSelectedLanguage, "page_2.login_button_text_2") : LocalText(L, currentSelectedLanguage, "page_2.login_button_text_1")}</button>
-              <Progress value={progress} color="gradient" size={'xs'} className={'my-4 bg-maincolor-lightest rounded relative bottom-0 mt-0 w-2/6 ' + (isProgressShown ? '' : 'hidden')} />
+              <Progress value={progress} color="gradient" size={'xs'} className={'my-4 bg-tile-color rounded relative bottom-0 mt-0 w-2/6 ' + (isProgressShown ? '' : 'hidden')} />
               <div className={'relative bottom-3.5 font-light text-gray-500 text-left w-2/6 ' + (isProgressShown ? 'text-left w-2/6' : 'text-center')}>{loadingState}</div>
             </div>
             <div className='absolute bottom-1 left-2'>
@@ -412,7 +412,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
             className='h-full relative'
           >
             <span className='text-lg font-bold'>{LocalText(L, currentSelectedLanguage, 'page_3.header')}</span>
-            <hr className='bg-maincolor-lightest h-0.5 border-none mb-2' />
+            <hr className='bg-tile-color h-0.5 border-none mb-2' />
             <div className='flex flex-col items-center'>
               <div className='flex flex-row items-center mb-4 mt-8'>
                 <Translate className='w-6 mr-2 ml-1' />

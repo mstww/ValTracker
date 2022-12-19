@@ -439,13 +439,13 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       >
         <div id='left' className='w-3/5 flex flex-col mr-4'>
           <motion.div 
-            className='h-3/5 border border-maincolor-lightest p-2 relative w-full rounded mb-4 shadow-xl'
+            className='h-3/5 border border-tile-color p-2 relative w-full rounded mb-4 shadow-xl'
             variants={lastTab == '' ? overview_vars_first_load : overview_vars}
             initial="hidden"
             animate={activeTab === 'overview' ? "enter" : "exit"}
             transition={{ type: 'linear', duration: 0.5, delay: (activeTab === 'overview' && lastTab !== '' ? 0.7 : 0.05)}}
           >
-            <div id='map-img' className='absolute top-0 left-0 z-20 h-full'>
+            <div id='map-img' className='absolute top-0 left-0 z-20 h-full !rounded-l'>
               <img src={'https://media.valorant-api.com/maps/' + matchMap + '/splash.png'} className='h-full' />
             </div>
             <div id='map-name-text' className='z-30 absolute -bottom-6 left-0'>
@@ -487,7 +487,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             className='h-2/5 flex flex-row'
           >
             <motion.div 
-              className='w-1/2 border border-maincolor-lightest p-1 rounded shadow-xl mr-4 relative overflow-hidden'
+              className='w-1/2 border border-tile-color p-1 rounded shadow-xl mr-4 relative overflow-hidden'
               variants={lastTab == '' ? overview_vars_first_load_noflex : overview_vars_noflex}
               initial="hidden"
               animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -578,7 +578,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </motion.div>
 
             <motion.div 
-              className='w-1/2 border border-maincolor-lightest p-1 rounded shadow-xl overflow-auto'
+              className='w-1/2 border border-tile-color p-1 rounded shadow-xl overflow-auto'
               variants={lastTab == '' ? overview_vars_first_load_noflex : overview_vars_noflex}
               initial="hidden"
               animate={activeTab === 'overview' ? "enter" : "exit"}
@@ -668,7 +668,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </div>
         <motion.div 
-          className='w-2/5 h-full border border-maincolor-lightest p-4 relative overflow-hidden shadow-xl'
+          className='w-2/5 h-full border border-tile-color p-4 relative overflow-hidden shadow-xl rounded'
           variants={lastTab == '' ? overview_vars_first_load : overview_vars}
           initial="hidden"
           animate={activeTab === 'overview' ? "enter" : "exit"}

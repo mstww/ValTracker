@@ -1653,7 +1653,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
       <div id='home-container' className='flex flex-row flex-wrap'>
         <div id='top-left-container' className='relative rounded flex flex-wrap'>
-          <div className='home-top-info-tile border rounded border-maincolor-lightest h-full p-1 relative'>
+          <div className='home-top-info-tile border rounded border-maincolor-dim h-full p-1 relative'>
             <div className='flex flex-col h-full'>
               <div>
                 <span className='leading-none px-1 font-bold'>{LocalText(L, "top_l.bundle_header")} - {featuredBundleName}</span>
@@ -1677,7 +1677,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               </div>
             </div>
           </div>
-          <div className='home-top-info-tile relative border rounded border-maincolor-lightest flex flex-col'>
+          <div className='home-top-info-tile relative border rounded border-maincolor-dim flex flex-col'>
             <Tooltip content={LocalText(L, "top_l.contracts.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-4 right-7'>
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
@@ -1706,7 +1706,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 isVisible={!contractsLoading}
               />
 
-              <hr className='bg-maincolor-lightest h-px border-none' />
+              <hr className='bg-maincolor-dim h-px border-none' />
 
               <ContractProgressCard 
                 title={LocalText(L, "top_l.contracts.agent_contract_header")}
@@ -1746,7 +1746,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </div>
           </div>
         </div>
-        <div id='top-right-container' className='relative overflow-y-auto rounded p-1.5 border border-maincolor-lightest'>
+        <div id='top-right-container' className='relative overflow-y-auto rounded p-1.5 border border-maincolor-dim'>
           <div className={'flex-row items-center justify-center h-full ' + (chartsLoading || chartsError ? 'hidden ' : 'flex') + (areChartsActive ? '' : ' hidden')}>
             <AwesomeSlider 
               className={'AwesomeSliderMainContainer rounded h-full z-10'}
@@ -1798,7 +1798,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
-        <div id='bottom-left-container' className='relative overflow-y-auto rounded p-1 border border-maincolor-lightest'>
+        <div id='bottom-left-container' className='relative overflow-y-auto rounded p-1 border border-maincolor-dim'>
           <div 
             id='match-timeline' 
             className={
@@ -1826,7 +1826,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       return (
                         <div 
                           id='match'
-                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-100 ease-linear' 
+                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 hover:bg-opacity-50 active:bg-opacity-0 cursor-default transition-all duration-100 ease-linear' 
                           key={index}
                           onClick={(e) => {
                             if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -2012,7 +2012,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
-        <div id='bottom-right-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-lightest'>
+        <div id='bottom-right-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-dim'>
           <div className={'overflow-y-auto ' + (loading || errored ? 'hidden' : '')}>
             {
               currentlyLoadedMatchCount > 0 ?

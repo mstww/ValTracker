@@ -307,7 +307,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       <div 
                         id='level' 
                         className={
-                          'h-14 bg-maincolor-lightest mb-1 relative chroma-swatch rounded w-full border shadow-lg flex flex-col p-px cursor-pointer hover:bg-opacity-70 '
+                          'h-14 bg-tile-color mb-1 relative chroma-swatch rounded w-full border shadow-lg flex flex-col p-px cursor-pointer hover:bg-opacity-70 '
                           + (activeCardSkinLevel == index ? 'border-button-color' : 'border-maincolor')
                         }
                         key={index}
@@ -336,7 +336,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </motion.div>
       </motion.div>
-      <div id='back-arrow' className='absolute top-4 right-4 hover:bg-maincolor-lightest rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
+      <div id='back-arrow' className='absolute top-4 right-4 hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
         <BackArrow className='w-8 p-1' />
       </div>
       <div className='absolute top-4 left-4'>

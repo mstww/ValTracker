@@ -215,10 +215,10 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
 
   // Show menu if open is true
   var showMenu = open ? 'block' : '';
-  var switcherActive = open ? 'bg-maincolor-light border-maincolor-lightest' : '';
+  var switcherActive = open ? '!bg-maincolor border-tile-color' : '';
 
-  var activeClasses = 'bg-button-color hover:bg-button-color-hover border-button-color';
-  var inactiveClasses = 'bg-tile-color bg-opacity-20 hover:bg-opacity-50 cursor-pointer border-tile-color';
+  var activeClasses = 'bg-button-color border-button-color';
+  var inactiveClasses = 'bg-tile-color bg-opacity-20 hover:bg-opacity-50 active:bg-opacity-0 cursor-pointer border-tile-color';
   var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
   var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
   var navbarTileBaseClasses = ' border shadow-2xl drop-shadow-2xl h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
@@ -263,7 +263,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   return (
     <motion.nav 
       id='navbar' 
-      className={'z-40 fixed top-7 left-0 bg-maincolor overflow-hidden transition-all duration-100 ease-linear ' + (isNavbarMinimized === true ? 'w-16': 'w-64')}
+      className={'z-40 fixed top-7 left-0 bg-maincolor-dark overflow-hidden transition-all duration-100 ease-linear ' + (isNavbarMinimized === true ? 'w-16': 'w-64')}
       variants={navbarVariants.main}
       initial="initial"
       animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -308,7 +308,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           transition={{ delay: 0.15, duration: 0.2, ease: "easeOut" }}
         >
           <ExpandArrow 
-            className={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
+            className={'w-7 hover:bg-maincolor cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
             click={() => { setIsNavbarMinimized(false) }}
           />
         </motion.div>
@@ -320,7 +320,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           transition={{ delay: 0.55, duration: 0.2, ease: "easeIn" }}
         >
           <RetractArrow 
-            className={'w-7 hover:bg-maincolor-lightest cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
+            className={'w-7 hover:bg-maincolor cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
             click={() => { setIsNavbarMinimized(true) }}
           />
         </motion.div>
@@ -419,7 +419,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
       <div id="nav-bottom" className='absolute bottom-0 left-0 w-full h-16 p-2 flex flex-row'>
         <motion.div 
           id='acc-switcher-popup' 
-          className={'h-auto max-h-64 w-60 absolute left-0 bottom-16 ml-2 rounded bg-maincolor-light overflow-auto shadow-lg ' + showMenu}
+          className={'h-auto max-h-64 w-60 absolute left-0 bottom-16 ml-2 rounded bg-maincolor overflow-auto shadow-lg ' + showMenu}
           variants={account_switcher_variants}
           initial='closed'
           animate={open ? 'open' : 'closed'}
@@ -449,7 +449,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         </motion.div>
         <div 
           id="acc-switcher-tile" 
-          className={'relative bg-maincolor hover:bg-maincolor-light w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis ' + switcherActive + (isNavbarMinimized ? ' -translate-x-40 opacity-0' : '  translate-x-0 opacity-100')}
+          className={'relative bg-maincolor-dark hover:bg-maincolor w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis ' + switcherActive + (isNavbarMinimized ? ' -translate-x-40 opacity-0' : '  translate-x-0 opacity-100')}
           onClick={toggleSwitcherMenu}
         >
           <div className='flex flex-row items-center content-center h-full justify-start'>
@@ -470,9 +470,9 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           <Link href={'/settings'}>
             <div 
               className={
-                'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor-light '
+                'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor '
                 +
-                (page == 'settings' ? 'border border-gradient-left bg-maincolor-light hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
+                (page == 'settings' ? 'border border-gradient-left bg-maincolor hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
                 +
                 (isNavbarMinimized ? ' -translate-x-4 mr-1' : '  translate-x-0 mr-0')
               }

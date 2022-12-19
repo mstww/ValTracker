@@ -141,7 +141,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
             {searchHistory.map((searchValue, index) => {
               return(
                 <li 
-                  className='w-full flex items-center !mb-1 font-light p-2 border border-tile-color bg-tile-color bg-opacity-60 rounded hover:bg-opacity-100 transition-all duration-100 ease-linear'
+                  className='w-full flex items-center !mb-1 font-light p-2 border border-tile-color bg-tile-color bg-opacity-20 rounded hover:bg-opacity-50 active:bg-opacity-0 transition-all duration-100 ease-linear'
                   onClick={(e) => {
                     if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                       handleHistoryClick(searchValue.name, searchValue.tag, searchValue.encoded_user);
@@ -152,7 +152,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
                   {searchValue.name}#{searchValue.tag}
                   <div 
                     id='remove-el'
-                    className='ml-auto hover:bg-black rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
+                    className='ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
                     onClick={() => {
                       removeItemFromHistory(searchValue.encoded_user);
                     }}

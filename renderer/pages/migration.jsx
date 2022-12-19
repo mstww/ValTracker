@@ -33,7 +33,7 @@ function Migration({ isOverlayShown, setIsOverlayShown }) {
         <p className='mb-2'>{LocalText(L, 'desc', estTime)}</p>
         <div className='h-1/2 w-5/6 mx-auto flex flex-col justify-center items-center'>
           <p className='mb-4'>{LocalText(L, 'estTime', estTime)}</p>
-          <Progress value={progress} max={100} color="gradient" size={'xs'} className={'bg-maincolor-lightest rounded mb-4'} />
+          <Progress value={progress} max={100} color="gradient" size={'xs'} className={'bg-tile-color rounded mb-4'} />
           <span>{progressState}</span>
         </div>
         <p className='absolute bottom-2 left-4 text-gray-500'>{LocalText(L, 'footer')}</p>

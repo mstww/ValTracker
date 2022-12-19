@@ -2,8 +2,8 @@
   "en-US": {
     "info_card": {
       "header": "AN UPDATE IS AVAILABLE",
-      "button_1": "Download update",
-      "button_2": "Not now"
+      "button_1": "Download",
+      "button_2": "Later"
     },
     "download_card": {
       "header": "UPDATE DOWNLOADING"
@@ -11,8 +11,8 @@
     "finished_card": {
       "header": "UPDATE DOWNLOADED",
       "desc": "Click to quit, install and then restart.",
-      "button_1": "Restart App",
-      "button_2": "Not now"
+      "button_1": "Restart",
+      "button_2": "Later"
     }
   },
   "de-DE": {
