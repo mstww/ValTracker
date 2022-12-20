@@ -61,7 +61,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
           <div className='w-1/2 mx-auto h-full p-2 flex flex-col justify-center text-center relative'>
             {
               isVisible ? 
-              <Progress color={color} size={'xs'} max={progress_max} value={progress_value} className='bp-progress-bar' />
+              <Progress color={color} size={'xs'} max={progress_max} value={progress_value} className={`contract-card-bar ${color === "warning" ? "yellow-glow" : null}`} />
               :
               null
             }

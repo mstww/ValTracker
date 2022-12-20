@@ -618,11 +618,51 @@ h5 {
 }
 
 .yellow-glow {
-  text-shadow: 0 0 7px rgba(255, 255, 0, 0.8);
+  text-shadow: 0 0 7px rgba(241, 198, 105, 0.8);
+  color: #f8c347;
 }
 
 .silver-glow {
-  text-shadow: 0 0 7px rgba(192, 192, 192, 0.8);
+  text-shadow: 0 0 7px rgba(253, 250, 249, 0.8);
+  color: #fdfaf9;
+}
+
+.light .yellow-glow {
+  text-shadow: 0 0 5px rgba(241, 198, 105, 0.8), 0 0 10px rgba(241, 198, 105, 0.8), 0 0 20px rgba(241, 198, 105, 0.8);
+  color: #e9aa18;
+}
+
+.light .silver-glow {
+  text-shadow: 0 0 5px rgba(160, 160, 160, 0.8), 0 0 10px rgba(160, 160, 160, 0.8), 0 0 20px rgba(160, 160, 160, 0.8);
+  color: #646464;
+}
+
+.val-blue-glow {
+  text-shadow: 0 0 7px rgba(107, 241, 230, 0.8);
+}
+
+.val-yellow-glow {
+  text-shadow: 0 0 7px rgba(234, 239, 179, 0.8);
+}
+
+.val-red-glow {
+  text-shadow: 0 0 7px rgba(251, 77, 80, 0.8);
+}
+
+.contract-card-bar div {
+  box-shadow: 0 0 2.5px rgba(255, 0, 128, 0.4), 0 0 10px rgba(255, 0, 128, 0.4);
+}
+
+.contract-card-bar.yellow-glow div {
+  box-shadow: 0 0 7px rgba(241, 198, 105, 0.4);
+}
+
+.light .contract-card-bar div {
+  box-shadow: 0 0 5px rgba(76, 0, 255, 0.4), 0 0 10px rgba(76, 0, 255, 0.4), 0 0 20px rgba(76, 0, 255, 0.4);
+}
+
+.light .contract-card-bar.yellow-glow div {
+  box-shadow: 0 0 5px rgba(241, 198, 105, 1), 0 0 10px rgba(241, 198, 105, 1), 0 0 20px rgba(241, 198, 105, 1);
 }
 
 .kda-display-span {

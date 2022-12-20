@@ -453,11 +453,11 @@ function PlayerInfo({ isNavbarMinimized }) {
 
       if(playerTeam == winning_team) {
         var matchOutcome = "VICTORY";
-        var matchOutcomeColor = 'text-val-blue';
+        var matchOutcomeColor = 'text-val-blue val-blue-glow';
         var matchScore = winningTeamScore + ' - ' + losingTeamScore;
       } else if(winning_team == 'draw') {
         var matchOutcome = "DRAW";
-        var matchOutcomeColor = 'text-val-yellow';
+        var matchOutcomeColor = 'text-val-yellow val-yellow-glow';
 
         if(!winningTeamScore) {
           winningTeamScore = losingTeamScore;
@@ -467,7 +467,7 @@ function PlayerInfo({ isNavbarMinimized }) {
         var matchScore = winningTeamScore + ' - ' + losingTeamScore;
       } else {
         var matchOutcome = "DEFEAT";
-        var matchOutcomeColor = 'text-val-red';
+        var matchOutcomeColor = 'text-val-red val-red-glow';
         var matchScore = losingTeamScore + ' - ' + winningTeamScore;
       }
 

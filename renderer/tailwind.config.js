@@ -13,7 +13,8 @@ var legacyBeta = {
     "button-color-hover": "#ff0055", 
     "button-text": "#ffffff", 
     "global-text": "#ffffff",
-    "val-yellow": "#eaefb3",
+    'val-blue': '#6bf1e6',
+    "val-yellow": "#ffff8c",
     "scrollbar-bg": "#535353",
     "scrollbar-thumb-bg": "#c2c2c2",
     "scrollbar-thumb-hover": "#8a8a8a"
@@ -33,7 +34,8 @@ var legacyAlpha = {
     "button-color-hover": "#d61044",
     "button-text": "#ffffff",
     "global-text": "#ffffff",
-    "val-yellow": "#eaefb3",
+    'val-blue': '#6bf1e6',
+    "val-yellow": "#ffff8c",
     "scrollbar-bg": "#535353",
     "scrollbar-thumb-bg": "#c2c2c2",
     "scrollbar-thumb-hover": "#8a8a8a"
@@ -53,6 +55,7 @@ var light = {
     "button-color-hover": "#3C70FF",
     "button-text": "#000000",
     "global-text": "#000000",
+    'val-blue': '#4bccc0',
     "val-yellow": "#5e5e5d",
     "scrollbar-bg": "#c2c2c2",
     "scrollbar-thumb-bg": "#8a8a8a",
@@ -73,7 +76,8 @@ var normal = {
     "button-color-hover": "#d61044",
     "button-text": "#ffffff",
     "global-text": "#ffffff",
-    "val-yellow": "#eaefb3",
+    'val-blue': '#6bf1e6',
+    "val-yellow": "#ffff8c",
     "scrollbar-bg": "#535353",
     "scrollbar-thumb-bg": "#c2c2c2",
     "scrollbar-thumb-hover": "#8a8a8a"
@@ -110,8 +114,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'val-blue': '#67c2a8',
-        'val-red': '#f15c56'
+        'val-red': '#fb4d50'
       }
     }
   },

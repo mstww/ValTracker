@@ -1287,11 +1287,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
       if(playerTeam == winning_team) {
         var matchOutcome = "VICTORY";
-        var matchOutcomeColor = 'text-val-blue';
+        var matchOutcomeColor = 'text-val-blue val-blue-glow';
         var matchScore = winningTeamScore + ' - ' + losingTeamScore;
       } else if(winning_team == 'draw') {
         var matchOutcome = "DRAW";
-        var matchOutcomeColor = 'text-val-yellow';
+        var matchOutcomeColor = 'text-val-yellow val-yellow-glow';
 
         if(!winningTeamScore) {
           winningTeamScore = losingTeamScore;
@@ -1301,7 +1301,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var matchScore = winningTeamScore + ' - ' + losingTeamScore;
       } else {
         var matchOutcome = "DEFEAT";
-        var matchOutcomeColor = 'text-val-red';
+        var matchOutcomeColor = 'text-val-red val-red-glow';
         var matchScore = losingTeamScore + ' - ' + winningTeamScore;
       }
 
@@ -1808,7 +1808,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             }
           >
             <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
-              <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
+              <div className={'absolute -top-2 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
             </Tooltip>

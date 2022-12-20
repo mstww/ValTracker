@@ -403,11 +403,11 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       </div>
       <div id='matchview-header' className='w-full h-1/5 flex flex-col items-center drop-shadow-xl'>
         <h1 className='text-5xl mt-8'>
-          <span className='text-val-blue font-medium'>{matchScore ? matchScore.split("-")[0] : ''}</span>
+          <span className='text-val-blue val-blue-glow font-medium'>{matchScore ? matchScore.split("-")[0] : ''}</span>
           &nbsp;&nbsp;
           <span className='text-val-yellow font-bold'>{LocalText(L, "match_outcomes." + playerMatchResult)}</span>
           &nbsp;&nbsp;
-          <span className='text-val-red font-medium'>{matchScore ? matchScore.split("-").pop() : ''}</span>
+          <span className='text-val-red val-red-glow font-medium'>{matchScore ? matchScore.split("-").pop() : ''}</span>
         </h1>
         <div className='mt-9 w-1/2 flex flex-row justify-around'>
           <span 
@@ -629,7 +629,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                             </Tooltip>
                           }
                           <div className='ml-2.5 flex flex-col relative'>
-                            <span className={'text-lg relative bottom-1.5 font-medium ' + (hasPlayerTeamWonRound ? 'text-val-blue german-won-round' : 'text-val-red')}>
+                            <span className={'text-lg relative bottom-1.5 font-medium ' + (hasPlayerTeamWonRound ? 'text-val-blue german-won-round val-blue-glow' : 'text-val-red val-red-glow')}>
                               {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : (LocalText(L, "match_outcomes.DEFEAT") === "VERLOREN" ? LocalText(L, "match_outcomes.DEFEAT").split("O")[0] + '.' : LocalText(L, "match_outcomes.DEFEAT"))}
                             </span>
                             <span className='absolute -bottom-2 w-20 font-light text-sm'>{LocalText(L, "round_results.round_text")} {index+1}</span>
@@ -886,7 +886,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     className='rounded'
                   >
                     <span 
-                      className={'ml-2 text-xl text-val-' + (playerStats.subjectTeam.toLowerCase())} 
+                      className={`ml-2 text-xl val-${playerStats.subjectTeam.toLowerCase()}-glow text-val-` + (playerStats.subjectTeam.toLowerCase())} 
                       onClick={() => {
                         var name_encoded = encodeURIComponent(playerStats.subjectName + '#' + playerStats.subjectTag);
                         router.push(`/player?name=${playerStats.subjectName}&tag=${playerStats.subjectTag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
