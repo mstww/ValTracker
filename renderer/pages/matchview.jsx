@@ -862,50 +862,50 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               </td>
             </tr>
             <Spacer y={0.5} />
-            {playerScoreboardStats.map((playerStats, index) => {
-              return(
-                <>
-                  <motion.tr 
-                    className={'border border-tile-color bg-tile-color bg-opacity-10 rounded'} key={index + 'tr'}
-                    variants={scoreboard_vars_initial}
-                    initial="hidden"
-                    animate={activeTab === 'scoreboard' ? "enter" : "exit"}
-                    transition={{ type: 'linear', duration: 0.5, delay: (activeTab === 'scoreboard' ? (0.5 + (index / 100)) : (index / 100)) }}
-                  >
-                    <td className='py-1 pl-1 flex flex-row items-center h-14'>
-                      <img src={'https://media.valorant-api.com/agents/' + playerStats.subjectAgent + '/displayicon.png'} className='h-full shadow-img' />
-                      {isComp === true && (
-                        <img src={`https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${playerStats.competitiveTier}/smallicon.png`} className={`w-8 ml-2`} />
-                      )}
-                      <Tooltip 
-                        content={playerStats.subjectName + '#' + playerStats.subjectTag} 
-                        color="error" 
-                        placement={'right'} 
-                        className='rounded'
-                      >
-                        <span 
-                          className={'ml-2 text-xl text-val-' + (playerStats.subjectTeam.toLowerCase())} 
-                          onClick={() => {
-                            var name_encoded = encodeURIComponent(playerStats.subjectName + '#' + playerStats.subjectTag);
-                            router.push(`/player?name=${playerStats.subjectName}&tag=${playerStats.subjectTag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
-                          }}
-                        >
-                          {playerStats.subjectName}
-                        </span>
-                      </Tooltip>
-                    </td>
-                    <td className={'py-1 text-xl ' + (isDeathmatch ? 'hidden' : '')}><span className='font-light'>{playerStats.acs.toFixed(0)}</span></td>
-                    <td className={'py-1 text-xl ' + (!isDeathmatch ? 'hidden' : '')}><span className='font-light'>{playerStats.score}</span></td>
-                    <td className={'py-1 text-xl '}><span className='font-light'>{playerStats.kills + '/' + playerStats.deaths + '/' + playerStats.assists}</span></td>
-                    <td className={'py-1 text-xl ' + (isDeathmatch || isEscalation ? 'hidden' : '')}><span className='font-light'>{playerStats.firstbloods}</span></td>
-                    <td className={'py-1 text-xl ' + (isDeathmatch ? 'hidden' : '')}><span className='font-light'>{(playerStats.total_dmg / rounds.length).toFixed(0)}</span></td>
-                  </motion.tr>
-                  <Spacer y={0.2} key={index + 'spacer'} />
-                </>
-              )
-            })}
           </tbody>
         </table>
+        {playerScoreboardStats.map((playerStats, index) => {
+          return(
+            <>
+              <motion.div 
+                className={'border border-tile-color bg-tile-color bg-opacity-10 rounded flex flex-row items-center'} key={index + 'tr'}
+                variants={scoreboard_vars_initial}
+                initial="hidden"
+                animate={activeTab === 'scoreboard' ? "enter" : "exit"}
+                transition={{ type: 'linear', duration: 0.5, delay: (activeTab === 'scoreboard' ? (0.5 + (index / 100)) : (index / 100)) }}
+              >
+                <div className='py-1 pl-1 flex flex-row items-center h-14 w-1/4'>
+                  <img src={'https://media.valorant-api.com/agents/' + playerStats.subjectAgent + '/displayicon.png'} className='h-full shadow-img' />
+                  {isComp === true && (
+                    <img src={`https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${playerStats.competitiveTier}/smallicon.png`} className={`w-8 ml-2`} />
+                  )}
+                  <Tooltip 
+                    content={playerStats.subjectName + '#' + playerStats.subjectTag} 
+                    color="error" 
+                    placement={'right'} 
+                    className='rounded'
+                  >
+                    <span 
+                      className={'ml-2 text-xl text-val-' + (playerStats.subjectTeam.toLowerCase())} 
+                      onClick={() => {
+                        var name_encoded = encodeURIComponent(playerStats.subjectName + '#' + playerStats.subjectTag);
+                        router.push(`/player?name=${playerStats.subjectName}&tag=${playerStats.subjectTag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
+                      }}
+                    >
+                      {playerStats.subjectName}
+                    </span>
+                  </Tooltip>
+                </div>
+                <div className={'py-1 text-xl w-1/5 ' + (isDeathmatch ? 'hidden' : '')}><span className='font-light'>{playerStats.acs.toFixed(0)}</span></div>
+                <div className={'py-1 text-xl w-1/5 ' + (!isDeathmatch ? 'hidden' : '')}><span className='font-light'>{playerStats.score}</span></div>
+                <div className={'py-1 text-xl w-1/5 '}><span className='font-light'>{playerStats.kills + '/' + playerStats.deaths + '/' + playerStats.assists}</span></div>
+                <div className={'py-1 text-xl w-1/5 ' + (isDeathmatch || isEscalation ? 'hidden' : '')}><span className='font-light'>{playerStats.firstbloods}</span></div>
+                <div className={'py-1 text-xl ' + (isDeathmatch ? 'hidden' : '')}><span className='font-light'>{(playerStats.total_dmg / rounds.length).toFixed(0)}</span></div>
+              </motion.div>
+              <Spacer y={0.2} key={index + 'spacer'} />
+            </>
+          )
+        })}
       </motion.div>
     </Layout>
   );

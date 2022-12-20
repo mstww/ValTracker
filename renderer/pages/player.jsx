@@ -95,7 +95,7 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
 
 const fetchPlayer = async (pname, ptag, lang) => {
   try {
-    const playerInfoRaw = await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${pname}/${ptag}`, { keepalive: true });
+    const playerInfoRaw = await fetch(`https://beta-api.valtracker.gg/v1/riot/player/${pname}/${ptag}`, { keepalive: true });
     const pInfo = await playerInfoRaw.json();
 
     if(pInfo.status !== 200) {
