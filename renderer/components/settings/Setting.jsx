@@ -25,7 +25,7 @@ export default function Setting({ title, desc, desc2, inputType, buttonText, isC
             value={inputVal}
             onChange={(e) => { setInputVal(e.target.value) }}
             type='text' 
-            className="bg-button-color focus:outline-none text-sm z-40 font-light hover:bg-button-color-hover hover:shadow-2xl h-8 ml-px w-full flex items-center px-2 py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none"
+            className="bg-button-color focus:outline-none text-sm z-40 font-light hover:bg-button-color-hover h-8 ml-px w-full flex items-center px-2 py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none"
           />
           :
           ('')

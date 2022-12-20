@@ -119,7 +119,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
         </div>
         <h2 className='mb-2 font-bold'>{LocalText(L, "search_modal.header")}</h2>
         <div 
-          className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover hover:shadow-2xl flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden'}
+          className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden'}
           onClick={() => { inputRef.current ? inputRef.current.focus() : null }}
         >
           <Search className={'transition-all duration-75 ease-linear cursor-pointer z-30 w-5 h-5 player-search-mgnfy relative'} />

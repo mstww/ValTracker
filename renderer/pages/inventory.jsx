@@ -195,7 +195,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
   }, [ player_loadout ]);
 
-  var tile_classes = 'weapon-tile bg-tile-color bg-opacity-20 active:bg-opacity-0 border border-tile-color hover:bg-opacity-50 transition-all duration-100 ease-in rounded relative shadow-lg hover:shadow-xl flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
+  var tile_classes = 'weapon-tile bg-tile-color bg-opacity-20 active:bg-opacity-0 border border-tile-color hover:bg-opacity-50 transition-all duration-100 ease-in rounded relative shadow-lg flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
@@ -339,7 +339,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           <p>{LocalText(L, "modals.save_modal.desc")}</p>
           <input
             type='text'
-            className='bg-button-color text-md font-light hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 shadow-lg hover:shadow-2xl rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
+            className='bg-button-color text-md font-light hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 shadow-lg rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
             placeholder={LocalText(L, "modals.save_modal.input_placeholder")}
             id='skin-search'
             autoCorrect='off'
@@ -376,7 +376,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       </motion.div>
       <div className='w-full h-full flex flex-row items-center justify-center'>
         <div className='w-1/6 h-4/5 m-4 relative'>
-          <div id='inventory-card-wrapper' className='bg-black group overflow-hidden border border-tile-color rounded mb-4 shadow-lg hover:shadow-2xl transition-all duration-100 ease-linear'>
+          <div id='inventory-card-wrapper' className='bg-black group overflow-hidden border border-tile-color rounded mb-4 shadow-lg transition-all duration-100 ease-linear'>
             <img 
               id='inventory-card'
               data-equipslot='playercard'

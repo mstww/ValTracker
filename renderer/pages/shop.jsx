@@ -493,7 +493,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               onClick={() => { switchToNM() }}
               id='night-market'
               className={
-                'bg-opacity-20 bg-tile-color active:bg-opacity-0 border border-tile-color p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:shadow-2xl hover:bg-opacity-50 transition-all duration-100 ease-in cursor-pointer ' 
+                'bg-opacity-20 bg-tile-color active:bg-opacity-0 border border-tile-color p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:bg-opacity-50 transition-all duration-100 ease-in cursor-pointer ' 
                 + 
                 (nightMarketShown ? 'flex' : 'hidden')
               }

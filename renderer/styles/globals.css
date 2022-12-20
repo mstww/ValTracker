@@ -510,7 +510,7 @@ input:checked + .slider:before {
 }
 
 select {
-  @apply border border-button-color bg-tile-color text-button-text font-light shadow-lg hover:shadow-2xl cursor-pointer relative outline-none;
+  @apply border border-button-color bg-tile-color text-button-text font-light shadow-lg cursor-pointer relative outline-none;
   padding: 6px 10px 6px 10px;
   border-radius: 4px;
   outline: none;
