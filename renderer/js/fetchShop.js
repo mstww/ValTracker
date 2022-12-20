@@ -137,6 +137,42 @@ export async function calculateDailyStore(puuid, shopData) {
       data.nightMarket = {
         offers: shopData.BonusStore.BonusStoreOffers,
       }
+      var skins = [];
+
+      for(var i = 0; i < shopData.BonusStore.BonusStoreOffers.length; i++) {
+        var skinUUID = shopData.BonusStore.BonusStoreOffers[i].Offer.Rewards[0].ItemID;
+
+        var raw = await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${shopData.BonusStore.BonusStoreOffers[i].Offer.Rewards[0].ItemID}?language=${APIi18n(appLang)}`, { keepalive: true });
+        var skin = await raw.json();
+
+        for(var j = 0; j < allSkins.data.length; j++) {
+          if(skinUUID === allSkins.data[j].levels[0].uuid) {
+            var tierUUID = allSkins.data[j].contentTierUuid;
+            var isMelee = (allSkins.data[j].assetPath.split("/")[3] === 'Melee');
+          }
+        }
+        
+        for(var j = 0; j < skinTiers.data.length; j++) {
+          if(tierUUID === skinTiers.data[j].uuid && skinTiers.data[j].displayIcon !== null) {
+            var skinTierImage = skinTiers.data[j].displayIcon;
+          }
+        }
+
+        var skin_data = {
+          uuid: skin.data.uuid,
+          name: skin.data.displayName,
+          image: skin.data.displayIcon,
+          price: shopData.BonusStore.BonusStoreOffers[i].DiscountCosts[Object.keys(shopData.BonusStore.BonusStoreOffers[i].DiscountCosts)[0]],
+          discount: shopData.BonusStore.BonusStoreOffers[i].DiscountPercent,
+          seen: shopData.BonusStore.BonusStoreOffers[i].IsSeen,
+          isMelee: isMelee,
+          skinTierImage: skinTierImage,
+        }
+
+        skins.push(skin_data);
+      }
+
+      data.nightMarket.skins = skins;
   
       var nightMarketTime = shopData.BonusStore.BonusStoreRemainingDurationInSeconds + 10
       var now = new Date();
@@ -178,6 +214,7 @@ async function fetchShop() {
     var shopData = await getShopData(region, puuid, entitlement_token, bearer);
 
     const data = await calculateDailyStore(puuid, shopData);
+    console.log(data);
     return [data, user_creds];
   }
 }

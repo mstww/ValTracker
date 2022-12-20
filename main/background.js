@@ -324,7 +324,7 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'))
       nodeIntegration: true,
       enableRemoteModule: false,
       contextIsolation: false,
-      devTools: true
+      devTools: isDev
     }
   });
 
@@ -1588,7 +1588,7 @@ async function checkStoreForWishlistItems() {
         nodeIntegration: true,
         enableRemoteModule: false,
         contextIsolation: false,
-        devTools: true
+        devTools: isDev
       }
     });
 
@@ -1619,7 +1619,7 @@ async function checkStoreForWishlistItems() {
         nodeIntegration: true,
         enableRemoteModule: false,
         contextIsolation: false,
-        devTools: true
+        devTools: isDev
       },
       show: startedHidden === undefined,
     });

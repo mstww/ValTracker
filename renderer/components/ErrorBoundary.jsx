@@ -6,6 +6,8 @@ import { shell } from "electron";
 import { ipcRenderer } from "electron";
 import pjson from '../../package.json';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -25,15 +27,16 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    this.props.router.events.on("routeChangeComplete", () => {
+      this.setState({ hasError: false });
+    });
+
+    if(!isProd) return;
     // You can use your own error logging service here
     console.error(error, errorInfo);
     errorInfo.date = Date.now();
     errorInfo.valtracker_version = pjson.version;
     ipcRenderer.send("rendererProcessError", { error, errorInfo });
-
-    this.props.router.events.on("routeChangeComplete", () => {
-      this.setState({ hasError: false });
-    });
   }
 
   render() {

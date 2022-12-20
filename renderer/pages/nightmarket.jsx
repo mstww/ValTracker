@@ -121,7 +121,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       for(var i = 0; i < data.nightMarket.skins.length; i++) {
         var skinUUID = data.nightMarket.skins[i].Offer.Rewards[0].ItemID;
 
-        var raw = await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${data.nightMarket.offers[i].Offer.Rewards[0].ItemID}?language=${APIi18n(router.query.lang)}`, { keepalive: true });
+        var raw = await fetch(`https://valorant-api.com/v1/weapons/skinlevels/${data.nightMarket.skins[i].Offer.Rewards[0].ItemID}?language=${APIi18n(router.query.lang)}`, { keepalive: true });
         var skin = await raw.json();
 
         for(var j = 0; j < allSkins.data.length; j++) {
@@ -141,7 +141,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           uuid: skin.data.uuid,
           name: skin.data.displayName,
           image: skin.data.displayIcon,
-          price: data.nightMarket.offers[i].DiscountCosts[Object.keys(data.nightMarket.offers[i].DiscountCosts)[0]],
+          price: data.nightMarket.offers[i].DiscountCosts[Object.keys(data.nightMarket.skins[i].DiscountCosts)[0]],
           discount: data.nightMarket.offers[i].DiscountPercent,
           seen: data.nightMarket.offers[i].IsSeen,
           isMelee: isMelee,
