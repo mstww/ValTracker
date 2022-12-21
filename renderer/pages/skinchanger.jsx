@@ -11,7 +11,7 @@ import LocalText from '../components/translation/LocalText';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Close, Search, Star, StarFilled } from '../components/SVGs';
 import Layout from '../components/Layout';
-import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
+import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement, addSkinToWishlist } from '../js/dbFunctions';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },

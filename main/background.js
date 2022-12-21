@@ -1941,8 +1941,9 @@ async function showSignIn() {
     });
     let foundToken = false;
     loginWindow.webContents.on('will-redirect', (event, url) => {
+      console.log(url);
       // Login window redirecting...
-      if(!foundToken && url.startsWith('http://localhost:42069/redirect')) {
+      if(!foundToken && url.startsWith('http://localhost/redirect')) {
         // Redirecting to url with tokens
         const tokenData = getTokenDataFromURL(url);
         foundToken = true;
@@ -1960,7 +1961,28 @@ async function showSignIn() {
       }
     });
 
-    loginWindow.webContents.on('did-fail-load', () => {
+    loginWindow.webContents.on('did-stop-loading', (event) => {
+      var url = event.sender.getURL();
+      // Login window redirecting...
+      if(!foundToken && url.startsWith('http://localhost/redirect')) {
+        // Redirecting to url with tokens
+        const tokenData = getTokenDataFromURL(url);
+        foundToken = true;
+
+        loginWindow.webContents.session.cookies.get({
+          domain: 'auth.riotgames.com'
+        }).then(async riotcookies => {
+          await Promise.all(riotcookies.map(cookie => loginWindow.webContents.session.cookies.remove(`https://${cookie.domain}${cookie.path}`, cookie.name)));
+          loginWindow.destroy();
+          resolve({
+            tokenData,
+            riotcookies,
+          });
+        });
+      }
+    });
+
+    /*loginWindow.webContents.on('did-fail-load', () => {
       var url = loginWindow.webContents.getURL();
       const tokenData = getTokenDataFromURL(url);
       foundToken = true;
@@ -1975,7 +1997,7 @@ async function showSignIn() {
           riotcookies,
         });
       });
-    });
+    });*/
     loginWindow.once('ready-to-show', () => {
       loginWindow.show();
     }); 

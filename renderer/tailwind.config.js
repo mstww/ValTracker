@@ -14,7 +14,7 @@ var legacyBeta = {
     "button-text": "#ffffff", 
     "global-text": "#ffffff",
     'val-blue': '#6bf1e6',
-    "val-yellow": "#ffff8c",
+    "val-yellow": "#f0cb74",
     "scrollbar-bg": "#535353",
     "scrollbar-thumb-bg": "#c2c2c2",
     "scrollbar-thumb-hover": "#8a8a8a"
@@ -35,7 +35,7 @@ var legacyAlpha = {
     "button-text": "#ffffff",
     "global-text": "#ffffff",
     'val-blue': '#6bf1e6',
-    "val-yellow": "#ffff8c",
+    "val-yellow": "#f0cb74",
     "scrollbar-bg": "#535353",
     "scrollbar-thumb-bg": "#c2c2c2",
     "scrollbar-thumb-hover": "#8a8a8a"
@@ -77,7 +77,7 @@ var normal = {
     "button-text": "#ffffff",
     "global-text": "#ffffff",
     'val-blue': '#6bf1e6',
-    "val-yellow": "#ffff8c",
+    "val-yellow": "#f0cb74",
     "scrollbar-bg": "#535353",
     "scrollbar-thumb-bg": "#c2c2c2",
     "scrollbar-thumb-hover": "#8a8a8a"
