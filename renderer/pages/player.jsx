@@ -806,7 +806,7 @@ function PlayerInfo({ isNavbarMinimized }) {
         initial="hidden"
         exit="exit"
         animate={loading ? 'open' : 'closed'}
-        className={'w-full px-16 flex flex-col bg-maincolor-light h-full z-50 mt-80 absolute top-0 left-0'}
+        className={'w-full px-16 flex flex-col bg-maincolor h-full z-50 mt-80 absolute top-0 left-0'}
         transition={{ type: 'ease-in', duration: 0.2 }}
       >
         <div className='flex flex-row h-full justify-center items-center'>
@@ -815,7 +815,7 @@ function PlayerInfo({ isNavbarMinimized }) {
           </div>
         </div>
       </motion.div>
-      <div className={'grid grid-col-1 text-2xl w-full text-center z-40 absolute top-0 left-0 bg-maincolor-light ' + (error ? '' : 'hidden')}>
+      <div className={'grid grid-col-1 text-2xl w-full text-center z-40 absolute top-0 left-0 bg-maincolor ' + (error ? '' : 'hidden')}>
         <img className='ml-auto mr-auto w-1/5' src='/icons/VALTracker_Logo_default.png' />
         <motion.div
           key={"error"}
