@@ -18,14 +18,14 @@
 # Features
 
 - **The Hub**
-  - See a detailed view and the stats of your last 15 Matches
+  - See a detailed view and the stats of your last 15 Matches, in any mode
   - Load more matches if needed
   - See Graphs of your last 8 Matches' Stats
   - Check your Battle Pass and Agent Contract Progress
   - See the Featured Bundle and it's price
       <details>
         <summary>Screenshots:</summary>
-        <img src="https://media.codedotspirit.dev/valtracker/github-readme/the_hub.png" align="center">
+        <img src="https://valtracker.gg/img/valtracker-hub.webp" align="center">
       </details>
 
 - **Shop**
@@ -34,7 +34,7 @@
   - See your Night Market if available
       <details>
         <summary>Screenshots:</summary>
-        <img src="https://media.codedotspirit.dev/valtracker/github-readme/shop.png" align="center">
+        <img src="https://valtracker.gg/img/valtracker-shop.webp" align="center">
       </details>
 
 - **Inventory Manager**
@@ -43,7 +43,7 @@
   - Save Presets of your Inventory and switch between them in seconds
       <details>
         <summary>Screenshots:</summary>
-        <img src="https://media.codedotspirit.dev/valtracker/github-readme/inventory.png" align="center">
+        <img src="https://valtracker.gg/img/valtracker-inventory-champs.webp" align="center">
       </details>
 
 - **Favorite Matches**
@@ -51,7 +51,7 @@
   - Check them any time, even in a year or two
       <details>
         <summary>Screenshots:</summary>
-        <img src="https://media.codedotspirit.dev/valtracker/github-readme/favorites.png" align="center">
+        <img src="https://valtracker.gg/img/valtracker-favs.webp" align="center">
       </details>
 
 - **Wishlist**
@@ -59,8 +59,8 @@
   - Get a notification whenever one of your wishlisted skins is in your shop
       <details>
         <summary>Screenshots:</summary>
-        <img src="https://media.codedotspirit.dev/valtracker/github-readme/wishlist_1.png" align="center">
-        <img src="https://media.codedotspirit.dev/valtracker/github-readme/wishlist_2.png" align="center">
+        <img src="https://valtracker.gg/img/wishlist.webp" align="center">
+        <img src="https://valtracker.gg/img/windows-desktop-notif.webp" align="center">
       </details>
 
 - **Matchview**
@@ -68,7 +68,7 @@
   - Gain Awards depending on how you played
       <details>
         <summary>Screenshots:</summary>
-        <img src="https://media.codedotspirit.dev/valtracker/github-readme/matchview.png" align="center">
+        <img src="https://valtracker.gg/img/valtracker-matchview.webp" align="center">
       </details>
 
 # Translation
