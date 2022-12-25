@@ -672,7 +672,7 @@ h5 {
   text-align: center;
 }
 
-.kda-display-span::after {
+.kda-display-span:not(.kda-display-span.last)::after {
   content: "/";
   color: grey;
   margin-left: 0.5rem;
@@ -1620,4 +1620,53 @@ tr td:last-child {
 
 .shop-item-name {
   text-shadow: 0 2px 7px rgba(0, 0, 0, 0.8);
+}
+
+.skeleton {
+  animation: skeleton-loading 1s linear infinite alternate;
+}
+
+.skeleton-text {
+  @apply rounded w-fit h-fit;
+  animation: skeleton-loading 1s linear infinite alternate;
+}
+
+.kda-display-span.skeleton-text {
+  @apply rounded-none;
+}
+
+.kda-display-span.skeleton-text:first-child {
+  @apply rounded-l;
+}
+
+.kda-display-span.skeleton-text:last-child {
+  @apply rounded-r;
+}
+
+.skeleton-text.mid {
+  @apply mx-auto;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: rgba(41, 41, 41, 0.5);
+    color: rgba(255, 255, 255, 0);
+  }
+  100% {
+    background-color: rgba(41, 41, 41, 0.8);
+    color: rgba(255, 255, 255, 0);
+  }
+}
+
+.skeleton-image {
+  animation: skeleton-image-loading 1s linear infinite alternate;
+}
+
+@keyframes skeleton-image-loading {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0.4;
+  }
 }

@@ -21,6 +21,24 @@ import ValIconHandler from '../components/ValIconHandler';
 import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
 
+const imgArray = [
+  '/agents/breach_black.png',
+  '/agents/cypher_black.png',
+  '/agents/jett_black.png',
+  '/agents/jett_black.png',
+  '/agents/jett_black.png',
+  '/agents/breach_black.png',
+  '/agents/omen_black.png',
+  '/agents/fade_black.png',
+  '/agents/fade_black.png',
+  '/agents/jett_black.png',
+  '/agents/cypher_black.png',
+  '/agents/fade_black.png',
+  '/agents/breach_black.png',
+  '/agents/cypher_black.png',
+  '/agents/omen_black.png',
+];
+
 async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
@@ -798,8 +816,10 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   
         var map_stats = playerstats.map_stats;
         var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-          return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
+          return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
         });
+
+        console.log(sorted_map_stats);
   
         if(mapData) {
           var map_data = mapData
@@ -823,8 +843,10 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var agent_stats = playerstats.agent_stats;
         
         var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-          return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
+          return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
         });
+
+        console.log(sorted_agent_stats);
   
         var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
         var agent_data = await agent_data_raw.json();
@@ -932,6 +954,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           dataToWrite.items.games = obj;
     
           var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
+          console.log(playerstats);
           
           setAvgKillsPerMatch(playerstats.kills_per_match);
           setAvgKillsPerRound(playerstats.kills_per_round);
@@ -939,7 +962,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setHeadshotPercent(playerstats.headshot_percent);
           var map_stats = playerstats.map_stats;
           var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-            return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
+            return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
           });
     
           var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
@@ -958,9 +981,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setBestMapKdaRatio(best_map.map_kda_ratio);
     
           var agent_stats = playerstats.agent_stats;
-          
+        
           var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-            return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
+            return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
           });
     
           var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
@@ -1033,6 +1056,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       newMatches = arr;
 
       var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+      console.log(playerstats);
         
       setAvgKillsPerMatch(playerstats.kills_per_match);
       setAvgKillsPerRound(playerstats.kills_per_round);
@@ -1041,7 +1065,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       
       var map_stats = playerstats.map_stats;
       var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-        return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
+        return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
       });
 
       var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
@@ -1060,9 +1084,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setBestMapKdaRatio(best_map.map_kda_ratio);
 
       var agent_stats = playerstats.agent_stats;
-      
+        
       var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-        return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
+        return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
       });
 
       var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
@@ -1137,6 +1161,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         dataToWrite.items.games = obj;
   
         var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
+        console.log(playerstats);
         
         setAvgKillsPerMatch(playerstats.kills_per_match);
         setAvgKillsPerRound(playerstats.kills_per_round);
@@ -1145,7 +1170,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   
         var map_stats = playerstats.map_stats;
         var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-          return map_stats[b].map_kda_ratio - map_stats[a].map_kda_ratio;
+          return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
         });
   
         var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
@@ -1166,7 +1191,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var agent_stats = playerstats.agent_stats;
         
         var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-          return agent_stats[b].avg_match_score - agent_stats[a].avg_match_score;
+          return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
         });
   
         var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
@@ -1687,10 +1712,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               className={`w-5 h-5 absolute top-2 right-2 cursor-pointer ${isSilentLoading === true || contractsLoading === true || contractsError === true ? "hidden" : ""}`}
               onClick={() => {
                 setContractsLoading(true);
+                setIsSilentLoading(true);
                 fetchContractData(true);
               }}
             />
-            <div className={'flex flex-col h-full p-1 ' + (contractsLoading || contractsError ? 'hidden' : '')}>
+            <div className={'flex flex-col h-full p-1 ' + (contractsError ? 'hidden' : '')}>
               <ContractProgressCard 
                 title={LocalText(L, "top_l.contracts.battle_pass_header")} 
                 level_locale={LocalText(L, "top_l.contracts.level_text")}
@@ -1704,6 +1730,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 level_2={battlePass_currentLevelNum}
                 level_2_isTextReward={battlePass_currentLevelReward ? battlePass_currentLevelReward.isText : null}
                 isVisible={!contractsLoading}
+                loading={loading}
               />
 
               <hr className='bg-maincolor-dim h-px border-none' />
@@ -1721,6 +1748,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 level_2={agentContract_currentLevelNum}
                 level_2_isTextReward={agentContract_currentLevelReward ? agentContract_currentLevelReward.isText : null}
                 isVisible={!contractsLoading}
+                loading={loading}
               />
             </div>
             <div className={'w-full mr-auto h-full absolute top-0 left-0 ' + (contractsLoading || contractsError ? 'flex' : 'hidden')}>
@@ -1731,17 +1759,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <button 
                   className='mt-2 button default' 
                   onClick={async () => {
-                    setIsLoa
                     fetchContractData(true);
                   }}
                 >
                   {LocalText(L, "component_err.button_text")}
                 </button>
-              </div>
-              <div
-                className={'flex w-full h-4/5 justify-center items-center ' + (contractsError ? 'hidden ' : ' ') + (contractsLoading ? '' : 'hidden')}
-              >
-                <Loading color={'error'} size={'lg'} />
               </div>
             </div>
           </div>
@@ -2001,9 +2023,77 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
           <div 
             id='loading' 
-            className={'z-20 flex w-full h-4/5 justify-center items-center ' + (errored ? 'hidden ' : ' ') + (loading ? '' : 'hidden')}
+            className={'z-30 flex w-full justify-center items-center ' + (errored ? 'hidden ' : ' ') + (loading ? '' : 'hidden')}
           >
-            <Loading color={'error'} size={'lg'} />
+            <div 
+              id='match-timeline' 
+              className={
+                'relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1 w-full'
+              }
+            >
+              <div className='day relative'>
+                <div id='day-header' className='text-lg ml-4 day-header font-bold skeleton-text'>SKELETO</div>
+                {imgArray.map((x, index) => {
+                  return (
+                    <div 
+                      id='match'
+                      className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 hover:bg-opacity-50 active:bg-opacity-0 cursor-default transition-all duration-100 ease-linear' 
+                      key={index}
+                    >
+                      <div className='w-1/3 flex flex-row'>
+                        <div id='agent-img'>
+                          <img className='h-full shadow-img transition-all duration-100 ease-linear skeleton-image' src={x} />
+                        </div>
+                        <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
+                          <span className='text-lg font-semibold skeleton-text'>SKELETO</span>
+                          <span className='text-base font-light flex flex-row items-center'>
+                            <span className='skeleton-text'>SKELETONSKE</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div id='match-score' className='w-1/3 flex flex-row items-center'>
+                        <div id='scoreline' className='flex flex-col text-center w-1/2'>
+                          <span className={'text-xl font-semibold outcome-text skeleton-text mid'}>SKELET</span>
+                          <span className='text-lg skeleton-text mid'>SKEL</span>
+                        </div>
+                        <div 
+                          id='scoreboard-pos' 
+                          className={'rounded text-base h-8 py-0.5 px-1 ml-7 font-light skeleton-text'}
+                        >
+                          SKE
+                        </div>
+                      </div>
+                      <div id='match-stats-1' className='w-1/3 flex flex-row items-center pl-4'>
+                        <div id='left-side' className='flex flex-col'>
+                          <span className='text-lg'>KDA</span>
+                          <span className='text-lg font-light'>KD</span>
+                        </div>
+                        <div id='right-side' className='flex flex-col ml-4'>
+                          <div className='text-lg' id='kda-display'>
+                            <span className='kda-display-span skeleton-text'>SK</span> 
+                            <span className='kda-display-span skeleton-text'>SK</span>
+                            <span className='kda-display-span last skeleton-text'>SK</span>
+                          </div>
+                          <div className='text-lg font-light ml-2' id='score-display'>
+                            <span className='skeleton-text'>SKEL</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div id='match-stats-2' className='w-1/6 flex flex-row items-center'>
+                        <div className='w-1/2 flex flex-col items-center'>
+                          <span className='text-lg'>HS%</span> 
+                          <span className='text-lg font-light text-gray-500 skeleton-text'>SKE</span>
+                        </div>
+                        <div className='w-1/2 flex flex-col items-center'>
+                          <span className='text-lg'>ACS</span>
+                          <span className='text-lg font-light text-gray-500 skeleton-text'>SKE</span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
           <div 
             id='errored' 
@@ -2013,49 +2103,46 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </div>
         <div id='bottom-right-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-dim'>
-          <div className={'overflow-y-auto ' + (loading || errored ? 'hidden' : '')}>
-            {
-              currentlyLoadedMatchCount > 0 ?
-              <div className={'p-0 m-0' + (areStatsActive ? '' : ' hidden ')}>
-                <span className='font-bold'>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
-                <div className='flex flex-row justify-between mt-1.5'>
-                  <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} />
-                  <SmallStatsCard number={avgKillsPerRound} desc={LocalText(L, "bot_r.stats.stat_2")} />
-                </div>
-
-                <div className='flex flex-row justify-between mt-1.5 mb-3'>
-                  <SmallStatsCard number={winratePercent + '%'} desc={LocalText(L, "bot_r.stats.stat_3")} />
-                  <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} />
-                </div>
-
-                <span className='mt-1 font-bold'>{LocalText(L, "bot_r.best_map.header")}</span>
-                <LargeStatsCard 
-                  header={bestMapName}
-                  stat_1_locale={LocalText(L, "bot_r.best_map.stats.stat_1")}
-                  stat_2_locale={LocalText(L, "bot_r.best_map.stats.stat_2")}
-                  img_src={bestMapImage} 
-                  win_percent={bestMapWinPercent}
-                  avg_kda={bestMapKdaRatio}
-                  extraClasses={'mb-3'} 
-                />
-
-                <span className='mt-1 font-bold'>{LocalText(L, "bot_r.best_agent.header")}</span>
-                <FlatLargeStatsCard
-                  img_src={bestAgentImage}
-                  header={bestAgentName}
-                  top_num={bestAgentAvgScore}
-                  top_desc={LocalText(L, "bot_r.best_agent.stat_1")}
-                  stat_1_num={bestAgentAvgKda}
-                  stat_1_desc={LocalText(L, "bot_r.best_agent.stat_2")}
-                  stat_2_num={bestAgentKillsPerRound}
-                  stat_2_desc={LocalText(L, "bot_r.best_agent.stat_3")}
-                  stat_3_num={bestAgentKillsPerMatch}
-                  stat_3_desc={LocalText(L, "bot_r.best_agent.stat_4")}
-                />
+          <div className={'overflow-y-auto'}>
+            <div className={'p-0 m-0' + (areStatsActive ? '' : ' hidden ')}>
+              <span className={`font-bold ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
+              <div className='flex flex-row justify-between mt-1.5'>
+                <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} loading={loading} />
+                <SmallStatsCard number={avgKillsPerRound} desc={LocalText(L, "bot_r.stats.stat_2")} loading={loading} />
               </div>
-              : 
-              null
-            }
+
+              <div className='flex flex-row justify-between mt-1.5 mb-3'>
+                <SmallStatsCard number={winratePercent + '%'} desc={LocalText(L, "bot_r.stats.stat_3")} loading={loading} />
+                <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} loading={loading} />
+              </div>
+
+              <span className={`mt-1 font-bold ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.best_map.header")}</span>
+              <LargeStatsCard 
+                header={bestMapName}
+                stat_1_locale={LocalText(L, "bot_r.best_map.stats.stat_1")}
+                stat_2_locale={LocalText(L, "bot_r.best_map.stats.stat_2")}
+                img_src={bestMapImage} 
+                win_percent={bestMapWinPercent}
+                avg_kda={bestMapKdaRatio}
+                extraClasses={'mb-3'} 
+                loading={loading}
+              />
+
+              <span className={`mt-1 font-bold ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.best_agent.header")}</span>
+              <FlatLargeStatsCard
+                img_src={bestAgentImage}
+                header={bestAgentName}
+                top_num={bestAgentAvgScore}
+                top_desc={LocalText(L, "bot_r.best_agent.stat_1")}
+                stat_1_num={bestAgentAvgKda}
+                stat_1_desc={LocalText(L, "bot_r.best_agent.stat_2")}
+                stat_2_num={bestAgentKillsPerRound}
+                stat_2_desc={LocalText(L, "bot_r.best_agent.stat_3")}
+                stat_3_num={bestAgentKillsPerMatch}
+                stat_3_desc={LocalText(L, "bot_r.best_agent.stat_4")}
+                loading={loading}
+              />
+            </div>
             <span className='font-bold'>{LocalText(L, "bot_r.match_filter.header")}</span>
             <div className='flex flex-row flex-wrap justify-between' id='hub-match-filter'>
               <ModeSelectionCard id="unrated" mode_name={'unrated'} display_name={LocalText(L, "bot_r.match_filter.fl_1")} active={activeQueueTab} setActive={setActiveQueueTab} />
@@ -2081,12 +2168,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             >
               {LocalText(L, "component_err.button_text")}
             </button>
-          </div>
-          <div 
-            id='loading' 
-            className={'z-20 flex w-full h-4/5 justify-center items-center ' + (errored ? 'hidden ' : ' ') + (loading ? '' : 'hidden')}
-          >
-            <Loading color={'error'} size={'lg'} />
           </div>
         </div>
       </div>

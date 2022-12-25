@@ -59,12 +59,7 @@ export default function ContractProgressCard({ title, reward_1, level_1, progres
           </div>
 
           <div className='w-1/2 mx-auto h-full p-2 flex flex-col justify-center text-center relative'>
-            {
-              isVisible ? 
-              <Progress color={color} size={'xs'} max={progress_max} value={progress_value} className={`contract-card-bar ${color === "warning" ? "yellow-glow" : null}`} />
-              :
-              null
-            }
+            <Progress color={color} size={'xs'} max={progress_max} value={progress_value} className={`contract-card-bar ${color === "warning" ? "yellow-glow" : null}`} />
             <p className='text-gray-500 mt-0'>{numberWithCommas(progress_max - progress_value)}<p className="ml-0.5 mr-0.5 inline">XP</p> {xp_locale}</p>
           </div>
 
