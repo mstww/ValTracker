@@ -180,7 +180,7 @@
       },
       "apply_settings_profile": {
         "header": "Apply Settings Profile?",
-        "desc": "This will restart the app and possibly change all of your settigns. If you want to back up your current settings, close this popup and copy your settings share code.",
+        "desc": "This will restart the app and possibly change all of your settings. If you want to back up your current settings, close this popup and copy your settings share code.",
         "button_1": "Confirm",
         "button_2": "Cancel"
       },
