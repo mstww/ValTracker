@@ -103,7 +103,9 @@ export async function migrateDataToDB(win) {
     allSettings.searchHistory = (JSON.parse(fs.readFileSync(basePath + 'search_history/history.json'))).arr;
 
     allSettings.playerStoreConfig = {};
-    allSettings.playerStoreConfig.featuredBundle = JSON.parse(fs.readFileSync(basePath + 'shop_data/featured_bundle.json'));
+    try {
+      allSettings.playerStoreConfig.featuredBundle = JSON.parse(fs.readFileSync(basePath + 'shop_data/featured_bundle.json'));
+    } catch(e) {}
 
     allSettings.playerStoreConfig.savedStores = {};
 

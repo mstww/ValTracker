@@ -1,5 +1,5 @@
 import React from 'react';
-import { Progress } from '@nextui-org/react';
+import { Loading, Progress } from '@nextui-org/react';
 import Layout from '../components/Layout';
 import LocalText from '../components/translation/LocalText';
 import L from '../locales/translations/migration.json';
@@ -28,13 +28,13 @@ function Migration({ isOverlayShown, setIsOverlayShown }) {
         className='h-full w-full relative p-2 pl-4 pr-4'
         id='pg-1'
       >
-        <h2 className='text-lg'>{LocalText(L, 'header')}</h2>
+        <h2 className='text-lg font-bold tracking-normal'>{LocalText(L, 'header')}</h2>
         <hr className='mb-2' />
         <p className='mb-2'>{LocalText(L, 'desc', estTime)}</p>
         <div className='h-1/2 w-5/6 mx-auto flex flex-col justify-center items-center'>
           <p className='mb-4'>{LocalText(L, 'estTime', estTime)}</p>
           <Progress value={progress} max={100} color="gradient" size={'xs'} className={'bg-tile-color rounded mb-4'} />
-          <span>{progressState}</span>
+          <div> <Loading size='sm'color={'error'} className="relative top-1.5 mr-3" /><span>{progressState}</span></div>
         </div>
         <p className='absolute bottom-2 left-4 text-gray-500'>{LocalText(L, 'footer')}</p>
       </div>
