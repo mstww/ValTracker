@@ -271,7 +271,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
           "skins": []
         });
       
-        var bundle = await (await fetch(`https://beta-api.valtracker.gg/v1/bundles/featured`)).json();
+        var bundle = await (await fetch(`https://api.valtracker.gg/v1/bundles/featured`)).json();
         var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
         
         var instancetoken = await ipcRenderer.invoke("requestInstanceToken", [name, tag]);

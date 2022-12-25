@@ -1527,7 +1527,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   React.useEffect(async () => {
     const refetchFeaturedBundle = async () => {
-      var featured_bundle = await (await fetch(`https://beta-api.valtracker.gg/v1/bundles/featured`, { headers: { "x-valtracker-lang": APIi18n(router.query.lang) } })).json();
+      var featured_bundle = await (await fetch(`https://api.valtracker.gg/v1/bundles/featured`, { headers: { "x-valtracker-lang": APIi18n(router.query.lang) } })).json();
       
       setFeaturedBundleName(featured_bundle.data.name);
       setFeaturedBundlePrice(featured_bundle.data.price);

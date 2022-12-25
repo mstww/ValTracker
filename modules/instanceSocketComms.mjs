@@ -4,7 +4,7 @@ import { parentPort, workerData } from "worker_threads";
 
 (async () => {
   var instanceToken = workerData;
-  var data = await(await fetch("https://beta-api.valtracker.gg/v1/instancesocket", {
+  var data = await(await fetch("https://api.valtracker.gg/v1/instancesocket", {
     method: "POST",
     headers: {
       "authentication": instanceToken
@@ -13,7 +13,7 @@ import { parentPort, workerData } from "worker_threads";
   
   var poolID = data.data;
   
-  const ws = new WebSocket(`wss://beta-api.valtracker.gg/v1/instancepool`, {
+  const ws = new WebSocket(`wss://api.valtracker.gg/v1/instancepool`, {
     rejectUnauthorized: false,
     followRedirects: true,
     headers: {

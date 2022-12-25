@@ -100,7 +100,7 @@ async function requestUserCreds(region, puuid) {
 
 const fetchPatchnotes = async (lang, version) => {
   try {
-    const json = await(await fetch(`https://beta-api.valtracker.gg/v1/changelog/${version}`, { keepalive: true })).json();
+    const json = await(await fetch(`https://api.valtracker.gg/v1/changelog/${version}`, { keepalive: true })).json();
 
     const patchnotes = md_conv.makeHtml(json.data.changelog);
     moment.locale(lang);
@@ -476,7 +476,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
           "skins": []
         });
       
-        var bundle = await (await fetch(`https://beta-api.valtracker.gg/v1/bundles/featured`)).json();
+        var bundle = await (await fetch(`https://api.valtracker.gg/v1/bundles/featured`)).json();
         var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
       
         await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
@@ -650,7 +650,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   }, [ general_changeLangPopupOpen ]);
 
   React.useEffect(async () => {
-    var versionsData = await(await fetch('https://beta-api.valtracker.gg/v1/versions')).json();
+    var versionsData = await(await fetch('https://api.valtracker.gg/v1/versions')).json();
     setPatchnotes_versionSwitcherSelectedPatchnotesVersion(versionsData.data[versionsData.data.length-1]);
     setPatchnotes_versionSwitcherFallback(versionsData.data[0]);
     setPatchnotesVersions(versionsData.data.reverse().splice(0, 15));
