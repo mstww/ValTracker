@@ -366,48 +366,24 @@ async function getAccessTokens(ssid) {
  * Function that returns the match history of a user.
  * @param {String} region 
  * @param {String} puuid 
- * @param {Number} startIndex 
- * @param {Number} endIndex 
- * @param {String} queue 
  * @param {String} entitlement_token 
  * @param {String} bearer 
+ * @param {Number} client_version 
  * @returns Returns the match history of the user. If this request fails, it returns the HTML response from the server.
  */
 
-async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
+async function getMMRInfo(region, puuid, entitlement_token, bearer, client_version) {
+  console.log(region, puuid, entitlement_token, bearer, client_version)
   if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/${puuid}`, {
     method: 'GET',
     headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
       'Authorization': 'Bearer ' + bearer,
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      'X-Riot-ClientPlatform': "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9",
+      'X-Riot-ClientVersion': client_version,
       'Content-Type': 'application/json',
       'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
-}
-
-/**
- * Funtion that returns a single match based on it's UUID.
- * @param {String} region 
- * @param {String} matchId 
- * @param {String} entitlement_token 
- * @param {String} bearer 
- * @returns 
- */
-
-async function getMatch(region, matchId, entitlement_token, bearer) {
-  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-details/v1/matches/${matchId}`, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      "X-Riot-ClientPlatform": "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9",
-      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json'
     },
     keepalive: true
   })).json());
@@ -423,14 +399,17 @@ async function getMatch(region, matchId, entitlement_token, bearer) {
  */
 
 async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
-  var matches = await getMatchHistory(region, puuid, 0, 1, 'competitive', entitlement_token, bearer);
-  if(matches.History.length > 0) {
-    var match_data = await getMatch(region, matches.History[0].MatchID, entitlement_token, bearer);
-    for(var i = 0; i < match_data.players.length; i++) {
-      if(match_data.players[i].subject === puuid) {
-        return match_data.players[i].competitiveTier;
-      }
-    }
+  var seasons = await(await fetch(`https://valorant-api.com/v1/seasons`)).json();
+  
+  var season = seasons.data.find(x => (new Date(x.startTime) < new Date()) && (new Date() < new Date(x.endTime)) && x.type === "EAresSeasonType::Act");
+  var seasonUUID = season.uuid;
+
+  var versionInfo = await (await fetch(`https://valorant-api.com/v1/version`)).json();
+
+  var mmrInfo = await getMMRInfo(region, puuid, entitlement_token, bearer, versionInfo.data.riotClientVersion);
+  console.log(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID);
+  if(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID]) {
+    return mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID].CompetitiveTier;
   } else {
     return 0;
   }
