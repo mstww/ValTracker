@@ -1426,7 +1426,7 @@ async function checkStoreForWishlistItems() {
     await noFilesFound();
   }
 
-  var appStatus = await(await fetch('https://beta-api.valtracker.gg/v1/status/main', {
+  var appStatus = await(await fetch('https://api.valtracker.gg/v1/status/main', {
     headers: {
       "x-valtracker-version": 'v' + pjson.version,
     }
