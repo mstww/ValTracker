@@ -870,7 +870,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                     return (
                       <div 
                         id='match'
-                        className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-60 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-100 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                        className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-20 active:bg-opacity-0 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                         key={index}
                         onClick={(e) => {
                           if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
