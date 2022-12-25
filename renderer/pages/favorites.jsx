@@ -600,9 +600,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                       src={
                         matchInfo.fixedQueueName == 'competitive' ? 
                         (matchInfo.currenttier ? 
-                          `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${matchInfo.currenttier}/smallicon.png`
+                          `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchInfo.currenttier}/smallicon.png`
                           :
-                          `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
+                          `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
                         )
                         :
                         'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
@@ -672,7 +672,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                       <div className={'day relative ' + (shownMatchesPerDay[key].isShown === false ? 'hidden' : '')} key={index}>
                         <div id='day-header' className='text-lg ml-4 day-header font-bold'>{today === key ? 'Today' : key}</div>
                         {favMatches[key].map((match, index) => {
-                          var { matchData, matchViewData } = calculateMatchStats(match, '');
+                          var { matchData, matchViewData } = calculateMatchStats(match, userCreds.puuid);
     
                           switch(match.matchInfo.queueID) {
                             case('ggteam'): {
@@ -749,9 +749,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                         src={
                                           match.matchInfo.queueID == 'competitive' ? 
                                           (matchData.playerCurrentTier ? 
-                                            `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${matchData.playerCurrentTier}/smallicon.png`
+                                            `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
                                             :
-                                            `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
+                                            `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
                                           )
                                           :
                                           'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
@@ -921,9 +921,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                   src={
                                     match.matchInfo.queueID == 'competitive' ? 
                                     (matchData.playerCurrentTier ? 
-                                      `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/${matchData.playerCurrentTier}/smallicon.png`
+                                      `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
                                       :
-                                      `https://media.valorant-api.com/competitivetiers/aca29595-40e4-01f5-3f35-b1b3d304c96e/0/smallicon.png`
+                                      `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
                                     )
                                     :
                                     'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
