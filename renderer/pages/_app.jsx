@@ -91,7 +91,7 @@ function MyApp({ Component, pageProps }) {
     router.events.on("routeChangeComplete", () => {
       setIsOverlayShown(false);
     });
-  });
+  }, []);
 
   React.useEffect(async () => {
     if(!firstRender) {

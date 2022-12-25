@@ -209,13 +209,15 @@ async function connectToDB() {
  */
 
 async function disableHardwareAcceleration() {
-  if(db === false) await connectToDB();
-  var uuid = uuidv5("hardwareAccel", process.env.SETTINGS_UUID);
-  let loadData = await db.query(`SELECT value FROM setting:⟨${uuid}⟩`);
-  
-  if(loadData[0].result[0]) {
-    if(loadData[0].result[0].value === false) app.disableHardwareAcceleration();
-  }
+  try {
+    if(db === false) await connectToDB();
+    var uuid = uuidv5("hardwareAccel", process.env.SETTINGS_UUID);
+    let loadData = await db.query(`SELECT value FROM setting:⟨${uuid}⟩`);
+    
+    if(loadData[0].result[0]) {
+      if(loadData[0].result[0].value === false) app.disableHardwareAcceleration();
+    }
+  } catch(gottaFixThis) {}
 }
 
 await disableHardwareAcceleration();
@@ -223,7 +225,7 @@ await disableHardwareAcceleration();
 // Set a protocol for the app. This is not currently used.
 if(process.defaultApp) {
   if(process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient("x-valtracker-client", process.execPath, [
+    app.setAsDefaultProtocolClient("x-valtracker-client", process.execPath, [ 
       path.resolve(process.argv[1]),
     ]);
   }

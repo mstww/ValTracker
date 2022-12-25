@@ -865,6 +865,8 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </tbody>
         </table>
         {playerScoreboardStats.map((playerStats, index) => {
+          var isPlayer = false;
+          if(playerStats.subject === uuid) isPlayer = true;
           return(
             <>
               <motion.div 
@@ -877,7 +879,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <div className='py-1 pl-1 flex flex-row items-center h-14 w-1/4'>
                   <img src={'https://media.valorant-api.com/agents/' + playerStats.subjectAgent + '/displayicon.png'} className='h-full shadow-img' />
                   {isComp === true && (
-                    <img src={`https://media.valorant-api.com/competitivetiers/564d8e28-c226-3180-6285-e48a390db8b1/${playerStats.competitiveTier}/smallicon.png`} className={`w-8 ml-2`} />
+                    <img src={`https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${playerStats.competitiveTier}/smallicon.png`} className={`w-8 ml-2`} />
                   )}
                   <Tooltip 
                     content={playerStats.subjectName + '#' + playerStats.subjectTag} 
@@ -886,7 +888,11 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     className='rounded'
                   >
                     <span 
-                      className={`ml-2 text-xl val-${playerStats.subjectTeam.toLowerCase()}-glow text-val-` + (playerStats.subjectTeam.toLowerCase())} 
+                      className={isPlayer === false ? (
+                        `ml-2 text-xl val-${playerStats.subjectTeam.toLowerCase()}-glow text-val-${playerStats.subjectTeam.toLowerCase()}`
+                      ) : (
+                        `ml-2 text-xl yellow-glow text-val-yellow`
+                      )} 
                       onClick={() => {
                         var name_encoded = encodeURIComponent(playerStats.subjectName + '#' + playerStats.subjectTag);
                         router.push(`/player?name=${playerStats.subjectName}&tag=${playerStats.subjectTag}&searchvalue=${name_encoded}&lang=${router.query.lang}`);
