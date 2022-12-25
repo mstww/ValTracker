@@ -49,11 +49,12 @@
         "fm_1": "All",
         "fm_2": "Unrated",
         "fm_3": "Competitive",
-        "fm_4": "Deathmatch",
-        "fm_5": "Spike Rush",
-        "fm_6": "Replication",
-        "fm_7": "Escalation",
-        "fm_8": "Custom"
+        "fm_4": "Swiftplay",
+        "fm_5": "Deathmatch",
+        "fm_6": "Spike Rush",
+        "fm_7": "Replication",
+        "fm_8": "Escalation",
+        "fm_9": "Custom"
       },
       "sort_by": {
         "header": "Sort by",

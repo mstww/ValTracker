@@ -646,6 +646,7 @@ function PlayerInfo({ isNavbarMinimized }) {
           <div id='match-type-selector' className='flex justify-between mb-4'>
             <MatchTypeTile type='unrated' text={LocalText(L, "matches.gamemodes.unrated")} delay={0} active={activeQueueTab} onClick={() => {changeMatchType('unrated')}} />
             <MatchTypeTile type='competitive' text={LocalText(L, "matches.gamemodes.competitive")} delay={0.05} active={activeQueueTab} onClick={() => {changeMatchType('competitive')}} />
+            <MatchTypeTile type='swiftplay' text={LocalText(L, "matches.gamemodes.swiftplay")} delay={0.3} active={activeQueueTab} onClick={() => {changeMatchType('swiftplay')}} />
             <MatchTypeTile type='deathmatch' text={LocalText(L, "matches.gamemodes.deathmatch")} delay={0.1} active={activeQueueTab} onClick={() => {changeMatchType('deathmatch')}} />
             <MatchTypeTile type='spikerush' text={LocalText(L, "matches.gamemodes.spikerush")} delay={0.15} active={activeQueueTab} onClick={() => {changeMatchType('spikerush')}} />
             <MatchTypeTile type='replication' text={LocalText(L, "matches.gamemodes.onefa")} delay={0.2} active={activeQueueTab} onClick={() => {changeMatchType('replication')}} />

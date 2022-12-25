@@ -1020,11 +1020,12 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
             <Radio value="all" className='!mt-2' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_1")}</Radio>
             <Radio value="unrated" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_2")}</Radio>
             <Radio value="competitive" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_3")}</Radio>
-            <Radio value="deathmatch" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_4")}</Radio>
-            <Radio value="spikerush" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_5")}</Radio>
-            <Radio value="replication" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_6")}</Radio>
-            <Radio value="escalation" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_7")}</Radio>
-            <Radio value="custom" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_8")}</Radio>
+            <Radio value="custom" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_4")}</Radio>
+            <Radio value="deathmatch" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_5")}</Radio>
+            <Radio value="spikerush" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_6")}</Radio>
+            <Radio value="replication" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_7")}</Radio>
+            <Radio value="escalation" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_8")}</Radio>
+            <Radio value="custom" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.modes.fm_9")}</Radio>
           </Radio.Group>
 
           <span className='text-lg font-bold !mb-0 !pb-0'>{LocalText(L, "filters.sort_by.header")}</span>
