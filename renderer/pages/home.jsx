@@ -1729,7 +1729,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               interval={4000}
               className={"w-full h-full border-red-500"}
               onClickItem={(index, item) => {
-                shell.openExternal(valorantNews[index].external_link !== "" ? valorantNews[index].url : valorantNews[index].external_link);
+                shell.openExternal(valorantNews[index].external_link === "" ? valorantNews[index].url : valorantNews[index].external_link);
               }}
             >
               {valorantNews.map((article, index) => {
