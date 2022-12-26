@@ -150,31 +150,16 @@ export async function removeMatch(collection, uuid) {
   var puuid = await getCurrentPUUID();
   var data = await db.query(`SELECT * FROM matchIDCollection:⟨${collection}::${puuid}⟩`);
 
-  var collections = [];
+  var newCollection = data[0].result[0].matchIDs;
 
-  for(var i = 0; i < data[0].result.length; i++) {
-    if(data[0].result[i].matchIDs.find(str => str === uuid)) {
-      collections.push(data[0].result[i].id);
-    }
+  const index = newCollection.indexOf(uuid);
+  if (index > -1) {
+    newCollection.splice(index, 1);
   }
 
-  if(collections.length <= 1) {
-    await db.query(`DELETE match:⟨${uuid}⟩`);
-  }
-
-  for(var i = 0; i < collections.length; i++) {
-    var matchIDCollection = await db.query(`SELECT * FROM ${collections[i]}`);
-    var newCollection = matchIDCollection[0].result[0].matchIDs;
-
-    const index = newCollection.indexOf(uuid);
-    if (index > -1) {
-      newCollection.splice(index, 1);
-    }
-
-    await db.update(`${collections[i]}`, {
-      "matchIDs": newCollection
-    });
-  }
+  await db.update(`matchIDCollection:⟨${collection}::${puuid}⟩`, {
+    "matchIDs": newCollection
+  });
 }
 
 export async function addSkinToWishlist(obj) {

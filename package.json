@@ -57,15 +57,14 @@
     "electron-store": "^8.0.1",
     "electron-updater": "^5.0.1",
     "framer-motion": "^6.3.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "moment": "^2.29.3",
     "node-fetch": "^3.2.3",
     "node-notifier": "^10.0.1",
-    "react-awesome-slider": "^4.1.0",
+    "react-responsive-carousel": "^3.2.23",
     "showdown": "^2.1.0",
     "surrealdb.js": "^0.5.0",
-    "uuid": "^9.0.0",
-    "victory": "^36.5.3"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.12",

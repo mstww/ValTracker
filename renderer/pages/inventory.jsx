@@ -434,6 +434,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   :
                   null
                 }
+                key={index}
               >
                 <img src={`/invisible_weapons/${weapon.name.toLowerCase()}.png`} data-weapontype={weapon.uuid} alt={weapon.name} className={weapon.imgClasses} />
                 <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>{weapon.name}</span>

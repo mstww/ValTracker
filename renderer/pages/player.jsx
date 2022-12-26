@@ -277,8 +277,6 @@ function PlayerInfo({ isNavbarMinimized }) {
         setLoading(false);
         setError(true);
 
-        console.log(items);
-
         if(items.status) {
           setErrorReason(errorReasons[items.status]);
           if( 
