@@ -497,6 +497,15 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         
         break;
       }
+      case('AGE'): {
+        sortableFavMatches.sort(function(a, b) {
+          return a.matchInfo.gameStartMillis - b.matchInfo.gameStartMillis;
+        });
+    
+        setActiveSort(newValue);
+
+        break;
+      }
       default: {
         setActiveSort('none');
       }
@@ -672,7 +681,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         </motion.div>
       </motion.div>
       <div className='flex flex-row h-full w-full p-4'>
-        <div className='flex flex-col h-auto w-3/4'>
+        <div className='flex flex-col h-auto w-3/4 pr-4'>
           <div id='match-timeline' className='relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1 after:transition-all after:duration-100 after:ease-linear'>
             <Tooltip content={'Checking for new matches...'} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isLoadingNewMatches ? '' : 'hidden')}>
@@ -1015,7 +1024,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
           </div>
           <span className='text-center text-lg font-light'>{isLoadingNewMatches ? LocalText(L, "loading") : LocalText(L, "matches_bottom")}</span>
         </div>
-        <div className='w-1/4 favs-right border border-tile-color p-4 mt-7 rounded'>
+        <div className='w-[calc((100%-17rem)/4)] favs-right border border-tile-color p-4 mt-7 rounded !fixed right-4 top-11 !h-fit'>
           <span className='text-lg font-bold'>{LocalText(L, "filters.header")}</span>
           <Radio.Group 
             value={activeQueueTab}
@@ -1043,8 +1052,8 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
             <Radio value="KD" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.sort_by.fs_2")}</Radio>
             <Radio value="HS%" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.sort_by.fs_3")}</Radio>
             <Radio value="ACS" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.sort_by.fs_4")}</Radio>
+            <Radio value="AGE" className='!mt-3' color={'error'} size='sm'>{LocalText(L, "filters.sort_by.fs_5")}</Radio>
           </Radio.Group>
-
         </div>
       </div>
     </Layout>

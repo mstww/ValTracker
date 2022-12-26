@@ -61,7 +61,8 @@
         "fs_1": "None",
         "fs_2": "KD",
         "fs_3": "HS%",
-        "fs_4": "ACS"
+        "fs_4": "ACS",
+        "fs_5": "Age"
       }
     },
     "loading": "Loading",
@@ -128,7 +129,8 @@
         "fs_1": "Nichts",
         "fs_2": "KD",
         "fs_3": "HS%",
-        "fs_4": "ACS"
+        "fs_4": "ACS",
+        "fs_5": "Alter"
       }
     },
     "loading": "Lade...",
@@ -195,7 +197,8 @@
         "fs_1": "Rien",
         "fs_2": "KD",
         "fs_3": "HS%",
-        "fs_4": "ACS"
+        "fs_4": "ACS",
+        "fs_5": "Âge"
       }
     },
     "loading": "Chargement",
