@@ -1977,7 +1977,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   return (
                     <div 
                       id='match'
-                      className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 hover:bg-opacity-50 active:bg-opacity-0 cursor-default transition-all duration-100 ease-linear' 
+                      className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 cursor-default transition-all duration-100 ease-linear' 
                       key={index}
                     >
                       <div className='w-1/3 flex flex-row'>
