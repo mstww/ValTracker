@@ -214,7 +214,6 @@ async function fetchShop() {
     var shopData = await getShopData(region, puuid, entitlement_token, bearer);
 
     const data = await calculateDailyStore(puuid, shopData);
-    console.log(data);
     return [data, user_creds];
   }
 }

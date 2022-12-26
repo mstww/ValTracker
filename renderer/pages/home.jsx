@@ -1,22 +1,21 @@
 import React from 'react';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, shell } from 'electron';
 import fetch from 'node-fetch'
 import { Loading, Tooltip } from '@nextui-org/react';
 import moment from 'moment';
-import AwesomeSlider from 'react-awesome-slider';
+import { Carousel } from 'react-responsive-carousel';
 import SmallStatsCard from '../components/hub/SmallStatsCard';
 import LargeStatsCard from '../components/hub/LargeStatsCard';
 import FlatLargeStatsCard from '../components/hub/FlatLargeStatsCard';
 import ContractProgressCard from '../components/hub/ContractProgressCard';
 import ModeSelectionCard from '../components/hub/ModeSelectionCard';
 import { useFirstRender } from '../components/useFirstRender';
-import InfoChart from '../components/hub/InfoChart';
 import { useRouter } from 'next/router';
 import L from '../locales/translations/home.json';
 import LocalText from '../components/translation/LocalText';
 import Layout from '../components/Layout';
 import APIi18n from '../components/translation/ValApiFormatter';
-import { StarFilled, Star, Reload } from '../components/SVGs';
+import { StarFilled, Star, Reload, ArrowRoundUp } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
@@ -83,6 +82,23 @@ async function getPlayerContracts(region, puuid, entitlement_token, bearer, clie
   })).json());
 }
 
+async function checkForRankup(region, puuid, matchID, entitlement_token, bearer) {
+  if(region === 'latam' || region === 'br') region = 'na';
+  var data = await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/${puuid}/competitiveupdates/${matchID}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + bearer,
+      'X-Riot-Entitlements-JWT': entitlement_token,
+      'X-Riot-ClientPlatform': "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9",
+      'Content-Type': 'application/json'
+    },
+    keepalive: true
+  })).json();
+
+  if(data.TierAfterUpdate > data.TierBeforeUpdate) return true;
+  else return false;
+}
+
 function getDifferenceInDays(date1, date2) {
   const diffInMs = Math.abs(date2 - date1);
   return Math.round(diffInMs / (1000 * 60 * 60 * 24));
@@ -106,6 +122,10 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
 
     for (var i = 0; i < history.length; i++) {
       const match = await getMatch(region, history[i].MatchID, entitlement_token, bearer);
+      if(queue === "competitive") {
+        var isRankup = await checkForRankup(region, puuid, match.matchInfo.matchId, entitlement_token, bearer);
+        match.matchInfo.isRankupGame = isRankup;
+      }
       ipcRenderer.send(`createMatch`, match);
       matches.push(match);
       matchIDs.push(match.matchInfo.matchId);
@@ -748,20 +768,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ battlePass_maxXP, setBattlePass_maxXP ] = React.useState(0);
   const [ battlePass_currentXP, setBattlePass_currentXP ] = React.useState(0);
 
-// ------------------------------- CHARTS -------------------------------
+// ------------------------------- NEWS -------------------------------
 
-  const [ headshotPercentagesOfLast5, setHeadshotPercentagesOfLast5 ] = React.useState([]);
-  const [ adrOfLast5, setAdrOfLast5 ] = React.useState([]);
-  const [ kdOfLast5, setKdOfLast5 ] = React.useState([]);
-
-  const [ headshotChartData, setHeadshotChartData ] = React.useState([]);
-  const [ damageChartData, setDamageChartData ] = React.useState([]);
-  const [ killsDeathsChartData, setKillsDeathsChartData] = React.useState([]);
-
-  const [ chartsLoading, setChartsLoading ] = React.useState(true);
-  const [ chartsError, setChartsError ] = React.useState(false);
-
-  const [ areChartsActive, setAreChartsActive ] = React.useState(true);
+  const [ valorantNews, setValorantNews ] = React.useState([]);
+  const [ newsLoading, setNewsLoading ] = React.useState(true);
+  const [ newsError, setNewsError ] = React.useState(false);
 
 // ------------------------------- MISC. -------------------------------
   
@@ -818,8 +829,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
           return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
         });
-
-        console.log(sorted_map_stats);
   
         if(mapData) {
           var map_data = mapData
@@ -845,8 +854,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
           return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
         });
-
-        console.log(sorted_agent_stats);
   
         var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
         var agent_data = await agent_data_raw.json();
@@ -902,7 +909,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var latest_new_matches = new_matches.slice(0, 5);
   
         // Using Some Method
-        const res2 = latest_old_matches.filter((match1) => !latest_new_matches.some(match2 => match1 === match2.matchInfo.matchId ));
+        const res2 = latest_old_matches.filter((match1) => !latest_new_matches.some(match2 => match1 === match2.matchInfo.matchId));
         var new_matches_amount = res2.length;
       }
 
@@ -954,7 +961,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           dataToWrite.items.games = obj;
     
           var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
-          console.log(playerstats);
           
           setAvgKillsPerMatch(playerstats.kills_per_match);
           setAvgKillsPerRound(playerstats.kills_per_round);
@@ -1056,7 +1062,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       newMatches = arr;
 
       var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
-      console.log(playerstats);
         
       setAvgKillsPerMatch(playerstats.kills_per_match);
       setAvgKillsPerRound(playerstats.kills_per_round);
@@ -1106,11 +1111,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     } else {
       setLoading(true);
       setErrored(false);
-  
-      setChartsLoading(true);
-      setChartsError(false);
-  
-      setAreChartsActive(true);
+
       setAreStatsActive(true);
   
       setAvgKillsPerMatch('');
@@ -1130,14 +1131,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   
       setCurrentlyLoadedMatchCount(0);
       setMaxMatchesFound(0);
-  
-      setHeadshotPercentagesOfLast5([]);
-      setAdrOfLast5([]);
-      setKdOfLast5([]);
-    
-      setHeadshotChartData([]);
-      setDamageChartData([]);
-      setKillsDeathsChartData([]);
   
       if(isNewQueue) {
         await updateThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
@@ -1161,7 +1154,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         dataToWrite.items.games = obj;
   
         var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
-        console.log(playerstats);
         
         setAvgKillsPerMatch(playerstats.kills_per_match);
         setAvgKillsPerRound(playerstats.kills_per_round);
@@ -1210,15 +1202,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setCurrentMatches([]);
         setLoading(false);
         setAreStatsActive(false);
-  
-        setChartsLoading(false);
-        setAreChartsActive(false);
       } else {
         setLoading(false);
         setErrored(true);
-  
-        setChartsError(true);
-        setChartsLoading(false);
       }
     }
   }
@@ -1343,10 +1329,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       var playerACS = playerScore / match.roundResults.length;
       var playerACS = playerACS.toFixed(0);
 
-      if(kdOfLast5.length < 5) {
-        setKdOfLast5(current => [...current, playerKD ])
-      }
-
       if(playerKD >= 1) {
         var playerKdColor = 'text-val-blue';
       } else {
@@ -1421,17 +1403,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       var legShotsPercent = (playerLegShots / totalShotsHit) * 100;
       var legShotsPercentRounded = legShotsPercent.toFixed(0);
 
-      if(headshotPercentagesOfLast5.length < 5) {
-        setHeadshotPercentagesOfLast5(current => [...current, headShotsPercentRounded ])
-      }
-
       // Calculate ADR
       var averageDamage = totalDamage / match.roundResults.length;
       var averageDamageRounded = averageDamage.toFixed(0);
-
-      if(adrOfLast5.length < 5) {
-        setAdrOfLast5(current => [...current, averageDamageRounded ])
-      }
 
       // Calculate First Bloods. 
       // For every round, add all kills to an array. Filter out the earliest kill with the "roundTime" key. If the killer's PUUID is the same as the players, add a FB.
@@ -1493,21 +1467,26 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     setMatchFetchingError(false);
 
     fetchMatchesAndCalculateStats(false, currentlyLoadedMatchCount, currentlyLoadedMatchCount + 5, activeQueueTab, false, false, true, currentMatches);
-  }
+  } 
 
   const toggleMatchInFavs = async (MatchID, isFav) => {
-    var favMatches = await executeQuery(`SELECT * FROM matchIDCollection:⟨favMatches::${userCreds.uuid}⟩`);
+    var dbFavMatches = await executeQuery(`SELECT * FROM matchIDCollection:⟨favMatches::${userCreds.uuid}⟩`);
     if(!isFav) {
       await updateThing(`matchIDCollection:⟨favMatches::${userCreds.uuid}⟩`, {
         "matchIDs": [
-          ...favMatches[0].matchIDs,
+          ...dbFavMatches[0].matchIDs,
           MatchID
         ]
       });
 
-      setFavMatches([...favMatches[0].matchIDs, MatchID]);
+      setFavMatches([...dbFavMatches[0].matchIDs, MatchID]);
     } else {
       await removeMatch('favMatches', MatchID);
+
+      const index = favMatches.indexOf(MatchID);
+      if (index > -1) {
+        setFavMatches(current => current.filter(x => x !== MatchID));
+      }
     }
   }
   
@@ -1597,54 +1576,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }, []);
 
   React.useEffect(() => {
-    if(!firstRender && headshotPercentagesOfLast5.length > 0) {
-      var headshotData = headshotPercentagesOfLast5.slice(0, 8);
-      var adrData = adrOfLast5.slice(0, 8);
-      var kdData = kdOfLast5.slice(0, 8);
-
-      var headshotChartData = [];
-      var adrChartData = [];
-      var kdChartData = [];
-
-      headshotData.forEach((hs, index) => {
-        var obj = {
-          match: headshotData.length - index,
-          stat: parseFloat(hs)
-        };
-        headshotChartData.push(obj);
-      });
-
-      adrData.forEach((adr, index) => {
-        var obj = {
-          match: adrData.length - index,
-          stat: parseFloat(adr)
-        };
-        adrChartData.push(obj);
-      });
-
-      kdData.forEach((kd, index) => {
-        var obj = {
-          match: kdData.length - index,
-          stat: parseFloat(kd)
-        };
-        kdChartData.push(obj);
-      });
-
-      setHeadshotChartData(headshotChartData);
-      setDamageChartData(adrChartData);
-      setKillsDeathsChartData(kdChartData);
-
-      setChartsLoading(false);
-      setChartsError(false);
-    }
-    
-    return () => {
-      setChartsLoading(true);
-      setChartsError(false);
-    }
-  }, [ headshotPercentagesOfLast5, adrOfLast5, kdOfLast5 ]);
-
-  React.useEffect(() => {
     ipcRenderer.on("hub_smartLoadNewMatches", async function(event, args) {
       fetchContractData(true);
       if(args !== 'newmap' && args !== 'snowball' && args !== '') {
@@ -1673,6 +1604,18 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     document.body.setAttribute("lang", router.query.lang);
     fetchContractData(false);
   }, [ router.query ]);
+
+  React.useEffect(async () => {
+    try {
+      var news = await (await fetch(`https://api.valtracker.gg/v1/riot/news`)).json();
+      setValorantNews(news.data.articles);
+      setNewsError(false);
+      setNewsLoading(false);
+    } catch(e) {
+      setNewsError(true);
+      setNewsLoading(false);
+    }
+  }, []);
 
   return (
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
@@ -1769,35 +1712,38 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </div>
         <div id='top-right-container' className='relative overflow-y-auto rounded p-1.5 border border-maincolor-dim'>
-          <div className={'flex-row items-center justify-center h-full ' + (chartsLoading || chartsError ? 'hidden ' : 'flex') + (areChartsActive ? '' : ' hidden')}>
-            <AwesomeSlider 
-              className={'AwesomeSliderMainContainer rounded h-full z-10'}
+          <div className={'h-full w-full ' + (newsLoading || newsError ? 'hidden ' : '')}>
+            <Carousel 
+              showArrows={false} 
+              showStatus={false} 
+              showIndicators={true} 
+              infiniteLoop={true} 
+              showThumbs={false} 
+              useKeyboardArrows={true} 
+              autoPlay={true} 
+              stopOnHover={true}
+              swipeable={false}
+              dynamicHeight={true}
+              emulateTouch={false}
+              autoFocus={false}
+              interval={4000}
+              className={"w-full h-full border-red-500"}
+              onClickItem={(index, item) => {
+                shell.openExternal(valorantNews[index].external_link !== "" ? valorantNews[index].url : valorantNews[index].external_link);
+              }}
             >
-              <div>
-                <InfoChart
-                  label={LocalText(L, "top_r.headers.h_1")}
-                  data={headshotChartData}
-                  LocalLatest={LocalText(L, "top_r.latest_text")}
-                />
-              </div>
-              <div>
-                <InfoChart
-                  label={LocalText(L, "top_r.headers.h_2")}
-                  data={damageChartData}
-                  LocalLatest={LocalText(L, "top_r.latest_text")}
-                />
-              </div>
-              <div>
-                <InfoChart
-                  label={LocalText(L, "top_r.headers.h_3")}
-                  data={killsDeathsChartData}
-                  LocalLatest={LocalText(L, "top_r.latest_text")}
-                />
-              </div>
-            </AwesomeSlider>
+              {valorantNews.map((article, index) => {
+                return (
+                  <div className='relative h-full' key={index}>
+                    <img className='shadow-img rounded object-cover min-h-full' src={article.banner} />
+                    <p className='legend'>{article.title}</p>
+                  </div>
+                )
+              })}
+            </Carousel>
           </div>
           <div
-            className={'absolute top-0 left-0 z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (chartsError ? ' ' : 'hidden ') + (chartsLoading ? 'hidden' : '')}
+            className={'absolute top-0 left-0 z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (newsError ? ' ' : 'hidden ') + (newsLoading ? 'hidden' : '')}
           >
             <div>{LocalText(L, "component_err.err_text")}</div>
             <button 
@@ -1810,14 +1756,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </button>
           </div>
           <div
-            className={'absolute top-0 left-0 z-20 flex w-full h-4/5 justify-center items-center ' + (chartsError ? 'hidden ' : ' ') + (chartsLoading ? '' : 'hidden')}
+            className={'absolute top-0 left-0 z-20 flex w-full h-4/5 justify-center items-center ' + (newsError ? 'hidden ' : ' ') + (newsLoading ? '' : 'hidden')}
           >
             <Loading color={'error'} size={'lg'} />
-          </div>
-          <div
-            className={'absolute top-0 left-0 z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (areChartsActive ? 'hidden ' : ' ')}
-          >
-            <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
         <div id='bottom-left-container' className='relative overflow-y-auto rounded p-1 border border-maincolor-dim'>
@@ -1841,9 +1782,13 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 var today = startdate.format("D. MMMM");
                 return (
                   <div className='day relative' key={index}>
-                    <div id='day-header' className='text-lg ml-4 day-header font-bold'>{today === key ? 'Today' : key}</div>
+                    <div id='day-header' className='text-lg ml-4 day-header font-bold relative bottom-px'>{today === key ? 'Today' : key}</div>
                     {currentMatches[key].map((match, index) => {
                       var { matchData, matchViewData } = calculateMatchStats(match);
+                      
+                      if(activeQueueTab === "competitive") {
+                        var isRankup = match.matchInfo.isRankupGame;
+                      }
 
                       return (
                         <div 
@@ -1893,8 +1838,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                               <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                             </div>
                             <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                              <span className='text-lg font-semibold'>{matchData.mapName}</span>
-                              <span className='text-base font-light flex flex-row items-center'> 
+                              <span className={`text-lg font-semibold ${activeQueueTab == 'competitive' ? "relative left-1.5 top-1.5" : ""}`}>{matchData.mapName}</span>
+                              <span className='text-base font-light flex flex-row items-center relative'> 
                                 <Tooltip 
                                   content={matchData.playerCurrentTier > 3 && matchData.rankFixed !== undefined ? matchData.rankFixed.tierName : ''}
                                   color="error" 
@@ -1902,7 +1847,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                   className={'rounded'}
                                 >
                                   {
-                                    activeQueueTab == 'competitive' ? 
+                                    activeQueueTab === 'competitive' ? 
                                     <img 
                                       src={
                                         matchData.playerCurrentTier ? 
@@ -1910,21 +1855,16 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                         :
                                         `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
                                       } 
-                                      className={
-                                        'w-7 scale-75 shadow-img '
-                                        +
-                                        (activeQueueTab == 'competitive' ?
-                                          `w-10`
-                                          :
-                                          ''
-                                        )
-                                      }
+                                      className={'w-9 scale-75 shadow-img'}
                                     />
                                     :
                                     <ValIconHandler icon={'/images/standard.png'} classes={'w-7 scale-75 shadow-img'} />
                                   }
                                 </Tooltip>
-                                <span>{LocalText(L, "bot_l.gamemodes." + match.matchInfo.queueID)}</span>
+                                {activeQueueTab === 'competitive' && isRankup === true ? (
+                                  <ArrowRoundUp className={'rankup-arrow text-val-blue val-blue-glow w-[1rem] h-[1rem] absolute top-[1.4rem] left-[1.4rem]'} />
+                                ) : null}
+                                <span className='ml-0.5'>{LocalText(L, "bot_l.gamemodes." + match.matchInfo.queueID)}</span>
                               </span>
                             </div>
                           </div>
@@ -2032,7 +1972,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               }
             >
               <div className='day relative'>
-                <div id='day-header' className='text-lg ml-4 day-header font-bold skeleton-text'>SKELETO</div>
+                <div id='day-header' className='text-lg ml-4 day-header font-bold relative bottom-px skeleton-text'>SKELETO</div>
                 {imgArray.map((x, index) => {
                   return (
                     <div 
@@ -2094,12 +2034,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 })}
               </div>
             </div>
-          </div>
-          <div 
-            id='errored' 
-            className={'z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (areChartsActive ? 'hidden ' : ' ')}
-          >
-            <div>{LocalText(L, "bot_l.errors.no_matches_found")}</div>
           </div>
         </div>
         <div id='bottom-right-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-dim'>

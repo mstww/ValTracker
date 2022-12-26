@@ -7,7 +7,7 @@ import AwardTile from '../components/matchview/AwardTile';
 import L from '../locales/translations/matchview.json';
 import LocalText from '../components/translation/LocalText';
 import fetch from 'node-fetch';
-import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
+import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, PartyIcon, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import Layout from '../components/Layout';
 import { getCurrentUserData } from '../js/dbFunctions.mjs';
@@ -45,6 +45,13 @@ const scoreboard_vars_initial = {
   enter: { opacity: 1, x: 0, y: 0, scale: 1, display: '' },
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
+
+const partyColors = [
+  "party-0",
+  "party-1",
+  "party-2",
+  "party-3"
+]
 
 function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
@@ -112,6 +119,10 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ isDeathmatch, setIsDeathmatch ] = React.useState(false);
   const [ isEscalation, setIsEscalation ] = React.useState(false);
   const [ isComp, setIsComp ] = React.useState(false);
+  const [ bestRound, setBestRound ] = React.useState({ round: 0, score: 0 });
+  const [ playerParties, setPlayerParties ] = React.useState({});
+  const [ highlightedParty, setHighlightedParty ] = React.useState(null);
+  const [ lockHighlightedParty, setLockHighlightedParty ] = React.useState({ state: false, lockedUUID: null });
 
   // DATA NEEDED: MapUUID, Map Name, Match Date, Match Length, Match Mode, Region, Server, Game Version, 
   // AgentUUID, Player KDA, Player KD, Player Score, Player ACS, Player Rank, HS%, BS%, LS%, is Player MVP, Player ADR
@@ -130,6 +141,8 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         if(knownMatchData.gameMode === "competitive") {
           setIsComp(true);
         }
+
+        var partyIDs = {};
   
         for(var i = 0; i < playerData.length; i++) {
           if(playerData[i].subject === user_data.uuid) {
@@ -148,6 +161,15 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           allPlayerAwardStats[playerData[i].subject].subjectName = playerData[i].gameName;
           allPlayerAwardStats[playerData[i].subject].subjectTag = playerData[i].tagLine;
           allPlayerAwardStats[playerData[i].subject].subjectAgent = playerData[i].characterId;
+          allPlayerAwardStats[playerData[i].subject].partyUUID = playerData[i].partyId;
+
+          if(!partyIDs[playerData[i].partyId]) {
+            partyIDs[playerData[i].partyId] = {
+              members: [playerData[i].subject]
+            };
+          } else {
+            partyIDs[playerData[i].partyId].members.push(playerData[i].subject);
+          }
   
           if(knownMatchData.playerTeam === 'Blue') {
             allPlayerAwardStats[playerData[i].subject].subjectTeam = playerData[i].teamId;
@@ -183,6 +205,17 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             allPlayerAwardStats[playerData[i].subject].total_dmg = 0;
           }
         }
+
+        var knownParties = {};
+
+        for(var i = 0; i < Object.keys(partyIDs).length; i++) {
+          if(partyIDs[Object.keys(partyIDs)[i]].members.length > 1) {
+            var className = `party-${Object.keys(knownParties).length}`
+            knownParties[Object.keys(partyIDs)[i]] = className;
+          }
+        }
+
+        setPlayerParties(knownParties);
   
         for(var i = 0; i < roundData.length; i++) {
           var totalRoundKills = [];
@@ -608,6 +641,13 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
                     if(round.playerStats[i].subject == uuid) {
                       playerKills = playerKills + round.playerStats[i].kills.length;
+
+                      if(round.playerStats[i].score > bestRound.score) {
+                        setBestRound({
+                          round: index,
+                          score: round.playerStats[i].score
+                        });
+                      }
                     }
                   }
 
@@ -629,7 +669,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                             </Tooltip>
                           }
                           <div className='ml-2.5 flex flex-col relative'>
-                            <span className={'text-lg relative bottom-1.5 font-medium ' + (hasPlayerTeamWonRound ? 'text-val-blue german-won-round val-blue-glow' : 'text-val-red val-red-glow')}>
+                            <span className={`text-lg relative bottom-1.5 font-medium ${bestRound.round === index ? "text-val-yellow yellow-glow" : (hasPlayerTeamWonRound ? 'text-val-blue german-won-round val-blue-glow' : 'text-val-red val-red-glow')}`}>
                               {hasPlayerTeamWonRound ? LocalText(L, "match_outcomes.VICTORY") : (LocalText(L, "match_outcomes.DEFEAT") === "VERLOREN" ? LocalText(L, "match_outcomes.DEFEAT").split("O")[0] + '.' : LocalText(L, "match_outcomes.DEFEAT"))}
                             </span>
                             <span className='absolute -bottom-2 w-20 font-light text-sm'>{LocalText(L, "round_results.round_text")} {index+1}</span>
@@ -765,7 +805,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       </motion.div>
       
       <motion.div 
-        className={'w-full h-4/5 p-4 pt-2.5'}
+        className={`w-full h-4/5 p-4 ${Object.keys(playerParties).length > 0 && "!pl-12"} pt-2.5`}
         variants={scoreboard_vars}
         initial="hidden"
         animate={activeTab === 'scoreboard' ? "enter" : "exit"}
@@ -867,15 +907,42 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         {playerScoreboardStats.map((playerStats, index) => {
           var isPlayer = false;
           if(playerStats.subject === uuid) isPlayer = true;
+          var partyFound = Object.keys(playerParties).find(x => x === playerStats.partyUUID);
           return(
             <>
               <motion.div 
-                className={'border border-tile-color bg-tile-color bg-opacity-10 rounded flex flex-row items-center'} key={index + 'tr'}
+                className={`border border-tile-color bg-tile-color bg-opacity-10 rounded flex flex-row items-center relative ${lockHighlightedParty.state === false ? ((highlightedParty !== playerStats.partyUUID && highlightedParty !== null) ? "!opacity-20" : "!opacity-100") : (lockHighlightedParty.lockedUUID !== playerStats.partyUUID ? "!opacity-20" : "!opacity-100")}`} key={index + 'tr'}
                 variants={scoreboard_vars_initial}
                 initial="hidden"
                 animate={activeTab === 'scoreboard' ? "enter" : "exit"}
                 transition={{ type: 'linear', duration: 0.5, delay: (activeTab === 'scoreboard' ? (0.5 + (index / 100)) : (index / 100)) }}
               >
+                {partyFound !== undefined && (
+                  <div className='w-6 h-6 absolute -left-9 cursor-pointer'>
+                    <PartyIcon 
+                      className={`w-full h-full ${playerParties[playerStats.partyUUID]}`} 
+                      onEnter={() => {
+                        if(lockHighlightedParty.state === false) {
+                          setHighlightedParty(playerStats.partyUUID);
+                        }
+                      }}
+                      onLeave={() => {
+                        if(lockHighlightedParty.state === false) {
+                          setHighlightedParty(null);
+                        }
+                      }}
+                      onClick={() => {
+                        if(lockHighlightedParty.state === false) {
+                          setLockHighlightedParty({ state: true, lockedUUID: playerStats.partyUUID });
+                        } else if(lockHighlightedParty.state === true && lockHighlightedParty.lockedUUID === playerStats.partyUUID) {
+                          setLockHighlightedParty({ state: false, lockedUUID: null });
+                        } else if(lockHighlightedParty.state === true && lockHighlightedParty.lockedUUID !== playerStats.partyUUID) {
+                          setLockHighlightedParty({ state: true, lockedUUID: playerStats.partyUUID });
+                        }
+                      }}
+                    />
+                  </div>
+                )}
                 <div className='py-1 pl-1 flex flex-row items-center h-14 w-1/4'>
                   <img src={'https://media.valorant-api.com/agents/' + playerStats.subjectAgent + '/displayicon.png'} className='h-full shadow-img' />
                   {isComp === true && (

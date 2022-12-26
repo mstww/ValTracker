@@ -7,6 +7,7 @@ import Navbar from '../components/Navbar';
 import WindowControls from '../components/WindowControls';
 import Head from 'next/head'
 
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import '../styles/globals.css';
 import { executeQuery } from '../js/dbFunctions';
 import { useFirstRender } from '../components/useFirstRender';

@@ -373,7 +373,6 @@ async function getAccessTokens(ssid) {
  */
 
 async function getMMRInfo(region, puuid, entitlement_token, bearer, client_version) {
-  console.log(region, puuid, entitlement_token, bearer, client_version)
   if(region === 'latam' || region === 'br') region = 'na';
   return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/${puuid}`, {
     method: 'GET',
@@ -407,7 +406,7 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var versionInfo = await (await fetch(`https://valorant-api.com/v1/version`)).json();
 
   var mmrInfo = await getMMRInfo(region, puuid, entitlement_token, bearer, versionInfo.data.riotClientVersion);
-  console.log(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID);
+  
   if(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID]) {
     return mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID].CompetitiveTier;
   } else {
@@ -1415,6 +1414,30 @@ async function checkStoreForWishlistItems() {
   });
 }
 
+/**
+ * A function that checks for leftover matche sin the database and deletes them.
+ */
+
+async function checkForOldMatches() {
+  var matches = await executeQuery(`SELECT id, matchInfo.matchId AS matchID FROM match`);
+  var collections = await executeQuery(`SELECT * FROM matchIDCollection`);
+
+  for(var i = 0; i < matches.length; i++) {
+    var foundMatch = false;
+    for(var j = 0; j < collections.length; j++) {
+      var result = collections[j].matchIDs.find(x => x === matches[i].matchID);
+      if(result !== undefined) {
+        foundMatch = true;
+        break;
+      }
+    }
+
+    if(foundMatch === false) {
+      await executeQuery(`DELETE ${matches[i].id}`);
+    }
+  }
+}
+
 // Main function that starts the app
 (async () => {
   if(db === false) await connectToDB();
@@ -1425,6 +1448,8 @@ async function checkStoreForWishlistItems() {
   if(res.length === 0) {
     await noFilesFound();
   }
+
+  await checkForOldMatches();
 
   var appStatus = await(await fetch('https://api.valtracker.gg/v1/status/main', {
     headers: {
@@ -1922,7 +1947,6 @@ async function showSignIn() {
     });
     let foundToken = false;
     loginWindow.webContents.on('will-redirect', (event, url) => {
-      console.log(url);
       // Login window redirecting...
       if(!foundToken && url.startsWith('http://localhost/redirect')) {
         // Redirecting to url with tokens
