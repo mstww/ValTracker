@@ -33,14 +33,28 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
 
   React.useEffect(async () => {
     if(!firstRender) {
-      var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix DESC LIMIT 5`);
-      setSearchHistory(search_history);
+      var search_history = await executeQuery(`SELECT * FROM searchHistoryResult ORDER BY unix DESC`);
+      var newHistory = search_history.slice(0, 5);
+      var historyToBeRemoved = search_history.slice(5, search_history.length);
+  
+      for(var i = 0; i < historyToBeRemoved.length; i++) {
+        await executeQuery(`DELETE ${historyToBeRemoved[i].id}`)
+      }
+      
+      setSearchHistory(newHistory);
     }
   }, []);
 
   React.useEffect(async () => {
-    var search_history = await executeQuery(`SELECT name, tag, encoded_user, unix FROM searchHistoryResult ORDER BY unix DESC LIMIT 5`);
-    setSearchHistory(search_history);
+    var search_history = await executeQuery(`SELECT * FROM searchHistoryResult ORDER BY unix DESC`);
+    var newHistory = search_history.slice(0, 5);
+    var historyToBeRemoved = search_history.slice(5, search_history.length);
+
+    for(var i = 0; i < historyToBeRemoved.length; i++) {
+      await executeQuery(`DELETE ${historyToBeRemoved[i].id}`)
+    }
+
+    setSearchHistory(newHistory);
   }, [historyNotifSwitch]);
 
   React.useEffect(() => {
@@ -97,7 +111,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
               isSearchShown && searchHistory.length !== 0 ? 
               (searchHistory.length > 0 ? setIsHistoryDropdownShown(true) : null)
               : 
-              (isSearchShown === false ? ipcRenderer.send('relayTextbox', searchHiddenDesc) : null)
+              (isSearchShown === false ? ipcRenderer.send('relayTextbox', { persistent: false, text: searchHiddenDesc }) : null)
             }}
           />
         </motion.div>
