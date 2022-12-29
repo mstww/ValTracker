@@ -505,7 +505,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
 
   const openPopup = (setPopupOpen, info) => {
     if(info === "riot_rm_account" && riot_accountList.length === 0) {
-      ipcRenderer.send("relayTextbox", "You cannot remove the account that the app is using.");
+      ipcRenderer.send("relayTextbox", { persistent: false, text: "You cannot remove the account that the app is using." });
       return;
     }
     setPopupOpen(true);
@@ -610,7 +610,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
       ipcRenderer.send('restartApp');
     } else {
       closePopup(setOther_applySettingsCode);
-      ipcRenderer.send('relayTextbox', errors.invalid_settings_code);
+      ipcRenderer.send('relayTextbox', { persistent: false, text: errors.invalid_settings_code });
     }
   }
 

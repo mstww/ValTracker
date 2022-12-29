@@ -1339,3 +1339,33 @@ tr td:last-child {
 .rankup-arrow {
   filter: drop-shadow(0 0 7px rgba(107, 241, 230, 0.8));
 }
+
+.close-red line {
+  @apply text-button-color stroke-[1.5];
+}
+
+#player-card-bg {
+  @apply rounded bg-gradient-to-l from-transparent to-maincolor; 
+}
+
+.rank-triangle-text {
+  text-shadow: rgb(0, 0, 0) 1px 0 10px, rgb(0, 0, 0) 1px 0 10px;
+}
+.player-profile-name {
+  font-size: 26px;
+  line-height: 34px;
+}
+
+.glass {
+  background: rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+}
+
+.glass.dark {
+  background: rgba(0, 0, 0, 0.8) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+}

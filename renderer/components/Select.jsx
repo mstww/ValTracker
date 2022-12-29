@@ -84,7 +84,7 @@ export function Select({ items, className, value, setValue, onChange }) {
         <CircleArrowDown className={`w-6 h-6 absolute right-2 top-1.5 transition-all duration-100 ease-linear group-hover:text-white ${open ? "rotate-180 text-white" : "text-button-color"}`} />
       </div>
       <div 
-        className={`w-full absolute left-0 h-auto flex-col border border-tile-color bg-maincolor drop-shadow-2xl shadow-2xl p-2 rounded hidden`}
+        className={`w-full absolute left-0 h-auto flex-col border border-tile-color z-20 glass drop-shadow-2xl shadow-2xl p-2 rounded hidden`}
         style={menuStyles}
         ref={optionsRef}
       >

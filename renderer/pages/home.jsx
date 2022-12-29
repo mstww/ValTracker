@@ -15,7 +15,7 @@ import L from '../locales/translations/home.json';
 import LocalText from '../components/translation/LocalText';
 import Layout from '../components/Layout';
 import APIi18n from '../components/translation/ValApiFormatter';
-import { StarFilled, Star, Reload, ArrowRoundUp } from '../components/SVGs';
+import { StarFilled, Star, Reload, ArrowRoundUp, Close } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
@@ -716,6 +716,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ fetchingFurtherMatches, setFetchingFurtherMatches ] = React.useState(false);
   const [ matchFetchingError, setMatchFetchingError ] = React.useState(false);
 
+  const [ silentError, setSilentError ] = React.useState(false);
+
 // ------------------------------- MATCH STATS -------------------------------
 
   const [ avgKillsPerMatch, setAvgKillsPerMatch ] = React.useState('');
@@ -1144,7 +1146,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setCurrentlyLoadedMatchCount(data.items.endIndex);
       setMaxMatchesFound(data.items.totalMatches);
   
-      if(data.errored == false && data.items.totalMatches > 0) {
+      if(data.errored === false && data.items.totalMatches > 0) {
         var obj = {};
 
         var dataToWrite = data;
@@ -1204,7 +1206,98 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setAreStatsActive(false);
       } else {
         setLoading(false);
-        setErrored(true);
+        setIsSilentLoading(false);
+        setSilentError(true);
+
+        console.log("Error while fetching new matches. Only old matches will be shown.");
+        ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
+
+        var puuid = await getCurrentPUUID();
+        var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
+        var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
+    
+        setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
+  
+        var matches = [];
+        var newMatches = [];
+        
+        if(matchIDData[0].matchIDs.length === 0) return;
+  
+        for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
+          var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
+          if(match[0] === undefined) continue;
+          matches.push(match[0]);
+        }
+  
+        if(matches.length === 0) {
+          return;
+        };
+  
+        for(var i = 0; i < matches.length; i++) { 
+          var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+          moment.locale(router.query.lang);
+          var startdate = moment();
+          startdate = startdate.subtract(dateDiff, "days");
+          var matchDate = startdate.format("D. MMMM");
+    
+          // Create array if it doesn't exist
+          if(!newMatches[matchDate]) newMatches[matchDate] = [];
+    
+          newMatches[matchDate].push(matches[i]);
+        }
+  
+        var arr = [];
+  
+        for(var key in newMatches) {
+          arr[key] = newMatches[key];
+        }
+        
+        newMatches = arr;
+  
+        var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+          
+        setAvgKillsPerMatch(playerstats.kills_per_match);
+        setAvgKillsPerRound(playerstats.kills_per_round);
+        setWinratePercent(playerstats.win_percentage);
+        setHeadshotPercent(playerstats.headshot_percent);
+        
+        var map_stats = playerstats.map_stats;
+        var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
+          return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
+        });
+  
+        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+        var map_data = await map_data_raw.json();
+  
+        var best_map = map_stats[sorted_map_stats[0]];
+        
+        for(var i = 0; i < map_data.data.length; i++) {
+          if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
+            setBestMapName(map_data.data[i].displayName);
+            setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+          }
+        }
+  
+        setBestMapWinPercent(best_map.map_win_percentage);
+        setBestMapKdaRatio(best_map.map_kda_ratio);
+  
+        var agent_stats = playerstats.agent_stats;
+          
+        var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
+          return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
+        });
+  
+        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+        var agent_data = await agent_data_raw.json();
+  
+        setBestAgentName(agent_data.data.displayName);
+        setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
+        setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
+        setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
+        setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
+        setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
+  
+        setCurrentMatches(newMatches);
       }
     }
   }
@@ -1647,7 +1740,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
           <div className='home-top-info-tile relative border rounded border-maincolor-dim flex flex-col'>
             <Tooltip content={LocalText(L, "top_l.contracts.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-4 right-7'>
-              <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
+              <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading === true ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
             </Tooltip>
@@ -1770,9 +1863,14 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               + (currentlyLoadedMatchCount <= 0 ? ' disabled hidden ' : ' ')
             }
           >
-            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
-              <div className={'absolute -top-2 -right-5 w-6 h-6 z-30 ' + (isSilentLoading ? '' : 'hidden')}>
+            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2.5 right-7'>
+              <div className={'absolute -top-2 -right-5 w-6 h-6 z-30 ' + (isSilentLoading === true ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
+              </div>
+            </Tooltip>
+            <Tooltip content={LocalText(L, "component_err.err_text")} color="error" placement={'left'} className='rounded absolute top-2.5 right-7'>
+              <div className={'absolute -top-2 -right-6 w-6 h-6 z-30 ' + (silentError === true && isSilentLoading === false && loading === false ? '' : 'hidden')}>
+                <Close className={"close-red w-5 h-5"} onClick={() => { fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false) }}  /> 
               </div>
             </Tooltip>
             {currentlyLoadedMatchCount > 0 ?
@@ -1939,7 +2037,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </div>
             <div id='shown-matches-info' className={'mt-4 ml-6 w-1/2 flex flex-row justify-between ' + (fetchingFurtherMatches ? 'hidden' : '')}>
               <span id='x-out-of-n-matches' className='text-gray-500'>
-                {LocalText(L, "bot_l.bottom_text.loaded_matches_count", (currentlyLoadedMatchCount > maxMatchesFound ? maxMatchesFound : currentlyLoadedMatchCount), maxMatchesFound)}
+                {LocalText(L, "bot_l.bottom_text.loaded_matches_count", (currentlyLoadedMatchCount > maxMatchesFound ? maxMatchesFound : currentlyLoadedMatchCount), (maxMatchesFound ? maxMatchesFound : "???"))}
               </span>
               <span id='load-more-matches' className={'hover:underline mb-8 ' + (fetchingFurtherMatches ? 'cursor-wait' : 'cursor-pointer')} onClick={() => { fetchingFurtherMatches ? '' : fetchFurtherMatches() }}>{LocalText(L, "bot_l.bottom_text.load_more")}</span>
             </div>

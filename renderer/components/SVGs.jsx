@@ -30,8 +30,8 @@ export const Clock = ({ className }) => {
   return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 14 14" strokeWidth="1"><g><path d="M7,.5A6.5,6.5,0,1,1,.5,7a7.23,7.23,0,0,1,2-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></path><polyline points="0.5 2.5 2.5 2 3 4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></polyline><polyline points="7 3.5 7 7.5 9.6 8.8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></polyline></g></svg>
 }
 
-export const Close = ({ className }) => {
-  return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 600 600"><g transform="matrix(42.857142857142854,0,0,42.857142857142854,0,0)"><g><line x1="13.5" y1="0.5" x2="0.5" y2="13.5" style={{ fill: "currentcolor", stroke: "currentcolor", strokeLinecap: "round", strokeLinejoin: "round" }}></line><line x1="0.5" y1="0.5" x2="13.5" y2="13.5" style={{ fill: "currentcolor", stroke: "currentcolor", strokeLinecap: "round", strokeLinejoin: "round" }}></line></g></g></svg>
+export const Close = ({ className, onClick }) => {
+  return <svg xmlns="http://www.w3.org/2000/svg" className={className} onClick={onClick} viewBox="0 0 600 600"><g transform="matrix(42.857142857142854,0,0,42.857142857142854,0,0)"><g><line x1="13.5" y1="0.5" x2="0.5" y2="13.5" style={{ fill: "currentcolor", stroke: "currentcolor", strokeLinecap: "round", strokeLinejoin: "round" }}></line><line x1="0.5" y1="0.5" x2="13.5" y2="13.5" style={{ fill: "currentcolor", stroke: "currentcolor", strokeLinecap: "round", strokeLinejoin: "round" }}></line></g></g></svg>
 }
 
 export const Coffee = ({ className }) => {

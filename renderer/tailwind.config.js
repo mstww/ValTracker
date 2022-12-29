@@ -4,6 +4,7 @@ var legacyBeta = {
   colors: {
     "maincolor-dark": "#12171d", 
     "maincolor": "#1b222b", 
+    "maincolor-less-opacity": "rgba(27, 34, 43, 0.8)",
     "maincolor-dim": "#1b222b", 
     "maincolor-light": "#1e2630", 
     "tile-color": "#242e3a",
@@ -25,6 +26,7 @@ var legacyAlpha = {
   colors: {
     "maincolor-dark": "#2d2d2d",
     "maincolor": "#222222",
+    "maincolor-less-opacity": "rgba(34, 34, 34, 0.8)",
     "maincolor-dim": "#161616",
     "maincolor-light": "#101010",
     "tile-color": "#101010",
@@ -46,6 +48,7 @@ var light = {
   colors: {
     "maincolor-dark": "#b3b3b3",
     "maincolor": "#c9c9c9",
+    "maincolor-less-opacity": "rgba(201, 201, 201, 0.8)",
     "maincolor-dim": "#e0e0e0",
     "maincolor-light": "#ededed",
     "tile-color": "#ffffff",
@@ -67,6 +70,7 @@ var normal = {
   colors: {
     "maincolor-dark": "#090909",
     "maincolor": "#121212",
+    "maincolor-less-opacity": "rgba(18, 18, 18, 0.8)",
     "maincolor-dim": "#1E1E1E",
     "maincolor-light": "#3a3d42",
     "tile-color": "#292929",
