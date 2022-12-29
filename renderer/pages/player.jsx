@@ -907,32 +907,32 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
   }, []);
 
   const trianglePositionClassNames = [ // 49
-    { orientation: "up", className: 'absolute top-[2rem] left-px right-0 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[2rem] left-0 right-0 mx-auto w-[1.9rem]' },
 
-    { orientation: "up", className: 'absolute top-[3.75rem] left-px right-8 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[3.75rem] left-px right-0 mx-auto w-[1.9rem]' },
-    { orientation: "up", className: 'absolute top-[3.75rem] left-[33px] right-0 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[3.75rem] left-px right-[33px] mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[3.75rem] left-0 right-0 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[3.75rem] left-[33px] right-px mx-auto w-[1.9rem]' },
 
-    { orientation: "up", className: 'absolute top-[5.5rem] left-px right-16 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[5.5rem] left-px right-8 mx-auto w-[1.9rem]' },
-    { orientation: "up", className: 'absolute top-[5.5rem] left-px right-0 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[5.5rem] left-[33px] right-0 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[5.5rem] left-0 right-16 mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[5.5rem] left-px right-[33px] mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[5.5rem] left-0 right-0 mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[5.5rem] left-[33px] right-px mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[5.5rem] left-16 right-0 mx-auto w-[1.9rem]' },
     
-    { orientation: "up", className: 'absolute top-[7.25rem] left-px right-24 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[7.25rem] left-px right-16 mx-auto w-[1.9rem]' },
-    { orientation: "up", className: 'absolute top-[7.25rem] left-px right-8 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[7.25rem] left-px right-0 mx-auto w-[1.9rem]' },
-    { orientation: "up", className: 'absolute top-[7.25rem] left-8 right-0 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[7.25rem] left-0 right-24 mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[7.25rem] left-0 right-16 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[7.25rem] left-px right-[33px] mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[7.25rem] left-0 right-0 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[7.25rem] left-[33px] right-px mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[7.25rem] left-16 right-0 mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[7.25rem] left-24 right-0 mx-auto w-[1.9rem]' },
 
-    { orientation: "up", className: 'absolute top-[9rem] left-px right-32 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[9rem] left-px right-24 mx-auto w-[1.9rem]' },
-    { orientation: "up", className: 'absolute top-[9rem] left-px right-16 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[9rem] left-px right-8 mx-auto w-[1.9rem]' },
-    { orientation: "up", className: 'absolute top-[9rem] left-px right-0 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[9rem] left-8 right-0 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[9rem] left-0 right-32 mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[9rem] left-0 right-24 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[9rem] left-0 right-16 mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[9rem] left-px right-[33px] mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[9rem] left-0 right-0 mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[9rem] left-[33px] right-px mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[9rem] left-16 right-0 mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[9rem] left-24 right-0 mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[9rem] left-32 right-0 mx-auto w-[1.9rem]' },
@@ -941,9 +941,9 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
     { orientation: "down", className: 'absolute top-[10.75rem] left-0 right-32 mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[10.75rem] left-0 right-24 mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[10.75rem] left-0 right-16 mx-auto w-[1.9rem]' },
-    { orientation: "up", className: 'absolute top-[10.75rem] left-0 right-8 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[10.75rem] left-px right-[33px] mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[10.75rem] left-0 right-0 mx-auto w-[1.9rem]' },
-    { orientation: "up", className: 'absolute top-[10.75rem] left-8 right-0 mx-auto w-[1.9rem]' },
+    { orientation: "up", className: 'absolute top-[10.75rem] left-[33px] right-px mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[10.75rem] left-16 right-0 mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[10.75rem] left-24 right-0 mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[10.75rem] left-32 right-0 mx-auto w-[1.9rem]' },
@@ -954,9 +954,9 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
     { orientation: "up", className: 'absolute top-[12.5rem] left-0 right-32 mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[12.5rem] left-0 right-24 mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[12.5rem] left-0 right-16 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[12.5rem] left-0 right-8 mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[12.5rem] left-px right-[33px] mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[12.5rem] left-0 right-0 mx-auto w-[1.9rem]' },
-    { orientation: "down", className: 'absolute top-[12.5rem] left-8 right-0 mx-auto w-[1.9rem]' },
+    { orientation: "down", className: 'absolute top-[12.5rem] left-[33px] right-px mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[12.5rem] left-16 right-0 mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[12.5rem] left-24 right-0 mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[12.5rem] left-32 right-0 mx-auto w-[1.9rem]' },
@@ -990,7 +990,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
             />
           </div>
           <div className={`w-full flex items-center text-center mt-10 ${noMatchesFound === false && "hidden"}`}>
-            <span className='mx-auto'>No matches for this gamemode found.</span>
+            <span className='mx-auto'>{LocalText(L, "errors.no_matches_found")}</span>
           </div>
           <div 
             id='loading' 
@@ -1016,7 +1016,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
                           <img className='h-full shadow-img transition-all duration-100 ease-linear skeleton-image' src={x} />
                         </div>
                         <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                          <span className='text-lg font-semibold skeleton-text'>SKELETO</span>
+                          <span className={`text-xl font-semibold ${activeQueueTab == 'competitive' ? "relative left-1.5 top-0.5" : ""} skeleton-text`}>SKELETO</span>
                           <span className='text-base font-light flex flex-row items-center'>
                             <span className='skeleton-text'>SKELETONSKE</span>
                           </span>
@@ -1085,7 +1085,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
                             <img className='h-full shadow-img' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                            <span className='text-xl font-semibold'>{matchData.mapName}</span>
+                            <span className={`text-xl font-semibold ${activeQueueTab == 'competitive' ? "relative left-1.5 top-0.5" : ""}`}>{matchData.mapName}</span>
                             <span className='text-base font-light flex flex-row items-center'> 
                               <Tooltip 
                                 content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
@@ -1183,7 +1183,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
               <span>{playerInfo.name}<span className='text-gray-500 tracking-tighter'>{"#" + playerInfo.tag}</span></span>
             </span>
             <span className='flex flex-row items-center text-xl font-semibold'>
-              <span className='relative top-px'>Level</span>
+              <span className='relative top-px'>{LocalText(L, "ui.level_text")}</span>
               <span className='relative items-center'>
                 <img src={playerBorder} />
                 <span className='absolute font-normal top-[3px] pt-px text-base left-0 right-0 mx-auto w-fit'>{playerInfo.account_level}</span>
@@ -1192,8 +1192,8 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
             </span>
             <hr className='my-2' />
             <div className='w-full relative'>
-              <span className='text-xl font-semibold block'>Competitive Data</span>
-              <span className='text-base font-normal block text-gray-500 relative bottom-1'>Current Season</span>
+              <span className='text-xl font-semibold block'>{LocalText(L, "ui.comp_data_header")}</span>
+              <span className='text-base font-normal block text-gray-500 relative bottom-1'>{LocalText(L, "ui.comp_data_subheader")}</span>
               <div 
                 className='h-64 relative bg-opacity-75 flex justify-center mb-4' 
                 style={{ 
@@ -1219,17 +1219,17 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
                 </div>
               </div>
               <div className='flex flex-row items-center'>
-                <span className='text-xl font-semibold'>Matches played</span>
+                <span className='text-xl font-semibold'>{LocalText(L, "ui.matches_played")}</span>
                 <span className='text-xl font-semibold ml-auto'>{playerInfo.total_matches_played}</span>
               </div>
               <div className='flex flex-row items-center'>
-                <span className='text-xl font-semibold'>Winrate</span>
+                <span className='text-xl font-semibold'>{LocalText(L, "ui.winrate")}</span>
                 <span className='text-xl font-semibold ml-auto'>{playerInfo.win_percentage}%</span>
               </div>
             </div>
             <hr className='my-2' />
             <div className='flex flex-row items-center'>
-              <span className='text-xl font-semibold relative top-px'>Peak Rank</span>
+              <span className='text-xl font-semibold relative top-px'>{LocalText(L, "ui.peak_rank")}</span>
               <div className='flex flex-row items-center ml-auto'>
                 <img 
                   src={`https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${playerInfo.peaktier}/largeicon.png`} 
@@ -1240,56 +1240,56 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
             </div>
             <div className={`${(activeQueueTab === "deathmatch" || reloading === true || hideStats === true) && "hidden"}`}>
               <hr className='my-2' />
-              <span className='text-xl font-semibold block'>Stats - {activeQueueTab[0].toUpperCase() + activeQueueTab.slice(1)}</span> {/* For Translation, only use active tab as a variable to change string to destination */}
-              <span className='text-base font-normal block text-gray-500 relative bottom-1'>Last 20 Matches</span>
+              <span className='text-xl font-semibold block'>{LocalText(L, "ui.stats_header")} - {LocalText(L, `matches.gamemodes.${activeQueueTab}`)}</span>
+              <span className='text-base font-normal block text-gray-500 relative bottom-1'>{LocalText(L, "ui.stats_subheader")}</span>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg KD</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.avg_kd")}</span>
                 <span className='text-base font-medium ml-auto'>{avgKD}</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Headshot%</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.headshot_percentage")}</span>
                 <span className='text-base font-medium ml-auto'>{headshotPercent}%</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg Kills/Match</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.kills_per_match")}</span>
                 <span className='text-base font-medium ml-auto'>{avgKillsPerMatch}</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg ACS</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.acs")}</span>
                 <span className='text-base font-medium ml-auto'>{avgCS}</span>
               </div>
               <hr className='my-2' />
               <div className='flex flex-row justify-between items-center h-fit'>
-                <span className='text-sm text-gray-500 mr-2'>Matches played this Act: {gameAmountInfo.actMatches}</span>
+                <span className='text-sm text-gray-500 mr-2'>{LocalText(L, "ui.matches_played_act")} {gameAmountInfo.actMatches}</span>
                 <hr className='transform h-[20px] w-px border-l mx-2' />
-                <span className='text-sm text-gray-500 text-right'>Matches played overall: {gameAmountInfo.overallMatches}</span>
+                <span className='text-sm text-gray-500 text-right'>{LocalText(L, "ui.matches_played_total")} {gameAmountInfo.overallMatches}</span>
               </div>
             </div>
             <div className={`${(reloading === false) && "hidden"}`}>
               <hr className='my-2' />
-              <span className='text-xl font-semibold block'>Stats - {activeQueueTab[0].toUpperCase() + activeQueueTab.slice(1)}</span> {/* For Translation, only use active tab as a variable to change string to destination */}
-              <span className='text-base font-normal block text-gray-500 relative bottom-1'>Last 20 Matches</span>
+              <span className='text-xl font-semibold block'>{LocalText(L, "ui.stats_header")} - {LocalText(L, `matches.gamemodes.${activeQueueTab}`)}</span>
+              <span className='text-base font-normal block text-gray-500 relative bottom-1'>{LocalText(L, "ui.stats_subheader")}</span>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg KD</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.avg_kd")}</span>
                 <span className='text-base font-medium ml-auto skeleton-text'>S.KE</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Headshot%</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.headshot_percentage")}</span>
                 <span className='text-base font-medium ml-auto skeleton-text'>SK%</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg Kills/Match</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.kills_per_match")}</span>
                 <span className='text-base font-medium ml-auto skeleton-text'>SK</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg ACS</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.acs")}</span>
                 <span className='text-base font-medium ml-auto skeleton-text'>SKE</span>
               </div>
               <hr className='my-2' />
               <div className='flex flex-row justify-between items-center h-fit'>
-                <span className='text-sm text-gray-500 mr-2'>Matches played this Act: {gameAmountInfo.actMatches}</span>
+                <span className='text-sm text-gray-500 mr-2'>{LocalText(L, "ui.matches_played_act")} {gameAmountInfo.actMatches}</span>
                 <hr className='transform h-[20px] w-px border-l mx-2' />
-                <span className='text-sm text-gray-500 text-right'>Matches played overall: {gameAmountInfo.overallMatches}</span>
+                <span className='text-sm text-gray-500 text-right'>{LocalText(L, "ui.matches_played_total")} {gameAmountInfo.overallMatches}</span>
               </div>
             </div>
           </div>
@@ -1306,7 +1306,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
               <span className='skeleton-text'>SKELET<span className='text-gray-500 tracking-tighter opacity-0'>#SKEL</span></span>
             </span>
             <span className='flex flex-row items-center text-xl font-semibold'>
-              <span className='relative top-px'>Level</span>
+              <span className='relative top-px'>{LocalText(L, "ui.level_text")}</span>
               <span className={'relative items-center w-[76px]'}>
                 <span className='w-4/6 skeleton-text'>SKELI</span>
               </span>
@@ -1314,8 +1314,8 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
             </span>
             <hr className='my-2' />
             <div className='w-full relative'>
-              <span className='text-xl font-semibold block'>Competitive Data</span>
-              <span className='text-base font-normal block text-gray-500 relative bottom-1'>Current Season</span>
+              <span className='text-xl font-semibold block'>{LocalText(L, "ui.comp_data_header")}</span>
+              <span className='text-base font-normal block text-gray-500 relative bottom-1'>{LocalText(L, "ui.comp_data_subheader")}</span>
               <div 
                 className='h-64 relative bg-opacity-75 flex justify-center mb-4' 
                 style={{ 
@@ -1336,50 +1336,50 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
                 })}
               </div>
               <div className='flex flex-row items-center'>
-                <span className='text-xl font-semibold'>Matches played</span>
+                <span className='text-xl font-semibold'>{LocalText(L, "ui.matches_played")}</span>
                 <span className='text-xl font-semibold ml-auto skeleton-text'>SK</span>
               </div>
               <div className='flex flex-row items-center'>
-                <span className='text-xl font-semibold'>Winrate</span>
+                <span className='text-xl font-semibold'>{LocalText(L, "ui.winrate")}</span>
                 <span className='text-xl font-semibold ml-auto skeleton-text'>SK.EL%</span>
               </div>
             </div>
             <hr className='my-2' />
             <div className='flex flex-row items-center'>
-              <span className='text-xl font-semibold relative top-px'>Peak Rank</span>
+              <span className='text-xl font-semibold relative top-px'>{LocalText(L, "ui.peak_rank")}</span>
               <div className='flex flex-row items-center ml-auto w-[123px] skeleton-text' />
             </div>
             <div className={`${activeQueueTab === "deathmatch" && "hidden"}`}>
               <hr className='my-2' />
-              <span className='text-xl font-semibold block'>Stats - {activeQueueTab[0].toUpperCase() + activeQueueTab.slice(1)}</span> {/* For Translation, only use active tab as a variable to change string to destination */}
-              <span className='text-base font-normal block text-gray-500 relative bottom-1'>Last 20 Matches</span>
+              <span className='text-xl font-semibold block'>{LocalText(L, "ui.stats_header")} - {LocalText(L, `matches.gamemodes.${activeQueueTab}`)}</span>
+              <span className='text-base font-normal block text-gray-500 relative bottom-1'>{LocalText(L, "ui.stats_subheader")}</span>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg KD</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.avg_kd")}</span>
                 <span className='text-base font-medium ml-auto skeleton-text'>S.KE</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Headshot%</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.headshot_percentage")}</span>
                 <span className='text-base font-medium ml-auto skeleton-text'>SK%</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg Kills/Match</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.kills_per_match")}</span>
                 <span className='text-base font-medium ml-auto skeleton-text'>SK</span>
               </div>
               <div className='flex flex-row items-center mb-1'>
-                <span className='text-base font-medium'>Avg ACS</span>
+                <span className='text-base font-medium'>{LocalText(L, "ui.acs")}</span>
                 <span className='text-base font-medium ml-auto skeleton-text'>SKE</span>
               </div>
               <hr className='my-2' />
               <div className='flex flex-row justify-between items-center h-fit'>
-                <span className='text-sm text-gray-500 mr-2'>Matches played this Act: <span className='skeleton-text'>SKE</span></span>
+                <span className='text-sm text-gray-500 mr-2'>{LocalText(L, "ui.matches_played_act")} <span className='skeleton-text'>SKE</span></span>
                 <hr className='transform h-[20px] w-px border-l mx-2' />
-                <span className='text-sm text-gray-500 text-right'>Matches played overall: <span className='skeleton-text'>SKEL</span></span>
+                <span className='text-sm text-gray-500 text-right'>{LocalText(L, "ui.matches_played_total")} <span className='skeleton-text'>SKEL</span></span>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className={`w-full h-full flex flex-row items-center justify-center`}>
+      <div className={`w-full h-full flex flex-row items-center justify-center ${error === false && "hidden"}`}>
         <div className='h-40 text-center'>
           <span className='font-bold text-2xl block'>Ooops!</span>
           <span className='text-lg'>{errorMessage}</span>

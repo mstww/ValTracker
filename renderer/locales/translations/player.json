@@ -1,24 +1,8 @@
 {
   "en-US": {
-    "errorReasons": {
-      "400": "Something went wrong with the request. Please try again.",
-      "401": "It seems you're not authorized to view this player.",
-      "403": "We had a problem connecting to Riot's Servers. Please try again or come back later.",
-      "404": "Sorry, we couldn't find that player.",
-      "405": "Something went wrong with the request. Please try again.",
-      "406": "Something went wrong with the request. Please try again.",
-      "408": "Something went wrong with the request. Please try again.",
-      "429": "The Rate Limit has been hit. Please try again in 2 Minutes.",
-      "500": "It seems something went wrong on the Server. Please try again later.",
-      "501": "It seems something went wrong on the Server. Please try again later.",
-      "502": "It seems something went wrong on the Server. Please try again later.",
-      "503": "It seems the Server is offline. Please try again later.",
-      "504": "It seems something went wrong on the Server. Please try again later."
-    },
-    "reload_button_text": "Reload",
     "matches": {
       "errors": {
-        "no_matches_found": "No matches found.",
+        "no_matches_found": "No matches for this gamemode found.",
         "err_while_fetching": "Something went wrong while fetching new matches. Try again!"
       },
       "date_format": "MMMM Do",
@@ -32,17 +16,12 @@
         "onefa": "Replication",
         "snowball": "Snowball Fight", 
         "swiftplay": "Swiftplay",
-        "custom": "Custom",
-        "": "Custom"
+        "select_other": "Other Modes"
       },
       "match_outcomes": {
         "VICTORY": "VICTORY",
         "DEFEAT": "DEFEAT",
         "DRAW": "DRAW"
-      },
-      "bottom_text": {
-        "loaded_matches_count": "{{ val1 }} out of {{ val2 }} Matches shown",
-        "load_more": "Load more Matches"
       },
       "match_pos": {
         "Match-MVP": "MVP",
@@ -57,28 +36,28 @@
         "9th": "9th",
         "10th": "10th"
       }
+    },
+    "ui": {
+      "level_text": "Level",
+      "comp_data_header": "Competitive Data",
+      "comp_data_subheader": "Current Season",
+      "matches_played": "Matches played",
+      "winrate": "Winrate",
+      "peak_rank": "Peak Rank",
+      "stats_header": "Stats",
+      "stats_subheader": "Last 10 Matches",
+      "avg_kd": "Avg KD",
+      "headshot_percentage": "Headshot%",
+      "kills_per_match": "Avg Kills/Match",
+      "acs": "Avg ACS",
+      "matches_played_act": "Matches played this Act:",
+      "matches_played_total": "Matches played overall:"
     }
   },
   "de-DE": {
-    "errorReasons": {
-      "400": "Da ist wohl irgendwas falsch gelaufen. Bitte versuche es erneut.",
-      "401": "Du hast nicht die Berechtigung, dieses Spielerprofil zu sehen.",
-      "403": "Wir konnten dich nicht mit Riot's Servern verbinden. Bitte versuche es erneut oder komm später zurück.",
-      "404": "Sorry, wir konnten diesen Spieler nicht finden.",
-      "405": "Da ist wohl irgendwas falsch gelaufen. Bitte versuche es erneut.",
-      "406": "Da ist wohl irgendwas falsch gelaufen. Bitte versuche es erneut.",
-      "408": "Da ist wohl irgendwas falsch gelaufen. Bitte versuche es erneut.",
-      "429": "Das Ratenlimit wurde erreicht. Bitte versuche es in 2 Minuten erneut.",
-      "500": "Der Server hatte Probleme, die Anfrage zu verarbeiten. Bitte versuche es später erneut.",
-      "501": "Der Server hatte Probleme, die Anfrage zu verarbeiten. Bitte versuche es später erneut.",
-      "502": "Der Server hatte Probleme, die Anfrage zu verarbeiten. Bitte versuche es später erneut.",
-      "503": "Der Server ist offline. Bitte versuche es später erneut.",
-      "504": "Der Server hatte Probleme, die Anfrage zu verarbeiten. Bitte versuche es später erneut."
-    },
-    "reload_button_text": "Neu laden",
     "matches": {
       "errors": {
-        "no_matches_found": "Keine Matches gefunden.",
+        "no_matches_found": "Keine Matches für diesen Spielmodus gefunden.",
         "err_while_fetching": "Irgendwas hat nicht geklappt. Versuch's nochmal!"
       },
       "date_format": "MMMM Do",
@@ -92,17 +71,12 @@
         "onefa": "Klon-Programm",
         "snowball": "Schneeballschlacht", 
         "swiftplay": "Schnelles Spiel",
-        "custom": "Eigenes Spiel",
-        "": "Eigenes Spiel"
+        "select_other": "Andere Modi"
       },
       "match_outcomes": {
         "VICTORY": "SIEG",
         "DEFEAT": "VERLOREN",
         "DRAW": "GLEICHST."
-      },
-      "bottom_text": {
-        "loaded_matches_count": "{{ val1 }} von {{ val2 }} Matches gezeigt",
-        "load_more": "Lade mehr Matches"
       },
       "match_pos": {
         "Match-MVP": "MVP",
@@ -117,28 +91,28 @@
         "9th": "9ter",
         "10th": "10ter"
       }
+    },
+    "ui": {
+      "level_text": "Level",
+      "comp_data_header": "Competitive Daten",
+      "comp_data_subheader": "Aktuelle Season",
+      "matches_played": "Gespielte Matches",
+      "winrate": "Siegesrate",
+      "peak_rank": "Bester Rang",
+      "stats_header": "Statistiken",
+      "stats_subheader": "Letzte 10 Matches",
+      "avg_kd": "Durchschn. KD",
+      "headshot_percentage": "Headshot%",
+      "kills_per_match": "Avg Kills/Match",
+      "acs": "Durchschn. ACS",
+      "matches_played_act": "Gespielte Matches diesen Akt:",
+      "matches_played_total": "Gespielte Matches insgesant:"
     }
   },
   "fr-FR": {
-    "errorReasons": {
-      "400": "Quelque chose s'est mal passé avec la demande. Veuillez réessayer.",
-      "401": "Il semble que vous n'êtes pas autorisé à voir ce lecteur.",
-      "403": "Nous avons eu un problème de connexion aux serveurs de Riot. Veuillez réessayer ou revenir plus tard.",
-      "404": "Désolé, nous n'avons pas trouvé ce joueur.",
-      "405": "Quelque chose s'est mal passé avec la demande. Veuillez réessayer.",
-      "406": "Quelque chose s'est mal passé avec la demande. Veuillez réessayer.",
-      "408": "Quelque chose s'est mal passé avec la demande. Veuillez réessayer.",
-      "429": "La limite de débit a été atteinte. Veuillez réessayer dans 2 minutes.",
-      "500": "Il semble que quelque chose s'est mal passé sur le serveur. Veuillez réessayer plus tard.",
-      "501": "Il semble que quelque chose s'est mal passé sur le serveur. Veuillez réessayer plus tard.",
-      "502": "Il semble que quelque chose s'est mal passé sur le serveur. Veuillez réessayer plus tard.",
-      "503": "Il semble que le serveur soit hors ligne. Veuillez réessayer plus tard.",
-      "504": "Il semble que quelque chose s'est mal passé sur le serveur. Veuillez réessayer plus tard."
-    },
-    "reload_button_text": "Recharger",
     "matches": {
       "errors": {
-        "no_matches_found": "Aucun résultat.",
+        "no_matches_found": "Aucun résultat trouvé pour ce mode de jeu.",
         "err_while_fetching": "Une erreur s'est produite lors de la récupération de nouveaux match. Réessayer!"
       },
       "date_format": "MMMM Do",
@@ -152,17 +126,12 @@
         "onefa": "Réplication",
         "snowball": "Snowball Fight", 
         "swiftplay": "Vélocité",
-        "custom": "Partie Personalisée",
-        "": "Partie Personalisée"
+        "select_other": "Autres modes"
       },
       "match_outcomes": {
         "VICTORY": "VICTOIRE",
         "DEFEAT": "DEFAITE",
         "DRAW": "EGALITE"
-      },
-      "bottom_text": {
-        "loaded_matches_count": "{{ val1 }} des {{ val2 }} Match montrer",
-        "load_more": "Charge plus de match"
       },
       "match_pos": {
         "Match-MVP": "MVP",
@@ -177,6 +146,22 @@
         "9th": "9ème",
         "10th": "10ème"
       }
+    },
+    "ui": {
+      "level_text": "Niveau",
+      "comp_data_header": "Données sur la concurrence",
+      "comp_data_subheader": "Saison en cours",
+      "matches_played": "Matches joués",
+      "winrate": "Pourcentage de victoire",
+      "peak_rank": "Rang de pointe",
+      "stats_header": "Statistiques",
+      "stats_subheader": "Les 10 derniers matches",
+      "avg_kd": "Moyenne KD",
+      "headshot_percentage": "Headshot%",
+      "kills_per_match": "Moyenne de tués/match",
+      "acs": "Moyenne ACS",
+      "matches_played_act": "Matches joués dans cet acte:",
+      "matches_played_total": "Matchs joués au total:"
     }
   }
 }
