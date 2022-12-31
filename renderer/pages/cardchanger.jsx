@@ -286,9 +286,9 @@ function Cardchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </button>
           </div>
           <div className='flex flex-row items-center justify-center w-2/4 mx-auto' id='skin-img'>
-            <img src={activeSmallArt ? activeSmallArt : '/invisible_weapons/vandal.png'} className={activeSmallArt ? 'shadow-img w-3/5 mr-4' : 'w-1/6'} />
-            <img src={activeWideArt ? activeWideArt : '/invisible_weapons/vandal.png'} className={activeWideArt ? 'shadow-img w-3/5 mr-4' : 'w-1/6'} />
-            <img src={activeLargeArt ? activeLargeArt : '/invisible_weapons/vandal.png'} className={activeLargeArt ? 'shadow-img w-3/5 mr-40' : 'w-1/6'} />
+            <img src={activeSmallArt ? activeSmallArt : '/images/vandal_invisible.png'} className={activeSmallArt ? 'shadow-img w-3/5 mr-4' : 'w-1/6'} />
+            <img src={activeWideArt ? activeWideArt : '/images/vandal_invisible.png'} className={activeWideArt ? 'shadow-img w-3/5 mr-4' : 'w-1/6'} />
+            <img src={activeLargeArt ? activeLargeArt : '/images/vandal_invisible.png'} className={activeLargeArt ? 'shadow-img w-3/5 mr-40' : 'w-1/6'} />
           </div>
         </div>
       </div>

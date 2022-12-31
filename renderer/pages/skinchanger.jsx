@@ -711,7 +711,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </div>
           </div>
           <div className='flex flex-row items-center justify-center w-3/4 mx-auto' id='skin-img'>
-            <img src={activeSkinImage ? activeSkinImage : '/invisible_weapons/vandal.png'} className={activeSkinImage ? 'shadow-img w-3/5' : 'w-1/6'} />
+            <img src={activeSkinImage ? activeSkinImage : '/images/vandal_invisible.png'} className={activeSkinImage ? 'shadow-img w-3/5' : 'w-1/6'} />
           </div>
         </div>
       </div>

@@ -65,6 +65,9 @@
       }
     },
     "bot_r": {
+      "comp_info": {
+        "header": "Competitive Data"
+      },
       "stats": {
         "header": "Stats of last {{ val1 }} Matches",
         "stat_1": "Avg Kills/Match",

@@ -245,8 +245,8 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   const rankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
 
   var obj = {
-    "peaktier": peaktier, // Peak Rank
-    "ActWinsByTier": currentSeason.WinsByTier, // Act Rank Triangle
+    "peaktier": peaktier,
+    "ActWinsByTier": currentSeason.WinsByTier,
     "currenttier": currenttier,
     "ranked_rating": currentSeason.RankedRating,
     "currenttier_icon": rankIcon,

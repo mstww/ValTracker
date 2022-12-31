@@ -26,17 +26,7 @@ const imgArray = [
   '/agents/omen_black.png',
   '/agents/fade_black.png',
   '/agents/fade_black.png',
-  '/agents/jett_black.png',
-  '/agents/jett_black.png',
-  '/agents/jett_black.png',
-  '/agents/breach_black.png',
-  '/agents/breach_black.png',
-  '/agents/cypher_black.png',
-  '/agents/jett_black.png',
-  '/agents/jett_black.png',
-  '/agents/breach_black.png',
-  '/agents/cypher_black.png',
-  '/agents/cypher_black.png',
+  '/agents/jett_black.png'
 ];
 
 const fetchPlayer = async (pname, ptag, lang) => {
@@ -243,7 +233,6 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
     const { errored, items } = await fetchPlayer(name, tag, router.query.lang);
       
     if(!errored) {
-      console.log("DuringLoad", items);
       if(items.matches.totalMatches === 0) {
         setHideStats(true);
         setNoMatchesFound(true);
@@ -351,7 +340,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
     { orientation: "up", className: 'absolute top-[12.5rem] left-32 right-0 mx-auto w-[1.9rem]' },
     { orientation: "down", className: 'absolute top-[12.5rem] left-40 right-0 mx-auto w-[1.9rem]' },
     { orientation: "up", className: 'absolute top-[12.5rem] left-48 right-0 mx-auto w-[1.9rem]' },
-  ]
+  ];
 
   return (
     <Layout isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>

@@ -19,11 +19,12 @@ import ValIconHandler from '../components/ValIconHandler';
 import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
 import { Select } from '../components/Select';
-import { getMatchHistory, getMatch, checkForRankup } from '../js/riotAPIFunctions.mjs';
+import { getMatchHistory, getMatch, checkForRankup, getPlayerMMR } from '../js/riotAPIFunctions.mjs';
 import getDifferenceInDays from '../js/getDifferenceInDays.mjs';
 import calculatePlayerStatsFromMatches from '../js/calculatePlayerStatsFromMatches.mjs';
 import { calculateContractProgress } from '../js/calculateContractProgress.mjs';
 import { calculateMatchStats } from '../js/calculateMatchStats.mjs';
+import asyncDelay from '../js/asyncDelay.mjs';
 
 const imgArray = [
   '/agents/breach_black.png',
@@ -109,10 +110,24 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
 
     return { errored: false, items: json };
   } catch(err) {
-    console.error(err);
+    console.log(err);
     return { errored: true, items: err };
   }
 }
+
+const trianglePositionClassNames = [
+  { orientation: "up", className: 'absolute top-[0.95rem] left-0 right-0 mx-auto w-[2.4rem]' },
+
+  { orientation: "up", className: 'absolute top-[3.15rem] left-0 right-[40px] mx-auto w-[2.4rem]' },
+  { orientation: "down", className: 'absolute top-[3.15rem] left-0 right-0 mx-auto w-[2.4rem]' },
+  { orientation: "up", className: 'absolute top-[3.15rem] left-[40px] right-0 mx-auto w-[2.4rem]' },
+
+  { orientation: "up", className: 'absolute top-[5.3rem] left-0 right-[5rem] mx-auto w-[2.4rem]' },
+  { orientation: "down", className: 'absolute top-[5.3rem] left-0 right-[40px] mx-auto w-[2.4rem]' },
+  { orientation: "up", className: 'absolute top-[5.3rem] left-0 right-0 mx-auto w-[2.4rem]' },
+  { orientation: "down", className: 'absolute top-[5.3rem] left-[40px] right-0 mx-auto w-[2.4rem]' },
+  { orientation: "up", className: 'absolute top-[5.3rem] left-[5rem] right-0 mx-auto w-[2.4rem]' }
+];
 
 function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const firstRender = useFirstRender();
@@ -201,6 +216,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
   const [ userCreds, setUserCreds ] = React.useState({});
 
+  const [ actWins, setActWins ] = React.useState([]);
+  const [ mmrData, setMMRData ] = React.useState({});
+
 // ------------------------------- END STATES -------------------------------
 
   const fetchMatchesAndCalculateStats = async (isNewQueue, beginIndex, endIndex, mode, isFirstLoad, isSilentLoading, keepCurrentMatches) => {
@@ -250,11 +268,16 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
         });
   
-        if(mapData) {
-          var map_data = mapData
+        if(mapData.data !== undefined) {
+          var map_data = mapData;
         } else {
+          console.log("Here!");
           var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
           var map_data = await map_data_raw.json();
+          setMapData(map_data);
+          do {
+            await asyncDelay(20);
+          } while (mapData.data === undefined);
         }
   
         var best_map = map_stats[sorted_map_stats[0]];
@@ -391,10 +414,19 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
           });
     
-          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-          var map_data = await map_data_raw.json();
-    
           var best_map = map_stats[sorted_map_stats[0]];
+  
+          if(mapData.data !== undefined) {
+            var map_data = mapData;
+          } else {
+            console.log("Here!");
+            var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+            var map_data = await map_data_raw.json();
+            setMapData(map_data);
+            do {
+              await asyncDelay(20);
+            } while (mapData.data === undefined);
+          }
           
           for(var i = 0; i < map_data.data.length; i++) {
             if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
@@ -493,10 +525,19 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
       });
 
-      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-      var map_data = await map_data_raw.json();
-
       var best_map = map_stats[sorted_map_stats[0]];
+  
+      if(mapData.data !== undefined) {
+        var map_data = mapData;
+      } else {
+        console.log("Here!");
+        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+        var map_data = await map_data_raw.json();
+        setMapData(map_data);
+        do {
+          await asyncDelay(20);
+        } while (mapData.data === undefined);
+      }
       
       for(var i = 0; i < map_data.data.length; i++) {
         if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
@@ -586,10 +627,19 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
         });
   
-        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-        var map_data = await map_data_raw.json();
-  
         var best_map = map_stats[sorted_map_stats[0]];
+  
+        if(mapData.data !== undefined) {
+          var map_data = mapData;
+        } else {
+          console.log("Here!");
+          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+          var map_data = await map_data_raw.json();
+          setMapData(map_data);
+          do {
+            await asyncDelay(20);
+          } while (mapData.data === undefined);
+        }
         
         for(var i = 0; i < map_data.data.length; i++) {
           if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
@@ -630,7 +680,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setIsSilentLoading(false);
         setSilentError(true);
 
-        ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." }); // TODO: Translation
+        ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
 
         var puuid = await getCurrentPUUID();
         var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
@@ -675,6 +725,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         newMatches = arr;
   
         var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+        console.log(playerstats);
           
         setAvgKillsPerMatch(playerstats.kills_per_match);
         setAvgKillsPerRound(playerstats.kills_per_round);
@@ -686,10 +737,19 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
         });
   
-        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-        var map_data = await map_data_raw.json();
-  
         var best_map = map_stats[sorted_map_stats[0]];
+  
+        if(mapData.data !== undefined) {
+          var map_data = mapData;
+        } else {
+          console.log("Here!");
+          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+          var map_data = await map_data_raw.json();
+          setMapData(map_data);
+          do {
+            await asyncDelay(20);
+          } while (mapData.data === undefined);
+        }
         
         for(var i = 0; i < map_data.data.length; i++) {
           if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
@@ -797,15 +857,37 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var favs_data = await executeQuery(`SELECT * FROM matchIDCollection:⟨favMatches::${user_creds.uuid}⟩`);
 
     setFavMatches(favs_data[0].matchIDs);
-
-    var map_data_raw = await fetch('https://valorant-api.com/v1/maps', { 'Content-Type': 'application/json' });
-    var map_data = await map_data_raw.json();
-    setMapData(map_data);
+  
+    if(mapData.data === undefined) {
+      console.log("Here!");
+      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+      var map_data = await map_data_raw.json();
+      setMapData(map_data);
+    }
 
     var uuid = uuidv5("hubMatchFilter", process.env.SETTINGS_UUID);
     var result = await executeQuery(`SELECT * FROM setting:⟨${uuid}⟩`);
 
     setActiveQueueTab(result[0].value);
+
+    var ent = await getUserEntitlement();
+    var bearer = await getUserAccessToken();
+    
+    var data = await getPlayerMMR(user_creds.region, user_creds.uuid, ent, bearer);
+    setMMRData(data);
+
+    var arr = [];
+
+    Object.keys(data.ActWinsByTier).forEach(singleKey => {
+      if(singleKey != "0") {
+        for(var i = 0; i < data.ActWinsByTier[singleKey]; i++) {
+          arr.push(singleKey);
+        }
+      }
+    });
+    arr = arr.reverse().slice(0, 9);
+
+    setActWins(arr);
 
     if(!result[0].value || result[0].value === "") {
       await fetchMatchesAndCalculateStats(true, 0, 15, 'unrated', true);
@@ -1425,6 +1507,51 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         <div id='bottom-right-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-dim'>
           <div className={'overflow-y-auto'}>
             <div className={'p-0 m-0' + (areStatsActive ? '' : ' hidden ')}>
+              <span className={`font-bold mb-1 block ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.comp_info.header")}</span>
+              <div className='flex comp-data-container min-h-32'>
+                <div 
+                  className='relative home-rank-triangle flex justify-center mb-4 !h-32' 
+                  style={{ 
+                    backgroundImage: 'url(https://media.valorant-api.com/seasonborders/d3b30fbf-445e-0bce-bf98-b2b58e5807c6/smallicon.png)',
+                    backgroundSize: '180px',
+                    backgroundPosition: 'center center',
+                    backgroundRepeat: "no-repeat"
+                  }}
+                >
+                  {actWins.map((winData, index) => {
+                    return (
+                      <img 
+                        src={`https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${winData}/ranktriangle${trianglePositionClassNames[index].orientation}icon.png`}
+                        className={trianglePositionClassNames[index].className}
+                        key={index}
+                      />
+                    )
+                  })}
+                </div>
+                <div className='comp-data-text'>
+                  <span className='flex flex-row items-center'>
+                    <img src={mmrData.currenttier_icon} className={`z-20 w-12 h-12 shadow-img inline relative mr-1`} />
+                    <div className='flex flex-col relative top-1'>
+                      <span 
+                        style={{ color: (ranks[mmrData.currenttier] ? `#${ranks[mmrData.currenttier].color.slice(0, -2)}` : "#fff") }}
+                        className={'font-bold text-2xl'}
+                      >
+                        {(ranks[mmrData.currenttier] ? ranks[mmrData.currenttier].tierName : "")}
+                      </span>
+                      <span className='text-sm font-normal relative bottom-1'>- {mmrData.ranked_rating} RR -</span>
+                    </div>
+                  </span>
+                  <hr className='mt-1 mb-2' />
+                  <span className='flex flex-row justify-between'>
+                    <span className='text-base font-medium'>Matches played</span>
+                    <span className='text-base font-medium'>{mmrData.total_matches_played}</span>
+                  </span>
+                  <span className='flex flex-row justify-between'>
+                    <span className='text-base font-medium'>Win%</span>
+                    <span className='text-base font-medium'>{mmrData.win_percentage}%</span>
+                  </span>
+                </div>
+              </div>
               <span className={`font-bold ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
               <div className='flex flex-row justify-between mt-1.5'>
                 <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} loading={loading} />

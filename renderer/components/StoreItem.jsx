@@ -146,7 +146,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
           }
         </div>
         <div className='absolute top-2 z-20 left-2 flex flex-row pr-2'>
-          <img src={item.skinTierImage ? item.skinTierImage : '/invisible_weapons/spray.png'} className="w-6 h-6 relative top-px mr-2" />
+          <img src={item.skinTierImage ? item.skinTierImage : '/images/vandal_invisible.png'} className="w-6 h-6 relative top-px mr-2" />
           <span className="text-lg font-bold shop-item-name">{ item.name }</span>
         </div>
         <div className='flex w-full h-4/5 items-center justify-center mt-6 z-10'>

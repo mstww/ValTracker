@@ -2,7 +2,6 @@ import React from 'react';
 import { ipcRenderer } from 'electron'
 import { motion } from 'framer-motion'
 import { Close } from '../SVGs';
-import { useFirstRender } from '../useFirstRender';
 
 const update_card_variants = {
   hidden: { opacity: 0, x: 0, y: 250, scale: 1, display: 'none' },
@@ -12,21 +11,18 @@ const update_card_variants = {
 
 export default function TextboxLayer() {
   const [ textboxes, setTextboxes ] = React.useState([]);
-  const firstRender = useFirstRender();
 
   React.useEffect(() => {
-    if(!firstRender) {
-      ipcRenderer.on('createTextbox', function(event, args) {
-        console.log(args);
-        setTextboxes(current => (!current.find(x => x.text === args.text) ? [...current, args ] : current));
-        if(args.persistent === false) {
-          setTimeout(function() {
-            setTextboxes(current => current.filter(x => x.text !== args.text));
-          }, 5000);
-        }
-      });
-    }
-  }, [firstRender]);
+    ipcRenderer.on('createTextbox', function(event, args) {
+      console.log(args);
+      setTextboxes(current => (!current.find(x => x.text === args.text) ? [...current, args ] : current));
+      if(args.persistent === false) {
+        setTimeout(function() {
+          setTextboxes(current => current.filter(x => x.text !== args.text));
+        }, 5000);
+      }
+    });
+  }, []);
 
   return (
     <div className="absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-end items-end z-50 pointer-events-none">
