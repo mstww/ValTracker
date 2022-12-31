@@ -8,7 +8,6 @@ import SmallStatsCard from '../components/hub/SmallStatsCard';
 import LargeStatsCard from '../components/hub/LargeStatsCard';
 import FlatLargeStatsCard from '../components/hub/FlatLargeStatsCard';
 import ContractProgressCard from '../components/hub/ContractProgressCard';
-import ModeSelectionCard from '../components/hub/ModeSelectionCard';
 import { useFirstRender } from '../components/useFirstRender';
 import { useRouter } from 'next/router';
 import L from '../locales/translations/home.json';
@@ -19,6 +18,12 @@ import { StarFilled, Star, Reload, ArrowRoundUp, Close } from '../components/SVG
 import ValIconHandler from '../components/ValIconHandler';
 import { executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, removeMatch, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
+import { Select } from '../components/Select';
+import { getMatchHistory, getMatch, checkForRankup } from '../js/riotAPIFunctions.mjs';
+import getDifferenceInDays from '../js/getDifferenceInDays.mjs';
+import calculatePlayerStatsFromMatches from '../js/calculatePlayerStatsFromMatches.mjs';
+import { calculateContractProgress } from '../js/calculateContractProgress.mjs';
+import { calculateMatchStats } from '../js/calculateMatchStats.mjs';
 
 const imgArray = [
   '/agents/breach_black.png',
@@ -37,72 +42,6 @@ const imgArray = [
   '/agents/cypher_black.png',
   '/agents/omen_black.png',
 ];
-
-async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
-}
-
-async function getMatch(region, matchId, entitlement_token, bearer) {
-  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-details/v1/matches/${matchId}`, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      "X-Riot-ClientPlatform": "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9",
-      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json'
-    },
-    keepalive: true
-  })).json());
-}
-
-async function getPlayerContracts(region, puuid, entitlement_token, bearer, client_version) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/contracts/v1/contracts/${puuid}`, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'X-Riot-ClientVersion': client_version,
-      'Content-Type': 'application/json'
-    },
-    keepalive: true
-  })).json());
-}
-
-async function checkForRankup(region, puuid, matchID, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  var data = await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/${puuid}/competitiveupdates/${matchID}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'X-Riot-ClientPlatform': "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9",
-      'Content-Type': 'application/json'
-    },
-    keepalive: true
-  })).json();
-
-  if(data.TierAfterUpdate > data.TierBeforeUpdate) return true;
-  else return false;
-}
-
-function getDifferenceInDays(date1, date2) {
-  const diffInMs = Math.abs(date2 - date1);
-  return Math.round(diffInMs / (1000 * 60 * 60 * 24));
-}
 
 const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, region, lang, isTestFetch) => {
   try {
@@ -173,527 +112,6 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
     console.error(err);
     return { errored: true, items: err };
   }
-}
-
-function calculatePlayerStatsFromMatches(matchdays, puuid) {
-  var player_wins = 0;
-  var player_losses = 0;
-
-  var total_kills = 0;
-  var total_deaths = 0;
-  var total_assists = 0;
-
-  // Divide all stats here by the match count to get the avg thing/match
-  var total_match_count = 0;
-  // ---------------------------------------------------------------
-  // total_kills here 
-
-  // Divide all stats here by the round count to get the avg thing/round
-  var total_round_count = 0;
-  // ---------------------------------------------------------------
-  var total_player_round_score = 0;
-  var total_round_damage_dealt = 0;
-  // total_kills here 
-
-  // Calculate these as normal
-  var total_headshots = 0;
-  var total_bodyshots = 0;
-  var total_legshots = 0;
-
-  var agent_stats = [];
-  var weapon_kills = [];
-  var map_stats = [];
-
-  // For each key in the matchdays object
-  for(var key in matchdays) {
-    var matches = matchdays[key];
-
-    for(var i = 0; i < matches.length; i++) {
-      if(matches[i].matchInfo.completionState !== 'Surrendered') {
-        total_match_count++;
-
-        var map_kills = 0;
-        var map_deaths = 0;
-        var map_assists = 0;
-        var map_wins = 0;
-        var map_losses = 0;
-
-        // Get Player Team and Round Damage
-        for(var j = 0; j < matches[i].players.length; j++) {
-          if(matches[i].players[j].subject == puuid) {
-            var player_team = matches[i].players[j].teamId;
-
-            var player_match_stats = matches[i].players[j];
-
-            total_kills += matches[i].players[j].stats.kills;
-            map_kills += matches[i].players[j].stats.kills;
-
-            total_deaths += matches[i].players[j].stats.deaths;
-            map_deaths += matches[i].players[j].stats.deaths;
-
-            total_assists += matches[i].players[j].stats.assists;
-            map_assists += matches[i].players[j].stats.assists;
-          }
-        }
-
-        // Get if player won or lost
-        for(var j = 0; j < matches[i].teams.length; j++) {
-          if(matches[i].teams[j].won == true) {
-            var winning_team = matches[i].teams[j].teamId;
-          }
-        }
-        if(player_team == winning_team) {
-          player_wins++;
-          map_wins++;
-        } else {
-          player_losses++;
-          map_losses++;
-        }
-
-        if(!agent_stats[player_match_stats.characterId]) {
-          agent_stats[player_match_stats.characterId] = {
-            "kills": player_match_stats.stats.kills,
-            "deaths": player_match_stats.stats.deaths,
-            "assists": player_match_stats.stats.assists,
-            "score": player_match_stats.stats.score,
-            "rounds_played": player_match_stats.stats.roundsPlayed,
-            "times_played": 1,
-            "wins": map_wins,
-            "losses": map_losses
-          }
-        } else {
-          agent_stats[player_match_stats.characterId].kills += player_match_stats.stats.kills;
-          agent_stats[player_match_stats.characterId].deaths += player_match_stats.stats.deaths;
-          agent_stats[player_match_stats.characterId].assists += player_match_stats.stats.assists;
-          agent_stats[player_match_stats.characterId].score += player_match_stats.stats.score;
-          agent_stats[player_match_stats.characterId].rounds_played += player_match_stats.stats.roundsPlayed;
-          agent_stats[player_match_stats.characterId].times_played++;
-          agent_stats[player_match_stats.characterId].wins += map_wins;
-          agent_stats[player_match_stats.characterId].losses += map_losses;
-        }
-
-        // Loop through every round and every player in every round to find damage stats for player
-        for(var j = 0; j < matches[i].roundResults.length; j++) {
-          total_round_count++;
-          for(var k = 0; k < matches[i].roundResults[j].playerStats.length; k++) {
-            if(matches[i].roundResults[j].playerStats[k].subject == puuid) {
-              total_player_round_score += matches[i].roundResults[j].playerStats[k].score;
-
-              for(var l = 0; l < matches[i].roundResults[j].playerStats[k].damage.length; l++) {
-                total_headshots += matches[i].roundResults[j].playerStats[k].damage[l].headshots;
-                total_bodyshots += matches[i].roundResults[j].playerStats[k].damage[l].bodyshots;
-                total_legshots += matches[i].roundResults[j].playerStats[k].damage[l].legshots;
-
-                total_round_damage_dealt += matches[i].roundResults[j].playerStats[k].damage[l].damage;
-              }
-
-              for(var l = 0; l < matches[i].roundResults[j].playerStats[k].kills.length; l++) {
-                if(matches[i].roundResults[j].playerStats[k].kills[l].finishingDamage.damageType === 'Weapon') {
-                  if(!weapon_kills[matches[i].roundResults[j].playerStats[k].kills[l].finishingDamage.damageItem]) {
-                    weapon_kills[matches[i].roundResults[j].playerStats[k].kills[l].finishingDamage.damageItem] = {
-                      "kills": 1,
-                    }
-                  } else {
-                    weapon_kills[matches[i].roundResults[j].playerStats[k].kills[l].finishingDamage.damageItem].kills++;
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        // Create obj with name of "matches[i].matchInfo.matchId" in map_stats array if it doesn't exist
-        if(!map_stats[matches[i].matchInfo.mapId]) {
-          map_stats[matches[i].matchInfo.mapId] = {
-            "map_kills": map_kills,
-            "map_deaths": map_deaths,
-            "map_assists": map_assists,
-            "map_wins": map_wins,
-            "map_losses": map_losses,
-            "total_times_played": 1
-          }
-        } else {
-          map_stats[matches[i].matchInfo.mapId].map_kills += map_kills;
-          map_stats[matches[i].matchInfo.mapId].map_deaths += map_deaths;
-          map_stats[matches[i].matchInfo.mapId].map_assists += map_assists;
-          map_stats[matches[i].matchInfo.mapId].map_wins += map_wins;
-          map_stats[matches[i].matchInfo.mapId].map_losses += map_losses;
-          map_stats[matches[i].matchInfo.mapId].total_times_played++;
-        }
-      }
-    }
-  }
-
-  var win_percentage = (player_wins / total_match_count) * 100;
-  var win_percentage_rounded = win_percentage.toFixed(0);
-
-  var win_loss_ratio = (player_wins / player_losses);
-
-  var total_shots_hit = total_headshots + total_bodyshots + total_legshots;
-
-  var headshot_percent = (total_headshots / total_shots_hit) * 100;
-  var headshot_percent_rounded = headshot_percent.toFixed(0);
-
-  var kills_per_round = total_kills / total_round_count;
-  var kills_per_round_rounded = kills_per_round.toFixed(2);
-
-  var kills_per_match = total_kills / total_match_count;
-  var kills_per_match_rounded = kills_per_match.toFixed(2);
-
-  for(var key in agent_stats) {
-    var agent_kills = agent_stats[key].kills;
-    var agent_deaths = agent_stats[key].deaths;
-    var agent_assists = agent_stats[key].assists;
-    var agent_score = agent_stats[key].score;
-    var agent_rounds_played = agent_stats[key].rounds_played;
-    var agent_times_played = agent_stats[key].times_played;
-    var agent_wins = agent_stats[key].wins;
-    var agent_losses = agent_stats[key].losses;
-
-    var agent_kda_ratio = (agent_kills + agent_assists) / agent_deaths;
-    var agent_kda_ratio_rounded = agent_kda_ratio.toFixed(2); // IMPORTANT
-
-    var avg_kills_per_match = agent_kills / agent_times_played;
-    var avg_kills_per_match_rounded = avg_kills_per_match.toFixed(0); // IMPORTANT
-
-    var avg_deaths_per_match = agent_deaths / agent_times_played;
-    var avg_deaths_per_match_rounded = avg_deaths_per_match.toFixed(0);
-
-    var avg_assists_per_match = agent_assists / agent_times_played;
-    var avg_assists_per_match_rounded = avg_assists_per_match.toFixed(0);
-
-    var avg_agent_kda = `${avg_kills_per_match_rounded}/${avg_deaths_per_match_rounded}/${avg_assists_per_match_rounded}`; // IMPORTANT
-
-    var average_match_score = agent_score / agent_times_played;
-    var average_match_score_rounded = average_match_score.toFixed(0); // IMPORTANT
-
-    var agent_win_loss_ratio = (agent_wins / agent_losses);
-    var agent_win_loss_ratio_rounded = agent_win_loss_ratio.toFixed(0); // IMPORTANT
-
-    var agent_kills_per_round = agent_kills / agent_rounds_played;
-    var agent_kills_per_round_rounded = agent_kills_per_round.toFixed(2); // IMPORTANT
-
-    agent_stats[key].avg_kda_ratio = agent_kda_ratio_rounded;
-    agent_stats[key].avg_kda = avg_agent_kda;
-    agent_stats[key].avg_kills_per_match = avg_kills_per_match_rounded;
-    agent_stats[key].kills_per_round = agent_kills_per_round_rounded;
-    agent_stats[key].avg_match_score = average_match_score_rounded;
-    agent_stats[key].win_loss_ratio = agent_win_loss_ratio_rounded;
-  }
-
-  for(var key in map_stats) {
-    var map_kills = map_stats[key].map_kills;
-    var map_deaths = map_stats[key].map_deaths;
-    var map_assists = map_stats[key].map_assists;
-    var map_wins = map_stats[key].map_wins;
-    var map_losses = map_stats[key].map_losses;
-    var total_times_played = map_stats[key].total_times_played;
-
-    var map_kda_ratio = (map_kills + map_assists) / map_deaths;
-    var map_kda_ratio_rounded = map_kda_ratio.toFixed(2); // IMPORTANT
-
-    var map_win_percentage = (map_wins / total_times_played) * 100;
-    var map_win_percentage_rounded = map_win_percentage.toFixed(0); // IMPORTANT
-
-    var map_win_loss_ratio = (map_wins / map_losses);
-    var map_win_loss_ratio_rounded = map_win_loss_ratio.toFixed(2); // IMPORTANT
-
-    map_stats[key].map_kda_ratio = map_kda_ratio_rounded;
-    map_stats[key].map_win_percentage = map_win_percentage_rounded;
-    map_stats[key].map_win_loss_ratio = map_win_loss_ratio_rounded;
-  }
-
-  var returnObj = {
-    "win_percentage": win_percentage_rounded,
-    "win_loss_ratio": win_loss_ratio,
-    "headshot_percent": headshot_percent_rounded,
-    "kills_per_round": kills_per_round_rounded,
-    "kills_per_match": kills_per_match_rounded,
-    "total_kills": total_kills,
-    "total_deaths": total_deaths,
-    "total_assists": total_assists,
-    "agent_stats": agent_stats,
-    "map_stats": map_stats,
-    "weapon_kills": weapon_kills
-  }
-
-  return returnObj;
-}
-
-const getLevelRewardData = async (uuid, rewardType, lang) => {
-  try {
-    switch(rewardType) {
-      case "EquippableSkinLevel":
-        return {
-          isText: false,
-          image: 'https://media.valorant-api.com/weaponskinlevels/' + uuid + '/displayicon.png',
-          uuid: uuid,
-          text: null
-        }
-      case "EquippableCharmLevel":
-        return {
-          isText: false, 
-          image: 'https://media.valorant-api.com/buddylevels/' + uuid + '/displayicon.png',
-          uuid: uuid,
-          text: null
-        }
-      case "Currency":
-        return {
-          isText: false, 
-          image: '/images/radianite_icon.png',
-          text: null
-        }
-      case "PlayerCard":
-        return { 
-          isText: false, 
-          image: 'https://media.valorant-api.com/playercards/' + uuid + '/smallart.png' ,
-          uuid: uuid,
-          text: null
-        }
-      case "Spray":
-        return { 
-          isText: false, 
-          image: 'https://media.valorant-api.com/sprays/' + uuid + '/fulltransparenticon.png',
-          uuid: uuid,
-          text: null
-        }
-      case "Title":
-        var titleData = await (await fetch('https://valorant-api.com/v1/playertitles/' + uuid + `?language=${APIi18n(lang)}`, { 'Content-Type': 'application/json' })).json();
-        return {
-          isText: true,
-          image: null,
-          uuid: uuid,
-          text: titleData.data.displayName
-        }
-      case "Character":
-        return {
-          isText: false,
-          image: 'https://media.valorant-api.com/agents/' + uuid + '/displayicon.png',
-          uuid: uuid,
-          text: null
-        }
-    } 
-  } catch(e) {
-    console.log(e);
-  }
-}
-
-const calculateContractProgress = async (region, puuid, bearer, entitlement, client_version, lang) => {
-  var contracts = await (await fetch('https://valorant-api.com/v1/contracts?language=' + APIi18n(lang), { 'Content-Type': 'application/json' })).json();
-  var player_contracts = await getPlayerContracts(region, puuid, entitlement, bearer, client_version);
-
-  var activeAgentContractUUID = player_contracts.ActiveSpecialContract;
-  var activeBattlePassContractUUID = contracts.data[contracts.data.length-1].uuid;
-
-  // Get Progress in agent contract 
-  for(var i = 0; i < player_contracts.Contracts.length; i++) {
-    if(player_contracts.Contracts[i].ContractDefinitionID === activeAgentContractUUID) {
-      var agentContractUUID = player_contracts.Contracts[i].ContractDefinitionID
-      var agentContractProgressionLevel = player_contracts.Contracts[i].ProgressionLevelReached;
-      var agentContractXpRemaining = player_contracts.Contracts[i].ProgressionTowardsNextLevel;
-    }
-  }
-
-  var agentContractData = await(await fetch('https://valorant-api.com/v1/contracts/' + agentContractUUID + '?language=' + APIi18n(lang), { 'Content-Type': 'application/json' })).json();
-  var tierCount = 0;
-
-  var agentContractProgression = {
-    current_level: {},
-    next_level: {},
-  };
-
-  if(agentContractProgressionLevel === 10) {
-    var current_chapter = agentContractData.data.content.chapters[agentContractData.data.content.chapters.length-1];
-    
-    var current_level = current_chapter.levels[current_chapter.levels.length-2];
-    var next_level = current_chapter.levels[current_chapter.levels.length-1];
-
-    var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-
-    agentContractProgression.current_level.reward = current_level_data;
-    agentContractProgression.current_level.levelNum = 9;
-
-    var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
-
-    agentContractProgression.next_level.reward = next_level_data;
-    agentContractProgression.next_level.levelNum = 10;
-
-    agentContractProgression.totalXPneeded = 1;
-    agentContractProgression.currentXPowned = 1;
-  } else {
-    for(var i = 0; i < agentContractData.data.content.chapters.length; i++) {
-      var current_chapter = agentContractData.data.content.chapters[i];
-      var next_chapter = undefined;
-  
-      if(agentContractData.data.content.chapters[i+1]) {
-        next_chapter = agentContractData.data.content.chapters[i+1];
-      }
-      
-      for(var j = 0; j < current_chapter.levels.length; j++) {
-        var next_level = undefined;
-        var current_level = current_chapter.levels[j-1];
-  
-        if(current_level === undefined && tierCount === 5) {
-          var prev_chapter = agentContractData.data.content.chapters[i-1];
-          current_level = prev_chapter.levels[prev_chapter.levels.length-1];
-        }
-  
-        if(current_chapter.levels[j]) {
-          next_level = current_chapter.levels[j];
-        }
-  
-        if(next_level === undefined && next_chapter !== undefined) {
-          current_level = current_chapter.levels[current_chapter.levels.length-1];
-          next_level = next_chapter.levels[0]; 
-        }
-  
-        if(next_level === undefined) {
-          next_level = current_chapter.levels[j+1];
-          current_level = current_chapter.levels[j];
-          var atEnd = true;
-        }
-  
-        if(tierCount == agentContractProgressionLevel) {
-          if(current_level) {
-            if(atEnd === true) {
-              var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-    
-              agentContractProgression.current_level.reward = current_level_data;
-              agentContractProgression.current_level.levelNum = tierCount -1;
-            } else {
-              var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-    
-              agentContractProgression.current_level.reward = current_level_data;
-              agentContractProgression.current_level.levelNum = tierCount;
-            }
-            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-  
-            agentContractProgression.current_level.reward = current_level_data;
-            agentContractProgression.current_level.levelNum = tierCount;
-          } else {
-            agentContractProgression.current_level.reward = null;
-            agentContractProgression.current_level.levelNum = 0;
-          }
-          
-          if(atEnd === true) {
-            var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
-  
-            agentContractProgression.next_level.reward = next_level_data;
-            agentContractProgression.next_level.levelNum = tierCount;
-  
-            agentContractProgression.totalXPneeded = 1;
-            agentContractProgression.currentXPowned = 1;
-          } else {
-            var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
-  
-            agentContractProgression.next_level.reward = next_level_data;
-            agentContractProgression.next_level.levelNum = tierCount + 1;
-  
-            agentContractProgression.totalXPneeded = next_level.xp;
-            agentContractProgression.currentXPowned = agentContractXpRemaining;
-          }
-          break;
-        }
-  
-        tierCount++;
-      }
-    }
-  }
-
-  // Get Progress in battle pass contract 
-  for(var i = 0; i < player_contracts.Contracts.length; i++) {
-    if(player_contracts.Contracts[i].ContractDefinitionID === activeBattlePassContractUUID) {
-      var battlePassUUID = player_contracts.Contracts[i].ContractDefinitionID
-      var battlePassProgressionLevel = player_contracts.Contracts[i].ProgressionLevelReached;
-      var battlePassXpRemaining = player_contracts.Contracts[i].ProgressionTowardsNextLevel;
-    }
-  }
-
-  var battlePassData = await(await fetch('https://valorant-api.com/v1/contracts/' + battlePassUUID + '?language=' + APIi18n(lang), { 'Content-Type': 'application/json' })).json();
-  tierCount = 0;
-
-  var battlePassProgression = {
-    current_level: {},
-    next_level: {},
-  };
-
-  for(var i = 0; i < battlePassData.data.content.chapters.length; i++) {
-    var current_chapter = battlePassData.data.content.chapters[i];
-    var next_chapter = undefined;
-    var atEnd = false;
-    
-    if(battlePassData.data.content.chapters[i+1]) {
-      next_chapter = battlePassData.data.content.chapters[i+1];
-    }
-
-    for(var j = 0; j < current_chapter.levels.length; j++) {
-      var current_level = current_chapter.levels[j];
-      var next_level = undefined;
-
-      if(current_chapter.levels[j+1]) {
-        next_level = current_chapter.levels[j+1];
-      }
-
-      if(next_level === undefined && next_chapter !== undefined) {
-        next_level = next_chapter.levels[0];
-      }
-
-      if(next_level === undefined && next_chapter == undefined) {
-        next_level = current_level;
-        current_level = current_chapter.levels[j-1];
-        atEnd = true;
-      }
-
-      tierCount++;
-
-      if(tierCount == battlePassProgressionLevel) {
-        if(current_level) {
-          if(atEnd === true) {
-            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-  
-            battlePassProgression.current_level.reward = current_level_data;
-            battlePassProgression.current_level.levelNum = tierCount -1;
-          } else {
-            var current_level_data = await getLevelRewardData(current_level.reward.uuid, current_level.reward.type, lang);
-  
-            battlePassProgression.current_level.reward = current_level_data;
-            battlePassProgression.current_level.levelNum = tierCount;
-          }
-        } else {
-          battlePassProgression.current_level.reward = null;
-          battlePassProgression.current_level.levelNum = 0;
-        }
-
-        if(atEnd === true) {
-          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
-
-          battlePassProgression.totalXPneeded = 1;
-          battlePassProgression.currentXPowned = 1;
-
-          battlePassProgression.next_level.reward = next_level_data;
-          battlePassProgression.next_level.levelNum = tierCount;
-        } else {
-          var next_level_data = await getLevelRewardData(next_level.reward.uuid, next_level.reward.type, lang);
-
-          battlePassProgression.totalXPneeded = next_level.xp;
-          battlePassProgression.currentXPowned = battlePassXpRemaining;
-
-          battlePassProgression.next_level.reward = next_level_data;
-          battlePassProgression.next_level.levelNum = tierCount + 1;
-        }
-      }
-    }
-  } 
-
-  var data = {
-    agentContractProgress: agentContractProgression,
-    battlePassProgress: battlePassProgression,
-    date: Date.now()
-  }
-  
-  await updateThing(`hubContractProgress:⟨${puuid}⟩`, data);
-
-  return data;
 }
 
 function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
@@ -1113,6 +531,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     } else {
       setLoading(true);
       setErrored(false);
+      setSilentError(false);
 
       setAreStatsActive(true);
   
@@ -1200,17 +619,18 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   
         setCurrentMatches(data.items.games);
         setLoading(false);
+        setSilentError(false);
       } else if(data.items.totalMatches === 0) {
         setCurrentMatches([]);
         setLoading(false);
         setAreStatsActive(false);
+        setSilentError(false);
       } else {
         setLoading(false);
         setIsSilentLoading(false);
         setSilentError(true);
 
-        console.log("Error while fetching new matches. Only old matches will be shown.");
-        ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
+        ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." }); // TODO: Translation
 
         var puuid = await getCurrentPUUID();
         var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
@@ -1310,13 +730,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       if(refetch === false && contractData[0]) {
         var contract_progress = contractData[0];
       } else {
-        var version_data = await (await fetch('https://valorant-api.com/v1/version')).json();
-    
         const bearer = await getUserAccessToken();
   
         const entitlement_token = await getUserEntitlement();
   
-        var contract_progress = await calculateContractProgress(user_creds.region, user_creds.uuid, bearer, entitlement_token, version_data.data.riotClientVersion, router.query.lang);
+        var contract_progress = await calculateContractProgress(user_creds.region, user_creds.uuid, bearer, entitlement_token, router.query.lang);
       }
     
       setAgentContract_prevLevelNum(contract_progress.agentContractProgress.current_level.levelNum);
@@ -1340,219 +758,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       setContractsLoading(false);
       setContractsError(true);
     }
-  }
-
-  const calculateMatchStats = (match) => {
-    var gameStartUnix = match.matchInfo.gameStartMillis;
-    var gameLengthMS = match.matchInfo.gameLengthMillis;
-    var gameMode = match.matchInfo.queueID;
-    var gameServer = match.matchInfo.gamePodId;
-    var gameVersion = match.matchInfo.gameVersion;
-
-    /* MATCH INFO */
-    var winningTeamScore;
-    var losingTeamScore;
-    
-    for(var i = 0; i < match.teams.length; i++) {
-      if(match.teams[i].won == true) {
-        var winning_team = match.teams[i].teamId;
-        winningTeamScore = match.teams[i].numPoints;
-      } else {
-        losingTeamScore = match.teams[i].numPoints;
-      }
-    }
-
-    if((!winningTeamScore && winningTeamScore !== 0) || (!losingTeamScore && losingTeamScore !== 0)) {
-      var winning_team = 'draw';
-    }
-
-    /* MAP INFO */
-    for(var i = 0; i < mapData.data.length; i++) {
-      if(mapData.data[i].mapUrl == match.matchInfo.mapId) {
-        var mapName = mapData.data[i].displayName;
-        var mapUUID = mapData.data[i].uuid;
-      }
-    }
-
-    /* PLAYER STATS */
-    for(var i = 0; i < match.players.length; i++) {
-      var homenameTag = `${userCreds.name}#${userCreds.tag}`;
-      
-      if(match.players[i].subject == userCreds.uuid) {
-        var playerInfo = match.players[i];
-        var playerCurrentTier = match.players[i].competitiveTier;
-        var rankFixed = ranks[playerCurrentTier];
-      }
-    }
-
-    if(playerInfo) {
-      var uuid = playerInfo.subject;
-      var playerTeam = playerInfo.teamId;
-
-      if(playerTeam == winning_team) {
-        var matchOutcome = "VICTORY";
-        var matchOutcomeColor = 'text-val-blue val-blue-glow';
-        var matchScore = winningTeamScore + ' - ' + losingTeamScore;
-      } else if(winning_team == 'draw') {
-        var matchOutcome = "DRAW";
-        var matchOutcomeColor = 'text-val-yellow val-yellow-glow';
-
-        if(!winningTeamScore) {
-          winningTeamScore = losingTeamScore;
-        } else if(!losingTeamScore) {
-          losingTeamScore = winningTeamScore;
-        }
-        var matchScore = winningTeamScore + ' - ' + losingTeamScore;
-      } else {
-        var matchOutcome = "DEFEAT";
-        var matchOutcomeColor = 'text-val-red val-red-glow';
-        var matchScore = losingTeamScore + ' - ' + winningTeamScore;
-      }
-
-      var playerAgent = playerInfo.characterId; 
-
-      var playerKills = playerInfo.stats.kills;
-      var playerDeaths = playerInfo.stats.deaths;
-      var playerAssists = playerInfo.stats.assists;
-
-      var playerKdRaw = playerKills / playerDeaths;
-      var playerKD = playerKdRaw.toFixed(2);
-
-      var playerScore = playerInfo.stats.score;
-      var playerACS = playerScore / match.roundResults.length;
-      var playerACS = playerACS.toFixed(0);
-
-      if(playerKD >= 1) {
-        var playerKdColor = 'text-val-blue';
-      } else {
-        var playerKdColor = 'text-val-red';
-      }
-      
-      /* SCOREBOARD POSITION */
-      var players = match.players;
-      players.sort(function(a, b) {
-        return b.stats.score - a.stats.score;
-      });
-      
-      var playerPosition = players.findIndex(player => player.subject == uuid) + 1;
-
-      if(playerPosition == 1) {
-        // Player is Match MVP
-        var playerPositionColor = 'yellow-glow text-yellow-300 font-medium';
-        var playerPositionText = 'Match MVP';
-      } else {
-        // Player is not Match MVP, check for Team MVP
-        var teamPlayers = [];
-        for(var i = 0; i < players.length; i++) {
-          if(players[i].teamId == playerTeam) {
-            teamPlayers.push(players[i]);
-          }
-        }
-
-        var teamPlayerPosition = teamPlayers.findIndex(player => player.subject == uuid) + 1;
-
-        if(teamPlayerPosition == 1) {
-          // Player is Team MVP
-          var playerPositionColor = 'silver-glow text-gray-300 font-medium';
-          var playerPositionText = 'Team MVP';
-        } else {
-          // Player is not Team MVP
-          var playerPositionColor = 'font-medium';
-
-          if(playerPosition == 2) var playerPositionText = `${playerPosition}nd`;
-          else if(playerPosition == 3) var playerPositionText = `${playerPosition}rd`;
-          else var playerPositionText = `${playerPosition}th`;
-        }
-      }
-      var playerHeadShots = 0;
-      var playerBodyShots = 0;
-      var playerLegShots = 0;
-
-      var totalDamage = 0;
-
-      for(var i = 0; i < match.roundResults.length; i++) {
-        for(var i2 = 0; i2 < match.roundResults[i].playerStats.length; i2++) {
-          if(match.roundResults[i].playerStats[i2].subject == uuid) {
-            for(var i3 = 0; i3 < match.roundResults[i].playerStats[i2].damage.length; i3++) {
-              playerHeadShots += match.roundResults[i].playerStats[i2].damage[i3].headshots;
-              playerBodyShots += match.roundResults[i].playerStats[i2].damage[i3].bodyshots;
-              playerLegShots += match.roundResults[i].playerStats[i2].damage[i3].legshots;
-
-              totalDamage += match.roundResults[i].playerStats[i2].damage[i3].damage;
-            }
-          }
-        }
-      }
-
-      // Calculate HS%
-      var totalShotsHit = playerHeadShots + playerBodyShots + playerLegShots;
-
-      var headShotsPercent = (playerHeadShots / totalShotsHit) * 100;
-      var headShotsPercentRounded = headShotsPercent.toFixed(0);
-
-      var bodyShotsPercent = (playerBodyShots / totalShotsHit) * 100;
-      var bodyShotsPercentRounded = bodyShotsPercent.toFixed(0);
-
-      var legShotsPercent = (playerLegShots / totalShotsHit) * 100;
-      var legShotsPercentRounded = legShotsPercent.toFixed(0);
-
-      // Calculate ADR
-      var averageDamage = totalDamage / match.roundResults.length;
-      var averageDamageRounded = averageDamage.toFixed(0);
-
-      // Calculate First Bloods. 
-      // For every round, add all kills to an array. Filter out the earliest kill with the "roundTime" key. If the killer's PUUID is the same as the players, add a FB.
-      var playerFBs = 0;
-      for(var i = 0; i < match.roundResults.length; i++) {
-        var totalRoundKills = [];
-        for(var j = 0; j < match.roundResults[i].playerStats.length; j++) {
-          for(var k = 0; k < match.roundResults[i].playerStats[j].kills.length; k++) {
-            totalRoundKills.push(match.roundResults[i].playerStats[j].kills[k]);
-          }
-        }
-        
-        totalRoundKills.sort(function(a, b) {
-          return a.roundTime - b.roundTime;
-        });
-
-        var firstRoundKill = totalRoundKills[0];
-        if(firstRoundKill && firstRoundKill.killer == uuid) {
-          playerFBs++;
-        }
-      }
-    }
-
-    var matchData = {
-      playerAgent, 
-      uuid,
-      homenameTag,
-      mapName, 
-      playerCurrentTier, 
-      rankFixed, 
-      matchOutcomeColor, 
-      matchOutcome, 
-      matchScore, 
-      playerPositionColor, 
-      playerPositionText, 
-      playerKills, 
-      playerDeaths, 
-      playerAssists, 
-      playerKdColor, 
-      playerKD, 
-      headShotsPercentRounded, 
-      averageDamageRounded,
-      playerACS,
-      matchUUID: match.matchInfo.matchId,
-    }
-
-    var playerKDA = playerKills + '/' + playerDeaths + '/' + playerAssists
-    
-    var matchViewData = {
-      matchScore, matchOutcome, mapUUID, mapName, gameStartUnix, gameLengthMS, gameMode, gameServer, gameVersion,
-      name: homenameTag.split("#")[0], uuid, playerTeam, playerAgent, playerKD, playerKDA, playerKD, playerScore, playerACS, playerKillsPerRound: averageDamageRounded, playerCurrentTier, rankFixed, headShotsPercentRounded, bodyShotsPercentRounded, legShotsPercentRounded, playerPositionText, playerPosition, playerFBs
-    }
-
-    return { matchData, matchViewData };
   }
 
   const fetchFurtherMatches = async () => {
@@ -1617,6 +822,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     return () => {
       setLoading(true);
       setErrored(false);
+      setSilentError(false);
       setFetchingFurtherMatches(false);
       setMatchFetchingError(false);
     }
@@ -1740,7 +946,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
           <div className='home-top-info-tile relative border rounded border-maincolor-dim flex flex-col'>
             <Tooltip content={LocalText(L, "top_l.contracts.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-4 right-7'>
-              <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading === true ? '' : 'hidden')}>
+              <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isSilentLoading === true || contractsLoading === true ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
             </Tooltip>
@@ -1748,7 +954,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               className={`w-5 h-5 absolute top-2 right-2 cursor-pointer ${isSilentLoading === true || contractsLoading === true || contractsError === true ? "hidden" : ""}`}
               onClick={() => {
                 setContractsLoading(true);
-                setIsSilentLoading(true);
                 fetchContractData(true);
               }}
             />
@@ -1863,7 +1068,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               + (currentlyLoadedMatchCount <= 0 ? ' disabled hidden ' : ' ')
             }
           >
-            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2.5 right-7'>
+            <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
               <div className={'absolute -top-2 -right-5 w-6 h-6 z-30 ' + (isSilentLoading === true ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
               </div>
@@ -1873,6 +1078,89 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 <Close className={"close-red w-5 h-5"} onClick={() => { fetchMatchesAndCalculateStats(false, 0, 15, activeQueueTab, false) }}  /> 
               </div>
             </Tooltip>
+            <div className={`absolute h-[26px] -top-px right-2 z-20 w-40 ${isSilentLoading === true && "hidden"} ${silentError === true ? "right-10" : "right-2"}`}>
+              <Select
+                items={[
+                  { 
+                    value: "unrated", 
+                    text: (
+                      <span className='flex flex-row items-center'>
+                        <ValIconHandler icon={'/images/unrated.png'} classes={'w-4 h-4 mr-1'} /> {LocalText(L, "bot_r.match_filter.fl_1")}
+                      </span>
+                    ), 
+                    disabled: false, important: false 
+                  },
+                  { 
+                    value: "competitive", 
+                    text: (
+                      <span className='flex flex-row items-center'>
+                        <ValIconHandler icon={'/images/unrated.png'} classes={'w-4 h-4 mr-1'} /> {LocalText(L, "bot_r.match_filter.fl_2")}
+                      </span>
+                    ), 
+                    disabled: false, important: false 
+                  },
+                  { 
+                    value: "deathmatch", 
+                    text: (
+                      <span className='flex flex-row items-center'>
+                        <ValIconHandler icon={'/images/deathmatch.png'} classes={'w-4 h-4 mr-1'} /> {LocalText(L, "bot_r.match_filter.fl_3")}
+                      </span>
+                    ), 
+                    disabled: false, important: false 
+                  },
+                  { 
+                    value: "spikerush", 
+                    text: (
+                      <span className='flex flex-row items-center'>
+                        <ValIconHandler icon={'/images/spikerush.png'} classes={'w-4 h-4 mr-1'} /> {LocalText(L, "bot_r.match_filter.fl_4")}
+                      </span>
+                    ), 
+                    disabled: false, important: false 
+                  },
+                  { 
+                    value: "custom", 
+                    text: (
+                      <span className='flex flex-row items-center'>
+                        <ValIconHandler icon={'/images/unrated.png'} classes={'w-4 h-4 mr-1'} /> {LocalText(L, "bot_r.match_filter.fl_7")}
+                      </span>
+                    ), 
+                    disabled: false, important: false 
+                  },
+                  { 
+                    value: "swiftplay", 
+                    text: (
+                      <span className='flex flex-row items-center'>
+                        <ValIconHandler icon={'/images/swiftplay.png'} classes={'w-4 h-4 mr-1'} /> {LocalText(L, "bot_r.match_filter.fl_8")}
+                      </span>
+                    ), 
+                    disabled: false, important: false 
+                  },
+                  { 
+                    value: "onefa", 
+                    text: (
+                      <span className='flex flex-row items-center'>
+                        <ValIconHandler icon={'/images/onefa.png'} classes={'w-4 h-4 mr-1'} /> {LocalText(L, "bot_r.match_filter.fl_5")}
+                      </span>
+                    ), 
+                    disabled: false, important: false 
+                  },
+                  { 
+                    value: "ggteam", 
+                    text: (
+                      <span className='flex flex-row items-center'>
+                        <ValIconHandler icon={'/images/ggteam.png'} classes={'w-4 h-4 mr-1'} /> {LocalText(L, "bot_r.match_filter.fl_6")}
+                      </span>
+                    ), 
+                    disabled: false, important: false 
+                  },
+                ]}
+                className={"w-full"}
+                value={activeQueueTab}
+                setValue={setActiveQueueTab}
+                onChange={() => {}}
+                thin={true}
+              />
+            </div>
             {currentlyLoadedMatchCount > 0 ?
               Object.keys(currentMatches).map((key, index) => {
                 moment.locale(router.query.lang);
@@ -1882,7 +1170,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   <div className='day relative' key={index}>
                     <div id='day-header' className='text-lg ml-4 day-header font-bold relative bottom-px'>{today === key ? 'Today' : key}</div>
                     {currentMatches[key].map((match, index) => {
-                      var { matchData, matchViewData } = calculateMatchStats(match);
+                      var { matchData, matchViewData } = calculateMatchStats(match, userCreds.name, userCreds.tag, mapData, ranks);
                       
                       if(activeQueueTab === "competitive") {
                         var isRankup = match.matchInfo.isRankupGame;
@@ -1956,7 +1244,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                       className={'w-9 scale-75 shadow-img'}
                                     />
                                     :
-                                    <ValIconHandler icon={'/images/standard.png'} classes={'w-7 scale-75 shadow-img'} />
+                                    <ValIconHandler icon={`/images/${activeQueueTab}.png`} classes={'w-7 scale-75 shadow-img'} />
                                   }
                                 </Tooltip>
                                 {activeQueueTab === 'competitive' && isRankup === true ? (
@@ -2174,17 +1462,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 stat_3_desc={LocalText(L, "bot_r.best_agent.stat_4")}
                 loading={loading}
               />
-            </div>
-            <span className='font-bold'>{LocalText(L, "bot_r.match_filter.header")}</span>
-            <div className='flex flex-row flex-wrap justify-between' id='hub-match-filter'>
-              <ModeSelectionCard id="unrated" mode_name={'unrated'} display_name={LocalText(L, "bot_r.match_filter.fl_1")} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard id="competitive" mode_name={'competitive'} display_name={LocalText(L, "bot_r.match_filter.fl_2")} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard id="deathmatch" mode_name={'deathmatch'} display_name={LocalText(L, "bot_r.match_filter.fl_3")} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard id="spikerush" mode_name={'spikerush'} display_name={LocalText(L, "bot_r.match_filter.fl_4")} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard id="custom" mode_name={'custom'} display_name={LocalText(L, "bot_r.match_filter.fl_7")} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard id="swiftplay" mode_name={'swiftplay'} display_name={LocalText(L, "bot_r.match_filter.fl_8")} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard id="onefa" mode_name={'onefa'} display_name={LocalText(L, "bot_r.match_filter.fl_5")} active={activeQueueTab} setActive={setActiveQueueTab} />
-              <ModeSelectionCard id="ggteam" mode_name={'ggteam'} display_name={LocalText(L, "bot_r.match_filter.fl_6")} active={activeQueueTab} setActive={setActiveQueueTab} />
             </div>
           </div>
           <div 

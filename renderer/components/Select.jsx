@@ -15,7 +15,7 @@ const isOutOfViewport = (elem) => {
   return out;
 };
 
-export function Select({ items, className, value, setValue, onChange }) {
+export function Select({ items, className, value, setValue, onChange, thin }) {
   const [ open, setOpen ] = React.useState(false);
   const [ menuStyles, setMenuStyles ] = React.useState({ marginTop: "2px", marginBottom: "0px", bottom: null });
   const [ internalValue, setInternalValue ] = React.useState({});
@@ -41,9 +41,17 @@ export function Select({ items, className, value, setValue, onChange }) {
     var out = isOutOfViewport(optionsRef.current);
 
     if(out.bottom === true) {
-      setMenuStyles({ marginTop: "0px", marginBottom: "2px", bottom: ref.current.firstChild.clientHeight + 4 });
+      if(thin === true) {
+        setMenuStyles({ marginTop: "0px", marginBottom: "1px", bottom: ref.current.firstChild.clientHeight + 4 });
+      } else {
+        setMenuStyles({ marginTop: "0px", marginBottom: "2px", bottom: ref.current.firstChild.clientHeight + 4 });
+      }
     } else {
-      setMenuStyles({ marginTop: "2px", marginBottom: "0px", bottom: null });
+      if(thin === true) {
+        setMenuStyles({ marginTop: "0px", marginBottom: "0px", bottom: null });
+      } else {
+        setMenuStyles({ marginTop: "2px", marginBottom: "0px", bottom: null });
+      }
     }
     return;
   }
@@ -64,7 +72,7 @@ export function Select({ items, className, value, setValue, onChange }) {
   React.useEffect(onChange, [value]);
 
   React.useEffect(() => {
-    if(Object.keys(internalValue).length > 0 && value !== internalValue.value) {
+    if(Object.keys(internalValue).length > 0 && value !== internalValue.value && value !== "") {
       var val = items.find(x => x.value === value);
       setInternalValue(val);
     }
@@ -78,10 +86,10 @@ export function Select({ items, className, value, setValue, onChange }) {
   }, []);
 
   return (
-    <div className={"inline-block relative h-10 rounded " + (className ? className : '')} ref={ref}>
-      <div className={`group button select relative w-full text-left inline-block py-3 align-baseline ${open === true ? 'opened' : ''}`} onClick={() => { toggleMenu() }}>
-        <span className="block relative bottom-0.5 w-full text-left px-4">{internalValue.text}</span>
-        <CircleArrowDown className={`w-6 h-6 absolute right-2 top-1.5 transition-all duration-100 ease-linear group-hover:text-white ${open ? "rotate-180 text-white" : "text-button-color"}`} />
+    <div className={`inline-block relative ${thin === true ? "h-[26px]" : "h-10"} rounded ` + (className ? className : '')} ref={ref}>
+      <div className={`group button select relative w-full text-left inline-block ${thin === true ? "py-1 !h-full" : "py-3"} align-baseline ${open === true ? 'opened' : ''}`} onClick={() => { toggleMenu() }}>
+        <span className={`block relative ${thin === true ? "bottom-[3px] font-medium text-base px-2" : "bottom-0.5 px-4"} w-full text-left`}>{internalValue.text}</span>
+        <CircleArrowDown className={`${thin === true ? "w-[18px] h-[18px] absolute right-1 top-[3px]" : "w-6 h-6 absolute right-2 top-1.5"} transition-all duration-100 ease-linear group-hover:text-white ${open ? "rotate-180 text-white" : "text-button-color"}`} />
       </div>
       <div 
         className={`w-full absolute left-0 h-auto flex-col border border-tile-color z-20 glass drop-shadow-2xl shadow-2xl p-2 rounded hidden`}

@@ -30,10 +30,13 @@ class ErrorBoundary extends React.Component {
     this.props.router.events.on("routeChangeComplete", () => {
       this.setState({ hasError: false });
     });
+    
+    console.warn("---------------");
+    console.error(error, errorInfo);
+    console.warn("---------------");
 
     if(!isProd) return;
-    // You can use your own error logging service here
-    console.error(error, errorInfo);
+    
     errorInfo.date = Date.now();
     errorInfo.valtracker_version = pjson.version;
     ipcRenderer.send("rendererProcessError", { error, errorInfo });
@@ -47,7 +50,7 @@ class ErrorBoundary extends React.Component {
           <OverlayWrapper useRef={null} isShown={true}>
             <PopupCard 
               useRef={null}
-              header={"Oops! We've encountered an error."}
+              header={"Oops! We've encountered an error."} // TODO: Translations
               text={"A bug report has been anonymously sent to our team."}
               text_2={"For any further questions, please join our Discord Server."}
               button_1={"Discord Server"}

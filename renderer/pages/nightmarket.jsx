@@ -12,6 +12,7 @@ import Layout from '../components/Layout';
 import StoreItem from '../components/StoreItem';
 import { useFirstRender } from '../components/useFirstRender';
 import { executeQuery, getCurrentPUUID, getCurrentUserData, updateThing } from '../js/dbFunctions';
+import timeToHMS from '../js/timeToHMS.mjs';
 
 const backdrop_variants = {
   hidden: { opacity: 0, x: 0, y: 0, display: 'none' },
@@ -23,26 +24,6 @@ const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
   enter: { opacity: 1, x: 0, y: 0, scale: 1, display: 'block' },
   exit: { opacity: 0, x: 0, y: 0, scale: 0.8, transitionEnd: { display: 'none' } },
-}
-
-function bundleTimeToHMS(n, o) {
-  n = Number(n);
-  var d = Math.floor(n / 86400);
-  var h = Math.floor((n - d * 86400) / 3600);
-  var m = Math.floor(n % 3600 / 60);
-  var s = Math.floor(n % 3600 % 60);
-
-  var dDisplay = d > 0 ? d + (d == 1 ? " " + o.d_1 + ", " : " " + o.d_2 + ", ") : "";
-  var hDisplay = h > 0 ? h + (h == 1 ? " " + o.h_1 + ", " : " " + o.h_2 + ", ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? " " + o.m_1 + ", " : " " + o.m_2 + ", ") : "";
-  var sDisplay = s > 0 ? s + (s == 1 ? " " + o.s_1 : " " + o.s_2) : "";
-  var str = dDisplay + hDisplay + mDisplay + sDisplay;
-
-  if(str.split(",").pop() === ' ') {
-    str = str.substring(0, str.lastIndexOf(','));
-  }
-
-  return str;
 }
 
 function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
@@ -92,7 +73,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     if(router.query.nm_end) {
       var nmTimer = Math.abs(moment().diff(parseInt(router.query.nm_end), 'seconds'));
       setNightMarketTimerNum(nmTimer-1);
-      var initialNM = bundleTimeToHMS(nmTimer-1, localTimerObj) + " " + localTimerObj.rem;
+      var initialNM = timeToHMS(nmTimer-1, localTimerObj) + " " + localTimerObj.rem;
       setNightMarketTimer(initialNM);
     }
   }, []);
@@ -102,7 +83,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       var timer = setInterval(async () => {
         var new_nm_timer = nightMarketTimerNum - 1;
         setNightMarketTimerNum(new_nm_timer);
-        setNightMarketTimer(bundleTimeToHMS(new_nm_timer, localTimerObj) + " " + localTimerObj.rem);
+        setNightMarketTimer(timeToHMS(new_nm_timer, localTimerObj) + " " + localTimerObj.rem);
       }, 1000);
 
       return () => clearInterval(timer);

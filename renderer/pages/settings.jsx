@@ -25,77 +25,12 @@ import { Loading } from '@nextui-org/react';
 import Layout from '../components/Layout';
 import { changeSetting, executeQuery, getAllSettings, getCurrentPUUID, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
+import { getPUUID, getXMPPRegion, getEntitlement, getPlayerMMR, requestUserCreds } from '../js/riotAPIFunctions.mjs';
 
 const md_conv = new parser.Converter();
 
 async function openLoginWindow() {
   return await ipcRenderer.invoke('loginWindow', false);
-}
-
-async function getPUUID(bearer) {
-  return (await (await fetch('https://auth.riotgames.com/userinfo', {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['sub'];
-}
-
-async function getXMPPRegion(requiredCookie, bearer, id_token) {
-  return (await (await fetch("https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant", {
-    "method": "PUT",
-    "headers": {
-      "cookie": requiredCookie,
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + bearer
-    },
-    "body": `{\"id_token\":\"${id_token}\"}`,
-    keepalive: true
-  })).json());
-}
-
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
-async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
-  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/mmr/v1/players/` + puuid, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
-      'X-Riot-ClientPlatform': 'ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9',
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
-}
-
-async function requestUserCreds(region, puuid) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: "[\"" + puuid + "\"]",
-    keepalive: true
-  })).json());
 }
 
 const fetchPatchnotes = async (lang, version) => {
@@ -505,7 +440,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
 
   const openPopup = (setPopupOpen, info) => {
     if(info === "riot_rm_account" && riot_accountList.length === 0) {
-      ipcRenderer.send("relayTextbox", { persistent: false, text: "You cannot remove the account that the app is using." });
+      ipcRenderer.send("relayTextbox", { persistent: false, text: "You cannot remove the account that the app is using." }); // TODO: Translation
       return;
     }
     setPopupOpen(true);

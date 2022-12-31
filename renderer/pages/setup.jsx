@@ -11,6 +11,7 @@ import { Translate, BackArrow } from '../components/SVGs';
 import Layout from '../components/Layout';
 import { createThing, executeQuery, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
+import { getPUUID, getEntitlement, getXMPPRegion, requestUserCreds, getPlayerMMR } from '../js/riotAPIFunctions.mjs';
 
 const slides_first_load = {
   hidden: { opacity: 0, x: 0, y: 100, scale: 1, display: 'none' },
@@ -39,99 +40,6 @@ const page_4_vars = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 1, height: '100%', display: 'none' },
   enter: { opacity: 1, x: 0, y: 0, scale: 1, height: '100%', display: 'block' },
   exit: { opacity: 0, x: 200, y: 0, scale: 1, height: '100%', transitionEnd: { display: 'none' } },
-}
-
-async function getPUUID(bearer) {
-  return (await (await fetch('https://auth.riotgames.com/userinfo', {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['sub'];
-}
-
-async function getEntitlement(bearer) {
-  return (await (await fetch('https://entitlements.auth.riotgames.com/api/token/v1', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json())['entitlements_token'];
-}
-
-async function getXMPPRegion(requiredCookie, bearer, id_token) {
-  return (await (await fetch("https://riot-geo.pas.si.riotgames.com/pas/v1/product/valorant", {
-    "method": "PUT",
-    "headers": {
-      "Cookie": requiredCookie,
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + bearer
-    },
-    "body": `{\"id_token\":\"${id_token}\"}`,
-    keepalive: true
-  })).json());
-}
-
-async function requestUserCreds(region, puuid) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: "[\"" + puuid + "\"]",
-    keepalive: true
-  })).json());
-}
-
-async function getMatchHistory(region, puuid, startIndex, endIndex, queue, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=${startIndex}&endIndex=${endIndex}&queue=${queue}`, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
-}
-
-async function getMatch(region, matchId, entitlement_token, bearer) {
-  var valorant_version = await(await fetch('https://valorant-api.com/v1/version')).json();
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/match-details/v1/matches/${matchId}`, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      "X-Riot-ClientPlatform": "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9",
-      'X-Riot-ClientVersion': valorant_version.data.riotClientVersion,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json'
-    },
-    keepalive: true
-  })).json());
-}
-
-async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
-  var matches = await getMatchHistory(region, puuid, 0, 1, 'competitive', entitlement_token, bearer);
-  if(matches.History.length > 0) {
-    var match_data = await getMatch(region, matches.History[0].MatchID, entitlement_token, bearer);
-    for(var i = 0; i < match_data.players.length; i++) {
-      if(match_data.players[i].subject === puuid) {
-        return match_data.players[i].competitiveTier;
-      }
-    }
-  } else {
-    return 0;
-  }
 }
 
 function Setup({ isOverlayShown, setIsOverlayShown }) {

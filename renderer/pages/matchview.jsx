@@ -46,13 +46,6 @@ const scoreboard_vars_initial = {
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
 
-const partyColors = [
-  "party-0",
-  "party-1",
-  "party-2",
-  "party-3"
-]
-
 function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
 
@@ -498,7 +491,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <span className='relative text-lg top-0.5 left-2 font-light'>{matchLenght}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.mode")} color="error" placement={'left'} className='rounded'><ValIconHandler icon={'/images/standard.png'} classes='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.mode")} color="error" placement={'left'} className='rounded'><ValIconHandler icon={'/images/unrated.png'} classes='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2 font-light'>{matchMode}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
@@ -661,7 +654,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           {
                             isSpikePlanted ? 
                             <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded h-full flex items-center'>
-                              <ValIconHandler icon={'/images/standard.png'} classes={'h-4/6 shadow-img'} />
+                              <ValIconHandler icon={'/images/unrated.png'} classes={'h-4/6 shadow-img'} />
                             </Tooltip>
                             :
                             <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded h-full flex items-center'>

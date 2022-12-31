@@ -8,20 +8,7 @@ import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Search } from '../components/SVGs';
 import Layout from '../components/Layout';
 import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
-
-async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`, {
-    method: 'PUT',
-    headers: {
-      "X-Riot-Entitlements-JWT": entitlement_token,
-      'Authorization': "Bearer " + bearer,
-      "Content-Type": "application/json",
-    },
-    "body": JSON.stringify(loadout),
-    keepalive: true
-  })).json());
-}
+import { setSkins } from '../js/riotAPIFunctions.mjs';
 
 const fetchCards = async (lang) => {
   try {
