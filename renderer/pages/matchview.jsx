@@ -7,14 +7,26 @@ import AwardTile from '../components/matchview/AwardTile';
 import L from '../locales/translations/matchview.json';
 import LocalText from '../components/translation/LocalText';
 import fetch from 'node-fetch';
-import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, PartyIcon, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
+import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Close, Crosshair, Flash, Globe, PartyIcon, ShareIcon, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import Layout from '../components/Layout';
-import { getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions.mjs';
+import { getCurrentUserData, getInstanceToken, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions.mjs';
 import { getMatch, requestUserCreds } from '../js/riotAPIFunctions.mjs';
 import { useFirstRender } from '../components/useFirstRender';
 import APIi18n from '../components/translation/ValApiFormatter';
 import { calculateMatchStats } from '../js/calculateMatchStats.mjs';
+
+const backdrop_variants = {
+  hidden: { opacity: 0, x: 0, y: 0, display: 'none' },
+  enter: { opacity: 1, x: 0, y: 0, display: 'flex' },
+  exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
+}
+
+const card_variants = {
+  hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
+  enter: { opacity: 1, x: 0, y: 0, scale: 1, display: 'block' },
+  exit: { opacity: 0, x: 0, y: 0, scale: 0.8, transitionEnd: { display: 'none' } },
+}
 
 const overview_vars_first_load = {
   hidden: { opacity: 0, x: 0, y: 200, scale: 1, display: 'none' },
@@ -52,7 +64,6 @@ const scoreboard_vars_initial = {
 
 function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
-  const firstRender = useFirstRender();
 
   var gamemodes = LocalText(L, 'gamemodes');
 
@@ -121,6 +132,10 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ playerParties, setPlayerParties ] = React.useState({});
   const [ highlightedParty, setHighlightedParty ] = React.useState(null);
   const [ lockHighlightedParty, setLockHighlightedParty ] = React.useState({ state: false, lockedUUID: null });
+  const [ shareMatchURL, setShareMatchURL ] = React.useState("");
+
+  const [ showPopup, setShowPopup ] = React.useState(false);
+  const [ urlCopied, setUrlCopied ] = React.useState(false);
 
   // DATA NEEDED: MapUUID, Map Name, Match Date, Match Length, Match Mode, Region, Server, Game Version, 
   // AgentUUID, Player KDA, Player KD, Player Score, Player ACS, Player Rank, HS%, BS%, LS%, is Player MVP, Player ADR
@@ -467,13 +482,82 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
   }, [router.query]);
 
+  const generateShareLink = async () => {
+    var user_data = await getCurrentUserData();
+    var puuid = user_data.uuid;
+
+    var instanceToken = await getInstanceToken();
+
+    var matchData = JSON.parse(sessionStorage.getItem("knownMatchData"));
+    var matchID = matchData.matchID;
+    
+    var url = await (await fetch('https://api.valtracker.gg/v1/shared', {
+      method: 'POST',
+      headers: {
+        Authentication: instanceToken,
+        'x-shared-type': `match::${user_data.region}`,
+        'x-uuid-string': `${matchID}::${puuid}`
+      }
+    })).json();
+
+    setShareMatchURL(url.data);
+    setShowPopup(true);
+  }
+
   return (
     <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''} isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
+      <motion.div 
+        className='modal-backdrop !z-50'
+        variants={backdrop_variants}
+        initial="hidden"
+        animate={showPopup ? 'enter' : 'exit'}
+        transition={{ type: 'ease-in', duration: 0.2 }}
+      >
+        <motion.div 
+          className='modal fixed !h-auto !w-fit'
+          variants={card_variants}
+          initial="hidden"
+          animate={showPopup ? "enter" : "exit"}
+          transition={{ type: 'ease-in', duration: 0.2 }}
+        > 
+          <div 
+            className='close-icon-wrapper'
+            onClick={() => {
+              setIsOverlayShown(false);
+              setShowPopup(false);
+            }}
+          >
+            <Close className='w-8 p-1' />
+          </div>
+          <h1 className='z-20 text-2xl flex flex-row items-center font-bold'>Share this Match</h1>
+          <span 
+            className={`transition-all duration-100 ease-linear cursor-pointer ${urlCopied === true ? "text-val-blue hover:text-opacity-80" : "text-button-color hover:text-button-color-hover"}`}
+            onClick={() => {
+              navigator.clipboard.writeText(shareMatchURL);
+              setUrlCopied(true);
+              setTimeout(() => {
+                setUrlCopied(false);
+              }, 2000);
+            }}
+          >
+            {shareMatchURL}
+          </span>
+          <span className='block w-96 text-gray-300 font-light'>Click the link to copy it to your clipboard. It will stay active for the next 7 days, so share it with your friends!</span>
+        </motion.div>
+      </motion.div>
       <div 
         className='close-icon-wrapper' 
         onClick={() => { router.back() }}
       >
         <BackArrow className='w-8 p-1 shadow-img' />
+      </div>
+      <div 
+        className='close-icon-wrapper !right-12' 
+        onClick={() => {
+          generateShareLink();
+        }}
+      >
+        <ShareIcon className='w-8 p-1 shadow-img' />
       </div>
       <div id='matchview-header' className='w-full h-1/5 flex flex-col items-center drop-shadow-xl'>
         <h1 className='text-5xl mt-8'>
@@ -952,7 +1036,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           return(
             <>
               <motion.div 
-                className={`border border-tile-color bg-tile-color bg-opacity-10 rounded flex flex-row items-center relative ${lockHighlightedParty.state === false ? ((highlightedParty !== playerStats.partyUUID && highlightedParty !== null) ? "!opacity-20" : "!opacity-100") : (lockHighlightedParty.lockedUUID !== playerStats.partyUUID ? "!opacity-20" : "!opacity-100")}`} key={index + 'tr'}
+                className={`border border-tile-color bg-tile-color bg-opacity-10 transition-all duration-75 ease-linear rounded flex flex-row items-center relative ${lockHighlightedParty.state === false ? ((highlightedParty !== playerStats.partyUUID && highlightedParty !== null) ? "!opacity-20" : "!opacity-100") : (lockHighlightedParty.lockedUUID !== playerStats.partyUUID ? "!opacity-20" : "!opacity-100")}`} key={index + 'tr'}
                 variants={scoreboard_vars_initial}
                 initial="hidden"
                 animate={activeTab === 'scoreboard' ? "enter" : "exit"}

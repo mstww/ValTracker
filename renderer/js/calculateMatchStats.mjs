@@ -4,6 +4,7 @@ export const calculateMatchStats = (match, name, tag, mapData, ranks) => {
   var gameMode = match.matchInfo.queueID;
   var gameServer = match.matchInfo.gamePodId;
   var gameVersion = match.matchInfo.gameVersion;
+  var matchID = match.matchInfo.matchId;
 
   /* MATCH INFO */
   var winningTeamScore;
@@ -201,13 +202,14 @@ export const calculateMatchStats = (match, name, tag, mapData, ranks) => {
     averageDamageRounded,
     playerACS,
     matchUUID: match.matchInfo.matchId,
-    isRankup: match.matchInfo.isRankupGame
+    isRankup: match.matchInfo.isRankupGame,
+    matchID
   }
 
   var playerKDA = playerKills + '/' + playerDeaths + '/' + playerAssists
   
   var matchViewData = {
-    matchScore, matchOutcome, mapUUID, mapName, gameStartUnix, gameLengthMS, gameMode, gameServer, gameVersion,
+    matchScore, matchOutcome, mapUUID, mapName, gameStartUnix, gameLengthMS, gameMode, gameServer, gameVersion, matchID,
     name: homenameTag.split("#")[0], uuid, playerTeam, playerAgent, playerKD, playerKDA, playerKD, playerScore, playerACS, playerKillsPerRound: averageDamageRounded, playerCurrentTier, rankFixed, headShotsPercentRounded, bodyShotsPercentRounded, legShotsPercentRounded, playerPositionText, playerPosition, playerFBs
   }
 
