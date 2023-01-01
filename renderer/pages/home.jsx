@@ -222,269 +222,25 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 // ------------------------------- END STATES -------------------------------
 
   const fetchMatchesAndCalculateStats = async (isNewQueue, beginIndex, endIndex, mode, isFirstLoad, isSilentLoading, keepCurrentMatches) => {
-    var user_creds = await getCurrentUserData();
-    var puuid = user_creds.uuid;
-
-    if(keepCurrentMatches === true) {
-      var data = await fetchMatches(beginIndex, endIndex, [], mode, puuid, user_creds.region, router.query.lang, false);
-
-      setMaxMatchesFound(data.items.totalMatches);
-
-      var new_matches = [];
-
-      for(var key in data.items.games) {
-        for(var i = 0; i < data.items.games[key].length; i++) {
-          new_matches.push(data.items.games[key][i])
-        }
-      }
+    try {var user_creds = await getCurrentUserData();
+      var puuid = user_creds.uuid;
   
-      var newMatches = currentMatches;
-
-      for(var i = 0; i < new_matches.length; i++) {
-        var dateDiff = getDifferenceInDays(new_matches[i].matchInfo.gameStartMillis, Date.now());
-        moment.locale(router.query.lang);
-        var startdate = moment();
-        startdate = startdate.subtract(dateDiff, "days");
-        var matchDate = startdate.format("D. MMMM");
+      if(keepCurrentMatches === true) {
   
-        // Create array if it doesn't exist
-        if(!newMatches[matchDate]) newMatches[matchDate] = [];
-  
-        newMatches[matchDate].push(new_matches[i]);
-      }
-
-      data.items.games = newMatches;
-
-      if(data.errored == false && data.items.totalMatches > 0) {
-        var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
-        
-        setAvgKillsPerMatch(playerstats.kills_per_match);
-        setAvgKillsPerRound(playerstats.kills_per_round);
-        setWinratePercent(playerstats.win_percentage);
-        setHeadshotPercent(playerstats.headshot_percent);
-  
-        var map_stats = playerstats.map_stats;
-        var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-          return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
-        });
-  
-        if(mapData.data !== undefined) {
-          var map_data = mapData;
-        } else {
-          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-          var map_data = await map_data_raw.json();
-          setMapData(map_data);
-          do {
-            await asyncDelay(20);
-          } while (mapData.data === undefined);
-        }
-  
-        var best_map = map_stats[sorted_map_stats[0]];
-        
-        for(var i = 0; i < map_data.data.length; i++) {
-          if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
-            setBestMapName(map_data.data[i].displayName);
-            setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
-          }
-        }
-        
-        setBestMapWinPercent(best_map.map_win_percentage);
-        setBestMapKdaRatio(best_map.map_kda_ratio);
-  
-        var agent_stats = playerstats.agent_stats;
-        
-        var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-          return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
-        });
-  
-        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-        var agent_data = await agent_data_raw.json();
-  
-        setBestAgentName(agent_data.data.displayName);
-        setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
-        setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
-        setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
-        setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
-        setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
-  
-        setCurrentlyLoadedMatchCount(currentlyLoadedMatchCount+5);
-        setCurrentMatches(data.items.games);
-        setLoading(false);
-        setIsSilentLoading(false);
-        setFetchingFurtherMatches(false);
-        setMatchFetchingError(false);
-        return;
-      } else if(data.items.totalMatches === 0) {
-        setCurrentMatches([]);
-        setLoading(false);
-        setAreStatsActive(false);
-        setSilentError(false);
-      } else {
-        setLoading(false);
-        setIsSilentLoading(false);
-        setSilentError(true);
-
-        ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
-
-        var puuid = await getCurrentPUUID();
-        var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
-        var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
-    
-        setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
-  
-        var matches = [];
-        var newMatches = [];
-        
-        if(matchIDData[0].matchIDs.length === 0) return;
-  
-        for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
-          var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
-          if(match[0] === undefined) continue;
-          matches.push(match[0]);
-        }
-  
-        if(matches.length === 0) {
-          return;
-        };
-  
-        for(var i = 0; i < matches.length; i++) { 
-          var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
-          moment.locale(router.query.lang);
-          var startdate = moment();
-          startdate = startdate.subtract(dateDiff, "days");
-          var matchDate = startdate.format("D. MMMM");
-    
-          // Create array if it doesn't exist
-          if(!newMatches[matchDate]) newMatches[matchDate] = [];
-    
-          newMatches[matchDate].push(matches[i]);
-        }
-  
-        var arr = [];
-  
-        for(var key in newMatches) {
-          arr[key] = newMatches[key];
-        }
-        
-        newMatches = arr;
-  
-        var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
-          
-        setAvgKillsPerMatch(playerstats.kills_per_match);
-        setAvgKillsPerRound(playerstats.kills_per_round);
-        setWinratePercent(playerstats.win_percentage);
-        setHeadshotPercent(playerstats.headshot_percent);
-        
-        var map_stats = playerstats.map_stats;
-        var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-          return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
-        });
-  
-        var best_map = map_stats[sorted_map_stats[0]];
-  
-        if(mapData.data !== undefined) {
-          var map_data = mapData;
-        } else {
-          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-          var map_data = await map_data_raw.json();
-          setMapData(map_data);
-          do {
-            await asyncDelay(20);
-          } while (mapData.data === undefined);
-        }
-        
-        for(var i = 0; i < map_data.data.length; i++) {
-          if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
-            setBestMapName(map_data.data[i].displayName);
-            setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
-          }
-        }
-  
-        setBestMapWinPercent(best_map.map_win_percentage);
-        setBestMapKdaRatio(best_map.map_kda_ratio);
-  
-        var agent_stats = playerstats.agent_stats;
-          
-        var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-          return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
-        });
-  
-        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-        var agent_data = await agent_data_raw.json();
-  
-        setBestAgentName(agent_data.data.displayName);
-        setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
-        setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
-        setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
-        setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
-        setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
-  
-        setCurrentMatches(newMatches);
-      }
-    }
-
-    if(isSilentLoading === true) {
-      var old_matches_data = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${user_creds.uuid}⟩`);
-
-      var old_matches = old_matches_data[0].matchIDs;
-      
-      if(old_matches.length === 0) {
-        var new_matches_amount = 5;
-      } else {
-        var latest_old_matches = old_matches.slice(0, 5);
-        
-        // Get newest 4 Matches from Match history
-        var data = await fetchMatches(0, 5, [], mode, user_creds.uuid, user_creds.region, router.query.lang, true);
         setMaxMatchesFound(data.items.totalMatches);
   
         var new_matches = [];
   
         for(var key in data.items.games) {
           for(var i = 0; i < data.items.games[key].length; i++) {
-            new_matches.push(data.items.games[key][i]);
+            new_matches.push(data.items.games[key][i])
           }
         }
-        
-        if(new_matches.length === 0) return;
-
-        new_matches.sort(function(a, b) {
-          if(b.matchInfo === undefined) return a;
-          if(a.matchInfo === undefined) return b;
-          return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
-        });
-  
-        var latest_new_matches = new_matches.slice(0, 5);
-  
-        // Using Some Method
-        const res2 = latest_old_matches.filter((match1) => !latest_new_matches.some(match2 => match1 === match2.matchInfo.matchId));
-        var new_matches_amount = res2.length;
-      }
-
-      if(new_matches_amount === 0) {
-        setIsSilentLoading(false);
-        return;
-      } else if(new_matches_amount > 0 && new_matches_amount < 4) {
-        fetchContractData(true);
     
-        var new_old_matches = old_matches.slice(0, (15 - new_matches_amount));
-        var new_new_matches = new_matches.slice(0, new_matches_amount);
-
-        var allOldMatches = [];
-        for(var i = 0; i < new_old_matches.length; i++) {
-          var match = await executeQuery(`SELECT * FROM match:⟨${new_old_matches[i]}⟩`);
-          allOldMatches.push(match[0]);
-        }
-
-        var newMatchesArray = new_new_matches.concat(allOldMatches);
-
-        newMatchesArray.sort(function(a, b) {
-          return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
-        });
+        var newMatches = currentMatches;
   
-        var newMatches = [];
-  
-        for(var i = 0; i < newMatchesArray.length; i++) {
-          var dateDiff = getDifferenceInDays(newMatchesArray[i].matchInfo.gameStartMillis, Date.now());
+        for(var i = 0; i < new_matches.length; i++) {
+          var dateDiff = getDifferenceInDays(new_matches[i].matchInfo.gameStartMillis, Date.now());
           moment.locale(router.query.lang);
           var startdate = moment();
           startdate = startdate.subtract(dateDiff, "days");
@@ -493,43 +249,34 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           // Create array if it doesn't exist
           if(!newMatches[matchDate]) newMatches[matchDate] = [];
     
-          newMatches[matchDate].push(newMatchesArray[i]);
+          newMatches[matchDate].push(new_matches[i]);
         }
   
         data.items.games = newMatches;
   
         if(data.errored == false && data.items.totalMatches > 0) {
-          var obj = {};
-  
-          var dataToWrite = data;
-          for(var key in dataToWrite.items.games) {
-            obj[key] = dataToWrite.items.games[key];
-          }
-          dataToWrite.items.games = obj;
-    
           var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
           
           setAvgKillsPerMatch(playerstats.kills_per_match);
           setAvgKillsPerRound(playerstats.kills_per_round);
           setWinratePercent(playerstats.win_percentage);
           setHeadshotPercent(playerstats.headshot_percent);
+    
           var map_stats = playerstats.map_stats;
           var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
             return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
           });
     
-          var best_map = map_stats[sorted_map_stats[0]];
-  
           if(mapData.data !== undefined) {
             var map_data = mapData;
           } else {
             var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
             var map_data = await map_data_raw.json();
             setMapData(map_data);
-            do {
-              await asyncDelay(20);
-            } while (mapData.data === undefined);
+            await asyncDelay(50);
           }
+    
+          var best_map = map_stats[sorted_map_stats[0]];
           
           for(var i = 0; i < map_data.data.length; i++) {
             if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
@@ -542,7 +289,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setBestMapKdaRatio(best_map.map_kda_ratio);
     
           var agent_stats = playerstats.agent_stats;
-        
+          
           var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
             return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
           });
@@ -557,9 +304,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
           setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
     
+          setCurrentlyLoadedMatchCount(currentlyLoadedMatchCount+5);
           setCurrentMatches(data.items.games);
           setLoading(false);
           setIsSilentLoading(false);
+          setFetchingFurtherMatches(false);
+          setMatchFetchingError(false);
           return;
         } else if(data.items.totalMatches === 0) {
           setCurrentMatches([]);
@@ -635,9 +385,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
             var map_data = await map_data_raw.json();
             setMapData(map_data);
-            do {
-              await asyncDelay(20);
-            } while (mapData.data === undefined);
+            await asyncDelay(50);
           }
           
           for(var i = 0; i < map_data.data.length; i++) {
@@ -668,226 +416,259 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     
           setCurrentMatches(newMatches);
         }
-      } else if(new_matches_amount >= 4) {
-        fetchContractData(true);
-    
-        setIsSilentLoading(false);
-        fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false, false);
-        return;
       }
-    }
-
-    if(isFirstLoad === true) {
-      var puuid = await getCurrentPUUID();
-      var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
-      var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
   
-      setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
-
-      var matches = [];
-      var newMatches = [];
-      
-      if(matchIDData[0].matchIDs.length === 0) return;
-
-      for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
-        var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
-        if(match[0] === undefined) continue;
-        matches.push(match[0]);
-      }
-
-      if(matches.length === 0) {
-        fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false, false);
-        return;
-      };
-
-      for(var i = 0; i < matches.length; i++) {
-        var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
-        moment.locale(router.query.lang);
-        var startdate = moment();
-        startdate = startdate.subtract(dateDiff, "days");
-        var matchDate = startdate.format("D. MMMM");
+      if(isSilentLoading === true) {
+        var old_matches_data = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${user_creds.uuid}⟩`);
   
-        // Create array if it doesn't exist
-        if(!newMatches[matchDate]) newMatches[matchDate] = [];
-  
-        newMatches[matchDate].push(matches[i]);
-      }
-
-      var arr = [];
-
-      for(var key in newMatches) {
-        arr[key] = newMatches[key];
-      }
-      
-      newMatches = arr;
-
-      var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+        var old_matches = old_matches_data[0].matchIDs;
         
-      setAvgKillsPerMatch(playerstats.kills_per_match);
-      setAvgKillsPerRound(playerstats.kills_per_round);
-      setWinratePercent(playerstats.win_percentage);
-      setHeadshotPercent(playerstats.headshot_percent);
-      
-      var map_stats = playerstats.map_stats;
-      var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-        return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
-      });
-
-      var best_map = map_stats[sorted_map_stats[0]];
-  
-      if(mapData.data !== undefined) {
-        var map_data = mapData;
-      } else {
-        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-        var map_data = await map_data_raw.json();
-        setMapData(map_data);
-        do {
-          await asyncDelay(20);
-        } while (mapData.data === undefined);
-      }
-      
-      for(var i = 0; i < map_data.data.length; i++) {
-        if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
-          setBestMapName(map_data.data[i].displayName);
-          setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
-        }
-      }
-
-      setBestMapWinPercent(best_map.map_win_percentage);
-      setBestMapKdaRatio(best_map.map_kda_ratio);
-
-      var agent_stats = playerstats.agent_stats;
-        
-      var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-        return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
-      });
-
-      var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-      var agent_data = await agent_data_raw.json();
-
-      setBestAgentName(agent_data.data.displayName);
-      setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
-      setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
-      setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
-      setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
-      setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
-
-      setCurrentMatches(newMatches);
-      setLoading(false);
-      setIsSilentLoading(true);
-      return;
-    } else {
-      setLoading(true);
-      setErrored(false);
-      setSilentError(false);
-
-      setAreStatsActive(true);
-  
-      setAvgKillsPerMatch('');
-      setAvgKillsPerRound('');
-      setWinratePercent('');
-      setHeadshotPercent('');
-      setBestMapName('');
-      setBestMapImage('');
-      setBestMapWinPercent('');
-      setBestMapKdaRatio('');
-      setBestAgentName('');
-      setBestAgentImage('');
-      setBestAgentAvgScore('');
-      setBestAgentAvgKda('');
-      setBestAgentKillsPerRound('');
-      setBestAgentKillsPerMatch('');
-  
-      setCurrentlyLoadedMatchCount(0);
-      setMaxMatchesFound(0);
-  
-      if(isNewQueue) {
-        await updateThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
-          matchIDs: []
-        });
-        var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.uuid, user_creds.region, router.query.lang, false);
-      } else {
-        var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.uuid, user_creds.region, router.query.lang, false);
-      }
-  
-      setCurrentlyLoadedMatchCount(data.items.endIndex);
-      setMaxMatchesFound(data.items.totalMatches);
-  
-      if(data.errored === false && data.items.totalMatches > 0) {
-        var obj = {};
-
-        var dataToWrite = data;
-        for(var key in dataToWrite.items.games) {
-          obj[key] = dataToWrite.items.games[key];
-        }
-        dataToWrite.items.games = obj;
-  
-        var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
-        
-        setAvgKillsPerMatch(playerstats.kills_per_match);
-        setAvgKillsPerRound(playerstats.kills_per_round);
-        setWinratePercent(playerstats.win_percentage);
-        setHeadshotPercent(playerstats.headshot_percent);
-  
-        var map_stats = playerstats.map_stats;
-        var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-          return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
-        });
-  
-        var best_map = map_stats[sorted_map_stats[0]];
-  
-        if(mapData.data !== undefined) {
-          var map_data = mapData;
+        if(old_matches.length === 0) {
+          var new_matches_amount = 5;
         } else {
-          var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-          var map_data = await map_data_raw.json();
-          setMapData(map_data);
-          do {
-            await asyncDelay(20);
-          } while (mapData.data === undefined);
-        }
-        
-        for(var i = 0; i < map_data.data.length; i++) {
-          if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
-            setBestMapName(map_data.data[i].displayName);
-            setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+          var latest_old_matches = old_matches.slice(0, 5);
+          
+          // Get newest 4 Matches from Match history
+          var data = await fetchMatches(0, 5, [], mode, user_creds.uuid, user_creds.region, router.query.lang, true);
+          setMaxMatchesFound(data.items.totalMatches);
+    
+          var new_matches = [];
+    
+          for(var key in data.items.games) {
+            for(var i = 0; i < data.items.games[key].length; i++) {
+              new_matches.push(data.items.games[key][i]);
+            }
           }
+          
+          if(new_matches.length === 0) return;
+  
+          new_matches.sort(function(a, b) {
+            if(b.matchInfo === undefined) return a;
+            if(a.matchInfo === undefined) return b;
+            return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
+          });
+    
+          var latest_new_matches = new_matches.slice(0, 5);
+    
+          // Using Some Method
+          const res2 = latest_old_matches.filter((match1) => !latest_new_matches.some(match2 => match1 === match2.matchInfo.matchId));
+          var new_matches_amount = res2.length;
         }
   
-        setBestMapWinPercent(best_map.map_win_percentage);
-        setBestMapKdaRatio(best_map.map_kda_ratio);
+        if(new_matches_amount === 0) {
+          setIsSilentLoading(false);
+          return;
+        } else if(new_matches_amount > 0 && new_matches_amount < 4) {
+          fetchContractData(true);
+      
+          var new_old_matches = old_matches.slice(0, (15 - new_matches_amount));
+          var new_new_matches = new_matches.slice(0, new_matches_amount);
   
-        var agent_stats = playerstats.agent_stats;
+          var allOldMatches = [];
+          for(var i = 0; i < new_old_matches.length; i++) {
+            var match = await executeQuery(`SELECT * FROM match:⟨${new_old_matches[i]}⟩`);
+            allOldMatches.push(match[0]);
+          }
+  
+          var newMatchesArray = new_new_matches.concat(allOldMatches);
+  
+          newMatchesArray.sort(function(a, b) {
+            return b.matchInfo.gameStartMillis - a.matchInfo.gameStartMillis;
+          });
+    
+          var newMatches = [];
+    
+          for(var i = 0; i < newMatchesArray.length; i++) {
+            var dateDiff = getDifferenceInDays(newMatchesArray[i].matchInfo.gameStartMillis, Date.now());
+            moment.locale(router.query.lang);
+            var startdate = moment();
+            startdate = startdate.subtract(dateDiff, "days");
+            var matchDate = startdate.format("D. MMMM");
+      
+            // Create array if it doesn't exist
+            if(!newMatches[matchDate]) newMatches[matchDate] = [];
+      
+            newMatches[matchDate].push(newMatchesArray[i]);
+          }
+    
+          data.items.games = newMatches;
+    
+          if(data.errored == false && data.items.totalMatches > 0) {
+            var obj = {};
+    
+            var dataToWrite = data;
+            for(var key in dataToWrite.items.games) {
+              obj[key] = dataToWrite.items.games[key];
+            }
+            dataToWrite.items.games = obj;
+      
+            var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
+            
+            setAvgKillsPerMatch(playerstats.kills_per_match);
+            setAvgKillsPerRound(playerstats.kills_per_round);
+            setWinratePercent(playerstats.win_percentage);
+            setHeadshotPercent(playerstats.headshot_percent);
+            var map_stats = playerstats.map_stats;
+            var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
+              return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
+            });
+      
+            var best_map = map_stats[sorted_map_stats[0]];
+    
+            if(mapData.data !== undefined) {
+              var map_data = mapData;
+            } else {
+              var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+              var map_data = await map_data_raw.json();
+              setMapData(map_data);
+              await asyncDelay(50);
+            }
+            
+            for(var i = 0; i < map_data.data.length; i++) {
+              if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
+                setBestMapName(map_data.data[i].displayName);
+                setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+              }
+            }
+            
+            setBestMapWinPercent(best_map.map_win_percentage);
+            setBestMapKdaRatio(best_map.map_kda_ratio);
+      
+            var agent_stats = playerstats.agent_stats;
+          
+            var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
+              return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
+            });
+      
+            var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+            var agent_data = await agent_data_raw.json();
+      
+            setBestAgentName(agent_data.data.displayName);
+            setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
+            setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
+            setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
+            setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
+            setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
+      
+            setCurrentMatches(data.items.games);
+            setLoading(false);
+            setIsSilentLoading(false);
+            return;
+          } else if(data.items.totalMatches === 0) {
+            setCurrentMatches([]);
+            setLoading(false);
+            setAreStatsActive(false);
+            setSilentError(false);
+          } else {
+            setLoading(false);
+            setIsSilentLoading(false);
+            setSilentError(true);
+    
+            ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
+    
+            var puuid = await getCurrentPUUID();
+            var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
+            var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
         
-        var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-          return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
-        });
+            setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
+      
+            var matches = [];
+            var newMatches = [];
+            
+            if(matchIDData[0].matchIDs.length === 0) return;
+      
+            for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
+              var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
+              if(match[0] === undefined) continue;
+              matches.push(match[0]);
+            }
+      
+            if(matches.length === 0) {
+              return;
+            };
+      
+            for(var i = 0; i < matches.length; i++) { 
+              var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+              moment.locale(router.query.lang);
+              var startdate = moment();
+              startdate = startdate.subtract(dateDiff, "days");
+              var matchDate = startdate.format("D. MMMM");
+        
+              // Create array if it doesn't exist
+              if(!newMatches[matchDate]) newMatches[matchDate] = [];
+        
+              newMatches[matchDate].push(matches[i]);
+            }
+      
+            var arr = [];
+      
+            for(var key in newMatches) {
+              arr[key] = newMatches[key];
+            }
+            
+            newMatches = arr;
+      
+            var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+              
+            setAvgKillsPerMatch(playerstats.kills_per_match);
+            setAvgKillsPerRound(playerstats.kills_per_round);
+            setWinratePercent(playerstats.win_percentage);
+            setHeadshotPercent(playerstats.headshot_percent);
+            
+            var map_stats = playerstats.map_stats;
+            var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
+              return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
+            });
+      
+            var best_map = map_stats[sorted_map_stats[0]];
+      
+            if(mapData.data !== undefined) {
+              var map_data = mapData;
+            } else {
+              var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+              var map_data = await map_data_raw.json();
+              setMapData(map_data);
+              await asyncDelay(50);
+            }
+            
+            for(var i = 0; i < map_data.data.length; i++) {
+              if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
+                setBestMapName(map_data.data[i].displayName);
+                setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+              }
+            }
+      
+            setBestMapWinPercent(best_map.map_win_percentage);
+            setBestMapKdaRatio(best_map.map_kda_ratio);
+      
+            var agent_stats = playerstats.agent_stats;
+              
+            var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
+              return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
+            });
+      
+            var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+            var agent_data = await agent_data_raw.json();
+      
+            setBestAgentName(agent_data.data.displayName);
+            setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
+            setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
+            setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
+            setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
+            setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
+      
+            setCurrentMatches(newMatches);
+          }
+        } else if(new_matches_amount >= 4) {
+          fetchContractData(true);
+      
+          setIsSilentLoading(false);
+          fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false, false);
+          return;
+        }
+      }
   
-        var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-        var agent_data = await agent_data_raw.json();
-  
-        setBestAgentName(agent_data.data.displayName);
-        setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
-        setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
-        setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
-        setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
-        setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
-  
-        setCurrentMatches(data.items.games);
-        setLoading(false);
-        setSilentError(false);
-      } else if(data.items.totalMatches === 0) {
-        setCurrentMatches([]);
-        setLoading(false);
-        setAreStatsActive(false);
-        setSilentError(false);
-      } else {
-        setLoading(false);
-        setIsSilentLoading(false);
-        setSilentError(true);
-
-        ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
-
+      if(isFirstLoad === true) {
         var puuid = await getCurrentPUUID();
         var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
         var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
@@ -906,10 +687,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         }
   
         if(matches.length === 0) {
+          fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false, false);
           return;
         };
   
-        for(var i = 0; i < matches.length; i++) { 
+        for(var i = 0; i < matches.length; i++) {
           var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
           moment.locale(router.query.lang);
           var startdate = moment();
@@ -943,16 +725,17 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         });
   
         var best_map = map_stats[sorted_map_stats[0]];
-  
+    
         if(mapData.data !== undefined) {
           var map_data = mapData;
         } else {
+          console.log("Debug 2");
+          console.log('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang));
           var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
           var map_data = await map_data_raw.json();
+          console.log("Debug 1");
           setMapData(map_data);
-          do {
-            await asyncDelay(20);
-          } while (mapData.data === undefined);
+          await asyncDelay(50);
         }
         
         for(var i = 0; i < map_data.data.length; i++) {
@@ -970,6 +753,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
           return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
         });
+        console.log("First Load 6");
   
         var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
         var agent_data = await agent_data_raw.json();
@@ -982,7 +766,216 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
   
         setCurrentMatches(newMatches);
+        setLoading(false);
+        setIsSilentLoading(true);
+        console.log("First Load 7");
+        return;
+      } else {
+        setLoading(true);
+        setErrored(false);
+        setSilentError(false);
+  
+        setAreStatsActive(true);
+    
+        setAvgKillsPerMatch('');
+        setAvgKillsPerRound('');
+        setWinratePercent('');
+        setHeadshotPercent('');
+        setBestMapName('');
+        setBestMapImage('');
+        setBestMapWinPercent('');
+        setBestMapKdaRatio('');
+        setBestAgentName('');
+        setBestAgentImage('');
+        setBestAgentAvgScore('');
+        setBestAgentAvgKda('');
+        setBestAgentKillsPerRound('');
+        setBestAgentKillsPerMatch('');
+    
+        setCurrentlyLoadedMatchCount(0);
+        setMaxMatchesFound(0);
+    
+        if(isNewQueue) {
+          await updateThing(`matchIDCollection:⟨hub::${puuid}⟩`, {
+            matchIDs: []
+          });
+          var data = await fetchMatches(beginIndex, endIndex, [], mode, user_creds.uuid, user_creds.region, router.query.lang, false);
+        } else {
+          var data = await fetchMatches(beginIndex, endIndex, currentMatches, mode, user_creds.uuid, user_creds.region, router.query.lang, false);
+        }
+    
+        setCurrentlyLoadedMatchCount(data.items.endIndex);
+        setMaxMatchesFound(data.items.totalMatches);
+    
+        if(data.errored === false && data.items.totalMatches > 0) {
+          var obj = {};
+  
+          var dataToWrite = data;
+          for(var key in dataToWrite.items.games) {
+            obj[key] = dataToWrite.items.games[key];
+          }
+          dataToWrite.items.games = obj;
+    
+          var playerstats = calculatePlayerStatsFromMatches(data.items.games, puuid);
+          
+          setAvgKillsPerMatch(playerstats.kills_per_match);
+          setAvgKillsPerRound(playerstats.kills_per_round);
+          setWinratePercent(playerstats.win_percentage);
+          setHeadshotPercent(playerstats.headshot_percent);
+    
+          var map_stats = playerstats.map_stats;
+          var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
+            return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
+          });
+    
+          var best_map = map_stats[sorted_map_stats[0]];
+    
+          if(mapData.data !== undefined) {
+            var map_data = mapData;
+          } else {
+            var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+            var map_data = await map_data_raw.json();
+            setMapData(map_data);
+            await asyncDelay(50);
+          }
+          
+          for(var i = 0; i < map_data.data.length; i++) {
+            if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
+              setBestMapName(map_data.data[i].displayName);
+              setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+            }
+          }
+    
+          setBestMapWinPercent(best_map.map_win_percentage);
+          setBestMapKdaRatio(best_map.map_kda_ratio);
+    
+          var agent_stats = playerstats.agent_stats;
+          
+          var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
+            return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
+          });
+    
+          var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+          var agent_data = await agent_data_raw.json();
+    
+          setBestAgentName(agent_data.data.displayName);
+          setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
+          setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
+          setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
+          setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
+          setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
+    
+          setCurrentMatches(data.items.games);
+          setLoading(false);
+          setSilentError(false);
+        } else if(data.items.totalMatches === 0) {
+          setCurrentMatches([]);
+          setLoading(false);
+          setAreStatsActive(false);
+          setSilentError(false);
+        } else {
+          setLoading(false);
+          setIsSilentLoading(false);
+          setSilentError(true);
+  
+          ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
+  
+          var puuid = await getCurrentPUUID();
+          var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
+          var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
+      
+          setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
+    
+          var matches = [];
+          var newMatches = [];
+          
+          if(matchIDData[0].matchIDs.length === 0) return;
+    
+          for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
+            var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
+            if(match[0] === undefined) continue;
+            matches.push(match[0]);
+          }
+    
+          if(matches.length === 0) {
+            return;
+          };
+    
+          for(var i = 0; i < matches.length; i++) { 
+            var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+            moment.locale(router.query.lang);
+            var startdate = moment();
+            startdate = startdate.subtract(dateDiff, "days");
+            var matchDate = startdate.format("D. MMMM");
+      
+            // Create array if it doesn't exist
+            if(!newMatches[matchDate]) newMatches[matchDate] = [];
+      
+            newMatches[matchDate].push(matches[i]);
+          }
+    
+          var arr = [];
+    
+          for(var key in newMatches) {
+            arr[key] = newMatches[key];
+          }
+          
+          newMatches = arr;
+    
+          var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+            
+          setAvgKillsPerMatch(playerstats.kills_per_match);
+          setAvgKillsPerRound(playerstats.kills_per_round);
+          setWinratePercent(playerstats.win_percentage);
+          setHeadshotPercent(playerstats.headshot_percent);
+          
+          var map_stats = playerstats.map_stats;
+          var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
+            return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
+          });
+    
+          var best_map = map_stats[sorted_map_stats[0]];
+    
+          if(mapData.data !== undefined) {
+            var map_data = mapData;
+          } else {
+            var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+            var map_data = await map_data_raw.json();
+            setMapData(map_data);
+            await asyncDelay(50);
+          }
+          
+          for(var i = 0; i < map_data.data.length; i++) {
+            if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
+              setBestMapName(map_data.data[i].displayName);
+              setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+            }
+          }
+    
+          setBestMapWinPercent(best_map.map_win_percentage);
+          setBestMapKdaRatio(best_map.map_kda_ratio);
+    
+          var agent_stats = playerstats.agent_stats;
+            
+          var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
+            return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
+          });
+    
+          var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+          var agent_data = await agent_data_raw.json();
+    
+          setBestAgentName(agent_data.data.displayName);
+          setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
+          setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
+          setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
+          setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
+          setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
+    
+          setCurrentMatches(newMatches);
+        }
       }
+    } catch(e) {
+      console.log(e);
     }
   }
 
@@ -1053,63 +1046,59 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }
   
   React.useEffect(async () => {
-    ipcRenderer.send('changeDiscordRP', "hub_activity");
-
-    var user_creds = await getCurrentUserData();
-    setUserCreds(user_creds);
-
-    var favs_data = await executeQuery(`SELECT * FROM matchIDCollection:⟨favMatches::${user_creds.uuid}⟩`);
-
-    setFavMatches(favs_data[0].matchIDs);
+    try {
+      ipcRenderer.send('changeDiscordRP', "hub_activity");
   
-    if(mapData.data === undefined) {
-      var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-      var map_data = await map_data_raw.json();
-      setMapData(map_data);
-    }
-
-    var uuid = uuidv5("hubMatchFilter", process.env.SETTINGS_UUID);
-    var result = await executeQuery(`SELECT * FROM setting:⟨${uuid}⟩`);
-
-    setActiveQueueTab(result[0].value);
-
-    var ent = await getUserEntitlement();
-    var bearer = await getUserAccessToken();
+      var user_creds = await getCurrentUserData();
+      setUserCreds(user_creds);
+  
+      var favs_data = await executeQuery(`SELECT * FROM matchIDCollection:⟨favMatches::${user_creds.uuid}⟩`);
+  
+      setFavMatches(favs_data[0].matchIDs);
     
-    var data = await getPlayerMMR(user_creds.region, user_creds.uuid, ent, bearer);
-    setMMRData(data);
-
-    var arr = [];
-
-    Object.keys(data.ActWinsByTier).forEach(singleKey => {
-      if(singleKey != "0") {
-        for(var i = 0; i < data.ActWinsByTier[singleKey]; i++) {
-          arr.push(singleKey);
+      if(mapData.data === undefined) {
+        var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+        var map_data = await map_data_raw.json();
+        setMapData(map_data);
+      }
+  
+      var uuid = uuidv5("hubMatchFilter", process.env.SETTINGS_UUID);
+      var result = await executeQuery(`SELECT * FROM setting:⟨${uuid}⟩`);
+  
+      setActiveQueueTab(result[0].value);
+  
+      var ent = await getUserEntitlement();
+      var bearer = await getUserAccessToken();
+      
+      var data = await getPlayerMMR(user_creds.region, user_creds.uuid, ent, bearer);
+      setMMRData(data);
+  
+      var arr = [];
+  
+      Object.keys(data.ActWinsByTier).forEach(singleKey => {
+        if(singleKey != "0") {
+          for(var i = 0; i < data.ActWinsByTier[singleKey]; i++) {
+            arr.push(singleKey);
+          }
+        }
+      });
+      arr = arr.reverse().slice(0, 9);
+  
+      setActWins(arr);
+  
+      if(!result[0].value || result[0].value === "") {
+        await fetchMatchesAndCalculateStats(true, 0, 15, 'unrated', true);
+        await fetchMatchesAndCalculateStats(true, 0, 15, 'unrated', false, true);
+      } else {
+        try {
+          await fetchMatchesAndCalculateStats(true, 0, 15, result[0].value, true);
+          await fetchMatchesAndCalculateStats(true, 0, 15, result[0].value, false, true);
+        } catch(e) {
+          console.log(e);
         }
       }
-    });
-    arr = arr.reverse().slice(0, 9);
-
-    setActWins(arr);
-
-    if(!result[0].value || result[0].value === "") {
-      await fetchMatchesAndCalculateStats(true, 0, 15, 'unrated', true);
-      await fetchMatchesAndCalculateStats(true, 0, 15, 'unrated', false, true);
-    } else {
-      try {
-        await fetchMatchesAndCalculateStats(true, 0, 15, result[0].value, true);
-        await fetchMatchesAndCalculateStats(true, 0, 15, result[0].value, false, true);
-      } catch(e) {
-        console.log(e);
-      }
-    }
-
-    return () => {
-      setLoading(true);
-      setErrored(false);
-      setSilentError(false);
-      setFetchingFurtherMatches(false);
-      setMatchFetchingError(false);
+    } catch(e) {
+      console.log(e);
     }
   }, []);
 
@@ -1174,13 +1163,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }, []);
 
   React.useEffect(async () => {
-    if(!firstRender) {
-      try {
-        var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json();
-        setRanks(ranksRaw.data[ranksRaw.data.length-1].tiers);
-      } catch(e) {
-        console.log(e);
-      }
+    if(!router.query.lang) return;
+    try {
+      var ranksRaw = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json();
+      setRanks(ranksRaw.data[ranksRaw.data.length-1].tiers);
+    } catch(e) {
+      console.log(e);
     }
   }, [ router.query ]);
 

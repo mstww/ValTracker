@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu, Tray, session, dialog } from 'electron';
+import { app, ipcMain, Menu, Tray, session } from 'electron';
 import serve from 'electron-serve';
 import fs from 'fs';
 import path from 'path';

@@ -409,8 +409,9 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }
   
   React.useEffect(async () => {
-    if(firstRender) return;
+    if(!router.query.lang) return;
 
+    console.log(router.query.isExternalSource);
     if(router.query.isExternalSource === "true") {
       var user_data = await getCurrentUserData();
       var mapData = await (await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' })).json();
@@ -458,13 +459,13 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }, [router.query]);
 
   React.useEffect(async () => {
-    if(firstRender) return;
+    if(!router.query.lang) return;
     if(sessionStorage.getItem("knownMatchData") && !router.query.isExternalSource) {
       var knownMatchData = JSON.parse(sessionStorage.knownMatchData);
       var agent_data = await(await fetch(`https://valorant-api.com/v1/agents/${knownMatchData.playerAgent}?language=${APIi18n(router.query.lang)}`)).json();
       setPlayerAgentAbilities(agent_data.data.abilities);
     }
-  }, []);
+  }, [router.query]);
 
   return (
     <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''} isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>

@@ -563,7 +563,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                           className={'w-10 scale-75 shadow-img'}
                                         />
                                         :
-                                        <ValIconHandler icon={`/images/${activeQueueTab}.png`} classes={'w-7 scale-75 shadow-img'} />
+                                        <ValIconHandler icon={`/images/${match.matchInfo.queueID}.png`} classes={'w-7 scale-75 shadow-img'} />
                                       }
                                     </Tooltip>
                                     {match.matchInfo.queueID === 'competitive' && matchData.isRankup === true ? (
