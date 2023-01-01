@@ -19,7 +19,9 @@ export const calculateContractProgress = async (region, puuid, bearer, entitleme
     }
   }
 
-  var agentContractData = await(await fetch('https://valorant-api.com/v1/contracts/' + agentContractUUID + '?language=' + APIi18n(lang), { 'Content-Type': 'application/json' })).json();
+  var agentContractData = {
+    data: contracts.data.find(x => x.uuid === agentContractUUID)
+  }
   var tierCount = 0;
 
   var agentContractProgression = {
@@ -134,7 +136,10 @@ export const calculateContractProgress = async (region, puuid, bearer, entitleme
     }
   }
 
-  var battlePassData = await(await fetch('https://valorant-api.com/v1/contracts/' + battlePassUUID + '?language=' + APIi18n(lang), { 'Content-Type': 'application/json' })).json();
+
+  var battlePassData = {
+    data: contracts.data.find(x => x.uuid === battlePassUUID)
+  }
   tierCount = 0;
 
   var battlePassProgression = {

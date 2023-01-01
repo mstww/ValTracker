@@ -243,6 +243,11 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var totalActMatches = matchesByAct[seasonUUID];
 
   const rankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
+  
+  const date1 = new Date();
+  const date2 = new Date(season.endTime);
+  const diffTime = Math.abs(date2 - date1);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   var obj = {
     "peaktier": peaktier,
@@ -254,7 +259,8 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
     "win_percentage": ((currentSeason.NumberOfWins / currentSeason.NumberOfGames) * 100).toFixed(2),
     "additional_info": mmrInfo.QueueSkills,
     "act_matches_total": totalActMatches,
-    "overall_matches_total": totalOverallMatches
+    "overall_matches_total": totalOverallMatches,
+    "days_remaining": diffDays
   }
 
   return obj;

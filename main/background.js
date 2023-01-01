@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu, Tray, session } from 'electron';
+import { app, ipcMain, Menu, Tray, session, dialog } from 'electron';
 import serve from 'electron-serve';
 import fs from 'fs';
 import path from 'path';
@@ -117,14 +117,55 @@ const gotTheLock = app.requestSingleInstanceLock();
 if(!gotTheLock) {
   app.quit();
 } else {
-  app.on("second-instance", (event, CommandLine, workingDirectory) => {
+  app.on("second-instance", async (event, CommandLine, workingDirectory) => {
     if(mainWindow !== null) {
       try {
         if(mainWindow.isMinimized()) mainWindow.restore();
         mainWindow.focus();
         mainWindow.show();
+        
         if(appIcon) {
           appIcon.destroy();
+        }
+
+        var url = CommandLine.find(x => x.includes("x-valtracker-client://"));
+        if(url) {
+          var finalURL = "";
+
+          if(url.includes("//match/")) {
+            var urlToBeLoaded = url.split("x-valtracker-client://").pop().replace("match/", "matchview/");
+            finalURL = urlToBeLoaded + "&isExternalSource=true";
+          }
+
+          if(url.includes("//player/")) {
+            var urlToBeLoaded = url.split("x-valtracker-client://").pop();
+
+            var regionSplit = urlToBeLoaded.split("region=").pop().split("&")[0];
+            var playerSplit = urlToBeLoaded.split("player=").pop().split("&")[0];
+
+            var userInfo = await requestUserCreds(regionSplit, playerSplit);
+
+            var name_encoded = encodeURIComponent(userInfo[0].GameName + '#' + userInfo[0].TagLine);
+
+            urlToBeLoaded = `/player?name=${userInfo[0].GameName}&tag=${userInfo[0].TagLine}&searchvalue=${name_encoded}`;
+
+            finalURL = urlToBeLoaded + "&isExternalSource=true";
+          }
+
+          var uuid = uuidv5("appColorTheme", process.env.SETTINGS_UUID);
+          var themeObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+          var theme = themeObj[0] ? themeObj[0].value : 'normal';
+        
+          var uuid = uuidv5("appLang", process.env.SETTINGS_UUID);
+          var langObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+          var appLang = langObj[0] ? langObj[0].value : 'en-US';
+      
+          if (isProd) {
+            await mainWindow.loadURL(`app://./${finalURL}&usedTheme=${theme}&lang=${appLang}`);
+          } else {
+            const port = process.argv[2];
+            await mainWindow.loadURL(`http://localhost:${port}/${finalURL}&usedTheme=${theme}&lang=${appLang}`);
+          } 
         }
       } catch(e) {
         console.log(e);
@@ -341,6 +382,24 @@ if(fs.existsSync(process.env.APPDATA + '/VALTracker/user_data/user_creds.json'))
 
   migrateWin.close();
   migrateWin = false;
+}
+
+/**
+ * A function that returns a users name and tag based on their puuid.
+ * @param {String} region
+ * @param {String} puuid
+ */
+
+export async function requestUserCreds(region, puuid) {
+  if(region === 'latam' || region === 'br') region = 'na';
+  return (await (await fetch(`https://pd.${region}.a.pvp.net/name-service/v2/players/`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: "[\"" + puuid + "\"]",
+    keepalive: true
+  })).json());
 }
 
 /**
@@ -1781,6 +1840,7 @@ async function checkForOldMatches() {
         setInterval(refreshAllEntitlementTokens, ent_expiresIn * 1000); 
         console.log("All accounts will be reauthenticated in 55 Minutes.");
       }
+
       if (isProd) {
         await mainWindow.loadURL(`app://./home.html?usedTheme=${theme}&lang=${appLang}`);
       } else {

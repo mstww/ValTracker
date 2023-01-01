@@ -14,7 +14,6 @@ export default function TextboxLayer() {
 
   React.useEffect(() => {
     ipcRenderer.on('createTextbox', function(event, args) {
-      console.log(args);
       setTextboxes(current => (!current.find(x => x.text === args.text) ? [...current, args ] : current));
       if(args.persistent === false) {
         setTimeout(function() {

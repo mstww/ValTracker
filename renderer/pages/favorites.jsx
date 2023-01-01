@@ -131,7 +131,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
           const match = await getMatch(userCreds.region, favMatchesData[0].matchIDs[i], entitlement_token, bearer);
 
-          if(match.matchInfo.queueID === "competitive") {
+          if(match.matchInfo.queueID === "competitive" && !match.matchInfo.isRankupGame) {
             var isRankup = await checkForRankup(region, puuid, match.matchInfo.matchId, entitlement_token, bearer);
             match.matchInfo.isRankupGame = isRankup;
           }

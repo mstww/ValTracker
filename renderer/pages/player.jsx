@@ -190,7 +190,6 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
       const { errored, items } = await fetchMatches(0, 10, [], type, playerInfo.puuid, playerInfo.region, router.query.lang);
       
       if(!errored) {
-        console.log("DuringChange", items);
         if(items.matches.totalMatches === 0) {
           setHideStats(true);
           setNoMatchesFound(true);
@@ -222,6 +221,8 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
   }, []);
 
   React.useEffect(async () => {
+    if(Object.keys(router.query).length === 0) return;
+
     var name = router.query.name;
     var tag = router.query.tag;
 
@@ -230,6 +231,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
 
     var levelBorderData = await(await fetch(`https://valorant-api.com/v1/levelborders?language=${APIi18n(router.query.lang)}`)).json();
     setLevelBorders(levelBorderData.data);
+
     const { errored, items } = await fetchPlayer(name, tag, router.query.lang);
       
     if(!errored) {
@@ -270,7 +272,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
       setErrorMessage((typeof items.message === "string" ? items.message : "Internal Server Error"));
       setError(true);
     }
-  }, []);
+  }, [router.query]);
 
   React.useEffect(() => {
     var border = levelBorders.find(x => x.startingLevel <= playerInfo.account_level && playerInfo.account_level < (x.startingLevel + 20));
@@ -463,43 +465,36 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
                             <img className='h-full shadow-img' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                            <span className={`text-xl font-semibold ${activeQueueTab == 'competitive' ? "relative left-1.5 top-0.5" : ""}`}>{matchData.mapName}</span>
-                            <span className='text-base font-light flex flex-row items-center'> 
+                            <span className={`text-lg font-semibold ${activeQueueTab == 'competitive' ? "relative left-1.5 top-0.5" : ""}`}>{matchData.mapName}</span>
+                            <span className='text-base font-light flex flex-row items-center relative'> 
                               <Tooltip 
                                 content={matchData.playerCurrentTier > 3 ? matchData.rankFixed.tierName : ''}
                                 color="error" 
                                 placement={'top'} 
                                 className={'rounded'}
                               >
-                                <img 
-                                  src={
-                                    activeQueueTab == 'competitive' ? 
-                                    (matchData.playerCurrentTier ? 
+                                {
+                                  activeQueueTab === 'competitive' ? 
+                                  <img 
+                                    src={
+                                      matchData.playerCurrentTier ? 
                                       `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchData.playerCurrentTier}/smallicon.png`
                                       :
                                       `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
-                                    )
-                                    :
-                                    'https://media.valorant-api.com/gamemodes/96bd3920-4f36-d026-2b28-c683eb0bcac5/displayicon.png'
-                                  } 
-                                  className={
-                                    'w-8 scale-75 '
-                                    +
-                                    (activeQueueTab == 'competitive' ?
-                                      `w-10`
-                                      :
-                                      ''
-                                    )
-                                  }
-                                />
+                                    } 
+                                    className={'w-9 scale-75 shadow-img'}
+                                  />
+                                  :
+                                  <ValIconHandler icon={`/images/${activeQueueTab}.png`} classes={'w-7 scale-75 shadow-img'} />
+                                }
                               </Tooltip>
                               <span>{activeQueueTab != 'spikerush' ? (activeQueueTab[0].toUpperCase() + activeQueueTab.slice(1)) : ('Spike Rush')}</span>
                             </span>
                           </div>
                         </div>
                         <div id='match-score' className='w-1/3 flex flex-row items-center'>
-                          <div id='scoreline' className='flex flex-col text-center w-1/3'>
-                            <span className={'text-xl font-semibold ' + matchData.matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchData.matchOutcome)}</span>
+                          <div id='scoreline' className='flex flex-col text-center w-1/2'>
+                            <span className={'text-xl font-semibold outcome-text ' + matchData.matchOutcomeColor}>{LocalText(L, "matches.match_outcomes." + matchData.matchOutcome)}</span>
                             {activeQueueTab != 'deathmatch' ? (<span className='text-lg'>{matchData.matchScore}</span>) : ''}
                           </div>
                           {activeQueueTab != 'deathmatch' ? 

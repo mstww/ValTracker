@@ -66,7 +66,8 @@
     },
     "bot_r": {
       "comp_info": {
-        "header": "Competitive Data"
+        "header": "Competitive Data",
+        "subheader": "{{ val1 }} days remanining"
       },
       "stats": {
         "header": "Stats of last {{ val1 }} Matches",
@@ -168,6 +169,10 @@
       }
     },
     "bot_r": {
+      "comp_info": {
+        "header": "Kompetitive Daten",
+        "subheader": "{{ val1 }} Tage verbleibend"
+      },
       "stats": {
         "header": "Statistiken der letzten {{ val1 }} Matches",
         "stat_1": "Kills/Match",
@@ -268,6 +273,10 @@
       }
     },
     "bot_r": {
+      "comp_info": {
+        "header": "Données concurrentielles",
+        "subheader": "{{ val1 }} jours de remaniement"
+      },
       "stats": {
         "header": "Statistique des derniers {{ val1 }} Match",
         "stat_1": "Avg Kills/Match",
