@@ -226,6 +226,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       var puuid = user_creds.uuid;
   
       if(keepCurrentMatches === true) {
+        var data = await fetchMatches(beginIndex, endIndex, [], mode, puuid, user_creds.region, router.query.lang, false);
   
         setMaxMatchesFound(data.items.totalMatches);
   
