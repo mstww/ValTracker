@@ -559,7 +559,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
               <span className='relative top-px'>{LocalText(L, "ui.level_text")}</span>
               <span className='relative items-center'>
                 <img src={playerBorder} />
-                <span className='absolute font-normal top-[3px] pt-px text-base left-0 right-0 mx-auto w-fit'>{playerInfo.account_level}</span>
+                <span className='absolute font-normal top-[3px] pt-px text-base left-0 right-0 mx-auto w-fit !text-white'>{playerInfo.account_level}</span>
               </span>
               <span className='ml-auto'>{playerInfo.region}</span>
             </span>

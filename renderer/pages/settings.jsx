@@ -440,7 +440,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
 
   const openPopup = (setPopupOpen, info) => {
     if(info === "riot_rm_account" && riot_accountList.length === 0) {
-      ipcRenderer.send("relayTextbox", { persistent: false, text: "You cannot remove the account that the app is using." }); // TODO: Translation
+      ipcRenderer.send("relayTextbox", { persistent: false, text: "You cannot remove the account that the app is using." });
       return;
     }
     setPopupOpen(true);
