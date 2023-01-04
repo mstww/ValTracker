@@ -15,6 +15,7 @@ import getDifferenceInDays from '../js/getDifferenceInDays.mjs';
 import calculatePlayerStatsFromMatches from '../js/calculatePlayerStatsFromMatches.mjs';
 import { calculateMatchStats } from '../js/calculateMatchStats.mjs';
 import { getMatchHistory, getMatch, getPlayerMMR } from '../js/riotAPIFunctions.mjs';
+import ValIconHandler from '../components/ValIconHandler';
 
 const imgArray = [
   '/agents/breach_black.png',
@@ -33,6 +34,8 @@ const fetchPlayer = async (pname, ptag, lang) => {
   try {
     const playerInfoRaw = await fetch(`https://api.valtracker.gg/v1/riot/player/${pname}/${ptag}`, { keepalive: true });
     const pInfo = await playerInfoRaw.json();
+
+    console.log(pInfo);
 
     if(pInfo.status !== 200) {
       return { errored: true, items: {status: pInfo.status, message: pInfo.message }};
@@ -92,6 +95,8 @@ const fetchPlayer = async (pname, ptag, lang) => {
         "games": matchesByDates
       }
     }
+
+    console.log(json);
 
     return { errored: false, items: json };
   } catch(err) {
@@ -239,19 +244,20 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
         setHideStats(true);
         setNoMatchesFound(true);
         setLoading(false);
-        return;
+      } else {
+        var playerstats = calculatePlayerStatsFromMatches(items.matches.games, items.player.puuid);
+        
+        setAvgKillsPerMatch(playerstats.kills_per_match);
+        setHeadshotPercent(playerstats.headshot_percent);
+        setAvgKD(playerstats.avg_kd);
+        setAvgCS(playerstats.avg_score);
       }
-      var playerstats = calculatePlayerStatsFromMatches(items.matches.games, items.player.puuid);
-      
-      setAvgKillsPerMatch(playerstats.kills_per_match);
-      setHeadshotPercent(playerstats.headshot_percent);
-      setAvgKD(playerstats.avg_kd);
-      setAvgCS(playerstats.avg_score);
 
       setGameAmountInfo({ "actMatches": items.player.act_matches_total, "overallMatches": items.player.overall_matches_total });
 
       setMatches(items.matches.games);
 
+      console.log(playerInfo);
       setPlayerInfo(items.player);
 
       var arr = [];
@@ -268,6 +274,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
 
       setLoading(false);
     } else {
+      console.log("here");
       setLoading(false);
       setErrorMessage((typeof items.message === "string" ? items.message : "Internal Server Error"));
       setError(true);
