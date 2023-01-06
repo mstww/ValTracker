@@ -529,7 +529,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           >
             <Close className='w-8 p-1' />
           </div>
-          <h1 className='z-20 text-2xl flex flex-row items-center font-bold'>Share this Match</h1>
+          <h1 className='z-20 text-2xl flex flex-row items-center font-bold'>{LocalText(L, "link_share.header")}</h1>
           <span 
             className={`transition-all duration-100 ease-linear cursor-pointer ${urlCopied === true ? "text-val-blue hover:text-opacity-80" : "text-button-color hover:text-button-color-hover"}`}
             onClick={() => {
@@ -542,7 +542,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           >
             {shareMatchURL}
           </span>
-          <span className='block w-96 text-gray-300 font-light'>Click the link to copy it to your clipboard. It will stay active for the next 7 days, so share it with your friends!</span>
+          <span className='block w-96 text-gray-300 font-light'>{LocalText(L, "link_share.desc")}</span>
         </motion.div>
       </motion.div>
       <div 

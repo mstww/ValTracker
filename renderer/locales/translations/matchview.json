@@ -1,5 +1,9 @@
 {
   "en-US": {
+    "link_share": {
+      "header": "Share this Match",
+      "desc": "Click the link to copy it to your clipboard. It will stay active for the next 7 days, so share it with your friends!"
+    },
     "match_outcomes": {
       "VICTORY": "VICTORY",
       "DEFEAT": "DEFEAT",
@@ -115,6 +119,10 @@
     }
   },
   "de-DE": {
+    "link_share": {
+      "header": "Teile dieses Match",
+      "desc": "Klicke auf den Link, um ihn zu kopieren. Dieser Link ist für die nächsten 7 Tage aktiv, also teile ihn mit deinen Freunden!"
+    },
     "match_outcomes": {
       "VICTORY": "SIEG",
       "DEFEAT": "VERLOREN",
@@ -230,6 +238,10 @@
     }
   },
   "fr-FR": {
+    "link_share": {
+      "header": "Partager ce match",
+      "desc": "Clique sur le lien pour le copier. Ce lien est actif pour les 7 prochains jours, alors partage-le avec tes amis!"
+    },
     "match_outcomes": {
       "VICTORY": "VICTOIRE",
       "DEFEAT": "DEFAITE",

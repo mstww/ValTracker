@@ -50,7 +50,7 @@ class ErrorBoundary extends React.Component {
           <OverlayWrapper useRef={null} isShown={true}>
             <PopupCard 
               useRef={null}
-              header={"Oops! We've encountered an error."} // TODO: Translations
+              header={"Oops! We've encountered an error."}
               text={"A bug report has been anonymously sent to our team."}
               text_2={"For any further questions, please join our Discord Server."}
               button_1={"Discord Server"}
