@@ -9,31 +9,7 @@ import { BackArrow, Search } from '../components/SVGs';
 import Layout from '../components/Layout';
 import { getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
 import { executeQuery } from '../js/dbFunctions.mjs';
-
-async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`, {
-    method: 'PUT',
-    headers: {
-      "X-Riot-Entitlements-JWT": entitlement_token,
-      'Authorization': "Bearer " + bearer,
-      "Content-Type": "application/json",
-    },
-    "body": JSON.stringify(loadout),
-    keepalive: true
-  })).json());
-}
-
-const fetchCards = async () => {
-  try {
-    const response = await fetch(`https://valorant-api.com/v1/sprays?language=${APIi18n(router.query.lang)}`, { keepalive: true });
-    const json = await response.json();
-
-    return { errored: false, items: json.data };
-  } catch(err) {
-    return { errored: true, items: err };
-  }
-}
+import { setSkins } from '../js/riotAPIFunctions.mjs';
 
 function SkinTiles({ setActiveSkin, activeSkin, showUnowned, useRef, sprays }) {
   const router = useRouter();
@@ -287,7 +263,7 @@ function Spraychanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) 
             </button>
           </div>
           <div className='flex flex-row items-center justify-center w-auto mx-auto' id='skin-img'>
-            <img src={activeSkinImage ? activeSkinImage : '/invisible_weapons/vandal.png'} className={activeSkinImage ? 'shadow-img w-3/5 mr-4' : 'w-1/6'} />
+            <img src={activeSkinImage ? activeSkinImage : '/images/vandal_invisible.png'} className={activeSkinImage ? 'shadow-img w-3/5 mr-4' : 'w-1/6'} />
           </div>
         </div>
       </div>

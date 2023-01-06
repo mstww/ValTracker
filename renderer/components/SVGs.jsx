@@ -30,8 +30,8 @@ export const Clock = ({ className }) => {
   return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 14 14" strokeWidth="1"><g><path d="M7,.5A6.5,6.5,0,1,1,.5,7a7.23,7.23,0,0,1,2-5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></path><polyline points="0.5 2.5 2.5 2 3 4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></polyline><polyline points="7 3.5 7 7.5 9.6 8.8" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"></polyline></g></svg>
 }
 
-export const Close = ({ className }) => {
-  return <svg xmlns="http://www.w3.org/2000/svg" className={className} viewBox="0 0 600 600"><g transform="matrix(42.857142857142854,0,0,42.857142857142854,0,0)"><g><line x1="13.5" y1="0.5" x2="0.5" y2="13.5" style={{ fill: "currentcolor", stroke: "currentcolor", strokeLinecap: "round", strokeLinejoin: "round" }}></line><line x1="0.5" y1="0.5" x2="13.5" y2="13.5" style={{ fill: "currentcolor", stroke: "currentcolor", strokeLinecap: "round", strokeLinejoin: "round" }}></line></g></g></svg>
+export const Close = ({ className, onClick }) => {
+  return <svg xmlns="http://www.w3.org/2000/svg" className={className} onClick={onClick} viewBox="0 0 600 600"><g transform="matrix(42.857142857142854,0,0,42.857142857142854,0,0)"><g><line x1="13.5" y1="0.5" x2="0.5" y2="13.5" style={{ fill: "currentcolor", stroke: "currentcolor", strokeLinecap: "round", strokeLinejoin: "round" }}></line><line x1="0.5" y1="0.5" x2="13.5" y2="13.5" style={{ fill: "currentcolor", stroke: "currentcolor", strokeLinecap: "round", strokeLinejoin: "round" }}></line></g></g></svg>
 }
 
 export const Coffee = ({ className }) => {
@@ -148,4 +148,8 @@ export const Reload = ({ className, onClick }) => {
 
 export const PartyIcon = ({ className, onEnter, onLeave, onClick }) => {
   return <svg xmlns="http://www.w3.org/2000/svg" className={className} onMouseOver={onEnter} onMouseLeave={onLeave} onClick={onClick} viewBox="0 0 14 14"><g><circle cx={5} cy={3.75} r={2.25} fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><path d="M9.5,13.5H.5v-1a4.5,4.5,0,0,1,9,0Z" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><path d="M9,1.5A2.25,2.25,0,0,1,9,6" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /><path d="M10.6,8.19a4.5,4.5,0,0,1,2.9,4.2V13.5H12" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" /></g></svg>
+}
+
+export const ShareIcon = ({ className, onClick }) => {
+  return <svg xmlns="http://www.w3.org/2000/svg" className={className} onClick={onClick}viewBox="0 0 14 14"><g><circle cx={2.75} cy={7} r={2.25} fill="none" stroke="currentcolor" strokeLinecap="round" strokeLinejoin="round" /><circle cx={11.25} cy={11.25} r={2.25} fill="none" stroke="currentcolor" strokeLinecap="round" strokeLinejoin="round" /><circle cx={11.25} cy={2.75} r={2.25} fill="none" stroke="currentcolor" strokeLinecap="round" strokeLinejoin="round" /><line x1={4.76} y1={6} x2={9.24} y2={3.75} fill="none" stroke="currentcolor" strokeLinecap="round" strokeLinejoin="round" /><line x1={4.76} y1={8} x2={9.24} y2={10.25} fill="none" stroke="currentcolor" strokeLinecap="round" strokeLinejoin="round" /></g></svg>
 }

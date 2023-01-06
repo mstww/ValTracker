@@ -358,7 +358,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           id='shop-nav' 
           className={isShopShown ? ((isShop ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isShop}
-          onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', shopHiddenDesc) }}
+          onClick={() => { isShopShown ? router.push("/shop?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', { persistent: false, text: shopHiddenDesc }) }}
           variants={navbarVariants.tiles}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -372,7 +372,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           id='inv-nav' 
           className={isInvShown ? ((isInv ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isInv}
-          onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', invHiddenDesc) }}
+          onClick={() => { isInvShown ? router.push("/inventory?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', { persistent: false, text: invHiddenDesc }) }}
           variants={navbarVariants.tiles}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -386,7 +386,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           id='fav-nav' 
           className={isFavsShown ? ((isFav ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isFav}
-          onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', favsHiddenDesc) }}
+          onClick={() => { isFavsShown ? router.push("/favorites?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', { persistent: false, text: favsHiddenDesc }) }}
           variants={navbarVariants.tiles}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -400,7 +400,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           id='wish-nav' 
           className={isWishlistShown ? ((isWish ? activeClasses : inactiveClasses) + navbarTileBaseClasses) : disabledClasses}
           data-isactive={isWish}
-          onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', wishlistHiddenDesc) }}
+          onClick={() => { isWishlistShown ? router.push("/wishlist?lang=" + router.query.lang) : ipcRenderer.send('relayTextbox', { persistent: false, text: wishlistHiddenDesc }) }}
           variants={navbarVariants.tiles}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -470,7 +470,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
           <Link href={'/settings'}>
             <div 
               className={
-                'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor '
+                'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor relative left-0.5 '
                 +
                 (page == 'settings' ? 'border border-gradient-left bg-maincolor hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
                 +

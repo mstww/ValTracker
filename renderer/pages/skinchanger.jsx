@@ -12,39 +12,12 @@ import APIi18n from '../components/translation/ValApiFormatter';
 import { BackArrow, Close, Search, Star, StarFilled } from '../components/SVGs';
 import Layout from '../components/Layout';
 import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement, addSkinToWishlist } from '../js/dbFunctions';
+import { getOffers, setSkins } from '../js/riotAPIFunctions.mjs';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
   enter: { opacity: 1, x: 0, y: 0, scale: 1, display: 'block' },
   exit: { opacity: 0, x: 0, y: 0, scale: 0.8, transitionEnd: { display: 'none' } },
-}
-
-async function getOffers(region, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v1/offers/', {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
-}
-
-async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`, {
-    method: 'PUT',
-    headers: {
-      "X-Riot-Entitlements-JWT": entitlement_token,
-      'Authorization': "Bearer " + bearer,
-      "Content-Type": "application/json",
-    },
-    "body": JSON.stringify(loadout),
-    keepalive: true
-  })).json());
 }
 
 const fetchSkins = async (weaponType, lang) => {
@@ -738,7 +711,7 @@ function Skinchanger({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             </div>
           </div>
           <div className='flex flex-row items-center justify-center w-3/4 mx-auto' id='skin-img'>
-            <img src={activeSkinImage ? activeSkinImage : '/invisible_weapons/vandal.png'} className={activeSkinImage ? 'shadow-img w-3/5' : 'w-1/6'} />
+            <img src={activeSkinImage ? activeSkinImage : '/images/vandal_invisible.png'} className={activeSkinImage ? 'shadow-img w-3/5' : 'w-1/6'} />
           </div>
         </div>
       </div>

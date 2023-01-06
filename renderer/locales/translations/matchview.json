@@ -1,5 +1,9 @@
 {
   "en-US": {
+    "link_share": {
+      "header": "Share this Match",
+      "desc": "Click the link to copy it to your clipboard. It will stay active for the next 7 days, so share it with your friends!"
+    },
     "match_outcomes": {
       "VICTORY": "VICTORY",
       "DEFEAT": "DEFEAT",
@@ -37,36 +41,45 @@
       "rotated_text": "AWARDS",
       "most_money": {
         "title": "Monopoly Man",
-        "desc": "You spent the most money."
+        "desc": "You spent the most money.",
+        "desc_external": "{{ val1 }} spent the most money."
       },
       "least_money": {
         "title": "Smart Spender",
-        "desc": "You spent the least money."
+        "desc": "You spent the least money.",
+        "desc_external": "{{ val1 }} spent the least money."
       },
       "most_kills": {
         "title": "Shots fired!",
-        "desc": "You had the most kills."
+        "desc": "You had the most kills.",
+        "desc_external": "{{ val1 }} had the most kills."
       },
       "most_assists": {
         "title": "Pocket Sage",
-        "desc": "You had the most assists."
+        "desc": "You had the most assists.",
+        "desc_external": "{{ val1 }} had the most assists."
       },
       "most_acs": {
         "title": "Automaton",
         "desc_1": "You had the highest ACS.",
-        "desc_2": "You had the highest Score." 
+        "desc_2": "You had the highest Score." ,
+        "desc_1_external": "{{ val1 }} had the highest ACS.",
+        "desc_2_external": "{{ val1 }} had the highest Score."
       },
       "most_fbs": {
         "title": "Need for Speed",
-        "desc": "You had the most first bloods."
+        "desc": "You had the most first bloods.",
+        "desc_external": "{{ val1 }} had the most first bloods."
       },
       "most_dmg": {
         "title": "That's a lot of damage!",
-        "desc": "You dealt the most damage."
+        "desc": "You dealt the most damage.",
+        "desc_external": "{{ val1 }} dealt the most damage."
       },
       "best_hs": {
         "title": "Check him PC!",
-        "desc": "You had the highest Headshot%."
+        "desc": "You had the highest Headshot%.",
+        "desc_external": "{{ val1 }} had the highest Headshot%."
       }
     },
     "round_results": {
@@ -106,6 +119,10 @@
     }
   },
   "de-DE": {
+    "link_share": {
+      "header": "Teile dieses Match",
+      "desc": "Klicke auf den Link, um ihn zu kopieren. Dieser Link ist für die nächsten 7 Tage aktiv, also teile ihn mit deinen Freunden!"
+    },
     "match_outcomes": {
       "VICTORY": "SIEG",
       "DEFEAT": "VERLOREN",
@@ -143,36 +160,45 @@
       "rotated_text": "MEDAILLEN",
       "most_money": {
         "title": "Monopoly Mann",
-        "desc": "Du hast das meiste Geld ausgegeben."
+        "desc": "Du hast das meiste Geld ausgegeben.",
+        "desc_external": "{{ val1 }} hat das meiste Geld ausgegeben."
       },
       "least_money": {
         "title": "Geizhals",
-        "desc": "Du hast am wenigsten Geld ausgegeben."
+        "desc": "Du hast am wenigsten Geld ausgegeben.",
+        "desc_external": "{{ val1 }} hat am wenigsten Geld ausgegeben."
       },
       "most_kills": {
         "title": "Ratatatatata!",
-        "desc": "Du hattest die meisten Kills."
+        "desc": "Du hattest die meisten Kills.",
+        "desc_external": "{{ val1 }} hatte die meisten Kills."
       },
       "most_assists": {
         "title": "Pocket Sage",
-        "desc": "Du hattest die meisten Assists."
+        "desc": "Du hattest die meisten Assists.",
+        "desc_external": "{{ val1 }} hatte die meisten Assists."
       },
       "most_acs": {
         "title": "Maschine",
         "desc_1": "Du hattest den höchsten ACS.",
-        "desc_2": "Du hattest den höchsten Score." 
+        "desc_2": "Du hattest den höchsten Score.",
+        "desc_1_external": "{{ val1 }} hatte den höchsten ACS.",
+        "desc_2_external": "{{ val1 }} hatte den höchsten Score." 
       },
       "most_fbs": {
         "title": "Need for Speed",
-        "desc": "Du hattest die meisten First-Bloods."
+        "desc": "Du hattest die meisten First-Bloods.",
+        "desc_external": "{{ val1 }} hatte die meisten First-Bloods."
       },
       "most_dmg": {
         "title": "Carglass repariert...",
-        "desc": "Du hast den meisten Schaden verursacht."
+        "desc": "Du hast den meisten Schaden verursacht.",
+        "desc_external": "{{ val1 }} hat den meisten Schaden verursacht."
       },
       "best_hs": {
         "title": "Der cheated!",
-        "desc": "Du hattest den höchsten Headshot%."
+        "desc": "Du hattest die höchste Headshot%.",
+        "desc_external": "{{ val1 }} hatte die höchste Headshot%."
       }
     },
     "round_results": {
@@ -212,6 +238,10 @@
     }
   },
   "fr-FR": {
+    "link_share": {
+      "header": "Partager ce match",
+      "desc": "Clique sur le lien pour le copier. Ce lien est actif pour les 7 prochains jours, alors partage-le avec tes amis!"
+    },
     "match_outcomes": {
       "VICTORY": "VICTOIRE",
       "DEFEAT": "DEFAITE",
@@ -249,36 +279,45 @@
       "rotated_text": "PRIX",
       "most_money": {
         "title": "Homme de monopole",
-        "desc": "Vous avez dépensé le plus d'argent."
+        "desc": "Vous avez dépensé le plus d'argent.",
+        "desc_external": "{{ val1 }} a dépensé le plus d'argent."
       },
       "least_money": {
         "title": "Dépenseur intelligent",
-        "desc": "You spent the least money."
+        "desc": "You spent the least money.",
+        "desc_external": "{{ val1 }} a dépensé le moins d'argent."
       },
       "most_kills": {
         "title": "Shots fired!",
-        "desc": "Vous avez dépensé le moins d'argent."
+        "desc": "Vous avez dépensé le moins d'argent.",
+        "desc_external": "{{ val1 }} had the most kills."
       },
       "most_assists": {
         "title": "Pocket Sage",
-        "desc": "Vous avez eu le plus de kill assistés."
+        "desc": "Vous avez eu le plus de kill assistés.",
+        "desc_external": "{{ val1 }} a eu le plus de morts."
       },
       "most_acs": {
         "title": "Automate",
         "desc_1": "Vous aviez le plus haut ACS.",
-        "desc_2": "Vous avez eu le score le plus élevé." 
+        "desc_2": "Vous avez eu le score le plus élevé." ,
+        "desc_1_external": "{{ val1 }} avait l'ACS le plus élevé.",
+        "desc_2_external": "{{ val1 }} a eu le meilleur score."
       },
       "most_fbs": {
         "title": "Besoin de vitesse",
-        "desc": "Vous avez eu le plus de premiers sangs."
+        "desc": "Vous avez eu le plus de premiers sangs.",
+        "desc_external": "{{ val1 }} a eu le plus de premiers sangs."
       },
       "most_dmg": {
         "title": "C'est beaucoup de dégâts!",
-        "desc": "Vous avez infligé le plus de dégâts."
+        "desc": "Vous avez infligé le plus de dégâts.",
+        "desc_external": "{{ val1 }} a fait le plus de dégâts."
       },
       "best_hs": {
         "title": "Vérifiez-le PC!",
-        "desc": "Vous avez eu le pourcentage de Headshot le plus élevé."
+        "desc": "Vous aviez le plus haut pourcentage de tirs dans la tête.",
+        "desc_external": "{{ val1 }} avait le plus haut pourcentage de tirs dans la tête."
       }
     },
     "round_results": {

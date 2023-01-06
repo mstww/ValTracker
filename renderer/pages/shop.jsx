@@ -14,6 +14,8 @@ import { Close } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import Layout from '../components/Layout';
 import { executeQuery, getCurrentUserData, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions';
+import timeToHMS from '../js/timeToHMS.mjs';
+import { getWallet } from '../js/riotAPIFunctions.mjs';
 
 const slide_right = {
   hidden: { opacity: 0, x: 100, y: 0 },
@@ -37,40 +39,6 @@ const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
   enter: { opacity: 1, x: 0, y: 0, scale: 1, display: 'block' },
   exit: { opacity: 0, x: 0, y: 0, scale: 0.8, transitionEnd: { display: 'none' } },
-}
-
-async function getWallet(region, puuid, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch('https://pd.' + region + '.a.pvp.net/store/v1/wallet/' + puuid, {
-    method: 'GET',
-    headers: {
-      'X-Riot-Entitlements-JWT': entitlement_token,
-      'Authorization': 'Bearer ' + bearer,
-      'Content-Type': 'application/json',
-      'User-Agent': ''
-    },
-    keepalive: true
-  })).json());
-}
-
-function bundleTimeToHMS(n, o) {
-  n = Number(n);
-  var d = Math.floor(n / 86400);
-  var h = Math.floor((n - d * 86400) / 3600);
-  var m = Math.floor(n % 3600 / 60);
-  var s = Math.floor(n % 3600 % 60);
-
-  var dDisplay = d > 0 ? d + (d == 1 ? " " + o.d_1 + ", " : " " + o.d_2 + ", ") : "";
-  var hDisplay = h > 0 ? h + (h == 1 ? " " + o.h_1 + ", " : " " + o.h_2 + ", ") : "";
-  var mDisplay = m > 0 ? m + (m == 1 ? " " + o.m_1 + ", " : " " + o.m_2 + ", ") : "";
-  var sDisplay = s > 0 ? s + (s == 1 ? " " + o.s_1 : " " + o.s_2) : "";
-  var str = dDisplay + hDisplay + mDisplay + sDisplay;
-
-  if(str.split(",").pop() === ' ') {
-    str = str.substring(0, str.lastIndexOf(','));
-  }
-
-  return str;
 }
 
 function singleSkinsToHMS(n, o) {
@@ -197,7 +165,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     var bundleTimer = Math.abs(moment().diff(data.featuredBundle.expiresIn, 'seconds'));
     var singleSkinTimer = Math.abs(moment().diff(data.singleSkins[0].expiresIn, 'seconds'));
 
-    var initialBundle = bundleTimeToHMS(bundleTimer, localTimerObj) + " " + localTimerObj.rem;
+    var initialBundle = timeToHMS(bundleTimer, localTimerObj) + " " + localTimerObj.rem;
     var initialSkins = singleSkinsToHMS(singleSkinTimer, localTimerObj) + " " + localTimerObj.rem;
 
     setBundleTimer(initialBundle);
@@ -206,7 +174,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     if(data.nightMarket) {
       var nmTimer = Math.abs(moment().diff((data.nightMarket.nightMarketExpiresIn ? data.nightMarket.nightMarketExpiresIn: data.nightMarket.expiresIn), 'seconds'));
       nmTimer = nmTimer-1;
-      var initialNM = bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
+      var initialNM = timeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
 
       setNightMarketTimer(initialNM);
       setNightMarketEnd((data.nightMarket.nightMarketExpiresIn ? data.nightMarket.nightMarketExpiresIn: data.nightMarket.expiresIn));
@@ -228,14 +196,14 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         router.reload();
       }
 
-      var bundleText = bundleTimeToHMS(bundleTimer, localTimerObj) + " " + localTimerObj.rem;
+      var bundleText = timeToHMS(bundleTimer, localTimerObj) + " " + localTimerObj.rem;
       var singleSkinText = singleSkinsToHMS(singleSkinTimer, localTimerObj) + " " + localTimerObj.rem;
 
       setBundleTimer(bundleText);
       setDailyTimer(singleSkinText);
 
       if(data.nightMarket) {
-        var nmText = bundleTimeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
+        var nmText = timeToHMS(nmTimer, localTimerObj) + " " + localTimerObj.rem;
         setNightMarketTimer(nmText);
       }
     }, 1000);

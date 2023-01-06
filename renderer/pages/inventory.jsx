@@ -9,6 +9,7 @@ import { useFirstRender } from '../components/useFirstRender';
 import Layout from '../components/Layout';
 import { createThing, executeQuery, getCurrentPUUID, getCurrentUserData, getUserAccessToken, getUserEntitlement, updateThing } from '../js/dbFunctions';
 import { Select } from '../components/Select';
+import { setSkins, getPlayerLoadout, getPlayerItems } from '../js/riotAPIFunctions.mjs';
 
 function sortObject(obj) {
   return Object.keys(obj).sort().reduce(function (acc, key) {
@@ -23,44 +24,6 @@ function sortObject(obj) {
     acc[key] = obj[key];
     return acc;
   }, {});
-}
-
-async function getPlayerLoadout(region, puuid, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`, {
-    method: 'GET',
-    headers: {
-      "X-Riot-Entitlements-JWT": entitlement_token,
-      'Authorization': "Bearer " + bearer,
-    },
-    keepalive: true
-  })).json());
-}
-
-async function getPlayerItems(region, puuid, entitlement_token, bearer) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/store/v1/entitlements/${puuid}`, {
-    method: 'GET',
-    headers: {
-      "X-Riot-Entitlements-JWT": entitlement_token,
-      'Authorization': "Bearer " + bearer,
-    },
-    keepalive: true
-  })).json());
-}
-
-async function setSkins(region, puuid, entitlement_token, bearer, loadout) {
-  if(region === 'latam' || region === 'br') region = 'na';
-  return (await (await fetch(`https://pd.${region}.a.pvp.net/personalization/v2/players/${puuid}/playerloadout`, {
-    method: 'PUT',
-    headers: {
-      "X-Riot-Entitlements-JWT": entitlement_token,
-      'Authorization': "Bearer " + bearer,
-      "Content-Type": "application/json",
-    },
-    "body": JSON.stringify(loadout),
-    keepalive: true
-  })).json());
 }
 
 const card_variants = {
@@ -381,7 +344,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               id='inventory-card'
               data-equipslot='playercard'
               className='cursor-default w-full mx-auto group-hover:opacity-70 transition-all duration-100 ease-linear' 
-              src='/invisible_weapons/large_card.png'
+              src='/images/vandal_invisible.png'
               onClick={(e) => { redirectToCardChanger(e.target.getAttribute('data-card')) }}
             />
             <div 
@@ -397,7 +360,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='0814b2fe-4512-60a4-5288-1fbdcec6ca48' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='0814b2fe-4512-60a4-5288-1fbdcec6ca48' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/images/vandal_invisible.png' />
             </div> 
             <div 
               className={'relative mx-auto w-full inv-spray h-1/3 mb-1.5 ' + (tile_classes)}
@@ -405,7 +368,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='04af080a-4071-487b-61c0-5b9c0cfaac74' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='04af080a-4071-487b-61c0-5b9c0cfaac74' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/images/vandal_invisible.png' />
             </div>
             <div 
               className={'relative mx-auto w-full inv-spray h-1/3 top-px ' + (tile_classes)}
@@ -413,7 +376,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 redirectToSprayChanger(e.target.firstChild.getAttribute('data-spray'), e.target.firstChild.getAttribute('data-equipslot'))
               }}
             >
-              <img data-equipslot='5863985e-43ac-b05d-cb2d-139e72970014' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/invisible_weapons/spray.png' />
+              <img data-equipslot='5863985e-43ac-b05d-cb2d-139e72970014' className='h-5/6 mx-auto pointer-events-none shadow-img' src='/images/vandal_invisible.png' />
             </div>
           </div>
         </div>
@@ -436,12 +399,12 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 }
                 key={index}
               >
-                <img src={`/invisible_weapons/${weapon.name.toLowerCase()}.png`} data-weapontype={weapon.uuid} alt={weapon.name} className={weapon.imgClasses} />
+                <img src={`/images/vandal_invisible.png`} data-weapontype={weapon.uuid} alt={weapon.name} className={weapon.imgClasses} />
                 <span className='pointer-events-none absolute bottom-0 left-0 w-full text-center'>{weapon.name}</span>
                 {
                   weapon.name !== "Melee" &&
                   <div id='buddy-div' className='absolute bottom-1 left-1 2xl:h-14 2xl:w-14 h-10 w-10 pointer-events-none'>
-                    <img data-weaponforbuddy={weapon.uuid} src='/invisible_weapons/melee.png' />
+                    <img data-weaponforbuddy={weapon.uuid} src='/images/vandal_invisible.png' />
                   </div>
                 }
               </div>

@@ -7,10 +7,26 @@ import AwardTile from '../components/matchview/AwardTile';
 import L from '../locales/translations/matchview.json';
 import LocalText from '../components/translation/LocalText';
 import fetch from 'node-fetch';
-import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Crosshair, Flash, Globe, PartyIcon, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
+import { ArrowIncrease, ArrowRoundUp, BackArrow, Calendar, Clock, Close, Crosshair, Flash, Globe, PartyIcon, ShareIcon, SignalGraph, Skull, Swap, ValorantV } from '../components/SVGs';
 import ValIconHandler from '../components/ValIconHandler';
 import Layout from '../components/Layout';
-import { getCurrentUserData } from '../js/dbFunctions.mjs';
+import { getCurrentUserData, getInstanceToken, getUserAccessToken, getUserEntitlement } from '../js/dbFunctions.mjs';
+import { getMatch, requestUserCreds } from '../js/riotAPIFunctions.mjs';
+import { useFirstRender } from '../components/useFirstRender';
+import APIi18n from '../components/translation/ValApiFormatter';
+import { calculateMatchStats } from '../js/calculateMatchStats.mjs';
+
+const backdrop_variants = {
+  hidden: { opacity: 0, x: 0, y: 0, display: 'none' },
+  enter: { opacity: 1, x: 0, y: 0, display: 'flex' },
+  exit: { opacity: 0, x: 0, y: 0, transitionEnd: { display: 'none' } },
+}
+
+const card_variants = {
+  hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
+  enter: { opacity: 1, x: 0, y: 0, scale: 1, display: 'block' },
+  exit: { opacity: 0, x: 0, y: 0, scale: 0.8, transitionEnd: { display: 'none' } },
+}
 
 const overview_vars_first_load = {
   hidden: { opacity: 0, x: 0, y: 200, scale: 1, display: 'none' },
@@ -45,13 +61,6 @@ const scoreboard_vars_initial = {
   enter: { opacity: 1, x: 0, y: 0, scale: 1, display: '' },
   exit: { opacity: 0, x: 200, y: 0, scale: 1, transitionEnd: { display: 'none' } },
 }
-
-const partyColors = [
-  "party-0",
-  "party-1",
-  "party-2",
-  "party-3"
-]
 
 function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const router = useRouter();
@@ -123,11 +132,336 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ playerParties, setPlayerParties ] = React.useState({});
   const [ highlightedParty, setHighlightedParty ] = React.useState(null);
   const [ lockHighlightedParty, setLockHighlightedParty ] = React.useState({ state: false, lockedUUID: null });
+  const [ shareMatchURL, setShareMatchURL ] = React.useState("");
+
+  const [ showPopup, setShowPopup ] = React.useState(false);
+  const [ urlCopied, setUrlCopied ] = React.useState(false);
 
   // DATA NEEDED: MapUUID, Map Name, Match Date, Match Length, Match Mode, Region, Server, Game Version, 
   // AgentUUID, Player KDA, Player KD, Player Score, Player ACS, Player Rank, HS%, BS%, LS%, is Player MVP, Player ADR
+
+  const calculatePageContent = (knownMatchData, roundData, teamData, playerData, playerUUID) => {
+    if(knownMatchData.gameMode !== 'deathmatch' && knownMatchData.gameMode !== 'ggteam' && knownMatchData.gameMode !== 'onefa') {
+      const allPlayerAwardStats = [];
+      var playerAbilityUsage = {};
+      if(knownMatchData.gameMode === "competitive") {
+        setIsComp(true);
+      }
+
+      var partyIDs = {};
+
+      for(var i = 0; i < playerData.length; i++) {
+        if(playerData[i].subject === playerUUID) {
+          playerAbilityUsage.Ability1 = (playerData[i].stats.abilityCasts.ability1Casts / roundData.length).toFixed(1);
+          playerAbilityUsage.Ability2 = (playerData[i].stats.abilityCasts.ability2Casts / roundData.length).toFixed(1);
+          playerAbilityUsage.Grenade = (playerData[i].stats.abilityCasts.grenadeCasts / roundData.length).toFixed(1);
+          playerAbilityUsage.Ultimate = (playerData[i].stats.abilityCasts.ultimateCasts / roundData.length).toFixed(1);
+        }
+
+        allPlayerAwardStats[playerData[i].subject] = {};
+        if(knownMatchData.gameMode === "competitive") {
+          allPlayerAwardStats[playerData[i].subject].competitiveTier = playerData[i].competitiveTier;
+        }
+
+        allPlayerAwardStats[playerData[i].subject].subject = playerData[i].subject;
+        allPlayerAwardStats[playerData[i].subject].subjectName = playerData[i].gameName;
+        allPlayerAwardStats[playerData[i].subject].subjectTag = playerData[i].tagLine;
+        allPlayerAwardStats[playerData[i].subject].subjectAgent = playerData[i].characterId;
+        allPlayerAwardStats[playerData[i].subject].partyUUID = playerData[i].partyId;
+
+        if(!partyIDs[playerData[i].partyId]) {
+          partyIDs[playerData[i].partyId] = {
+            members: [playerData[i].subject]
+          };
+        } else {
+          partyIDs[playerData[i].partyId].members.push(playerData[i].subject);
+        }
+
+        if(knownMatchData.playerTeam === 'Blue') {
+          allPlayerAwardStats[playerData[i].subject].subjectTeam = playerData[i].teamId;
+        } else {
+          if(playerData[i].teamId == 'Blue') {
+            allPlayerAwardStats[playerData[i].subject].subjectTeam = 'Red';
+          } else {
+            allPlayerAwardStats[playerData[i].subject].subjectTeam = 'Blue';
+          }
+        }
+
+        allPlayerAwardStats[playerData[i].subject].kills = playerData[i].stats.kills;
+        allPlayerAwardStats[playerData[i].subject].deaths = playerData[i].stats.deaths;
+        allPlayerAwardStats[playerData[i].subject].assists = playerData[i].stats.assists;
+        allPlayerAwardStats[playerData[i].subject].acs = (playerData[i].stats.score / roundData.length);
+        allPlayerAwardStats[playerData[i].subject].kd = (playerData[i].stats.kills / playerData[i].stats.deaths);
+
+        allPlayerAwardStats[playerData[i].subject].firstbloods = 0;
+        allPlayerAwardStats[playerData[i].subject].headshots = 0;
+        allPlayerAwardStats[playerData[i].subject].bodyshots = 0;
+        allPlayerAwardStats[playerData[i].subject].legshots = 0;
+        allPlayerAwardStats[playerData[i].subject].money_spent = 0;
+
+        var playerDamage = 0;
+        
+        if(playerData[i].roundDamage !== null) {
+          for(var j = 0; j < playerData[i].roundDamage.length; j++) {
+            playerDamage += playerData[i].roundDamage[j].damage;
+          }
+  
+          allPlayerAwardStats[playerData[i].subject].total_dmg = playerDamage;
+        } else {
+          allPlayerAwardStats[playerData[i].subject].total_dmg = 0;
+        }
+      }
+
+      var knownParties = {};
+
+      for(var i = 0; i < Object.keys(partyIDs).length; i++) {
+        if(partyIDs[Object.keys(partyIDs)[i]].members.length > 1) {
+          var className = `party-${Object.keys(knownParties).length}`
+          knownParties[Object.keys(partyIDs)[i]] = className;
+        }
+      }
+
+      setPlayerParties(knownParties);
+
+      for(var i = 0; i < roundData.length; i++) {
+        var totalRoundKills = [];
+        
+        for(var j = 0; j < roundData[i].playerStats.length; j++) {
+          allPlayerAwardStats[roundData[i].playerStats[j].subject].money_spent += roundData[i].playerStats[j].economy.spent;
+
+          for(var k = 0; k < roundData[i].playerStats[j].damage.length; k++) {
+            allPlayerAwardStats[roundData[i].playerStats[j].subject].headshots += roundData[i].playerStats[j].damage[k].headshots;
+            allPlayerAwardStats[roundData[i].playerStats[j].subject].bodyshots += roundData[i].playerStats[j].damage[k].bodyshots;
+            allPlayerAwardStats[roundData[i].playerStats[j].subject].legshots += roundData[i].playerStats[j].damage[k].legshots;
+          }
+
+          for(var k = 0; k < roundData[i].playerStats[j].kills.length; k++) {
+            totalRoundKills.push(roundData[i].playerStats[j].kills[k]);
+          }
+        }
+          
+        totalRoundKills.sort(function(a, b) {
+          return a.roundTime - b.roundTime;
+        });
+
+        var firstRoundKill = totalRoundKills[0];
+
+        if(firstRoundKill) {
+          allPlayerAwardStats[firstRoundKill.killer].firstbloods++;
+        }
+      }
+
+      var playerStatsSortingArray = [];
+
+      for(var key in allPlayerAwardStats) {
+        var totalShotsHit = allPlayerAwardStats[key].headshots + allPlayerAwardStats[key].bodyshots + allPlayerAwardStats[key].legshots;
+
+        var headshot_percent = (allPlayerAwardStats[key].headshots / totalShotsHit) * 100;
+
+        allPlayerAwardStats[key].hs_percent = parseInt(headshot_percent);
+
+        playerStatsSortingArray.push(allPlayerAwardStats[key])
+      }
+
+      setPlayerScoreboardStats(playerStatsSortingArray);
+        
+      playerStatsSortingArray.sort(function(a, b) {
+        return b.money_spent - a.money_spent;
+      });
+      var playerThatSpentMostMoney = playerStatsSortingArray[0].subject;
+        
+      playerStatsSortingArray.sort(function(a, b) {
+        return a.money_spent - b.money_spent;
+      });
+      var playerThatSpentLeastMoney = playerStatsSortingArray[0].subject;
+        
+      playerStatsSortingArray.sort(function(a, b) {
+        return b.kills - a.kills;
+      });
+      var playerWithMostKills = playerStatsSortingArray[0].subject;
+
+      playerStatsSortingArray.sort(function(a, b) {
+        return b.assists - a.assists;
+      });
+      var playerWithMostAssists = playerStatsSortingArray[0].subject;
+
+      playerStatsSortingArray.sort(function(a, b) {
+        return b.damage - a.damage;
+      });
+      var playerWithMostDmg = playerStatsSortingArray[0].subject;
+
+      playerStatsSortingArray.sort(function(a, b) {
+        return b.hs_percent - a.hs_percent;
+      });
+      var playerWithBestHsPercent = playerStatsSortingArray[0].subject;
+
+      playerStatsSortingArray.sort(function(a, b) {
+        return b.firstbloods - a.firstbloods;
+      });
+      var playerWithMostFBs = playerStatsSortingArray[0].subject;
+
+      playerStatsSortingArray.sort(function(a, b) {
+        return b.acs - a.acs;
+      });
+      var playerWithMostACS = playerStatsSortingArray[0].subject;
+
+      setHasPlayerSpentMost(playerThatSpentMostMoney === knownMatchData.uuid);
+      setHasPlayerSpentLeast(playerThatSpentLeastMoney === knownMatchData.uuid);
+      setHasPlayerMostKills(playerWithMostKills === knownMatchData.uuid);
+      setHasPlayerMostAssists(playerWithMostAssists === knownMatchData.uuid);
+      setHasPlayerMostACS(playerWithMostACS === knownMatchData.uuid);
+      setHasPlayerDealtMostDmg(playerWithMostDmg === knownMatchData.uuid);
+      setHasPlayerHighestHsPercent(playerWithBestHsPercent === knownMatchData.uuid);
+      setHasPlayerMostFBs(playerWithMostFBs === knownMatchData.uuid);
+
+      setTeamData(teamData);
+
+      setMatchScore(knownMatchData.matchScore);
+      setPlayerMatchResult(knownMatchData.matchOutcome);
+
+      moment.locale(router.query.lang);
+      var newMatchDate = moment(knownMatchData.gameStartUnix).format('D. MMMM YYYY, h:mm a');
+
+      var x = knownMatchData.gameLengthMS;
+      var tempTime = moment.duration(x);
+      if(tempTime.hours() > 0) {
+        var newMatchLength = tempTime.hours() + ' hour, ' + tempTime.minutes() + ' minutes, ' + tempTime.seconds() + ' seconds';
+      } else {
+        var newMatchLength = tempTime.minutes() + ' minutes, ' + tempTime.seconds() + ' seconds';
+      }
+      if(newMatchLength.split(",").pop() === ' ') {
+        newMatchLength = newMatchLength.substring(0, newMatchLength.lastIndexOf(','));
+      }
+      
+      setMatchMap(knownMatchData.mapUUID);
+      setMatchMapName(knownMatchData.mapName);
+      setMatchDate(newMatchDate);
+      setMatchLength(newMatchLength);
+      setMatchMode(gamemodes[knownMatchData.gameMode]);
+      setMatchServer(knownMatchData.gameServer);
+      setMatchGameVersion(knownMatchData.gameVersion);
+
+      setname(knownMatchData.name);
+      setUUID(knownMatchData.uuid);
+      setPlayerAgentUUID(knownMatchData.playerAgent);
+      setPlayerKDA(knownMatchData.playerKDA);
+      setPlayerKD(knownMatchData.playerKD);
+      setPlayerACS(knownMatchData.playerACS);
+      setPlayerKillsPerRound(knownMatchData.playerKillsPerRound);
+      setPlayerCurrentTier(knownMatchData.playerCurrentTier);
+      setPlayerHsPercent(knownMatchData.headShotsPercentRounded);
+      setPlayerBsPercent(knownMatchData.bodyShotsPercentRounded);
+      setPlayerLsPercent(knownMatchData.legShotsPercentRounded);
+      setPlayerFBs(knownMatchData.playerFBs);
+
+      setPlayerAbilityUsagePerRound(playerAbilityUsage);
+
+      setRounds(roundData);
+    } else if(knownMatchData.gameMode === 'deathmatch') {
+      const allPlayerAwardStats = [];
+
+      for(var i = 0; i < playerData.length; i++) {
+        allPlayerAwardStats[playerData[i].subject] = {};
+
+        allPlayerAwardStats[playerData[i].subject].subject = playerData[i].subject;
+        allPlayerAwardStats[playerData[i].subject].subjectName = playerData[i].gameName;
+        allPlayerAwardStats[playerData[i].subject].subjectTag = playerData[i].tagLine;
+        allPlayerAwardStats[playerData[i].subject].subjectAgent = playerData[i].characterId;
+
+        if(knownMatchData.playerTeam === 'Blue') {
+          allPlayerAwardStats[playerData[i].subject].subjectTeam = playerData[i].teamId;
+        } else {
+          if(playerData[i].teamId == 'Blue') {
+            allPlayerAwardStats[playerData[i].subject].subjectTeam = 'Red';
+          } else {
+            allPlayerAwardStats[playerData[i].subject].subjectTeam = 'Blue';
+          }
+        }
+
+        allPlayerAwardStats[playerData[i].subject].kills = playerData[i].stats.kills;
+        allPlayerAwardStats[playerData[i].subject].deaths = playerData[i].stats.deaths;
+        allPlayerAwardStats[playerData[i].subject].assists = playerData[i].stats.assists;
+        allPlayerAwardStats[playerData[i].subject].score = playerData[i].stats.score / roundData.length;
+        allPlayerAwardStats[playerData[i].subject].kd = (playerData[i].stats.kills / playerData[i].stats.deaths);
+        allPlayerAwardStats[playerData[i].subject].acs = 0;
+
+        allPlayerAwardStats[playerData[i].subject].firstbloods = 0;
+        allPlayerAwardStats[playerData[i].subject].headshots = 0;
+        allPlayerAwardStats[playerData[i].subject].bodyshots = 0;
+        allPlayerAwardStats[playerData[i].subject].legshots = 0;
+        allPlayerAwardStats[playerData[i].subject].money_spent = 0;
+      }
+
+      var playerStatsSortingArray = [];
+
+      for(var key in allPlayerAwardStats) {
+        playerStatsSortingArray.push(allPlayerAwardStats[key])
+      }
+
+      setPlayerScoreboardStats(playerStatsSortingArray);
+
+      setTeamData(teamData);
+
+      setMatchScore(knownMatchData.matchScore);
+      setPlayerMatchResult(knownMatchData.matchOutcome);
+
+      setname(knownMatchData.name);
+      setUUID(knownMatchData.uuid);
+      setPlayerAgentUUID(knownMatchData.playerAgent);
+      setPlayerKDA(knownMatchData.playerKDA);
+      setPlayerKD(knownMatchData.playerKD);
+      setPlayerKillsPerRound(knownMatchData.playerKillsPerRound);
+      
+      setActiveTab('scoreboard');
+      setIsDeathmatch(true);
+
+      setCurrentSortStat('score');
+    } else if(knownMatchData.gameMode === 'ggteam') {
+      setIsEscalation(true);
+    } else if(knownMatchData.gameMode === 'onefa') {
+      setIsEscalation(true);
+    }
+  }
   
   React.useEffect(async () => {
+    if(!router.query.lang) return;
+
+    console.log(router.query.isExternalSource);
+    if(router.query.isExternalSource === "true") {
+      var user_data = await getCurrentUserData();
+      var mapData = await (await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' })).json();
+      var ranks = await(await fetch('https://valorant-api.com/v1/competitivetiers?language=' + APIi18n(router.query.lang))).json();
+
+      var ent = await getUserEntitlement();
+      var bearer = await getUserAccessToken();
+
+      var match = await getMatch(router.query.region, router.query.matchID, ent, bearer);
+      var viewed_user_data = await requestUserCreds(router.query.region, router.query.player)
+      
+      var { matchViewData } = calculateMatchStats(match, viewed_user_data[0].GameName, viewed_user_data[0].TagLine, mapData, ranks);
+
+      var Blue = [];
+      var Red = [];
+      for(var i = 0; i < match.players.length; i++) {
+        if(match.players[i].teamId == "Blue") {
+          Blue.push(match.players[i].subject);
+        } else if(match.players[i].teamId == "Red") {
+          Red.push(match.players[i].subject);
+        }
+      }
+      
+      var knownMatchData = matchViewData;
+      var roundData = match.roundResults;
+      var teamData = { Blue, Red };
+      var playerData = match.players; 
+
+      var agent_data = await(await fetch(`https://valorant-api.com/v1/agents/${knownMatchData.playerAgent}?language=${APIi18n(router.query.lang)}`)).json();
+      setPlayerAgentAbilities(agent_data.data.abilities);
+
+      calculatePageContent(knownMatchData, roundData, teamData, playerData, router.query.player);
+      return;
+    }
+
     if(sessionStorage.getItem("knownMatchData")) {
       var user_data = await getCurrentUserData();
       var knownMatchData = JSON.parse(sessionStorage.knownMatchData);
@@ -135,304 +469,95 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       var teamData = JSON.parse(sessionStorage.teamData);
       var playerData = JSON.parse(sessionStorage.playerData);
 
-      if(knownMatchData.gameMode !== 'deathmatch' && knownMatchData.gameMode !== 'ggteam' && knownMatchData.gameMode !== 'onefa') {
-        const allPlayerAwardStats = [];
-        var playerAbilityUsage = {};
-        if(knownMatchData.gameMode === "competitive") {
-          setIsComp(true);
-        }
-
-        var partyIDs = {};
-  
-        for(var i = 0; i < playerData.length; i++) {
-          if(playerData[i].subject === user_data.uuid) {
-            playerAbilityUsage.Ability1 = (playerData[i].stats.abilityCasts.ability1Casts / roundData.length).toFixed(1),
-            playerAbilityUsage.Ability2 = (playerData[i].stats.abilityCasts.ability2Casts / roundData.length).toFixed(1),
-            playerAbilityUsage.Grenade = (playerData[i].stats.abilityCasts.grenadeCasts / roundData.length).toFixed(1),
-            playerAbilityUsage.Ultimate = (playerData[i].stats.abilityCasts.ultimateCasts / roundData.length).toFixed(1)
-          }
-
-          allPlayerAwardStats[playerData[i].subject] = {};
-          if(knownMatchData.gameMode === "competitive") {
-            allPlayerAwardStats[playerData[i].subject].competitiveTier = playerData[i].competitiveTier;
-          }
-  
-          allPlayerAwardStats[playerData[i].subject].subject = playerData[i].subject;
-          allPlayerAwardStats[playerData[i].subject].subjectName = playerData[i].gameName;
-          allPlayerAwardStats[playerData[i].subject].subjectTag = playerData[i].tagLine;
-          allPlayerAwardStats[playerData[i].subject].subjectAgent = playerData[i].characterId;
-          allPlayerAwardStats[playerData[i].subject].partyUUID = playerData[i].partyId;
-
-          if(!partyIDs[playerData[i].partyId]) {
-            partyIDs[playerData[i].partyId] = {
-              members: [playerData[i].subject]
-            };
-          } else {
-            partyIDs[playerData[i].partyId].members.push(playerData[i].subject);
-          }
-  
-          if(knownMatchData.playerTeam === 'Blue') {
-            allPlayerAwardStats[playerData[i].subject].subjectTeam = playerData[i].teamId;
-          } else {
-            if(playerData[i].teamId == 'Blue') {
-              allPlayerAwardStats[playerData[i].subject].subjectTeam = 'Red';
-            } else {
-              allPlayerAwardStats[playerData[i].subject].subjectTeam = 'Blue';
-            }
-          }
-  
-          allPlayerAwardStats[playerData[i].subject].kills = playerData[i].stats.kills;
-          allPlayerAwardStats[playerData[i].subject].deaths = playerData[i].stats.deaths;
-          allPlayerAwardStats[playerData[i].subject].assists = playerData[i].stats.assists;
-          allPlayerAwardStats[playerData[i].subject].acs = (playerData[i].stats.score / roundData.length);
-          allPlayerAwardStats[playerData[i].subject].kd = (playerData[i].stats.kills / playerData[i].stats.deaths);
-  
-          allPlayerAwardStats[playerData[i].subject].firstbloods = 0;
-          allPlayerAwardStats[playerData[i].subject].headshots = 0;
-          allPlayerAwardStats[playerData[i].subject].bodyshots = 0;
-          allPlayerAwardStats[playerData[i].subject].legshots = 0;
-          allPlayerAwardStats[playerData[i].subject].money_spent = 0;
-  
-          var playerDamage = 0;
-          
-          if(playerData[i].roundDamage !== null) {
-            for(var j = 0; j < playerData[i].roundDamage.length; j++) {
-              playerDamage += playerData[i].roundDamage[j].damage;
-            }
-    
-            allPlayerAwardStats[playerData[i].subject].total_dmg = playerDamage;
-          } else {
-            allPlayerAwardStats[playerData[i].subject].total_dmg = 0;
-          }
-        }
-
-        var knownParties = {};
-
-        for(var i = 0; i < Object.keys(partyIDs).length; i++) {
-          if(partyIDs[Object.keys(partyIDs)[i]].members.length > 1) {
-            var className = `party-${Object.keys(knownParties).length}`
-            knownParties[Object.keys(partyIDs)[i]] = className;
-          }
-        }
-
-        setPlayerParties(knownParties);
-  
-        for(var i = 0; i < roundData.length; i++) {
-          var totalRoundKills = [];
-          
-          for(var j = 0; j < roundData[i].playerStats.length; j++) {
-            allPlayerAwardStats[roundData[i].playerStats[j].subject].money_spent += roundData[i].playerStats[j].economy.spent;
-  
-            for(var k = 0; k < roundData[i].playerStats[j].damage.length; k++) {
-              allPlayerAwardStats[roundData[i].playerStats[j].subject].headshots += roundData[i].playerStats[j].damage[k].headshots;
-              allPlayerAwardStats[roundData[i].playerStats[j].subject].bodyshots += roundData[i].playerStats[j].damage[k].bodyshots;
-              allPlayerAwardStats[roundData[i].playerStats[j].subject].legshots += roundData[i].playerStats[j].damage[k].legshots;
-            }
-  
-            for(var k = 0; k < roundData[i].playerStats[j].kills.length; k++) {
-              totalRoundKills.push(roundData[i].playerStats[j].kills[k]);
-            }
-          }
-            
-          totalRoundKills.sort(function(a, b) {
-            return a.roundTime - b.roundTime;
-          });
-  
-          var firstRoundKill = totalRoundKills[0];
-  
-          if(firstRoundKill) {
-            allPlayerAwardStats[firstRoundKill.killer].firstbloods++;
-          }
-        }
-  
-        var playerStatsSortingArray = [];
-  
-        for(var key in allPlayerAwardStats) {
-          var totalShotsHit = allPlayerAwardStats[key].headshots + allPlayerAwardStats[key].bodyshots + allPlayerAwardStats[key].legshots;
-  
-          var headshot_percent = (allPlayerAwardStats[key].headshots / totalShotsHit) * 100;
-  
-          allPlayerAwardStats[key].hs_percent = parseInt(headshot_percent);
-  
-          playerStatsSortingArray.push(allPlayerAwardStats[key])
-        }
-  
-        setPlayerScoreboardStats(playerStatsSortingArray);
-          
-        playerStatsSortingArray.sort(function(a, b) {
-          return b.money_spent - a.money_spent;
-        });
-        var playerThatSpentMostMoney = playerStatsSortingArray[0].subject;
-          
-        playerStatsSortingArray.sort(function(a, b) {
-          return a.money_spent - b.money_spent;
-        });
-        var playerThatSpentLeastMoney = playerStatsSortingArray[0].subject;
-          
-        playerStatsSortingArray.sort(function(a, b) {
-          return b.kills - a.kills;
-        });
-        var playerWithMostKills = playerStatsSortingArray[0].subject;
-  
-        playerStatsSortingArray.sort(function(a, b) {
-          return b.assists - a.assists;
-        });
-        var playerWithMostAssists = playerStatsSortingArray[0].subject;
-  
-        playerStatsSortingArray.sort(function(a, b) {
-          return b.damage - a.damage;
-        });
-        var playerWithMostDmg = playerStatsSortingArray[0].subject;
-  
-        playerStatsSortingArray.sort(function(a, b) {
-          return b.hs_percent - a.hs_percent;
-        });
-        var playerWithBestHsPercent = playerStatsSortingArray[0].subject;
-  
-        playerStatsSortingArray.sort(function(a, b) {
-          return b.firstbloods - a.firstbloods;
-        });
-        var playerWithMostFBs = playerStatsSortingArray[0].subject;
-  
-        playerStatsSortingArray.sort(function(a, b) {
-          return b.acs - a.acs;
-        });
-        var playerWithMostACS = playerStatsSortingArray[0].subject;
-  
-        setHasPlayerSpentMost(playerThatSpentMostMoney === knownMatchData.uuid);
-        setHasPlayerSpentLeast(playerThatSpentLeastMoney === knownMatchData.uuid);
-        setHasPlayerMostKills(playerWithMostKills === knownMatchData.uuid);
-        setHasPlayerMostAssists(playerWithMostAssists === knownMatchData.uuid);
-        setHasPlayerMostACS(playerWithMostACS === knownMatchData.uuid);
-        setHasPlayerDealtMostDmg(playerWithMostDmg === knownMatchData.uuid);
-        setHasPlayerHighestHsPercent(playerWithBestHsPercent === knownMatchData.uuid);
-        setHasPlayerMostFBs(playerWithMostFBs === knownMatchData.uuid);
-  
-        setTeamData(teamData);
-  
-        setMatchScore(knownMatchData.matchScore);
-        setPlayerMatchResult(knownMatchData.matchOutcome);
-  
-        moment.locale(router.query.lang);
-        var newMatchDate = moment(knownMatchData.gameStartUnix).format('D. MMMM YYYY, h:mm a');
-  
-        var x = knownMatchData.gameLengthMS;
-        var tempTime = moment.duration(x);
-        if(tempTime.hours() > 0) {
-          var newMatchLength = tempTime.hours() + ' hour, ' + tempTime.minutes() + ' minutes, ' + tempTime.seconds() + ' seconds';
-        } else {
-          var newMatchLength = tempTime.minutes() + ' minutes, ' + tempTime.seconds() + ' seconds';
-        }
-        if(newMatchLength.split(",").pop() === ' ') {
-          newMatchLength = newMatchLength.substring(0, newMatchLength.lastIndexOf(','));
-        }
-        
-        setMatchMap(knownMatchData.mapUUID);
-        setMatchMapName(knownMatchData.mapName);
-        setMatchDate(newMatchDate);
-        setMatchLength(newMatchLength);
-        setMatchMode(gamemodes[knownMatchData.gameMode]);
-        setMatchServer(knownMatchData.gameServer);
-        setMatchGameVersion(knownMatchData.gameVersion);
-  
-        setname(knownMatchData.name);
-        setUUID(knownMatchData.uuid);
-        setPlayerAgentUUID(knownMatchData.playerAgent);
-        setPlayerKDA(knownMatchData.playerKDA);
-        setPlayerKD(knownMatchData.playerKD);
-        setPlayerACS(knownMatchData.playerACS);
-        setPlayerKillsPerRound(knownMatchData.playerKillsPerRound);
-        setPlayerCurrentTier(knownMatchData.playerCurrentTier);
-        setPlayerHsPercent(knownMatchData.headShotsPercentRounded);
-        setPlayerBsPercent(knownMatchData.bodyShotsPercentRounded);
-        setPlayerLsPercent(knownMatchData.legShotsPercentRounded);
-        setPlayerFBs(knownMatchData.playerFBs);
-
-        setPlayerAbilityUsagePerRound(playerAbilityUsage);
-  
-        setRounds(roundData);
-      } else if(knownMatchData.gameMode === 'deathmatch') {
-        const allPlayerAwardStats = [];
-  
-        for(var i = 0; i < playerData.length; i++) {
-          allPlayerAwardStats[playerData[i].subject] = {};
-  
-          allPlayerAwardStats[playerData[i].subject].subject = playerData[i].subject;
-          allPlayerAwardStats[playerData[i].subject].subjectName = playerData[i].gameName;
-          allPlayerAwardStats[playerData[i].subject].subjectTag = playerData[i].tagLine;
-          allPlayerAwardStats[playerData[i].subject].subjectAgent = playerData[i].characterId;
-  
-          if(knownMatchData.playerTeam === 'Blue') {
-            allPlayerAwardStats[playerData[i].subject].subjectTeam = playerData[i].teamId;
-          } else {
-            if(playerData[i].teamId == 'Blue') {
-              allPlayerAwardStats[playerData[i].subject].subjectTeam = 'Red';
-            } else {
-              allPlayerAwardStats[playerData[i].subject].subjectTeam = 'Blue';
-            }
-          }
-  
-          allPlayerAwardStats[playerData[i].subject].kills = playerData[i].stats.kills;
-          allPlayerAwardStats[playerData[i].subject].deaths = playerData[i].stats.deaths;
-          allPlayerAwardStats[playerData[i].subject].assists = playerData[i].stats.assists;
-          allPlayerAwardStats[playerData[i].subject].score = playerData[i].stats.score / roundData.length;
-          allPlayerAwardStats[playerData[i].subject].kd = (playerData[i].stats.kills / playerData[i].stats.deaths);
-          allPlayerAwardStats[playerData[i].subject].acs = 0;
-  
-          allPlayerAwardStats[playerData[i].subject].firstbloods = 0;
-          allPlayerAwardStats[playerData[i].subject].headshots = 0;
-          allPlayerAwardStats[playerData[i].subject].bodyshots = 0;
-          allPlayerAwardStats[playerData[i].subject].legshots = 0;
-          allPlayerAwardStats[playerData[i].subject].money_spent = 0;
-        }
-  
-        var playerStatsSortingArray = [];
-  
-        for(var key in allPlayerAwardStats) {
-          playerStatsSortingArray.push(allPlayerAwardStats[key])
-        }
-  
-        setPlayerScoreboardStats(playerStatsSortingArray);
-  
-        setTeamData(teamData);
-  
-        setMatchScore(knownMatchData.matchScore);
-        setPlayerMatchResult(knownMatchData.matchOutcome);
-  
-        setname(knownMatchData.name);
-        setUUID(knownMatchData.uuid);
-        setPlayerAgentUUID(knownMatchData.playerAgent);
-        setPlayerKDA(knownMatchData.playerKDA);
-        setPlayerKD(knownMatchData.playerKD);
-        setPlayerKillsPerRound(knownMatchData.playerKillsPerRound);
-        
-        setActiveTab('scoreboard');
-        setIsDeathmatch(true);
-
-        setCurrentSortStat('score');
-      } else if(knownMatchData.gameMode === 'ggteam') {
-        setIsEscalation(true);
-      } else if(knownMatchData.gameMode === 'onefa') {
-        setIsEscalation(true);
-      }
+      calculatePageContent(knownMatchData, roundData, teamData, playerData, user_data.uuid);
     }
-  }, []);
+  }, [router.query]);
 
   React.useEffect(async () => {
-    if(sessionStorage.getItem("knownMatchData")) {
+    if(!router.query.lang) return;
+    if(sessionStorage.getItem("knownMatchData") && !router.query.isExternalSource) {
       var knownMatchData = JSON.parse(sessionStorage.knownMatchData);
-      var agent_data = await(await fetch(`https://valorant-api.com/v1/agents/${knownMatchData.playerAgent}?language=${router.query.lang}`)).json();
+      var agent_data = await(await fetch(`https://valorant-api.com/v1/agents/${knownMatchData.playerAgent}?language=${APIi18n(router.query.lang)}`)).json();
       setPlayerAgentAbilities(agent_data.data.abilities);
     }
-  }, []);
+  }, [router.query]);
+
+  const generateShareLink = async () => {
+    var user_data = await getCurrentUserData();
+    var puuid = user_data.uuid;
+
+    var instanceToken = await getInstanceToken();
+
+    var matchData = JSON.parse(sessionStorage.getItem("knownMatchData"));
+    var matchID = matchData.matchID;
+    
+    var url = await (await fetch('https://api.valtracker.gg/v1/shared', {
+      method: 'POST',
+      headers: {
+        Authentication: instanceToken,
+        'x-shared-type': `match::${user_data.region}`,
+        'x-uuid-string': `${matchID}::${puuid}`
+      }
+    })).json();
+
+    setShareMatchURL(url.data);
+    setShowPopup(true);
+  }
 
   return (
     <Layout classNames={lastTab === '' && isDeathmatch === false ? 'overflow-hidden' : ''} isNavbarMinimized={isNavbarMinimized} setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown}>
+      <motion.div 
+        className='modal-backdrop !z-50'
+        variants={backdrop_variants}
+        initial="hidden"
+        animate={showPopup ? 'enter' : 'exit'}
+        transition={{ type: 'ease-in', duration: 0.2 }}
+      >
+        <motion.div 
+          className='modal fixed !h-auto !w-fit'
+          variants={card_variants}
+          initial="hidden"
+          animate={showPopup ? "enter" : "exit"}
+          transition={{ type: 'ease-in', duration: 0.2 }}
+        > 
+          <div 
+            className='close-icon-wrapper'
+            onClick={() => {
+              setIsOverlayShown(false);
+              setShowPopup(false);
+            }}
+          >
+            <Close className='w-8 p-1' />
+          </div>
+          <h1 className='z-20 text-2xl flex flex-row items-center font-bold'>{LocalText(L, "link_share.header")}</h1>
+          <span 
+            className={`transition-all duration-100 ease-linear cursor-pointer ${urlCopied === true ? "text-val-blue hover:text-opacity-80" : "text-button-color hover:text-button-color-hover"}`}
+            onClick={() => {
+              navigator.clipboard.writeText(shareMatchURL);
+              setUrlCopied(true);
+              setTimeout(() => {
+                setUrlCopied(false);
+              }, 2000);
+            }}
+          >
+            {shareMatchURL}
+          </span>
+          <span className='block w-96 text-gray-300 font-light'>{LocalText(L, "link_share.desc")}</span>
+        </motion.div>
+      </motion.div>
       <div 
         className='close-icon-wrapper' 
         onClick={() => { router.back() }}
       >
         <BackArrow className='w-8 p-1 shadow-img' />
+      </div>
+      <div 
+        className='close-icon-wrapper !right-12' 
+        onClick={() => {
+          generateShareLink();
+        }}
+      >
+        <ShareIcon className='w-8 p-1 shadow-img' />
       </div>
       <div id='matchview-header' className='w-full h-1/5 flex flex-col items-center drop-shadow-xl'>
         <h1 className='text-5xl mt-8'>
@@ -498,7 +623,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <span className='relative text-lg top-0.5 left-2 font-light'>{matchLenght}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
-                    <Tooltip content={LocalText(L, "match_info.tooltips.mode")} color="error" placement={'left'} className='rounded'><ValIconHandler icon={'/images/standard.png'} classes='w-7 shadow-img' /></Tooltip>
+                    <Tooltip content={LocalText(L, "match_info.tooltips.mode")} color="error" placement={'left'} className='rounded'><ValIconHandler icon={'/images/unrated.png'} classes='w-7 shadow-img' /></Tooltip>
                     <span className='relative text-lg top-0.5 left-2 font-light'>{matchMode}</span>
                   </li>
                   <li className='flex flex-row items-center mb-6'>
@@ -539,7 +664,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <AwardTile 
                       icon={'/images/chess.svg'} 
                       title={LocalText(L, "awards.most_money.title")} 
-                      desc={LocalText(L, "awards.most_money.desc")} 
+                      desc={LocalText(L, `awards.most_money.desc${router.query.isExternalSource ? "_external" : ""}`, name)}
                     /> 
                     : null
                   }
@@ -548,7 +673,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <AwardTile 
                       icon={'/images/dollar.svg'} 
                       title={LocalText(L, "awards.least_money.title")} 
-                      desc={LocalText(L, "awards.least_money.desc")} 
+                      desc={LocalText(L, `awards.least_money.desc${router.query.isExternalSource ? "_external" : ""}`, name)} 
                     /> 
                     : null
                   }
@@ -557,7 +682,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <AwardTile 
                       icon={'/images/skull.svg'} 
                       title={LocalText(L, "awards.most_kills.title")} 
-                      desc={LocalText(L, "awards.most_kills.desc")} 
+                      desc={LocalText(L, `awards.most_kills.desc${router.query.isExternalSource ? "_external" : ""}`, name)} 
                     /> 
                     : null
                   }
@@ -566,7 +691,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <AwardTile 
                       icon={'/images/heart_pulse.svg'} 
                       title={LocalText(L, "awards.most_assists.title")} 
-                      desc={LocalText(L, "awards.most_assists.desc")} 
+                      desc={LocalText(L, `awards.most_assists.desc${router.query.isExternalSource ? "_external" : ""}`, name)} 
                     /> 
                     : null
                   }
@@ -575,7 +700,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <AwardTile 
                       icon={'/images/robot.svg'} 
                       title={LocalText(L, "awards.most_acs.title")} 
-                      desc={isEscalation === true ? LocalText(L, "awards.most_acs.desc_2") : LocalText(L, "awards.most_acs.desc_1")} /> 
+                      desc={isEscalation === true ? LocalText(L, `awards.most_acs.desc_2${router.query.isExternalSource ? "_external" : ""}`, name) : LocalText(L, `awards.most_acs.desc_1${router.query.isExternalSource ? "_external" : ""}`, name)} /> 
                     : null
                   }
                   {
@@ -583,7 +708,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <AwardTile 
                       icon={'/images/gauge.svg'} 
                       title={LocalText(L, "awards.most_fbs.title")} 
-                      desc={LocalText(L, "awards.most_fbs.desc")} 
+                      desc={LocalText(L, `awards.most_fbs.desc${router.query.isExternalSource ? "_external" : ""}`, name)} 
                     /> 
                     : null
                   }
@@ -592,7 +717,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <AwardTile 
                       icon={'/images/arrow_increase.svg'} 
                       title={LocalText(L, "awards.most_dmg.title")} 
-                      desc={LocalText(L, "awards.most_dmg.desc")} 
+                      desc={LocalText(L, `awards.most_dmg.desc${router.query.isExternalSource ? "_external" : ""}`, name)} 
                     /> 
                     : null
                   }
@@ -602,7 +727,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       icon={'/images/crosshair.svg'} 
                       rotate_icon 
                       title={LocalText(L, "awards.best_hs.title")} 
-                      desc={LocalText(L, "awards.best_hs.desc")} 
+                      desc={LocalText(L, `awards.best_hs.desc${router.query.isExternalSource ? "_external" : ""}`, name)} 
                     /> 
                     : null
                   }
@@ -661,7 +786,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           {
                             isSpikePlanted ? 
                             <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded h-full flex items-center'>
-                              <ValIconHandler icon={'/images/standard.png'} classes={'h-4/6 shadow-img'} />
+                              <ValIconHandler icon={'/images/unrated.png'} classes={'h-4/6 shadow-img'} />
                             </Tooltip>
                             :
                             <Tooltip content={LocalText(L, "round_results.tooltips." + round.roundResult.replace(" ", "-"))} color="error" placement={'left'} className='rounded h-full flex items-center'>
@@ -911,7 +1036,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           return(
             <>
               <motion.div 
-                className={`border border-tile-color bg-tile-color bg-opacity-10 rounded flex flex-row items-center relative ${lockHighlightedParty.state === false ? ((highlightedParty !== playerStats.partyUUID && highlightedParty !== null) ? "!opacity-20" : "!opacity-100") : (lockHighlightedParty.lockedUUID !== playerStats.partyUUID ? "!opacity-20" : "!opacity-100")}`} key={index + 'tr'}
+                className={`border border-tile-color bg-tile-color bg-opacity-10 transition-all duration-75 ease-linear rounded flex flex-row items-center relative ${lockHighlightedParty.state === false ? ((highlightedParty !== playerStats.partyUUID && highlightedParty !== null) ? "!opacity-20" : "!opacity-100") : (lockHighlightedParty.lockedUUID !== playerStats.partyUUID ? "!opacity-20" : "!opacity-100")}`} key={index + 'tr'}
                 variants={scoreboard_vars_initial}
                 initial="hidden"
                 animate={activeTab === 'scoreboard' ? "enter" : "exit"}

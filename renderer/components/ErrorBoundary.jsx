@@ -30,10 +30,13 @@ class ErrorBoundary extends React.Component {
     this.props.router.events.on("routeChangeComplete", () => {
       this.setState({ hasError: false });
     });
+    
+    console.warn("---------------");
+    console.error(error, errorInfo);
+    console.warn("---------------");
 
     if(!isProd) return;
-    // You can use your own error logging service here
-    console.error(error, errorInfo);
+    
     errorInfo.date = Date.now();
     errorInfo.valtracker_version = pjson.version;
     ipcRenderer.send("rendererProcessError", { error, errorInfo });

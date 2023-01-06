@@ -9,69 +9,44 @@ const update_card_variants = {
   exit: { opacity: 0, x: 0, y: 250, scale: 1, transitionEnd: { display: 'none' } },
 }
 
-function removeItemOnce(arr, value) {
-  var index = arr.indexOf(value);
-  if (index > -1) {
-    arr.splice(index, 1);
-  }
-  return arr;
-}
-
-function Textboxes() {
+export default function TextboxLayer() {
   const [ textboxes, setTextboxes ] = React.useState([]);
 
   React.useEffect(() => {
     ipcRenderer.on('createTextbox', function(event, args) {
-      console.log(args);
-      setTextboxes(current => [...current, args ]);
-      setTimeout(function() {
-        var newArray = removeItemOnce(textboxes, args);
-        var newArray = newArray.filter(value => Object.keys(value).length !== 0);
-        setTextboxes(newArray);
-      }, 5000);
+      setTextboxes(current => (!current.find(x => x.text === args.text) ? [...current, args ] : current));
+      if(args.persistent === false) {
+        setTimeout(function() {
+          setTextboxes(current => current.filter(x => x.text !== args.text));
+        }, 5000);
+      }
     });
-
-    return () => {
-      ipcRenderer.removeAllListeners('createTextbox');
-    }
   }, []);
 
   return (
-    <>
-      {
-        textboxes.map((textbox, index) => {
-          return (
-            <motion.div 
-              className='w-1/4 mb-4 textbox-card mx-auto card flex flex-row relative z-50 !border-button-color'
-              key={index + textbox + (Math.random()) + Math.random()}
-              variants={update_card_variants}
-              initial="hidden"
-              animate={"enter"}
-              transition={{ type: 'ease-in', duration: 0.3 }}
-            >
-              <span className='mr-9 h-full flex items-center'>{textbox}</span>
-              <div 
-                className='absolute pointer-events-auto z-30 top-2.5 right-2 ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear w-6 h-6 flex items-center justify-center'
-                onClick={() => {
-                  var newArray = removeItemOnce(textboxes, textbox);
-                  var newArray = newArray.filter(value => Object.keys(value).length !== 0);
-                  setTextboxes(newArray);
-                }}
-              >
-                <Close className='w-6 p-1' />
-              </div>
-            </motion.div>
-          )
-        })
-      }
-    </>
-  );
-}
-
-export default function TextboxLayer() {
-  return(
     <div className="absolute overflow-hidden top-0 left-0 w-screen h-screen flex flex-col justify-end items-end z-50 pointer-events-none">
-      <Textboxes key="textboxes" />
+      {textboxes.map((textbox, index) => {
+        return (
+          <motion.div 
+            className='w-1/4 mb-4 textbox-card mx-auto card flex flex-row relative z-50 !border-button-color'
+            key={index + textbox + (Math.random()) + Math.random()}
+            variants={update_card_variants}
+            initial="hidden"
+            animate={"enter"}
+            transition={{ type: 'ease-in', duration: 0.3 }}
+          >
+            <span className='mr-9 h-full flex items-center'>{textbox.text}</span>
+            <div 
+              className='absolute pointer-events-auto z-30 top-2.5 right-2 ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear w-6 h-6 flex items-center justify-center'
+              onClick={() => {
+                setTextboxes(current => current.filter(x => x.text !== textbox.text));
+              }}
+            >
+              <Close className='w-6 p-1' />
+            </div>
+          </motion.div>
+        )
+      })}
     </div>
   )  
 }
