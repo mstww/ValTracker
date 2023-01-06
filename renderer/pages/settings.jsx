@@ -330,7 +330,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
         var uuid = userInfo[0].Subject;
         var region = region;
         
-        const currenttier = await getPlayerMMR(region, uuid, entitlement_token, bearer);
+        const currenttier = (await getPlayerMMR(region, uuid, entitlement_token, bearer)).currenttier;
     
         var userData = {
           name: name,

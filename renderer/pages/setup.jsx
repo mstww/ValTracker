@@ -94,7 +94,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
         setProgress(60);
     
         setLoadingState(LocalText(L, currentSelectedLanguage, "page_2.loading_states.s3"));
-        const currenttier = await getPlayerMMR(region, uuid, entitlement_token, bearer);
+        const currenttier = (await getPlayerMMR(region, uuid, entitlement_token, bearer)).currenttier;
         setProgress(90);
     
         var userData = {
