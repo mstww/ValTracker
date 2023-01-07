@@ -1339,7 +1339,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             className={
               'relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1 ' 
               + (loading || errored ? 'hidden' : '')
-              + (currentlyLoadedMatchCount <= 0 ? ' disabled hidden ' : ' ')
+              + (currentlyLoadedMatchCount <= 0 ? ' disabled ' : ' ')
             }
           >
             <Tooltip content={LocalText(L, "bot_l.loading_tooltip")} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
@@ -1698,10 +1698,10 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         </div>
         <div id='bottom-right-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-dim'>
           <div className={`overflow-y-auto ${silentError === true && "opacity-0"}`}>
-            <div className={'p-0 m-0' + (areStatsActive ? '' : ' hidden ')}>
+            <div className={'p-0 m-0'}>
               <span className={`font-bold text-lg block ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.comp_info.header")}</span>
               <span className={`font-normal relative bottom-0.5 text-sm text-gray-400 block mb-1 ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.comp_info.subheader", mmrData.days_remaining)}</span>
-              <div className='flex comp-data-container min-h-32'>
+              <div className={'flex comp-data-container min-h-32'}>
                 <div 
                   className={`relative home-rank-triangle flex justify-center mb-4 !h-32 ${loading === true && "skeleton-image"}`}
                   style={{ 
@@ -1745,43 +1745,45 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   </span>
                 </div>
               </div>
-              <span className={`font-bold text-lg ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
-              <div className='flex flex-row justify-between mt-1.5'>
-                <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} loading={loading} />
-                <SmallStatsCard number={avgKillsPerRound} desc={LocalText(L, "bot_r.stats.stat_2")} loading={loading} />
+              <div className={(areStatsActive ? '' : ' hidden')}>
+                <span className={`font-bold text-lg ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.stats.header", currentlyLoadedMatchCount)}</span>
+                <div className='flex flex-row justify-between mt-1.5'>
+                  <SmallStatsCard number={avgKillsPerMatch} desc={LocalText(L, "bot_r.stats.stat_1")} loading={loading} />
+                  <SmallStatsCard number={avgKillsPerRound} desc={LocalText(L, "bot_r.stats.stat_2")} loading={loading} />
+                </div>
+
+                <div className='flex flex-row justify-between mt-1.5 mb-3'>
+                  <SmallStatsCard number={winratePercent + '%'} desc={LocalText(L, "bot_r.stats.stat_3")} loading={loading} />
+                  <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} loading={loading} />
+                </div>
+
+                <span className={`mt-1 font-bold text-lg ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.best_map.header")}</span>
+                <LargeStatsCard 
+                  header={bestMapName}
+                  stat_1_locale={LocalText(L, "bot_r.best_map.stats.stat_1")}
+                  stat_2_locale={LocalText(L, "bot_r.best_map.stats.stat_2")}
+                  img_src={bestMapImage} 
+                  win_percent={bestMapWinPercent}
+                  avg_kda={bestMapKdaRatio}
+                  extraClasses={'mb-3'} 
+                  loading={loading}
+                />
+
+                <span className={`mt-1 font-bold text-lg ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.best_agent.header")}</span>
+                <FlatLargeStatsCard
+                  img_src={bestAgentImage}
+                  header={bestAgentName}
+                  top_num={bestAgentAvgScore}
+                  top_desc={LocalText(L, "bot_r.best_agent.stat_1")}
+                  stat_1_num={bestAgentAvgKda}
+                  stat_1_desc={LocalText(L, "bot_r.best_agent.stat_2")}
+                  stat_2_num={bestAgentKillsPerRound}
+                  stat_2_desc={LocalText(L, "bot_r.best_agent.stat_3")}
+                  stat_3_num={bestAgentKillsPerMatch}
+                  stat_3_desc={LocalText(L, "bot_r.best_agent.stat_4")}
+                  loading={loading}
+                />
               </div>
-
-              <div className='flex flex-row justify-between mt-1.5 mb-3'>
-                <SmallStatsCard number={winratePercent + '%'} desc={LocalText(L, "bot_r.stats.stat_3")} loading={loading} />
-                <SmallStatsCard number={headshotPercent + '%'} desc={LocalText(L, "bot_r.stats.stat_4")} loading={loading} />
-              </div>
-
-              <span className={`mt-1 font-bold text-lg ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.best_map.header")}</span>
-              <LargeStatsCard 
-                header={bestMapName}
-                stat_1_locale={LocalText(L, "bot_r.best_map.stats.stat_1")}
-                stat_2_locale={LocalText(L, "bot_r.best_map.stats.stat_2")}
-                img_src={bestMapImage} 
-                win_percent={bestMapWinPercent}
-                avg_kda={bestMapKdaRatio}
-                extraClasses={'mb-3'} 
-                loading={loading}
-              />
-
-              <span className={`mt-1 font-bold text-lg ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.best_agent.header")}</span>
-              <FlatLargeStatsCard
-                img_src={bestAgentImage}
-                header={bestAgentName}
-                top_num={bestAgentAvgScore}
-                top_desc={LocalText(L, "bot_r.best_agent.stat_1")}
-                stat_1_num={bestAgentAvgKda}
-                stat_1_desc={LocalText(L, "bot_r.best_agent.stat_2")}
-                stat_2_num={bestAgentKillsPerRound}
-                stat_2_desc={LocalText(L, "bot_r.best_agent.stat_3")}
-                stat_3_num={bestAgentKillsPerMatch}
-                stat_3_desc={LocalText(L, "bot_r.best_agent.stat_4")}
-                loading={loading}
-              />
             </div>
           </div>
           <div 

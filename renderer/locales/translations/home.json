@@ -1,7 +1,8 @@
 {
   "en-US": {
     "component_err": {
-      "err_text": "Error while loading Component. Click to retry."
+      "err_text": "Error while loading Component. Click to retry.",
+      "button_text": "Reload"
     },
     "top_l": {
       "bundle_header": "Featured Bundle",
@@ -105,7 +106,8 @@
   },
   "de-DE": {
     "component_err": {
-      "err_text": "Fehler beim Laden der Komponente. Klicke, um es erneut zu versuchen."
+      "err_text": "Fehler beim Laden der Komponente. Klicke, um es erneut zu versuchen.",
+      "button_text": "Neu laden"
     },
     "top_l": {
       "bundle_header": "Aktuelle Skinreihe",
@@ -209,7 +211,8 @@
   },
   "fr-FR": {
     "component_err": {
-      "err_text": "Une erreur s'est produite lors de la récupération de nouveaux match. Cliquez pour réessayer."
+      "err_text": "Une erreur s'est produite lors de la récupération de nouveaux match. Cliquez pour réessayer.",
+      "button_text": "Réessayer"
     },
     "top_l": {
       "bundle_header": "Pack en vedette",
