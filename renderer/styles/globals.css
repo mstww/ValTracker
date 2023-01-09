@@ -565,6 +565,23 @@ h5 {
   @apply text-button-color hover:text-button-color-hover hover:underline transition-all duration-100 ease-in bg-opacity-100;
 }
 
+.patchnotes h1 {
+  @apply text-3xl font-semibold;
+}
+
+.patchnotes h2 {
+  @apply text-2xl font-semibold;
+}
+
+.patchnotes h3, .patchnotes h4 {
+  @apply text-xl font-medium;
+}
+
+.patchnotes p {
+  display: inline;
+  @apply text-xl;
+}
+
 .messageContent p {
   color: rgba(255, 255, 255, 0.8) !important;
   @apply !font-normal;
@@ -716,9 +733,9 @@ h5 {
   margin-left: 0.5rem;
 }
 
-.patchnotes li::before {
-  content: "- ";
-  font-weight: 100;
+.patchnotes li {
+  list-style-type: disc;
+  margin-left: 1rem;
 }
 
 .day-header::first-letter {
