@@ -1752,7 +1752,7 @@ async function checkForOldMatches() {
       settings[Object.keys(settings)[i]] = result[0].result[0].value;
     }
 
-    if(settings.minOnClose === false || settings.minOnClose === undefined) {
+    if(settings.minOnClose === false || settings.minOnClose === undefined || settings.minOnClose === null) {
       mainWindow.close();
       return;
     }
