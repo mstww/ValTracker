@@ -1818,7 +1818,8 @@ async function checkForInstanceToken() {
     mainWindow.hide();
   });
   
-  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico")) {
+  console.log(fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico").subarray(0, 4).toString());
+  if(!fs.existsSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico") || (fs.readFileSync(process.env.APPDATA + "/VALTracker/user_data/tray.ico").subarray(0, 4).toString() === "<!DO")) {
     download_image('https://valtracker.gg/img/VALTracker_Logo_default.ico', process.env.APPDATA + "/VALTracker/user_data/tray.ico");
   };
 

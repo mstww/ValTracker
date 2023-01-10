@@ -104,6 +104,8 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ wishlistedItems, setWishlistedItems ] = React.useState([]);
   const [ userData, setUserData ] = React.useState({});
 
+  const [ maintenance, setMaintenance ] = React.useState(false);
+
   React.useEffect(async () => {
     var user_data = await getCurrentUserData();
     var user_wishlist = await executeQuery(`SELECT * FROM wishlist:⟨${user_data.uuid}⟩`);
@@ -126,6 +128,10 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
 
     const raw = await fetchShop();
     const data = raw[0];
+    if(data === "DOWNTIME") {
+      setMaintenance(true);
+      return;
+    }
     setPlayerStore(data);
 
     if(data.nightMarket) {
@@ -404,7 +410,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       </motion.div>
       <div 
         id='shop-wrapper' 
-        className='p-4 h-full'
+        className={`p-4 h-full ${maintenance === true && "hidden"}`}
       >
         <div className='flex flex-row'>
           <div id='featured-bundle' className='w-3/4'>
@@ -525,6 +531,11 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </div>
       </div> 
+      {maintenance === true && (
+        <div className='w-full h-full flex items-center justify-center'>
+          <div className='w-2/3 text-center'>The servers are under scheduled maintenance. Please retry in a few hours.</div>
+        </div>
+      )}
     </Layout>
   );
 }

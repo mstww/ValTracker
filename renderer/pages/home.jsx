@@ -219,6 +219,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ actWins, setActWins ] = React.useState([]);
   const [ mmrData, setMMRData ] = React.useState({});
 
+  const [ maintenance, setMaintenance ] = React.useState(false);
+
 // ------------------------------- END STATES -------------------------------
 
   const fetchMatchesAndCalculateStats = async (isNewQueue, beginIndex, endIndex, mode, isFirstLoad, isSilentLoading, keepCurrentMatches) => {
@@ -322,100 +324,102 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setIsSilentLoading(false);
           setSilentError(true);
   
-          ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
-  
-          var puuid = await getCurrentPUUID();
-          var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
-          var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
+          if(maintenance === false) {
+            ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
+    
+            var puuid = await getCurrentPUUID();
+            var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
+            var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
+        
+            setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
       
-          setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
-    
-          var matches = [];
-          var newMatches = [];
-          
-          if(matchIDData[0].matchIDs.length === 0) return;
-    
-          for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
-            var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
-            if(match[0] === undefined) continue;
-            matches.push(match[0]);
-          }
-    
-          if(matches.length === 0) {
-            return;
-          };
-    
-          for(var i = 0; i < matches.length; i++) { 
-            var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
-            moment.locale(router.query.lang);
-            var startdate = moment();
-            startdate = startdate.subtract(dateDiff, "days");
-            var matchDate = startdate.format("D. MMMM");
-      
-            // Create array if it doesn't exist
-            if(!newMatches[matchDate]) newMatches[matchDate] = [];
-      
-            newMatches[matchDate].push(matches[i]);
-          }
-    
-          var arr = [];
-    
-          for(var key in newMatches) {
-            arr[key] = newMatches[key];
-          }
-          
-          newMatches = arr;
-    
-          var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+            var matches = [];
+            var newMatches = [];
             
-          setAvgKillsPerMatch(playerstats.kills_per_match);
-          setAvgKillsPerRound(playerstats.kills_per_round);
-          setWinratePercent(playerstats.win_percentage);
-          setHeadshotPercent(playerstats.headshot_percent);
-          
-          var map_stats = playerstats.map_stats;
-          var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-            return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
-          });
-    
-          var best_map = map_stats[sorted_map_stats[0]];
-    
-          if(mapData.data !== undefined) {
-            var map_data = mapData;
-          } else {
-            var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-            var map_data = await map_data_raw.json();
-            setMapData(map_data);
-            await asyncDelay(50);
-          }
-          
-          for(var i = 0; i < map_data.data.length; i++) {
-            if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
-              setBestMapName(map_data.data[i].displayName);
-              setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+            if(matchIDData[0].matchIDs.length === 0) return;
+      
+            for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
+              var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
+              if(match[0] === undefined) continue;
+              matches.push(match[0]);
             }
-          }
-    
-          setBestMapWinPercent(best_map.map_win_percentage);
-          setBestMapKdaRatio(best_map.map_kda_ratio);
-    
-          var agent_stats = playerstats.agent_stats;
+      
+            if(matches.length === 0) {
+              return;
+            };
+      
+            for(var i = 0; i < matches.length; i++) { 
+              var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+              moment.locale(router.query.lang);
+              var startdate = moment();
+              startdate = startdate.subtract(dateDiff, "days");
+              var matchDate = startdate.format("D. MMMM");
+        
+              // Create array if it doesn't exist
+              if(!newMatches[matchDate]) newMatches[matchDate] = [];
+        
+              newMatches[matchDate].push(matches[i]);
+            }
+      
+            var arr = [];
+      
+            for(var key in newMatches) {
+              arr[key] = newMatches[key];
+            }
             
-          var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-            return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
-          });
-    
-          var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-          var agent_data = await agent_data_raw.json();
-    
-          setBestAgentName(agent_data.data.displayName);
-          setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
-          setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
-          setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
-          setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
-          setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
-    
-          setCurrentMatches(newMatches);
+            newMatches = arr;
+      
+            var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+              
+            setAvgKillsPerMatch(playerstats.kills_per_match);
+            setAvgKillsPerRound(playerstats.kills_per_round);
+            setWinratePercent(playerstats.win_percentage);
+            setHeadshotPercent(playerstats.headshot_percent);
+            
+            var map_stats = playerstats.map_stats;
+            var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
+              return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
+            });
+      
+            var best_map = map_stats[sorted_map_stats[0]];
+      
+            if(mapData.data !== undefined) {
+              var map_data = mapData;
+            } else {
+              var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+              var map_data = await map_data_raw.json();
+              setMapData(map_data);
+              await asyncDelay(50);
+            }
+            
+            for(var i = 0; i < map_data.data.length; i++) {
+              if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
+                setBestMapName(map_data.data[i].displayName);
+                setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+              }
+            }
+      
+            setBestMapWinPercent(best_map.map_win_percentage);
+            setBestMapKdaRatio(best_map.map_kda_ratio);
+      
+            var agent_stats = playerstats.agent_stats;
+              
+            var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
+              return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
+            });
+      
+            var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+            var agent_data = await agent_data_raw.json();
+      
+            setBestAgentName(agent_data.data.displayName);
+            setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
+            setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
+            setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
+            setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
+            setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
+      
+            setCurrentMatches(newMatches);
+          }
         }
       }
   
@@ -565,100 +569,102 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             setIsSilentLoading(false);
             setSilentError(true);
     
-            ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
-    
-            var puuid = await getCurrentPUUID();
-            var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
-            var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
+            if(maintenance === false) {
+              ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
+      
+              var puuid = await getCurrentPUUID();
+              var hubConfig = await executeQuery(`SELECT * FROM hubConfig:⟨${puuid}⟩`);
+              var matchIDData = await executeQuery(`SELECT * FROM matchIDCollection:⟨hub::${puuid}⟩`);
+          
+              setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
         
-            setCurrentlyLoadedMatchCount(hubConfig[0].loadedMatches);
-      
-            var matches = [];
-            var newMatches = [];
-            
-            if(matchIDData[0].matchIDs.length === 0) return;
-      
-            for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
-              var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
-              if(match[0] === undefined) continue;
-              matches.push(match[0]);
-            }
-      
-            if(matches.length === 0) {
-              return;
-            };
-      
-            for(var i = 0; i < matches.length; i++) { 
-              var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
-              moment.locale(router.query.lang);
-              var startdate = moment();
-              startdate = startdate.subtract(dateDiff, "days");
-              var matchDate = startdate.format("D. MMMM");
-        
-              // Create array if it doesn't exist
-              if(!newMatches[matchDate]) newMatches[matchDate] = [];
-        
-              newMatches[matchDate].push(matches[i]);
-            }
-      
-            var arr = [];
-      
-            for(var key in newMatches) {
-              arr[key] = newMatches[key];
-            }
-            
-            newMatches = arr;
-      
-            var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+              var matches = [];
+              var newMatches = [];
               
-            setAvgKillsPerMatch(playerstats.kills_per_match);
-            setAvgKillsPerRound(playerstats.kills_per_round);
-            setWinratePercent(playerstats.win_percentage);
-            setHeadshotPercent(playerstats.headshot_percent);
-            
-            var map_stats = playerstats.map_stats;
-            var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
-              return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
-            });
-      
-            var best_map = map_stats[sorted_map_stats[0]];
-      
-            if(mapData.data !== undefined) {
-              var map_data = mapData;
-            } else {
-              var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-              var map_data = await map_data_raw.json();
-              setMapData(map_data);
-              await asyncDelay(50);
-            }
-            
-            for(var i = 0; i < map_data.data.length; i++) {
-              if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
-                setBestMapName(map_data.data[i].displayName);
-                setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+              if(matchIDData[0].matchIDs.length === 0) return;
+        
+              for(var i = 0; i < matchIDData[0].matchIDs.length; i++) {
+                var match = await executeQuery(`SELECT * FROM match:⟨${matchIDData[0].matchIDs[i]}⟩`);
+                if(match[0] === undefined) continue;
+                matches.push(match[0]);
               }
-            }
-      
-            setBestMapWinPercent(best_map.map_win_percentage);
-            setBestMapKdaRatio(best_map.map_kda_ratio);
-      
-            var agent_stats = playerstats.agent_stats;
+        
+              if(matches.length === 0) {
+                return;
+              };
+        
+              for(var i = 0; i < matches.length; i++) { 
+                var dateDiff = getDifferenceInDays(matches[i].matchInfo.gameStartMillis, Date.now());
+                moment.locale(router.query.lang);
+                var startdate = moment();
+                startdate = startdate.subtract(dateDiff, "days");
+                var matchDate = startdate.format("D. MMMM");
+          
+                // Create array if it doesn't exist
+                if(!newMatches[matchDate]) newMatches[matchDate] = [];
+          
+                newMatches[matchDate].push(matches[i]);
+              }
+        
+              var arr = [];
+        
+              for(var key in newMatches) {
+                arr[key] = newMatches[key];
+              }
               
-            var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
-              return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
-            });
-      
-            var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
-            var agent_data = await agent_data_raw.json();
-      
-            setBestAgentName(agent_data.data.displayName);
-            setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
-            setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
-            setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
-            setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
-            setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
-      
-            setCurrentMatches(newMatches);
+              newMatches = arr;
+        
+              var playerstats = calculatePlayerStatsFromMatches(newMatches, puuid);
+                
+              setAvgKillsPerMatch(playerstats.kills_per_match);
+              setAvgKillsPerRound(playerstats.kills_per_round);
+              setWinratePercent(playerstats.win_percentage);
+              setHeadshotPercent(playerstats.headshot_percent);
+              
+              var map_stats = playerstats.map_stats;
+              var sorted_map_stats = Object.keys(map_stats).sort(function(a, b) {
+                return (parseInt(map_stats[b].map_kda_ratio) - parseInt(map_stats[a].map_kda_ratio)) + (parseInt(map_stats[b].map_win_percentage) - parseInt(map_stats[a].map_win_percentage));
+              });
+        
+              var best_map = map_stats[sorted_map_stats[0]];
+        
+              if(mapData.data !== undefined) {
+                var map_data = mapData;
+              } else {
+                var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+                var map_data = await map_data_raw.json();
+                setMapData(map_data);
+                await asyncDelay(50);
+              }
+              
+              for(var i = 0; i < map_data.data.length; i++) {
+                if(map_data.data[i].mapUrl == sorted_map_stats[0]) {
+                  setBestMapName(map_data.data[i].displayName);
+                  setBestMapImage('https://media.valorant-api.com/maps/' + map_data.data[i].uuid + '/splash.png', { 'Content-Type': 'application/json' });
+                }
+              }
+        
+              setBestMapWinPercent(best_map.map_win_percentage);
+              setBestMapKdaRatio(best_map.map_kda_ratio);
+        
+              var agent_stats = playerstats.agent_stats;
+                
+              var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
+                return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
+              });
+        
+              var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
+              var agent_data = await agent_data_raw.json();
+        
+              setBestAgentName(agent_data.data.displayName);
+              setBestAgentImage('https://media.valorant-api.com/agents/' + agent_data.data.uuid + '/displayiconsmall.png');
+              setBestAgentAvgKda(agent_stats[sorted_agent_stats[0]].avg_kda_ratio);
+              setBestAgentAvgScore(agent_stats[sorted_agent_stats[0]].avg_match_score);
+              setBestAgentKillsPerRound(agent_stats[sorted_agent_stats[0]].kills_per_round);
+              setBestAgentKillsPerMatch(agent_stats[sorted_agent_stats[0]].avg_kills_per_match);
+        
+              setCurrentMatches(newMatches);
+            }
           }
         } else if(new_matches_amount >= 4) {
           fetchContractData(true);
@@ -879,6 +885,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           setIsSilentLoading(false);
           setSilentError(true);
   
+          if(maintenance === true) return;
+          
           ipcRenderer.send("relayTextbox", { persistent: true, text: "Error while fetching new matches. Only old matches will be shown." });
   
           var puuid = await getCurrentPUUID();
@@ -1072,6 +1080,10 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       var bearer = await getUserAccessToken();
       
       var data = await getPlayerMMR(user_creds.region, user_creds.uuid, ent, bearer);
+      if(data.compSeasonMaintenance === true) {
+        setMaintenance(true);
+        return;
+      }
       setMMRData(data);
   
       var arr = [];
@@ -1266,7 +1278,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 loading={loading}
               />
             </div>
-            <div className={'w-full mr-auto h-full absolute top-0 left-0 ' + (contractsLoading || contractsError ? 'flex' : 'hidden')}>
+            <div className={'w-full mr-auto h-full absolute top-0 left-0 ' + ((contractsLoading || contractsError) && maintenance === false ? 'flex' : 'hidden')}>
               <div
                 className={'flex flex-col w-full h-4/5 justify-center items-center text-center ' + (contractsError ? ' ' : 'hidden ') + (contractsLoading ? 'hidden' : '')}
               >
@@ -1281,6 +1293,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 </button>
               </div>
             </div>
+            {maintenance === true && (
+              <div className='w-full h-full flex items-center justify-center'>
+                <div className='w-2/3 text-center'>The servers are under scheduled maintenance. Please retry in a few hours.</div>
+              </div>
+            )}
           </div>
         </div>
         <div id='top-right-container' className='relative overflow-y-auto rounded p-1.5 border border-maincolor-dim'>
@@ -1338,7 +1355,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             id='match-timeline' 
             className={
               'relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1 ' 
-              + (loading || errored ? 'hidden' : '')
+              + (loading || errored || maintenance === true ? 'hidden' : '')
               + (currentlyLoadedMatchCount <= 0 ? ' disabled ' : ' ')
             }
           >
@@ -1593,7 +1610,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               <span>{LocalText(L, "bot_l.errors.no_matches_found")}</span>
             }
           </div>
-          <div className={'' + (loading || errored || currentlyLoadedMatchCount <= 0 ? 'hidden' : '')}>
+          <div className={'' + (loading || errored || currentlyLoadedMatchCount <= 0 || maintenance ? 'hidden' : '')}>
             <div id='match-loading-error' className={'mt-4 ml-6 w-full flex flex-row justify-center ' + (matchFetchingError ? '' : 'hidden')}>
               <span id='' className='text-gray-500'>{LocalText(L, "bot_l.errors.err_while_fetching")}</span>
             </div>
@@ -1609,7 +1626,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
           <div 
             id='errored' 
-            className={'z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (errored ? ' ' : 'hidden ') + (loading ? 'hidden' : '')}
+            className={'z-20 flex flex-col w-full h-4/5 justify-center items-center text-center ' + (errored && maintenance === false ? ' ' : 'hidden ') + (loading ? 'hidden' : '')}
           >
             <div>{LocalText(L, "component_err.err_text")}</div>
             <button 
@@ -1621,6 +1638,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               {LocalText(L, "component_err.button_text")}
             </button>
           </div>
+          
+          {maintenance === true && (
+            <div className='w-full h-full flex items-center justify-center'>
+              <div className='w-2/3 text-center'>The servers are under scheduled maintenance. Please retry in a few hours.</div>
+            </div>
+          )}
           <div 
             id='loading' 
             className={'z-30 flex w-full justify-center items-center ' + (errored ? 'hidden ' : ' ') + (loading ? '' : 'hidden')}
@@ -1697,7 +1720,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </div>
         <div id='bottom-right-container' className='relative overflow-y-auto rounded p-2 border border-maincolor-dim'>
-          <div className={`overflow-y-auto ${silentError === true && "opacity-0"}`}>
+          <div className={`overflow-y-auto ${silentError === true && "opacity-0"} ${maintenance === true && "hidden"}`}>
             <div className={'p-0 m-0'}>
               <span className={`font-bold text-lg block ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.comp_info.header")}</span>
               <span className={`font-normal relative bottom-0.5 text-sm text-gray-400 block mb-1 ${loading === true && "skeleton-text"}`}>{LocalText(L, "bot_r.comp_info.subheader", mmrData.days_remaining)}</span>
@@ -1800,6 +1823,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               {LocalText(L, "component_err.button_text")}
             </button>
           </div>
+          {maintenance === true && (
+            <div className='w-full h-full flex items-center justify-center'>
+              <div className='w-2/3 text-center'>The servers are under scheduled maintenance. Please retry in a few hours.</div>
+            </div>
+          )}
         </div>
       </div>
     </Layout>

@@ -206,8 +206,9 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var versionInfo = await (await fetch(`https://valorant-api.com/v1/version`)).json();
 
   var mmrInfo = await getMMRInfo(region, puuid, entitlement_token, bearer, versionInfo.data.riotClientVersion);
-  
-  if(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID) {
+  console.log(mmrInfo);
+
+  if(!mmrInfo.httpStatus && mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID) {
     var currentSeason = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID];
   
     if(currentSeason) {
@@ -223,27 +224,28 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
     }
   } else {
     var currenttier = 0;
+    var peaktier = 0;
   }
 
   var totalOverallMatches = 0;
 
   var matchesByAct = {};
 
-  console.log(mmrInfo);
-
-  for(var i = 0; i < Object.keys(mmrInfo.QueueSkills).length; i++) {
-    var queue = mmrInfo.QueueSkills[Object.keys(mmrInfo.QueueSkills)[i]];
-    if(queue.SeasonalInfoBySeasonID === null) continue;
-    for(var j = 0; j < Object.keys(queue.SeasonalInfoBySeasonID).length; j++) {
-      if(!matchesByAct[Object.keys(queue.SeasonalInfoBySeasonID)[j]]) {
-        matchesByAct[Object.keys(queue.SeasonalInfoBySeasonID)[j]] = 0;
+  if(!mmrInfo.httpStatus) {
+    for(var i = 0; i < Object.keys(mmrInfo.QueueSkills).length; i++) {
+      var queue = mmrInfo.QueueSkills[Object.keys(mmrInfo.QueueSkills)[i]];
+      if(queue.SeasonalInfoBySeasonID === null) continue;
+      for(var j = 0; j < Object.keys(queue.SeasonalInfoBySeasonID).length; j++) {
+        if(!matchesByAct[Object.keys(queue.SeasonalInfoBySeasonID)[j]]) {
+          matchesByAct[Object.keys(queue.SeasonalInfoBySeasonID)[j]] = 0;
+        }
+          
+        totalOverallMatches += queue.SeasonalInfoBySeasonID[Object.keys(queue.SeasonalInfoBySeasonID)[j]].NumberOfGames;
+  
+        if(Object.keys(mmrInfo.QueueSkills)[i] === "competitive") queue.SeasonalInfoBySeasonID[Object.keys(queue.SeasonalInfoBySeasonID)[j]].NumberOfGames;
+  
+        matchesByAct[Object.keys(queue.SeasonalInfoBySeasonID)[j]] += queue.SeasonalInfoBySeasonID[Object.keys(queue.SeasonalInfoBySeasonID)[j]].NumberOfGames;
       }
-        
-      totalOverallMatches += queue.SeasonalInfoBySeasonID[Object.keys(queue.SeasonalInfoBySeasonID)[j]].NumberOfGames;
-
-      if(Object.keys(mmrInfo.QueueSkills)[i] === "competitive") queue.SeasonalInfoBySeasonID[Object.keys(queue.SeasonalInfoBySeasonID)[j]].NumberOfGames;
-
-      matchesByAct[Object.keys(queue.SeasonalInfoBySeasonID)[j]] += queue.SeasonalInfoBySeasonID[Object.keys(queue.SeasonalInfoBySeasonID)[j]].NumberOfGames;
     }
   }
 
@@ -260,15 +262,16 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
     "peaktier": peaktier,
     "ActWinsByTier": currentSeason ? currentSeason.WinsByTier : {},
     "currenttier": currenttier,
-    "ranked_rating": currentSeason ? currentSeason.RankedRating : {},
+    "ranked_rating": currentSeason ? currentSeason.RankedRating : 0,
     "currenttier_icon": rankIcon,
     "total_matches_played": currentSeason ? currentSeason.NumberOfGames : 0,
     "win_percentage": currentSeason ? ((currentSeason.NumberOfWins / currentSeason.NumberOfGames) * 100).toFixed(2) : 0,
-    "additional_info": mmrInfo.QueueSkills,
+    "additional_info": !mmrInfo.httpStatus ? mmrInfo.QueueSkills : {},
     "act_matches_total": totalActMatches,
     "overall_matches_total": totalOverallMatches,
     "days_remaining": diffDays,
-    "showCompData": currentSeason ? true : false
+    "showCompData": currentSeason ? true : false,
+    "compSeasonMaintenance": mmrInfo.errorCode === "SCHEDULED_DOWNTIME" ? true : false
   }
 
   return obj;

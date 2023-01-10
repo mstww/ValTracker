@@ -62,6 +62,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   const [ isClickable, setIsClickable ] = React.useState(false);
 
   const [ isSaveButtonShown, setIsSaveButtonShown ] = React.useState(true);
+  const [ maintenance, setMaintenance ] = React.useState(false);
 
   const redirectToSkinChanger = (weaponType, usedSkin, usedChroma, usedLevel) => {
     var items_stringified = JSON.stringify(player_items);
@@ -88,6 +89,12 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     try {
       var entitlement_token = await getUserEntitlement();
       var player_loadout_data = await getPlayerLoadout(user_data.region, user_data.uuid, entitlement_token, bearer);
+
+      if(player_loadout_data.errorCode === "SCHEDULED_DOWNTIME") {
+        setMaintenance(true);
+        return;
+      }
+
       setPlayerLoadout(player_loadout_data);
       await updateThing(`inventory:current`, player_loadout_data);
   
@@ -152,7 +159,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   }, []);
 
   React.useEffect(async () => {
-    if(!firstRender) {
+    if(!firstRender && player_loadout.Identity) {
       var title = await(await fetch(`https://valorant-api.com/v1/playertitles/${player_loadout.Identity.PlayerTitleID}`)).json();
       setPlayerTitle(title.data.titleText);
     }
@@ -337,7 +344,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </motion.div>
       </motion.div>
-      <div className='w-full h-full flex flex-row items-center justify-center'>
+      <div className={`w-full h-full flex flex-row items-center justify-center ${maintenance === true && "hidden"}`}>
         <div className='w-1/6 h-4/5 m-4 relative'>
           <div id='inventory-card-wrapper' className='bg-black group overflow-hidden border border-tile-color rounded mb-4 shadow-lg transition-all duration-100 ease-linear'>
             <img 
@@ -446,6 +453,11 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </div>
       </div>
+      {maintenance === true && (
+        <div className='w-full h-full flex items-center justify-center'>
+          <div className='w-2/3 text-center'>The servers are under scheduled maintenance. Please retry in a few hours.</div>
+        </div>
+      )}
     </Layout>
   );
 }

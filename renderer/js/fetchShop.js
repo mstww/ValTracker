@@ -212,6 +212,9 @@ async function fetchShop() {
     var entitlement_token = await getUserEntitlement();
 
     var shopData = await getShopData(region, puuid, entitlement_token, bearer);
+    if(shopData.errorCode === "SCHEDULED_DOWNTIME") {
+      return ["DOWNTIME"]
+    }
 
     const data = await calculateDailyStore(puuid, shopData);
     return [data, user_creds];
