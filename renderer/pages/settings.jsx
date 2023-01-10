@@ -23,7 +23,7 @@ import ThemeSelector from '../components/settings/ThemeSelector';
 import VersionCheckbox from '../components/settings/VersionCheckbox';
 import { Loading } from '@nextui-org/react';
 import Layout from '../components/Layout';
-import { changeSetting, executeQuery, getAllSettings, getCurrentPUUID, updateThing } from '../js/dbFunctions.mjs';
+import { changeSetting, createThing, executeQuery, getAllSettings, getCurrentPUUID, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
 import { getPUUID, getXMPPRegion, getEntitlement, getPlayerMMR, requestUserCreds } from '../js/riotAPIFunctions.mjs';
 

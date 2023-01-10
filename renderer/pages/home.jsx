@@ -1646,7 +1646,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           )}
           <div 
             id='loading' 
-            className={'z-30 flex w-full justify-center items-center ' + (errored ? 'hidden ' : ' ') + (loading ? '' : 'hidden')}
+            className={'z-30 flex w-full justify-center items-center ' + (errored || maintenance === true ? 'hidden ' : ' ') + (loading ? '' : 'hidden')}
           >
             <div 
               id='match-timeline' 
