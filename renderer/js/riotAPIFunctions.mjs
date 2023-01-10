@@ -207,10 +207,14 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
 
   var mmrInfo = await getMMRInfo(region, puuid, entitlement_token, bearer, versionInfo.data.riotClientVersion);
   
-  var currentSeason = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID];
-
-  if(currentSeason) {
-    var currenttier = currentSeason.CompetitiveTier;
+  if(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID) {
+    var currentSeason = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID];
+  
+    if(currentSeason) {
+      var currenttier = currentSeason.CompetitiveTier;
+    } else {
+      var currenttier = 0;
+    }
   } else {
     var currenttier = 0;
   }
