@@ -215,22 +215,25 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
     } else {
       var currenttier = 0;
     }
+    
+    var peaktier = currenttier;
+
+    for(var i = 0; i < mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID.length; i++) {
+      if(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[i].CompetitiveTier > peaktier) peaktier = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[i].CompetitiveTier;
+    }
   } else {
     var currenttier = 0;
-  }
-
-  var peaktier = currenttier;
-
-  for(var i = 0; i < mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID.length; i++) {
-    if(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[i].CompetitiveTier > peaktier) peaktier = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[i].CompetitiveTier;
   }
 
   var totalOverallMatches = 0;
 
   var matchesByAct = {};
 
+  console.log(mmrInfo);
+
   for(var i = 0; i < Object.keys(mmrInfo.QueueSkills).length; i++) {
     var queue = mmrInfo.QueueSkills[Object.keys(mmrInfo.QueueSkills)[i]];
+    if(queue.SeasonalInfoBySeasonID === null) continue;
     for(var j = 0; j < Object.keys(queue.SeasonalInfoBySeasonID).length; j++) {
       if(!matchesByAct[Object.keys(queue.SeasonalInfoBySeasonID)[j]]) {
         matchesByAct[Object.keys(queue.SeasonalInfoBySeasonID)[j]] = 0;
@@ -255,16 +258,17 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
 
   var obj = {
     "peaktier": peaktier,
-    "ActWinsByTier": currentSeason.WinsByTier,
+    "ActWinsByTier": currentSeason ? currentSeason.WinsByTier : {},
     "currenttier": currenttier,
-    "ranked_rating": currentSeason.RankedRating,
+    "ranked_rating": currentSeason ? currentSeason.RankedRating : {},
     "currenttier_icon": rankIcon,
-    "total_matches_played": currentSeason.NumberOfGames,
-    "win_percentage": ((currentSeason.NumberOfWins / currentSeason.NumberOfGames) * 100).toFixed(2),
+    "total_matches_played": currentSeason ? currentSeason.NumberOfGames : 0,
+    "win_percentage": currentSeason ? ((currentSeason.NumberOfWins / currentSeason.NumberOfGames) * 100).toFixed(2) : 0,
     "additional_info": mmrInfo.QueueSkills,
     "act_matches_total": totalActMatches,
     "overall_matches_total": totalOverallMatches,
-    "days_remaining": diffDays
+    "days_remaining": diffDays,
+    "showCompData": currentSeason ? true : false
   }
 
   return obj;

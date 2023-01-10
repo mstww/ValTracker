@@ -1497,6 +1497,19 @@ async function checkForOldMatches() {
   }
 }
 
+/**
+ * A function that checks if an instance token has been added for this app. Requests one if no token
+ * is found.
+ */
+async function checkForInstanceToken() {
+  var Q = `SELECT instancetoken FROM services:⟨${process.env.SERVICE_UUID}⟩`;
+  var result = await db.query(Q);
+  if(!result[0].result[0].instancetoken) {
+    var user_data = await getCurrentUserData();
+    await requestInstanceToken(user_data.name, user_data.tag);
+  }
+}
+
 // Main function that starts the app
 (async () => {
   if(db === false) await connectToDB();
@@ -1509,6 +1522,14 @@ async function checkForOldMatches() {
   }
 
   await checkForOldMatches();
+  
+  var uuid = uuidv5("setupCompleted", process.env.SETTINGS_UUID);
+  let setupCompleted = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
+  setupCompleted = setupCompleted.length > 0 ? setupCompleted[0] : {value: false};
+
+  if(setupCompleted.value === true) {
+    await checkForInstanceToken();
+  }
 
   var appStatus = await(await fetch('https://api.valtracker.gg/v1/status/main', {
     headers: {
@@ -1583,10 +1604,6 @@ async function checkForOldMatches() {
     var uuid = uuidv5("useGameRP", process.env.SETTINGS_UUID);
     let useGameRP = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
     useGameRP = useGameRP.length > 0 ? useGameRP[0] : {value: false};
-  
-    var uuid = uuidv5("setupCompleted", process.env.SETTINGS_UUID);
-    let setupCompleted = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
-    setupCompleted = setupCompleted.length > 0 ? setupCompleted[0] : {value: false};
     
     if((useGameRP.value === undefined || useGameRP.value === true) && setupCompleted.value === true) {
       //Login with Discord client
@@ -1635,10 +1652,6 @@ async function checkForOldMatches() {
   }
 
   var startedHidden = process.argv.find(arg => arg === '--start-hidden');
-
-  var uuid = uuidv5("setupCompleted", process.env.SETTINGS_UUID);
-  let setupCompleted = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
-  setupCompleted = setupCompleted.length > 0 ? setupCompleted[0] : {value: false};
 
   if(setupCompleted.value === false) {
     mainWindow = createWindow('setup-win', {
