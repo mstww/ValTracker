@@ -1346,7 +1346,7 @@ async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timest
   if(mode_and_info) obj.details = mode_and_info;
   if(scores) obj.state = scores;
   if(map) obj.largeImageKey = map;
-  if(agent_or_mode) obj.assets.smallImageKey = agent_or_mode;
+  if(agent_or_mode) obj.smallImageKey = agent_or_mode;
   if(timestamp) obj.startTimestamp = timestamp;
 
   discordVALPresence.setActivity(obj);
