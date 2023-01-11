@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { switchPlayer } from '../js/dbFunctions';
 
-export default function AccountTile({ currenttier, puuid, username, usertag, userregion, active_account }) {
+export default function AccountTile({ currenttier, puuid, username, usertag, userregion, active_account, setSwitchToggle }) {
   const router = useRouter();
 
   const switchAccount = async (event) => {
@@ -11,6 +11,7 @@ export default function AccountTile({ currenttier, puuid, username, usertag, use
     await switchPlayer(puuidToBeSwitchedTo);
     
     sessionStorage.removeItem('navbar-rank');
+    setSwitchToggle(current => !current);
     router.push(router.route + '?account=' + puuidToBeSwitchedTo + `&lang=${router.query.lang}`);
   }
 

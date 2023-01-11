@@ -13,6 +13,7 @@ import LocalText from './translation/LocalText';
 
 import { Home, Store, User, Star, Clipboard, Settings, ExpandArrow, RetractArrow } from './SVGs';
 import { executeQuery, getCurrentPUUID, getCurrentUserData } from '../js/dbFunctions';
+import { useFirstRender } from './useFirstRender';
 
 const account_switcher_variants = {
   open: { opacity: 1, y: 0, x: 0, scale: 1, transition: {
@@ -46,8 +47,12 @@ const slide_left = {
   },
 }
 
-export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
+export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAccountListSwitch, accountListSwitch }) {
   const router = useRouter();
+  const firstRender = useFirstRender();
+
+  console.log(isNavbarMinimized);
+
   var page = router.pathname.split("/").pop();
 
   const [ name, setname ] = React.useState('');
@@ -180,7 +185,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
   }, []);
 
   const addAccount = (usertier, username, usertag, userregion, user_puuid, active_account) => {
-    var accs = switchableAccounts;
+    var accs = [];
     if(active_account) {
       // Insert element at first position
       accs.unshift(
@@ -191,7 +196,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
         { usertier: usertier, username: username, usertag: usertag, userregion: userregion, user_puuid: user_puuid, active_account: active_account }
       )
     }
-    setSwitchableAccounts(accs);
+    setSwitchableAccounts(current => [...(new Set([...current, ...accs]))]);
   }
 
   async function fetchUserAccounts() {
@@ -259,6 +264,21 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
       setOpen(false);
     }
   }, [isNavbarMinimized]);
+
+  React.useEffect(async () => {
+    if(firstRender) return;
+
+    toggleSwitcherMenu();
+    setSwitchableAccounts([]);
+    fetchUserAccounts();
+    var data = await getCurrentUserData();
+    setrank(data.rank);
+    setname(data.name);
+    settag(data.tag);
+    sessionStorage.setItem('navbar-rank', data.rank);
+    sessionStorage.setItem('navbar-name', data.name);
+    sessionStorage.setItem('navbar-tag', data.tag);
+  }, [accountListSwitch]);
 
   return (
     <motion.nav 
@@ -442,6 +462,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized }) {
                   userregion={acc.userregion} 
                   puuid={acc.user_puuid} 
                   active_account={acc.active_account} 
+                  setSwitchToggle={setAccountListSwitch}
                 />
               )
             })}

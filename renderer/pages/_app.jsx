@@ -85,6 +85,10 @@ function MyApp({ Component, pageProps }) {
   const [ isNavbarMinimized, setIsNavbarMinimized ] = React.useState(false);
   pageProps.isNavbarMinimized = isNavbarMinimized;
 
+  const [ accountListSwitch, setAccountListSwitch ] = React.useState(false);
+  pageProps.setAccountListSwitch = setAccountListSwitch;
+  pageProps.accountListSwitch = accountListSwitch;
+
   var setup = router.pathname.split("/").pop() === "setup";
   var migrate = router.pathname.split("/").pop() === "migration";
 
@@ -118,7 +122,14 @@ function MyApp({ Component, pageProps }) {
       <NextUIProvider theme={theme ? themes[theme] : themes['normal']}>
         <WindowControls setup={setup} migrate={migrate} />
         <UpdatingLayer setIsOverlayShown={setIsOverlayShown} isOverlayShown={isOverlayShown} />
-        {setup || migrate ? '' : <Navbar isNavbarMinimized={isNavbarMinimized} setIsNavbarMinimized={setIsNavbarMinimized} />}
+        {setup || migrate ? '' : (
+          <Navbar 
+            isNavbarMinimized={isNavbarMinimized} 
+            setIsNavbarMinimized={setIsNavbarMinimized} 
+            setAccountListSwitch={setAccountListSwitch} 
+            accountListSwitch={accountListSwitch} 
+          />
+        )}
         {setup || migrate ? '' : <MessageLayer />}
         {setup || migrate ? '' : <ReauthLayer setIsOverlayShown={setIsOverlayShown} />}
         {setup || migrate ? '' : <TextboxLayer />}

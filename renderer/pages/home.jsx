@@ -1760,11 +1760,11 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   <hr className='mt-1 mb-2' />
                   <span className='flex flex-row justify-between'>
                     <span className='text-base font-medium'>Matches played</span>
-                    <span className={`text-base font-medium ${loading === true && "skeleton-text"}`}>{mmrData.total_matches_played ? mmrData.total_matches_played : "69"}</span>
+                    <span className={`text-base font-medium ${loading === true && "skeleton-text"}`}>{mmrData.total_matches_played != undefined ? mmrData.total_matches_played : "69"}</span>
                   </span>
                   <span className='flex flex-row justify-between'>
                     <span className='text-base font-medium'>Win%</span>
-                    <span className={`text-base font-medium ${loading === true && "skeleton-text"}`}>{mmrData.win_percentage ? mmrData.win_percentage : "42.00"}%</span>
+                    <span className={`text-base font-medium ${loading === true && "skeleton-text"}`}>{mmrData.win_percentage != undefined ? mmrData.win_percentage : "42.00"}%</span>
                   </span>
                 </div>
               </div>

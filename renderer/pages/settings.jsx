@@ -109,7 +109,7 @@ function Patchnotes({ showVersionModal, shownPatchnotes }) {
   );
 }
 
-function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlayShown }) {
+function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlayShown, setAccountListSwitch }) {
   const router = useRouter();
 
   if(router.query.tab) {
@@ -410,14 +410,8 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
         await createThing(`wishlist:⟨${puuid}⟩`, {
           "skins": []
         });
-      
-        var bundle = await (await fetch(`https://api.valtracker.gg/v1/bundles/featured`)).json();
-        var result = await createThing(`featuredBundle:⟨${process.env.SERVICE_UUID}⟩`, bundle.data);
-      
-        await createThing(`services:⟨${process.env.SERVICE_UUID}⟩`, {
-          "lastMessageUnix": Date.now(),
-          "featuredBundle": result.id
-        });
+
+        setAccountListSwitch(current => !current);
       } catch(err) {
         console.log(err)
         router.push('/settings?tab=riot&counter=' + router.query.counter + `&lang=${router.query.lang}`);
@@ -426,7 +420,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
   }
 
   const removeAccount = async (puuid, popupToClose) => {
-    var data = await executeQuery(`SELECT * FROM SELECT * FROM playerCollection:app`);
+    var data = await executeQuery(`SELECT * FROM playerCollection:app`);
     var newArr = data[0].players.filter(e => e !== `player:⟨${puuid}⟩`);
     await updateThing(`playerCollection:app`, {
       players: newArr
@@ -436,6 +430,8 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
     var new_account_list = riot_accountList.filter(account => account.uuid !== puuid);
     setRiot_AccountList(new_account_list);
     closePopup(popupToClose);
+
+    setAccountListSwitch(current => !current);
   }
 
   const openPopup = (setPopupOpen, info) => {

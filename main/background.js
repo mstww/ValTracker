@@ -465,12 +465,20 @@ async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var versionInfo = await (await fetch(`https://valorant-api.com/v1/version`)).json();
 
   var mmrInfo = await getMMRInfo(region, puuid, entitlement_token, bearer, versionInfo.data.riotClientVersion);
+
+  if(!mmrInfo.httpStatus && mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID) {
+    var currentSeason = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID];
   
-  if(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID]) {
-    return mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID].CompetitiveTier;
+    if(currentSeason) {
+      var currenttier = currentSeason.CompetitiveTier;
+    } else {
+      var currenttier = 0;
+    }
   } else {
-    return 0;
+    var currenttier = 0;
   }
+
+  return currenttier;
 }
 
 /**
@@ -2289,4 +2297,10 @@ ipcMain.handle('changeSetting', async (event, args) => {
 // Handler that requests a new instance token
 ipcMain.handle('requestInstanceToken', async (event, args) => {
   return await await requestInstanceToken(args[0], args[1]);
+});
+
+ipcMain.on('relayReloadNavbarAccounts', () => {
+  console.log("here");
+  sendMessageToWindow("reloadNavbarAccounts");
+  mainWindow.webContents.send("reloadNavbarAccounts", null);
 });

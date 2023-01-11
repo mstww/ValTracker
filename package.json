@@ -1,7 +1,7 @@
 {
   "name": "valtracker",
   "productName": "VALTracker",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "The only VALORANT Stats Tracker you'll ever need.",
   "author": "Spirit <dev@codedotspirit.dev>",
   "main": "app/background.js",
