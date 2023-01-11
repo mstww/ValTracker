@@ -163,6 +163,8 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
       }
     })).json();
 
+    console.log(featureStatus);
+
     setIsInvShown(featureStatus.data.inv.enabled);
     setInvHiddenDesc(featureStatus.data.inv.desc);
 

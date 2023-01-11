@@ -284,6 +284,7 @@ async function connectGamePresence() {
     discordVALPresence = new RPC.Client({
       transport: "ipc",
     });
+    await discordVALPresence.login({ clientId: "957041886093267005" }).catch(console.error);
     console.log("Game Presence connected.");
   } catch(e) {
     console.log("Error while starting Game Presence. Retrying...");
@@ -292,7 +293,7 @@ async function connectGamePresence() {
   }
 }
 
-connectGamePresence();
+await connectGamePresence();
 
 /**
  * A function to connect to the Discord RPC (App Presence)
@@ -304,6 +305,7 @@ async function connectAppPresence() {
     discordClient = new RPC.Client({
       transport: "ipc",
     });
+    await discordClient.login({ clientId: "1018145263761764382" }).catch(console.error);
     console.log("App Presence connected.");
   } catch(e) {
     console.log("Error while starting App Presence. Retrying...");
@@ -312,7 +314,7 @@ async function connectAppPresence() {
   }
 }
 
-connectAppPresence();
+await connectAppPresence();
 
 await app.whenReady();
 
@@ -1334,10 +1336,7 @@ async function decideRichPresenceData(data) {
 async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
   var lg_txt = await LocalText(L, 'val_rp_details.playing_val');
   var obj = {
-    assets: {
-      large_text: lg_txt,
-    },
-    timestamps: {},
+    largeImageText: lg_txt,
     buttons: [{
       "label": "What is this?",
       "url": "https://valtracker.gg"
@@ -1346,14 +1345,11 @@ async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timest
 
   if(mode_and_info) obj.details = mode_and_info;
   if(scores) obj.state = scores;
-  if(map) obj.assets.large_image = map;
-  if(agent_or_mode) obj.assets.small_image = agent_or_mode;
-  if(timestamp) obj.timestamps.start = timestamp;
+  if(map) obj.largeImageKey = map;
+  if(agent_or_mode) obj.assets.smallImageKey = agent_or_mode;
+  if(timestamp) obj.startTimestamp = timestamp;
 
-  discordVALPresence.request("SET_ACTIVITY", {
-    pid: 69,
-    activity: obj,
-  });
+  discordVALPresence.setActivity(obj);
 }
 
 /**
@@ -1591,34 +1587,22 @@ async function checkForInstanceToken() {
     return;
   }
   
-  if(appStatus.data.appRP.enabled === true) {
-    //Login with Discord client 
-    discordClient.login({
-      clientId: "1018145263761764382",
-    });
-    
+  console.log(appStatus.data);
+  if(appStatus.data.appRP.operational === true) {
     // Set activity after client is finished loading
     discordClient.on("ready", () => {
-      discordClient.request("SET_ACTIVITY", {
-        pid: process.pid,
-        activity: discord_rps.starting_activity,
-      });
+      discordClient.setActivity(discord_rps.starting_activity);
     });
   } else {
     RPState = 'disabled'
   }
 
-  if(appStatus.data.gameRP.enabled === true) {
+  if(appStatus.data.gameRP.operational === true) {
     var uuid = uuidv5("useGameRP", process.env.SETTINGS_UUID);
     let useGameRP = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
     useGameRP = useGameRP.length > 0 ? useGameRP[0] : {value: false};
     
     if((useGameRP.value === undefined || useGameRP.value === true) && setupCompleted.value === true) {
-      //Login with Discord client
-      discordVALPresence.login({
-        clientId: "957041886093267005",
-      });
-    
       var VAL_WEBSOCKET = new Worker(new URL("../modules/valWebSocketComms.mjs", import.meta.url));
       
       VAL_WEBSOCKET.on("message", async (msg) => {
@@ -1967,11 +1951,9 @@ ipcMain.on("changeDiscordRP", async function (event, arg) {
   var rpObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
   var useAppRP = rpObj[0] ? rpObj[0].value : undefined;
 
+  console.log(RPState, useAppRP);
   if(RPState === "app" && useAppRP === true) {
-    discordClient.request("SET_ACTIVITY", {
-      pid: process.pid,
-      activity: discord_rps[arg],
-    });
+    discordClient.setActivity(discord_rps[arg]);
   } else {
     discordClient.clearActivity(process.pid);
   }

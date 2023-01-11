@@ -1,9 +1,7 @@
 const starting_activity = {
     details: "Starting VALTracker...",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-    },
+    largeImageKey: "valtracker_logo",
+    largeImageText: "VALTracker.gg",
     buttons: [{
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
@@ -13,18 +11,14 @@ const starting_activity = {
             "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
-    timestamps: {
-        start: Date.now()
-    },
+    startTimestamp: Date.now(),
     instance: true
 }
 
 const hub_activity = {
     details: "Browsing Hub",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg"
-    },
+    largeImageKey: "valtracker_logo",
+    largeImageText: "VALTracker.gg",
     buttons: [{
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
@@ -34,18 +28,14 @@ const hub_activity = {
             "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
-    timestamps: {
-        start: Date.now()
-    },
+    startTimestamp: Date.now(),
     instance: true
 }
 
 const skins_activity = {
     details: "Changing Skins",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg"
-    },
+    largeImageKey: "valtracker_logo",
+    largeImageText: "VALTracker.gg",
     buttons: [{
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
@@ -55,18 +45,14 @@ const skins_activity = {
             "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
-    timestamps: {
-        start: Date.now()
-    },
+    startTimestamp: Date.now(),
     instance: true
 }
 
 const pprofile_activity = {
     details: "Browsing a player's profile",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg"
-    },
+    largeImageKey: "valtracker_logo",
+    largeImageText: "VALTracker.gg",
     buttons: [{
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
@@ -76,18 +62,14 @@ const pprofile_activity = {
             "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
-    timestamps: {
-        start: Date.now()
-    },
+    startTimestamp: Date.now(),
     instance: true
 }
 
 const favmatches_activity = {
     details: "Browsing favourite matches",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg",
-    },
+    largeImageKey: "valtracker_logo",
+    largeImageText: "VALTracker.gg",
     buttons: [{
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
@@ -97,18 +79,14 @@ const favmatches_activity = {
             "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
-    timestamps: {
-        start: Date.now()
-    },
+    startTimestamp: Date.now(),
     instance: true
 }
 
 const settings_activity = {
     details: "Editing settings",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg"
-    },
+    largeImageKey: "valtracker_logo",
+    largeImageText: "VALTracker.gg",
     buttons: [{
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
@@ -118,18 +96,14 @@ const settings_activity = {
             "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
-    timestamps: {
-        start: Date.now()
-    },
+    startTimestamp: Date.now(),
     instance: true
 }
 
 const matchview_activity = {
     details: "Looking at a Match",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg"
-    },
+    largeImageKey: "valtracker_logo",
+    largeImageText: "VALTracker.gg",
     buttons: [{
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
@@ -139,18 +113,14 @@ const matchview_activity = {
             "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
-    timestamps: {
-        start: Date.now()
-    },
+    startTimestamp: Date.now(),
     instance: true
 }
 
 const shop_activity = {
     details: "Checking the Store",
-    assets: {
-        large_image: "valtracker_logo",
-        large_text: "VALTracker.gg"
-    },
+    largeImageKey: "valtracker_logo",
+    largeImageText: "VALTracker.gg",
     buttons: [{
             "label": "Download VALTracker",
             "url": "https://valtracker.gg"
@@ -160,9 +130,7 @@ const shop_activity = {
             "url": "https://discord.gg/aJfQ4yHysG"
         }
     ],
-    timestamps: {
-        start: Date.now()
-    },
+    startTimestamp: Date.now(),
     instance: true
 }
 
