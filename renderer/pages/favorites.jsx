@@ -397,7 +397,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
             >
               <div className='w-1/2 flex flex-row'>
                 <div id='agent-img'>
-                  <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear w-full' src={matchInfo.agent ? `https://media.valorant-api.com/agents/${matchInfo.agent}/displayicon.png` : ''} />
+                  <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-[0ms] ease-linear w-full' src={matchInfo.agent ? `https://media.valorant-api.com/agents/${matchInfo.agent}/displayicon.png` : ''} />
                 </div>
                   <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
                     <span className={`text-lg font-semibold ${matchInfo.queueID == 'competitive' ? "relative left-1.5 top-1.5" : ""}`}>{matchInfo.mapName}</span>
@@ -460,7 +460,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
       </motion.div>
       <div className='flex flex-row h-full w-full p-4'>
         <div className='flex flex-col h-auto w-3/4 pr-4'>
-          <div id='match-timeline' className='relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1 after:transition-all after:duration-100 after:ease-linear'>
+          <div id='match-timeline' className='relative after:absolute after:w-12 after:bg-white after:h-full after:t-0 after:b-0 after:l-0 after:-ml-1 after:transition-all after:duration-[0ms] after:ease-linear'>
             <Tooltip content={'Checking for new matches...'} color="error" placement={'left'} className='rounded absolute top-2 right-7'>
               <div className={'absolute -top-2.5 -right-5 w-6 h-6 z-30 ' + (isLoadingNewMatches ? '' : 'hidden')}>
                 <Loading color={'error'} size={'sm'} />
@@ -504,7 +504,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                           return (
                             <div 
                               id='match'
-                              className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-20 active:bg-opacity-0 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                              className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-20 active:bg-opacity-0 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-[0ms] ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                               key={index}
                               onClick={(e) => {
                                 if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -529,7 +529,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                 <div className='absolute top-0 left-3 flex flex-row z-40 w-1/6 h-full items-center'>
                                   <StarFilled 
                                     color 
-                                    className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                    className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-[0ms] ease-linear relative right-3'
                                     click={() => {
                                       toggleDeleteMatchDialogue();
                                       setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore });
@@ -540,7 +540,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                               
                               <div className='w-1/3 flex flex-row'>
                                 <div id='agent-img'>
-                                  <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
+                                  <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-[0ms] ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                                 </div>
                                 <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
                                   <span className={`text-lg font-semibold ${match.matchInfo.queueID == 'competitive' ? "relative left-1.5 top-1.5" : ""}`}>{matchData.mapName}</span>
@@ -669,7 +669,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                     return (
                       <div 
                         id='match'
-                        className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-20 active:bg-opacity-0 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-100 ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
+                        className={'group relative flex flex-row h-20 bg-tile-color bg-opacity-20 active:bg-opacity-0 border p-1.5 mb-2 border-tile-color rounded mr-2 hover:bg-opacity-50 cursor-default transition-all duration-[0ms] ease-linear ' + (activeQueueTab !== 'all' && activeQueueTab !== fixedQueueName ? 'hidden' : '' )}
                         key={index}
                         onClick={(e) => {
                           if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -694,7 +694,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                           <div className='absolute top-0 left-3 flex flex-row z-40 w-1/6 h-full items-center'>
                             <StarFilled 
                               color 
-                              className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                              className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-[0ms] ease-linear relative right-3'
                               click={() => {
                                 toggleDeleteMatchDialogue();
                                 setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore });
@@ -705,7 +705,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                         
                         <div className='w-1/3 flex flex-row'>
                           <div id='agent-img'>
-                            <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
+                            <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-[0ms] ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                           </div>
                           <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
                             <span className={`text-lg font-semibold ${activeQueueTab == 'competitive' ? "relative left-1.5 top-1.5" : ""}`}>{matchData.mapName}</span>

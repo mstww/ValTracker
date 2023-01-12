@@ -165,7 +165,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     }
   }, [ player_loadout ]);
 
-  var tile_classes = 'weapon-tile bg-tile-color bg-opacity-20 active:bg-opacity-0 border border-tile-color hover:bg-opacity-50 transition-all duration-100 ease-in rounded relative shadow-lg flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
+  var tile_classes = 'weapon-tile bg-tile-color bg-opacity-20 active:bg-opacity-0 border border-tile-color hover:bg-opacity-50 transition-all duration-[0ms] ease-in rounded relative shadow-lg flex items-center justify-center ' + (isClickable ? 'cursor-pointer' : 'cursor-not-allowed');
 
   const toggleSaveInvDialogue = () => {
     setBackdropShown(!backdropShown);
@@ -309,7 +309,7 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           <p>{LocalText(L, "modals.save_modal.desc")}</p>
           <input
             type='text'
-            className='bg-button-color text-md font-light hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 shadow-lg rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none'
+            className='bg-button-color text-md font-light hover:bg-button-color-hover h-8 w-full flex items-center px-2 py-1 shadow-lg rounded cursor-pointer transition-all ease-in duration-[0ms] focus:bg-button-color-hover outline-none'
             placeholder={LocalText(L, "modals.save_modal.input_placeholder")}
             id='skin-search'
             autoCorrect='off'
@@ -346,16 +346,16 @@ function Inventory({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
       </motion.div>
       <div className={`w-full h-full flex flex-row items-center justify-center ${maintenance === true && "hidden"}`}>
         <div className='w-1/6 h-4/5 m-4 relative'>
-          <div id='inventory-card-wrapper' className='bg-black group overflow-hidden border border-tile-color rounded mb-4 shadow-lg transition-all duration-100 ease-linear'>
+          <div id='inventory-card-wrapper' className='bg-black group overflow-hidden border border-tile-color rounded mb-4 shadow-lg transition-all duration-[0ms] ease-linear'>
             <img 
               id='inventory-card'
               data-equipslot='playercard'
-              className='cursor-default w-full mx-auto group-hover:opacity-70 transition-all duration-100 ease-linear' 
+              className='cursor-default w-full mx-auto group-hover:opacity-70 transition-all duration-[0ms] ease-linear' 
               src='/images/vandal_invisible.png'
               onClick={(e) => { redirectToCardChanger(e.target.getAttribute('data-card')) }}
             />
             <div 
-              className='absolute bottom-20 bg-tile-color bg-opacity-60 w-full mx-auto text-global-text h-8 border-t border-b border-tile-color flex items-center justify-center transition-all duration-100 ease-linear'
+              className='absolute bottom-20 bg-tile-color bg-opacity-60 w-full mx-auto text-global-text h-8 border-t border-b border-tile-color flex items-center justify-center transition-all duration-[0ms] ease-linear'
             >
               <span className='text-global-text'>{playerTitle}</span>
             </div>

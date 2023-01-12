@@ -328,7 +328,7 @@ function Setup({ isOverlayShown, setIsOverlayShown }) {
               </div>
               <div 
                 className={
-                  'flex flex-row items-center content-center w-52 mb-2 justify-start border rounded transition-all ease-in duration-100 border-gradient-left active-riot-acc'
+                  'flex flex-row items-center content-center w-52 mb-2 justify-start border rounded transition-all ease-in duration-[0ms] border-gradient-left active-riot-acc'
                 }
               >
                 <img 

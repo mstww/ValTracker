@@ -515,7 +515,7 @@ select {
   border-radius: 4px;
   outline: none;
   position: relative;
-  transition: all 0.3s;
+  transition: all 0.1s;
   appearance: none;
 }
 
@@ -562,7 +562,7 @@ h5 {
 }
 
 .message a, .patchnotes a {
-  @apply text-button-color hover:text-button-color-hover hover:underline transition-all duration-100 ease-in bg-opacity-100;
+  @apply text-button-color hover:text-button-color-hover hover:underline transition-all duration-[0ms] ease-in bg-opacity-100;
 }
 
 .patchnotes h1 {
@@ -955,7 +955,7 @@ h5 {
 }
 
 .language-checkbox span {
-  @apply border border-tile-color rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+  @apply border border-tile-color rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-[0ms] ease-linear;
 }
 
 .language-checkbox span:hover {
@@ -1131,7 +1131,7 @@ body[lang="fr-FR"] #equip-skin-button {
 }
 
 .version-selector span {
-  @apply border border-tile-color bg-tile-color bg-opacity-60 h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-100 ease-linear;
+  @apply border border-tile-color bg-tile-color bg-opacity-60 h-auto rounded w-full p-2 block absolute top-0 left-0 cursor-pointer transition-all duration-[0ms] ease-linear;
 }
 
 .version-selector span:hover {
@@ -1167,7 +1167,7 @@ tr td:last-child {
 }
 
 .card.hoverable {
-  @apply hover:bg-tile-color border border-tile-color transition-all duration-100 ease-linear;
+  @apply hover:bg-tile-color border border-tile-color transition-all duration-[0ms] ease-linear;
 }
 
 .button.default, .button.select, .button.highlight, .button.setup {
@@ -1175,7 +1175,7 @@ tr td:last-child {
   height: 2.5rem;
   border-radius: 4px;
   outline: none;
-  transition: all 0.3s;
+  transition: all 0.1s;
 }
 
 .button.default, .button.select, .button.highlight {
@@ -1196,7 +1196,7 @@ tr td:last-child {
   border-radius: 4px;
   outline: none;
   position: relative;
-  transition: all 0.3s;
+  transition: all 0.1s;
 }
 
 .button.default:hover, .button.select:hover, .button.highlight:hover {
@@ -1224,7 +1224,7 @@ tr td:last-child {
   padding: 4px 30px;
   height: 2.5rem;
   border-radius: 4px;
-  transition: all 0.3s;
+  transition: all 0.1s;
 }
 
 .button.text {
@@ -1273,7 +1273,7 @@ tr td:last-child {
 }
 
 .close-icon-wrapper {
-  @apply absolute z-30 top-4 right-4 ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center;
+  @apply absolute z-30 top-4 right-4 ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-[0ms] ease-linear w-7 h-7 flex items-center justify-center;
 }
 
 .modal-wrapper {
@@ -1346,7 +1346,7 @@ tr td:last-child {
 }
 
 .carousel .legend {
-  @apply !text-base !font-medium -tracking-normal !opacity-100 !p-1 !cursor-pointer !transition-all !duration-100 !ease-linear !rounded !border !border-tile-color;
+  @apply !text-base !font-medium -tracking-normal !opacity-100 !p-1 !cursor-pointer !transition-all !duration-[0ms] !ease-linear !rounded !border !border-tile-color;
   background-color: rgba(18, 18, 18, 0.9) !important;
 }
 

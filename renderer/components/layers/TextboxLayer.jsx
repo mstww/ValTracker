@@ -37,7 +37,7 @@ export default function TextboxLayer() {
           >
             <span className='mr-9 h-full flex items-center'>{textbox.text}</span>
             <div 
-              className='absolute pointer-events-auto z-30 top-2.5 right-2 ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear w-6 h-6 flex items-center justify-center'
+              className='absolute pointer-events-auto z-30 top-2.5 right-2 ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-[0ms] ease-linear w-6 h-6 flex items-center justify-center'
               onClick={() => {
                 setTextboxes(current => current.filter(x => x.text !== textbox.text));
               }}

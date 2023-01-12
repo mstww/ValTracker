@@ -112,7 +112,7 @@ export default function Wishlist({ isNavbarMinimized, isOverlayShown, setIsOverl
                 return (
                   <>
                     <motion.div
-                      className={'flex flex-row items-center w-full h-24 overflow-hidden bg-tile-color bg-opacity-20 active:bg-opacity-0 hover:bg-opacity-50 rounded transition-all duration-100 ease-linear'} key={index + 'tr'}
+                      className={'flex flex-row items-center w-full h-24 overflow-hidden bg-tile-color bg-opacity-20 active:bg-opacity-0 hover:bg-opacity-50 rounded transition-all duration-[0ms] ease-linear'} key={index + 'tr'}
                       variants={scoreboard_vars_initial}
                       initial="hidden"
                       enter="enter"

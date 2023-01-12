@@ -67,7 +67,7 @@ export default function Message({ message, unix, delay }) {
         >
           <div
             ref={messageRef}
-            className='absolute top-2 right-2 cursor-pointer rounded hover:bg-tile-color transition-all duration-100 ease-in p-1 z-10'
+            className='absolute top-2 right-2 cursor-pointer rounded hover:bg-tile-color transition-all duration-[0ms] ease-in p-1 z-10'
             onClick={() => {closeMessage(messageRef)}}
           >
             <Close className='w-4' />

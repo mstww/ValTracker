@@ -670,7 +670,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
               return (
                 <div 
                   className={
-                    'flex flex-row items-center content-center h-1/6 mb-2 justify-start rounded transition-all ease-in duration-100 border border-gray-500'
+                    'flex flex-row items-center content-center h-1/6 mb-2 justify-start rounded transition-all ease-in duration-[0ms] border border-gray-500'
                     + (account.uuid == riot_activeAccountSelection ? ' border-gradient-left active-riot-acc' : ' hover:bg-tile-color border-tile-color cursor-pointer')
                   }
                   onClick={() => { setRiot_ActiveAccountSelection(account.uuid) }}

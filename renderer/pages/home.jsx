@@ -1222,7 +1222,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     className='text-xl text-gray-300 flex flex-row items-center absolute bottom-2 left-2 bg-opacity-60 bg-black rounded px-2 py-1'
                   >
                     <span className='relative top-px'>{featuredBundlePrice}</span>
-                    <img src="/images/vp_icon.png" className='w-6 ml-2 transition-opacity duration-100 ease-in shadow-img' />
+                    <img src="/images/vp_icon.png" className='w-6 ml-2 transition-opacity duration-[0ms] ease-in shadow-img' />
                   </div>
                   :
                   null
@@ -1470,7 +1470,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       return (
                         <div 
                           id='match'
-                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 hover:bg-opacity-50 active:bg-opacity-0 cursor-default transition-all duration-100 ease-linear' 
+                          className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 hover:bg-opacity-50 active:bg-opacity-0 cursor-default transition-all duration-[0ms] ease-linear' 
                           key={index}
                           onClick={(e) => {
                             if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -1497,13 +1497,13 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                 favMatches.find(x => x === match.matchInfo.matchId) !== undefined ?
                                 <StarFilled 
                                   color 
-                                  className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                  className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-[0ms] ease-linear relative right-3'
                                   click={() => { toggleMatchInFavs(match.matchInfo.matchId, true) }} 
                                 />
                                 :
                                 <Star 
                                   color 
-                                  className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear relative right-3'
+                                  className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-[0ms] ease-linear relative right-3'
                                   click={() => { toggleMatchInFavs(match.matchInfo.matchId, false) }} 
                                 />
                               }
@@ -1512,7 +1512,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                           
                           <div className='w-1/3 flex flex-row'>
                             <div id='agent-img'>
-                              <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-100 ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
+                              <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-[0ms] ease-linear' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />
                             </div>
                             <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
                               <span className={`text-lg font-semibold ${activeQueueTab == 'competitive' ? "relative left-1.5 top-1.5" : ""}`}>{matchData.mapName}</span>
@@ -1660,12 +1660,12 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                   return (
                     <div 
                       id='match'
-                      className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 cursor-default transition-all duration-100 ease-linear' 
+                      className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 cursor-default transition-all duration-[0ms] ease-linear' 
                       key={index}
                     >
                       <div className='w-1/3 flex flex-row'>
                         <div id='agent-img'>
-                          <img className='h-full shadow-img transition-all duration-100 ease-linear skeleton-image' src={x} />
+                          <img className='h-full shadow-img transition-all duration-[0ms] ease-linear skeleton-image' src={x} />
                         </div>
                         <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
                           <span className='text-lg font-semibold skeleton-text'>SKELETO</span>

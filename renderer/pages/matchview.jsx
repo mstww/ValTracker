@@ -531,7 +531,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
           <h1 className='z-20 text-2xl flex flex-row items-center font-bold'>{LocalText(L, "link_share.header")}</h1>
           <span 
-            className={`transition-all duration-100 ease-linear cursor-pointer ${urlCopied === true ? "text-val-blue hover:text-opacity-80" : "text-button-color hover:text-button-color-hover"}`}
+            className={`transition-all duration-[0ms] ease-linear cursor-pointer ${urlCopied === true ? "text-val-blue hover:text-opacity-80" : "text-button-color hover:text-button-color-hover"}`}
             onClick={() => {
               navigator.clipboard.writeText(shareMatchURL);
               setUrlCopied(true);
@@ -780,7 +780,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                     <>
                       <div 
                         key={index}
-                        className='h-14 border border-tile-color rounded p-1 mb-1 flex flex-row items-center pl-2 relative overflow-hidden bg-tile-color bg-opacity-10 transition-all duration-100 ease-linear'
+                        className='h-14 border border-tile-color rounded p-1 mb-1 flex flex-row items-center pl-2 relative overflow-hidden bg-tile-color bg-opacity-10 transition-all duration-[0ms] ease-linear'
                       >
                         <div className='h-full flex flex-row items-center w-2/4'>
                           {
@@ -1036,7 +1036,7 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           return(
             <>
               <motion.div 
-                className={`border border-tile-color bg-tile-color bg-opacity-10 transition-all duration-75 ease-linear rounded flex flex-row items-center relative ${lockHighlightedParty.state === false ? ((highlightedParty !== playerStats.partyUUID && highlightedParty !== null) ? "!opacity-20" : "!opacity-100") : (lockHighlightedParty.lockedUUID !== playerStats.partyUUID ? "!opacity-20" : "!opacity-100")}`} key={index + 'tr'}
+                className={`border border-tile-color bg-tile-color bg-opacity-10 transition-all duration-[0ms] ease-linear rounded flex flex-row items-center relative ${lockHighlightedParty.state === false ? ((highlightedParty !== playerStats.partyUUID && highlightedParty !== null) ? "!opacity-20" : "!opacity-100") : (lockHighlightedParty.lockedUUID !== playerStats.partyUUID ? "!opacity-20" : "!opacity-100")}`} key={index + 'tr'}
                 variants={scoreboard_vars_initial}
                 initial="hidden"
                 animate={activeTab === 'scoreboard' ? "enter" : "exit"}

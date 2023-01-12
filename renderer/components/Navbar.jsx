@@ -226,10 +226,10 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
 
   var activeClasses = 'bg-button-color border-button-color';
   var inactiveClasses = 'bg-tile-color bg-opacity-20 hover:bg-opacity-50 active:bg-opacity-0 cursor-pointer border-tile-color';
-  var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-100 ease-linear';
-  var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-100 outline-none';
-  var navbarTileBaseClasses = ' border shadow-2xl drop-shadow-2xl h-10 flex items-center px-2 py-1 transition-all ease-in duration-100 mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
-  var navbarTileTextClasses = 'text-sm font-light relative top-px ml-2 nav-txt transition-all ease-in duration-75 ml-8 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100');
+  var disabledClasses = 'bg-black bg-opacity-80 cursor-default flex flex-row mb-2 h-10 items-center pl-2 rounded transition-all duration-[0ms] ease-linear';
+  var searchDisabledClasses = 'bg-black bg-opacity-80 text-sm font-light pl-9 h-8 w-full flex items-center px-2 py-1 rounded cursor-default transition-all ease-in duration-[0ms] outline-none';
+  var navbarTileBaseClasses = ' border shadow-2xl drop-shadow-2xl h-10 flex items-center px-2 py-1 transition-all ease-in duration-[0ms] mb-2 ml-px relative overflow-x-hidden ' + (isNavbarMinimized ? 'nav-min rounded-full' : 'w-5/6 rounded');
+  var navbarTileTextClasses = 'text-sm font-light relative top-px ml-2 nav-txt transition-all ease-in duration-[0ms] ml-8 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100');
 
   if(page == "home") var isHome = true;
   if(page == "shop") var isShop = true;
@@ -285,25 +285,25 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
   return (
     <motion.nav 
       id='navbar' 
-      className={'z-40 fixed top-7 left-0 bg-maincolor-dark overflow-hidden transition-all duration-100 ease-linear ' + (isNavbarMinimized === true ? 'w-16': 'w-64')}
+      className={'z-40 fixed top-7 left-0 bg-maincolor-dark overflow-hidden transition-all duration-[0ms] ease-linear ' + (isNavbarMinimized === true ? 'w-16': 'w-64')}
       variants={navbarVariants.main}
       initial="initial"
       animate={isNavbarMinimized ? "minimize" : "maximize"}
     >
       <motion.div 
         id='logo' 
-        className='flex flex-col justify-center items-center transition-all duration-100 ease-linear w-36 mx-auto'
+        className='flex flex-col justify-center items-center transition-all duration-[0ms] ease-linear w-36 mx-auto'
       >
         <motion.img 
           src='/icons/VALTracker_Logo_default.png' 
-          className={'w-36 h-26 mx-auto transition-all duration-100 ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          className={'w-36 h-26 mx-auto transition-all duration-[0ms] ease-linear ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
           variants={navbarVariants.logo}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0 : 0.92, ease: "easeOut", duration: isNavbarMinimized ? 0.01 : 0.4 }}
         />
         <motion.h1 
-          className={'text-2xl relative bottom-2 transition-all duration-75 ease-linear font-bold ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          className={'text-2xl relative bottom-2 transition-all duration-[0ms] ease-linear font-bold ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
           variants={navbarVariants.logo}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -312,7 +312,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
           VALTracker
           </motion.h1>
         <motion.span 
-          className={'relative text-sm text-gray-500 transition-all duration-75 ease-linear bottom-3 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
+          className={'relative text-sm text-gray-500 transition-all duration-[0ms] ease-linear bottom-3 ' + (isNavbarMinimized ? 'opacity-0' : 'opacity-100')}
           variants={navbarVariants.logo}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -330,7 +330,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
           transition={{ delay: 0.15, duration: 0.2, ease: "easeOut" }}
         >
           <ExpandArrow 
-            className={'w-7 hover:bg-maincolor cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
+            className={'w-7 hover:bg-maincolor cursor-pointer transition-all duration-[0ms] ease-linear p-1 rounded relative mx-auto bottom-3'} 
             click={() => { setIsNavbarMinimized(false) }}
           />
         </motion.div>
@@ -342,7 +342,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
           transition={{ delay: 0.55, duration: 0.2, ease: "easeIn" }}
         >
           <RetractArrow 
-            className={'w-7 hover:bg-maincolor cursor-pointer transition-all duration-100 ease-linear p-1 rounded relative mx-auto bottom-3'} 
+            className={'w-7 hover:bg-maincolor cursor-pointer transition-all duration-[0ms] ease-linear p-1 rounded relative mx-auto bottom-3'} 
             click={() => { setIsNavbarMinimized(true) }}
           />
         </motion.div>
@@ -432,7 +432,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
           <span className={navbarTileTextClasses}>{LocalText(L, 'wishlist')}</span>
         </motion.div>
       </div>
-      <div className={'absolute bottom-16 w-full flex justify-around transition-all duration-100 ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
+      <div className={'absolute bottom-16 w-full flex justify-around transition-all duration-[0ms] ease-linear ' + (isNavbarMinimized ? '-translate-x-40 opacity-0' : 'translate-x-0 opacity-100')}>
         <SocialsIcon icon={'/images/coffee.svg'} tooltip={'Ko-Fi'} href={'https://ko-fi.com/valtracker'} />
         <SocialsIcon icon={'/images/discord.svg'} tooltip={'Discord'} href={'https://discord.gg/aJfQ4yHysG'} />
         <SocialsIcon icon={'/images/github.svg'} tooltip={'GitHub'} href={'https://github.com/orgs/valtracker'} />
@@ -472,7 +472,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
         </motion.div>
         <div 
           id="acc-switcher-tile" 
-          className={'relative bg-maincolor-dark hover:bg-maincolor w-3/4 h-full cursor-pointer transition-all ease-in duration-100 rounded overflow-hidden text-ellipsis ' + switcherActive + (isNavbarMinimized ? ' -translate-x-40 opacity-0' : '  translate-x-0 opacity-100')}
+          className={'relative bg-maincolor-dark hover:bg-maincolor w-3/4 h-full cursor-pointer transition-all ease-in duration-[0ms] rounded overflow-hidden text-ellipsis ' + switcherActive + (isNavbarMinimized ? ' -translate-x-40 opacity-0' : '  translate-x-0 opacity-100')}
           onClick={toggleSwitcherMenu}
         >
           <div className='flex flex-row items-center content-center h-full justify-start'>
@@ -493,7 +493,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
           <Link href={'/settings'}>
             <div 
               className={
-                'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor relative left-0.5 '
+                'group transition-all ease-in duration-[0ms] rounded-full p-1.5 hover:bg-maincolor relative left-0.5 '
                 +
                 (page == 'settings' ? 'border border-gradient-left bg-maincolor hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
                 +

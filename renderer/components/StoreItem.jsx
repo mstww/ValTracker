@@ -88,9 +88,9 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             >
               {
                 isWishlisted === true ?
-                <StarFilled className='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-100 ease-linear' />
+                <StarFilled className='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-[0ms] ease-linear' />
                 :
-                <Star className='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-100 ease-linear' />
+                <Star className='w-5 h-5 mr-1 relative bottom-px cursor-pointer transition-all duration-[0ms] ease-linear' />
               }
               {wishlistTextLocale}
             </button>
@@ -103,7 +103,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
         animate="enter"
         transition={{ type: 'ease', duration: 0.05, delay: delay }}
         id={'item-box'}
-        className={'group z-10 h-full relative border border-tile-color bg-tile-color active:bg-opacity-0 bg-opacity-20 rounded shadow-lg hover:bg-opacity-50 hover:z-0 transition-all duration-100 ease-in ' + (item ? '' : 'pointer-events-none ') + (nightMarket ? 'w-5/6 mx-auto mb-4' : 'w-1/4 mr-2')}
+        className={'group z-10 h-full relative border border-tile-color bg-tile-color active:bg-opacity-0 bg-opacity-20 rounded shadow-lg hover:bg-opacity-50 hover:z-0 transition-all duration-[0ms] ease-in ' + (item ? '' : 'pointer-events-none ') + (nightMarket ? 'w-5/6 mx-auto mb-4' : 'w-1/4 mr-2')}
         onClick={(e) => {
           if(e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
             clickHandler(item.uuid, item.name, item.price, item.image, item.skinTierImage, index);
@@ -115,7 +115,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             isWishlisted === true ?
             <StarFilled 
               color
-              className='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear' 
+              className='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-[0ms] ease-linear' 
               click={async () => {
                 var wishlist = await rmSkinFromWishlist(wishlistItem);
                 setWishlistedItems(wishlist);
@@ -125,7 +125,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
             :
             <Star 
               color
-              className='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-100 ease-linear'
+              className='w-6 h-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-[0ms] ease-linear'
               click={async () => {
                 var newItem = {
                   "uuid": item.uuid,
@@ -150,7 +150,7 @@ export default function StoreItem({ item, delay, index, clickHandler, shownOverl
           <span className="text-lg font-bold shop-item-name">{ item.name }</span>
         </div>
         <div className='flex w-full h-4/5 items-center justify-center mt-6 z-10'>
-          <img src={ item.image ? item.image : '/images/vandal_invisible.png' } className={'w-4/5 drop-shadow-2xl transition-opacity duration-100 ease-in delay-' + delay + (nightMarket && " !w-3/5")} />
+          <img src={ item.image ? item.image : '/images/vandal_invisible.png' } className={'w-4/5 drop-shadow-2xl transition-opacity duration-[0ms] ease-in delay-' + delay + (nightMarket && " !w-3/5")} />
         </div>
         <div 
           id='item-price'

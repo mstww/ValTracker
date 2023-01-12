@@ -55,7 +55,7 @@ export default function Layout({ children, classNames, setup, migrate, isNavbarM
   
   return( 
     <motion.div 
-      className={"flex flex-row bg-maincolor transition-all duration-100 ease-linear " + theme}
+      className={"flex flex-row bg-maincolor transition-all duration-[0ms] ease-linear " + theme}
       variants={setup || migrate ? {} : variants}
       initial="initial"
       animate={isNavbarMinimized ? "minimize" : "maximize"}
@@ -70,7 +70,7 @@ export default function Layout({ children, classNames, setup, migrate, isNavbarM
           animate="enter"
           exit="exit"
           transition={{ type: 'ease', duration: 0.3 }}
-          className={"bg-maincolor overflow-x-hidden h-full w-full overflow-auto absolute top-0 left-0 transition-all duration-100 ease-linear " + (isOverlayShown === true ? 'overflow-hidden pointer-events-none ' : '') + (classNames ? classNames : '')}
+          className={"bg-maincolor overflow-x-hidden h-full w-full overflow-auto absolute top-0 left-0 transition-all duration-[0ms] ease-linear " + (isOverlayShown === true ? 'overflow-hidden pointer-events-none ' : '') + (classNames ? classNames : '')}
         >
           {children}
         </motion.main>

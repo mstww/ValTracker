@@ -395,12 +395,12 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
                   return (
                     <div 
                       id='match'
-                      className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 cursor-default transition-all duration-100 ease-linear' 
+                      className='group relative flex flex-row h-20 border p-1.5 mb-2 border-tile-color bg-tile-color bg-opacity-20 rounded mr-2 cursor-default transition-all duration-[0ms] ease-linear' 
                       key={index}
                     >
                       <div className='w-1/3 flex flex-row'>
                         <div id='agent-img'>
-                          <img className='h-full shadow-img transition-all duration-100 ease-linear skeleton-image' src={x} />
+                          <img className='h-full shadow-img transition-all duration-[0ms] ease-linear skeleton-image' src={x} />
                         </div>
                         <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
                           <span className={`text-xl font-semibold ${activeQueueTab == 'competitive' ? "relative left-1.5 top-0.5" : ""} skeleton-text`}>SKELETO</span>
@@ -466,7 +466,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
                     var { matchData } = calculateMatchStats(match, router.query.name, router.query.tag, mapData, ranks);
 
                     return (
-                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 bg-tile-color bg-opacity-10 border-tile-color rounded mr-2 cursor-default transition-all duration-100 ease-linear' key={index}>
+                      <div id='match' className='relative flex flex-row h-20 border p-1.5 mb-2 bg-tile-color bg-opacity-10 border-tile-color rounded mr-2 cursor-default transition-all duration-[0ms] ease-linear' key={index}>
                         <div className='w-1/3 flex flex-row'>
                           <div id='agent-img'>
                             <img className='h-full shadow-img' src={matchData.playerAgent ? `https://media.valorant-api.com/agents/${matchData.playerAgent}/displayicon.png` : ''} />

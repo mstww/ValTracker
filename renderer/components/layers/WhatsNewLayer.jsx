@@ -106,7 +106,7 @@ export default function WhatsNewLayer({ isOverlayShown, setIsOverlayShown }) {
         <span className='text-sm text-gray-500'>
           {LocalText(L, "bottom_text.text_1")}
           <span 
-            className='cursor-pointer text-button-color hover:text-button-color-hover transition-all duration-100 ease-linear'
+            className='cursor-pointer text-button-color hover:text-button-color-hover transition-all duration-[0ms] ease-linear'
             onClick={() => { router.push('/settings?tab=patchnotes&lang=' + router.query.lang) }}
           > {LocalText(L, "bottom_text.link_text")} </span>
           {LocalText(L, "bottom_text.text_2")}

@@ -7,7 +7,7 @@ export default function ThemeSelector({ currentTheme, setCurrentTheme, L }) {
   return (
     <div className="flex flex-row items-center ml-4 mt-2 mb-4">
       <div>
-        <span className="text-lg transition-all duration-100 ease-linear inline-block mb-2">{LocalText(L,  "pg_1.grp_6.setting_1.name")}</span> <br />
+        <span className="text-lg transition-all duration-[0ms] ease-linear inline-block mb-2">{LocalText(L,  "pg_1.grp_6.setting_1.name")}</span> <br />
         <span className={"text-gray-500 mt-2"}>{LocalText(L,  "pg_1.grp_6.setting_1.desc")}</span> 
       </div>
       <div className="ml-auto relative mr-28 w-52 flex flex-row items-center justify-center">

@@ -11,7 +11,7 @@ export default function SocialsIcon({ icon, tooltip, href }) {
 
   return(
     <Tooltip content={tooltip} color="error" placement={'top'} className='rounded'>
-      <div className='hover:bg-button-color-hover p-1 rounded cursor-pointer transition-all ease-in duration-100' onClick={() => {openInShell(href)}}>
+      <div className='hover:bg-button-color-hover p-1 rounded cursor-pointer transition-all ease-in duration-[0ms]' onClick={() => {openInShell(href)}}>
         { icon === '/images/coffee.svg' ? <Coffee className='w-6 h-6 p-px' /> : null }
         { icon === '/images/discord.svg' ? <Discord className='w-6 h-6 p-px' /> : null }
         { icon === '/images/twitter.svg' ? <Twitter className='w-6 h-6 p-px' /> : null }

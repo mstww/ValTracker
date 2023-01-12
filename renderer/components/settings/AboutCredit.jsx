@@ -9,7 +9,7 @@ export default function AboutCredit({ url, text }) {
       
       <span 
         onClick={() => { openExternalLink(url) }}
-        className='underline cursor-pointer hover:text-button-color-hover transition-all ease-in duration-75 text-global-text font-light'
+        className='underline cursor-pointer hover:text-button-color-hover transition-all ease-in duration-[0ms] text-global-text font-light'
       >
         {text}
       </span>

@@ -243,7 +243,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-4 py-2'
           >
             <span className='relative top-px'>{cardSkinPrice}</span>
-            <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
+            <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-[0ms] ease-in' />
           </div>
           <h1 className='z-20 text-2xl font-bold'>{ cardSkinName }</h1>
           <div id='skin-image' className='z-10 bottom-0 left-0 absolute w-full h-full flex justify-center items-center'>
@@ -310,7 +310,7 @@ function NightMarket({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           </div>
         </motion.div>
       </motion.div>
-      <div id='back-arrow' className='absolute top-4 right-4 hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear' onClick={() => { router.back() }}>
+      <div id='back-arrow' className='absolute top-4 right-4 hover:bg-tile-color rounded cursor-pointer transition-all duration-[0ms] ease-linear' onClick={() => { router.back() }}>
         <BackArrow className='w-8 p-1' />
       </div>
       <div className='absolute top-4 left-4'>

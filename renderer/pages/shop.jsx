@@ -343,7 +343,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-4 py-2'
           >
             <span className='relative top-px'>{cardSkinPrice}</span>
-            <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
+            <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-[0ms] ease-in' />
           </div>
           <h1 className='z-20 text-2xl flex flex-row items-center font-bold'><img src={cardSkinTier} className='w-9 mr-2 shadow-img' /> { cardSkinName }</h1>
           <div id='skin-image' className='z-10 bottom-0 left-0 absolute w-full h-full flex justify-center items-center'>
@@ -377,7 +377,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       <div 
                         id='level' 
                         className={
-                          "relative chroma-swatch w-full h-14 border border-tile-color bg-tile-color bg-opacity-20 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-50 rounded pl-1 transition-all duration-100 ease-linear "
+                          "relative chroma-swatch w-full h-14 border border-tile-color bg-tile-color bg-opacity-20 shadow-lg mb-2 flex flex-col p-px cursor-pointer hover:bg-opacity-50 rounded pl-1 transition-all duration-[0ms] ease-linear "
                           + (activeCardSkinLevel == index ? 'border-button-color' : 'border-tile-color')
                         }
                         key={index}
@@ -436,7 +436,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                 className='text-2xl text-gray-300 flex flex-row items-center absolute bottom-4 right-4 bg-opacity-60 bg-black rounded px-4 py-2'
               >
                 <span className='relative top-px'>{bundlePrice}</span>
-                <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-100 ease-in' />
+                <img src="/images/vp_icon.png" className='w-8 ml-2 transition-opacity duration-[0ms] ease-in' />
               </div>
             </motion.div>
           </div>
@@ -467,7 +467,7 @@ function Shop({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
               onClick={() => { switchToNM() }}
               id='night-market'
               className={
-                'bg-opacity-20 bg-tile-color active:bg-opacity-0 border border-tile-color p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:bg-opacity-50 transition-all duration-100 ease-in cursor-pointer ' 
+                'bg-opacity-20 bg-tile-color active:bg-opacity-0 border border-tile-color p-4 py-8 flex-col rounded shadow-lg justify-center items-center hover:bg-opacity-50 transition-all duration-[0ms] ease-in cursor-pointer ' 
                 + 
                 (nightMarketShown ? 'flex' : 'hidden')
               }

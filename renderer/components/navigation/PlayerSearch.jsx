@@ -77,22 +77,22 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
   return (
     <>
       <div 
-        className={'relative mb-6 mt-4 w-full transition-all duration-100 ease-linear search-container ' + (isNavbarMinimized ? 'minimized' : '')}
+        className={'relative mb-6 mt-4 w-full transition-all duration-[0ms] ease-linear search-container ' + (isNavbarMinimized ? 'minimized' : '')}
       >
         <motion.div 
-          className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden ' + (isNavbarMinimized ? 'rounded-full w-10 h-10 px-0' : 'w-full h-8 px-2')}
+          className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-[0ms] focus:bg-button-color-hover outline-none mx-auto overflow-hidden ' + (isNavbarMinimized ? 'rounded-full w-10 h-10 px-0' : 'w-full h-8 px-2')}
           onClick={() => { isNavbarMinimized === true ? ipcRenderer.send("relayOpenPlayerSearchModal", searchHistory) : (playerSearchRef.current ? playerSearchRef.current.focus() : null) }}
           variants={variants}
           initial="initial"
           animate={isNavbarMinimized ? "minimize" : "maximize"}
           transition={{ delay: isNavbarMinimized ? 0.2 : 0.4, duration: 0.2, ease: "easeOut" }}
         >
-          <Search className={'transition-all duration-75 ease-linear cursor-pointer z-30 w-5 h-5 player-search-mgnfy ' + (isNavbarMinimized ? 'absolute' : 'relative')} />
+          <Search className={'transition-all duration-[0ms] ease-linear cursor-pointer z-30 w-5 h-5 player-search-mgnfy ' + (isNavbarMinimized ? 'absolute' : 'relative')} />
           <input 
             id="skin-search"
             type='text'
             placeholder={placeholderText}
-            className={'bg-button-color focus:outline-none text-sm z-20 ml-1 font-light group-hover:bg-button-color-hover hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer outline-none mx-auto transition-all ease-in duration-100 ' + (isNavbarMinimized ? 'opacity-0' : 'w-full h-8 px-2')}
+            className={'bg-button-color focus:outline-none text-sm z-20 ml-1 font-light group-hover:bg-button-color-hover hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer outline-none mx-auto transition-all ease-in duration-[0ms] ' + (isNavbarMinimized ? 'opacity-0' : 'w-full h-8 px-2')}
             onKeyDown={handlePlayerSearch} 
             autoCorrect='off'
             spellCheck='false'
@@ -126,7 +126,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
           {searchHistory.map((item, index) => {
             return (
               <div 
-                className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-100 border-b border-tile-color hover:!rounded"}
+                className={"h-8 w-full items-center flex pl-9 hover:bg-button-color-hover relative transition-all ease-in duration-[0ms] border-b border-tile-color hover:!rounded"}
                 id="search-history-tile"
                 onClick={(e) => {
                   if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
@@ -140,7 +140,7 @@ export default function PlayerSearch({ isSearchShown, historyNotifSwitch, handle
                 <span className="text-sm font-light">{item.name + '#' + item.tag}</span>
                 <div
                   id='remove-el'
-                  className="absolute top-1 left-1 cursor-pointer hover:bg-black rounded p-1 transition-all ease-in duration-100"
+                  className="absolute top-1 left-1 cursor-pointer hover:bg-black rounded p-1 transition-all ease-in duration-[0ms]"
                   onClick={() => {
                     removeItemFromHistory(item.encoded_user);
                     playerSearchRef.current.focus();

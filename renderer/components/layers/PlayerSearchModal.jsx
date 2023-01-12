@@ -119,15 +119,15 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
         </div>
         <h2 className='mb-2 font-bold'>{LocalText(L, "search_modal.header")}</h2>
         <div 
-          className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-100 focus:bg-button-color-hover outline-none mx-auto overflow-hidden'}
+          className={'group bg-button-color focus:outline-none text-sm z-20 pl-2.5 hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer transition-all ease-in duration-[0ms] focus:bg-button-color-hover outline-none mx-auto overflow-hidden'}
           onClick={() => { inputRef.current ? inputRef.current.focus() : null }}
         >
-          <Search className={'transition-all duration-75 ease-linear cursor-pointer z-30 w-5 h-5 player-search-mgnfy relative'} />
+          <Search className={'transition-all duration-[0ms] ease-linear cursor-pointer z-30 w-5 h-5 player-search-mgnfy relative'} />
           <input 
             id="skin-search"
             type='text'
             placeholder={LocalText(L, "search_modal.placeholder")}
-            className={'bg-button-color focus:outline-none text-sm z-20 ml-1 font-light group-hover:bg-button-color-hover hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer outline-none mx-auto transition-all ease-in duration-100'}
+            className={'bg-button-color focus:outline-none text-sm z-20 ml-1 font-light group-hover:bg-button-color-hover hover:bg-button-color-hover flex items-center py-1 rounded cursor-pointer outline-none mx-auto transition-all ease-in duration-[0ms]'}
             onKeyDown={handlePlayerSearch} 
             autoCorrect='off'
             spellCheck='false'
@@ -141,7 +141,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
             {searchHistory.map((searchValue, index) => {
               return(
                 <li 
-                  className='w-full flex items-center !mb-1 font-light p-2 border border-tile-color bg-tile-color bg-opacity-20 rounded hover:bg-opacity-50 active:bg-opacity-0 transition-all duration-100 ease-linear'
+                  className='w-full flex items-center !mb-1 font-light p-2 border border-tile-color bg-tile-color bg-opacity-20 rounded hover:bg-opacity-50 active:bg-opacity-0 transition-all duration-[0ms] ease-linear'
                   onClick={(e) => {
                     if(e.target.id !== "remove-el" && e.target.tagName !== "G" && e.target.tagName !== "SVG" && e.target.tagName !== "LINE" && e.target.tagName !== "g" && e.target.tagName !== "svg" && e.target.tagName !== "line" && e.target.tagName !== "path") {
                       handleHistoryClick(searchValue.name, searchValue.tag, searchValue.encoded_user);
@@ -152,7 +152,7 @@ export default function PlayerSearchModal({ isOverlayShown, setIsOverlayShown })
                   {searchValue.name}#{searchValue.tag}
                   <div 
                     id='remove-el'
-                    className='ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-100 ease-linear w-7 h-7 flex items-center justify-center'
+                    className='ml-auto hover:bg-tile-color rounded cursor-pointer transition-all duration-[0ms] ease-linear w-7 h-7 flex items-center justify-center'
                     onClick={() => {
                       removeItemFromHistory(searchValue.encoded_user);
                     }}

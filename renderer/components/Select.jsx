@@ -89,7 +89,7 @@ export function Select({ items, className, value, setValue, onChange, thin }) {
     <div className={`inline-block relative ${thin === true ? "h-[26px]" : "h-10"} rounded ` + (className ? className : '')} ref={ref}>
       <div className={`group button select relative w-full text-left inline-block ${thin === true ? "py-1 !h-full" : "py-3"} align-baseline ${open === true ? 'opened' : ''}`} onClick={() => { toggleMenu() }}>
         <span className={`block relative ${thin === true ? "bottom-[3px] font-medium text-base px-2" : "bottom-0.5 px-4"} w-full text-left`}>{internalValue.text}</span>
-        <CircleArrowDown className={`${thin === true ? "w-[18px] h-[18px] absolute right-1 top-[3px]" : "w-6 h-6 absolute right-2 top-1.5"} transition-all duration-100 ease-linear group-hover:text-white ${open ? "rotate-180 text-white" : "text-button-color"}`} />
+        <CircleArrowDown className={`${thin === true ? "w-[18px] h-[18px] absolute right-1 top-[3px]" : "w-6 h-6 absolute right-2 top-1.5"} transition-all duration-[0ms] ease-linear group-hover:text-white ${open ? "rotate-180 text-white" : "text-button-color"}`} />
       </div>
       <div 
         className={`w-full absolute left-0 h-auto flex-col border border-tile-color z-20 glass drop-shadow-2xl shadow-2xl p-2 rounded hidden`}
