@@ -208,7 +208,7 @@ async function startDB() {
     child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
     
     child.stdout.on('data', function (data) {
-      process.stdout.write(data);
+      //process.stdout.write(data);
     });
     child.stderr.on('data', function (data) {
       process.stderr.write(data);
@@ -895,6 +895,7 @@ async function getEntitlement(bearer) {
  */
 
 async function getPlayer_PreGame(region, puuid, entitlement_token, bearer) {
+  console.log(bearer);
   return (await (await fetch(`https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${puuid}`, {
     method: 'GET',
     headers: {
@@ -1090,7 +1091,8 @@ async function checkForMatch() {
   var puuid = user_data.uuid;
   var region = user_data.region;
 
-  var bearer = getUserAccessToken();
+  var bearer = await 
+  getUserAccessToken();
 
   var entitlement_token = await getUserEntitlement();
 
@@ -1111,6 +1113,8 @@ async function checkForMatch() {
       "gamePod": game_data.GamePodID,
       "matchID": game_data.ID
     }
+
+    console.log("Here2!", data);
     
     decideRichPresenceData(data);
     return;
@@ -1139,6 +1143,8 @@ async function checkForMatch() {
       "gamePod": game_data.GamePodID,
       "matchID": game_data.MatchID
     }
+
+    console.log("Here!", data);
     
     decideRichPresenceData(data);
     return;
@@ -1153,6 +1159,8 @@ async function checkForMatch() {
     "mapPath": null,
     "gameMode": null
   }
+
+  console.log("Here3!", data);
     
   decideRichPresenceData(data);
   return;
@@ -1197,6 +1205,7 @@ async function decideRichPresenceData(data) {
           } else {
             var { agentUUID, matchData } = await fetchPlayerAgent();
             playerAgent = agentUUID;
+            console.log(playerAgent);
   
             data.gamePod = matchData.GamePodID;
             data.matchID = matchData.MatchID;
@@ -1239,6 +1248,7 @@ async function decideRichPresenceData(data) {
         if(playerAgent === false && data.gameMode !== 'competitive') {
           var { agentUUID, matchData } = await fetchPlayerAgent();
           playerAgent = agentUUID;
+          console.log(playerAgent);
 
           data.gamePod = matchData.GamePodID;
           data.matchID = matchData.MatchID;
@@ -1335,6 +1345,7 @@ async function decideRichPresenceData(data) {
 
 async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
   var lg_txt = await LocalText(L, 'val_rp_details.playing_val');
+  console.log(agent_or_mode);
   var obj = {
     largeImageText: lg_txt,
     buttons: [{
@@ -1346,10 +1357,11 @@ async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timest
   if(mode_and_info) obj.details = mode_and_info;
   if(scores) obj.state = scores;
   if(map) obj.largeImageKey = map;
-  if(agent_or_mode) obj.smallImageKey = agent_or_mode;
+  if(agent_or_mode) obj.smallImageKey = agent_or_mode.toLowerCase();
   if(timestamp) obj.startTimestamp = timestamp;
 
-  discordVALPresence.setActivity(obj);
+  var dat = await discordVALPresence.setActivity(obj);
+  console.log(dat);
 }
 
 /**
@@ -1587,7 +1599,6 @@ async function checkForInstanceToken() {
     return;
   }
   
-  console.log(appStatus.data);
   if(appStatus.data.appRP.operational === true) {
     // Set activity after client is finished loading
     discordClient.on("ready", () => {
@@ -1606,6 +1617,7 @@ async function checkForInstanceToken() {
       var VAL_WEBSOCKET = new Worker(new URL("../modules/valWebSocketComms.mjs", import.meta.url));
       
       VAL_WEBSOCKET.on("message", async (msg) => {
+        console.log(msg);
         switch(msg.channel) {
           case("message"): {
             if(msg.data === "fetchPlayerData") {
@@ -1951,7 +1963,6 @@ ipcMain.on("changeDiscordRP", async function (event, arg) {
   var rpObj = await executeQuery(`SELECT value FROM setting:⟨${uuid}⟩`);
   var useAppRP = rpObj[0] ? rpObj[0].value : undefined;
 
-  console.log(RPState, useAppRP);
   if(RPState === "app" && useAppRP === true) {
     discordClient.setActivity(discord_rps[arg]);
   } else {
@@ -2282,7 +2293,6 @@ ipcMain.handle('requestInstanceToken', async (event, args) => {
 });
 
 ipcMain.on('relayReloadNavbarAccounts', () => {
-  console.log("here");
   sendMessageToWindow("reloadNavbarAccounts");
   mainWindow.webContents.send("reloadNavbarAccounts", null);
 });
