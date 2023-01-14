@@ -208,7 +208,7 @@ async function startDB() {
     child = spawn(execFilePath, [...process.env.DB_START.split(","), `file://${process.env.APPDATA}/VALTracker/user_data`]);
     
     child.stdout.on('data', function (data) {
-      //process.stdout.write(data);
+      process.stdout.write(data);
     });
     child.stderr.on('data', function (data) {
       process.stderr.write(data);
@@ -895,7 +895,6 @@ async function getEntitlement(bearer) {
  */
 
 async function getPlayer_PreGame(region, puuid, entitlement_token, bearer) {
-  console.log(bearer);
   return (await (await fetch(`https://glz-${region}-1.${region}.a.pvp.net/pregame/v1/players/${puuid}`, {
     method: 'GET',
     headers: {
@@ -1113,8 +1112,6 @@ async function checkForMatch() {
       "gamePod": game_data.GamePodID,
       "matchID": game_data.ID
     }
-
-    console.log("Here2!", data);
     
     decideRichPresenceData(data);
     return;
@@ -1143,8 +1140,6 @@ async function checkForMatch() {
       "gamePod": game_data.GamePodID,
       "matchID": game_data.MatchID
     }
-
-    console.log("Here!", data);
     
     decideRichPresenceData(data);
     return;
@@ -1159,8 +1154,6 @@ async function checkForMatch() {
     "mapPath": null,
     "gameMode": null
   }
-
-  console.log("Here3!", data);
     
   decideRichPresenceData(data);
   return;
@@ -1205,7 +1198,6 @@ async function decideRichPresenceData(data) {
           } else {
             var { agentUUID, matchData } = await fetchPlayerAgent();
             playerAgent = agentUUID;
-            console.log(playerAgent);
   
             data.gamePod = matchData.GamePodID;
             data.matchID = matchData.MatchID;
@@ -1248,7 +1240,6 @@ async function decideRichPresenceData(data) {
         if(playerAgent === false && data.gameMode !== 'competitive') {
           var { agentUUID, matchData } = await fetchPlayerAgent();
           playerAgent = agentUUID;
-          console.log(playerAgent);
 
           data.gamePod = matchData.GamePodID;
           data.matchID = matchData.MatchID;
@@ -1345,7 +1336,6 @@ async function decideRichPresenceData(data) {
 
 async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timestamp) {
   var lg_txt = await LocalText(L, 'val_rp_details.playing_val');
-  console.log(agent_or_mode);
   var obj = {
     largeImageText: lg_txt,
     buttons: [{
@@ -1361,7 +1351,6 @@ async function setRichPresence(mode_and_info, scores, map, agent_or_mode, timest
   if(timestamp) obj.startTimestamp = timestamp;
 
   var dat = await discordVALPresence.setActivity(obj);
-  console.log(dat);
 }
 
 /**
@@ -1617,7 +1606,6 @@ async function checkForInstanceToken() {
       var VAL_WEBSOCKET = new Worker(new URL("../modules/valWebSocketComms.mjs", import.meta.url));
       
       VAL_WEBSOCKET.on("message", async (msg) => {
-        console.log(msg);
         switch(msg.channel) {
           case("message"): {
             if(msg.data === "fetchPlayerData") {

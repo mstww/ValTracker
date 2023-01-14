@@ -51,8 +51,6 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
   const router = useRouter();
   const firstRender = useFirstRender();
 
-  console.log(isNavbarMinimized);
-
   var page = router.pathname.split("/").pop();
 
   const [ name, setname ] = React.useState('');
@@ -162,8 +160,6 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
         "x-valtracker-version": 'v' + pjson.version
       }
     })).json();
-
-    console.log(featureStatus);
 
     setIsInvShown(featureStatus.data.inv.enabled);
     setInvHiddenDesc(featureStatus.data.inv.desc);
@@ -493,7 +489,7 @@ export default function Navbar({ isNavbarMinimized, setIsNavbarMinimized, setAcc
           <Link href={'/settings'}>
             <div 
               className={
-                'group transition-all ease-in duration-[0ms] rounded-full p-1.5 hover:bg-maincolor relative left-0.5 '
+                'group transition-all ease-in duration-100 rounded-full p-1.5 hover:bg-maincolor relative left-0.5 '
                 +
                 (page == 'settings' ? 'border border-gradient-left bg-maincolor hover:rotate-0 cursor-default' : 'cursor-pointer hover:rotate-90')
                 +

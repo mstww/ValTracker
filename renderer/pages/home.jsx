@@ -736,11 +736,8 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         if(mapData.data !== undefined) {
           var map_data = mapData;
         } else {
-          console.log("Debug 2");
-          console.log('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang));
           var map_data_raw = await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
           var map_data = await map_data_raw.json();
-          console.log("Debug 1");
           setMapData(map_data);
           await asyncDelay(50);
         }
@@ -760,7 +757,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         var sorted_agent_stats = Object.keys(agent_stats).sort(function(a, b) {
           return (parseInt(agent_stats[b].avg_match_score) - parseInt(agent_stats[a].avg_match_score)) + (parseInt(agent_stats[b].kills) - parseInt(agent_stats[a].kills)) + (agent_stats[b].wins - agent_stats[a].wins);
         });
-        console.log("First Load 6");
   
         var agent_data_raw = await fetch('https://valorant-api.com/v1/agents/' + sorted_agent_stats[0] + '?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' });
         var agent_data = await agent_data_raw.json();
@@ -775,7 +771,6 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
         setCurrentMatches(newMatches);
         setLoading(false);
         setIsSilentLoading(true);
-        console.log("First Load 7");
         return;
       } else {
         setLoading(true);

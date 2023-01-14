@@ -426,7 +426,6 @@ function Matchview({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
   React.useEffect(async () => {
     if(!router.query.lang) return;
 
-    console.log(router.query.isExternalSource);
     if(router.query.isExternalSource === "true") {
       var user_data = await getCurrentUserData();
       var mapData = await (await fetch('https://valorant-api.com/v1/maps?language=' + APIi18n(router.query.lang), { 'Content-Type': 'application/json' })).json();

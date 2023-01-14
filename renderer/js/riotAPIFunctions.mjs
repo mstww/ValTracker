@@ -206,7 +206,6 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
   var versionInfo = await (await fetch(`https://valorant-api.com/v1/version`)).json();
 
   var mmrInfo = await getMMRInfo(region, puuid, entitlement_token, bearer, versionInfo.data.riotClientVersion);
-  console.log(mmrInfo);
 
   if(!mmrInfo.httpStatus && mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID) {
     var currentSeason = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[seasonUUID];
@@ -219,8 +218,9 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
     
     var peaktier = currenttier;
 
-    for(var i = 0; i < mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID.length; i++) {
-      if(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[i].CompetitiveTier > peaktier) peaktier = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[i].CompetitiveTier;
+    for(var i = 0; i < Object.keys(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID).length; i++) {
+      var season = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[Object.keys(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID)[i]];
+      if(season.CompetitiveTier > peaktier) peaktier = season.CompetitiveTier;
     }
   } else {
     var currenttier = 0;

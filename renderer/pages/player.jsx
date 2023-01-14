@@ -35,8 +35,6 @@ const fetchPlayer = async (pname, ptag, lang) => {
     const playerInfoRaw = await fetch(`https://api.valtracker.gg/v1/riot/player/${pname}/${ptag}`, { keepalive: true });
     const pInfo = await playerInfoRaw.json();
 
-    console.log(pInfo);
-
     if(pInfo.status !== 200) {
       return { errored: true, items: {status: pInfo.status, message: pInfo.message }};
     }
@@ -95,8 +93,6 @@ const fetchPlayer = async (pname, ptag, lang) => {
         "games": matchesByDates
       }
     }
-
-    console.log(json);
 
     return { errored: false, items: json };
   } catch(err) {
@@ -257,7 +253,6 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
 
       setMatches(items.matches.games);
 
-      console.log(playerInfo);
       setPlayerInfo(items.player);
 
       var arr = [];
@@ -274,7 +269,6 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
 
       setLoading(false);
     } else {
-      console.log("here");
       setLoading(false);
       setErrorMessage((typeof items.message === "string" ? items.message : "Internal Server Error"));
       setError(true);
@@ -762,7 +756,7 @@ function PlayerProfile({ isNavbarMinimized, isOverlayShown, setIsOverlayShown })
       <div className={`w-full h-full flex flex-row items-center justify-center ${error === false && "hidden"}`}>
         <div className='h-40 text-center'>
           <span className='font-bold text-2xl block'>Ooops!</span>
-          <span className='text-lg'>{errorMessage}</span>
+          <span className='text-lg'>{errorMessage === "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON" ? "Rate Limit exceeded. Please try again in 2 Minutes." : errorMessage}</span>
         </div>
       </div>
     </Layout>
