@@ -52,6 +52,10 @@
         "header": "New Update downloaded!",
         "desc": "VALTracker has just downloaded a new update. It will now restart."
       }
+    },
+    "updates": {
+      "header": "No updates found.",
+      "desc": "We couldn't find any new updates."
     }
   },
   "de-DE": {
@@ -107,6 +111,10 @@
         "header": "Neues Update heruntergeladen!",
         "desc": "VALTracker hat gerade ein neues Update heruntergeladen. Es wird jetzt neu gestartet."
       }
+    },
+    "updates": {
+      "header": "Kein update gefunden.",
+      "desc": "Wir konnten keine neuen updates finden."
     }
   },
   "fr-FR": {
@@ -162,6 +170,10 @@
         "header": "Nouvelle mise à jour installer!",
         "desc": "VALTracker viens d'installer une nouvelle mise à jour. Il va maintenant redémarer."
       }
+    },
+    "updates": {
+      "header": "Aucune mise à jour trouvée.",
+      "desc": "Nous n'avons pas trouvé de nouvelles mises à jour."
     }
   }
 }

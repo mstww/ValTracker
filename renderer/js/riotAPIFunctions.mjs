@@ -95,8 +95,17 @@ export async function checkForRankup(region, puuid, matchID, entitlement_token, 
     keepalive: true
   })).json();
 
-  if(data.TierAfterUpdate > data.TierBeforeUpdate) return true;
-  else return false;
+  var rankup = false;
+  var rankdown = false;
+
+  if(data.TierAfterUpdate > data.TierBeforeUpdate) var rankup = true;
+  if(data.TierAfterUpdate < data.TierBeforeUpdate) var rankdown = true;
+
+  var obj = {
+    rankup, rankdown
+  }
+
+  return obj;
 }
 
 /**
@@ -219,8 +228,8 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
     var peaktier = currenttier;
 
     for(var i = 0; i < Object.keys(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID).length; i++) {
-      var season = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[Object.keys(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID)[i]];
-      if(season.CompetitiveTier > peaktier) peaktier = season.CompetitiveTier;
+      var playerSeason = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[Object.keys(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID)[i]];
+      if(playerSeason.CompetitiveTier > peaktier) playerSeason = season.CompetitiveTier;
     }
   } else {
     var currenttier = 0;
@@ -253,6 +262,8 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
 
   const rankIcon = `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${currenttier}/smallicon.png`;
   
+  console.log(season);
+
   const date1 = new Date();
   const date2 = new Date(season.endTime);
   const diffTime = Math.abs(date2 - date1);

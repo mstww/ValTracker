@@ -26,6 +26,7 @@ import Layout from '../components/Layout';
 import { changeSetting, createThing, executeQuery, getAllSettings, getCurrentPUUID, updateThing } from '../js/dbFunctions.mjs';
 import { v5 as uuidv5 } from 'uuid';
 import { getPUUID, getXMPPRegion, getEntitlement, getPlayerMMR, requestUserCreds } from '../js/riotAPIFunctions.mjs';
+import nodeNotifier from 'node-notifier';
 
 const md_conv = new parser.Converter();
 
@@ -566,6 +567,10 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
     }
   }
 
+  const checkForAppUpdates = () => {
+    ipcRenderer.send("fetch-update", true);
+  }
+
   React.useEffect(() => {
     fetchUserAccounts();
     fetchSettings();
@@ -939,13 +944,23 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
               />
             </SettingsGroup>
 
-            <SettingsGroup header={LocalText(L, 'pg_5.grp_2.name')} important={true}>
+            <SettingsGroup header={LocalText(L, 'pg_5.grp_2.name')}>
               <Setting 
                 title={LocalText(L, 'pg_5.grp_2.setting_1.name')} 
                 desc={LocalText(L, 'pg_5.grp_2.setting_1.desc')}
                 inputType={'button'} 
                 buttonText={LocalText(L, 'pg_5.grp_2.setting_1.button_text')}
-                onClick={() => { openPopup(setOther_ResetAppPopupOpen) }}
+                onClick={() => { checkForAppUpdates() }}
+              />
+            </SettingsGroup>
+
+            <SettingsGroup header={LocalText(L, 'pg_5.grp_3.name')} important={true}>
+              <Setting 
+                title={LocalText(L, 'pg_5.grp_3.setting_1.name')} 
+                desc={LocalText(L, 'pg_5.grp_3.setting_1.desc')}
+                inputType={'button'} 
+                buttonText={LocalText(L, 'pg_5.grp_3.setting_1.button_text')}
+                onClick={() => { checkForAppUpdates() }}
               />
             </SettingsGroup>
 

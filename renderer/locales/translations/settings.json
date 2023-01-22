@@ -152,6 +152,14 @@
         }
       },
       "grp_2": {
+        "name": "UPDATES",
+        "setting_1": {
+          "name": "Check for updates",
+          "desc": "Make the app check for recent patches.",
+          "button_text": "Check for update"
+        }
+      },
+      "grp_3": {
         "name": "DANGER ZONE",
         "setting_1": {
           "name": "Reset VALTracker",
@@ -351,6 +359,14 @@
         }
       },
       "grp_2": {
+        "name": "UPDATES",
+        "setting_1": {
+          "name": "Suche nach updates",
+          "desc": "Lass die app nach neuen updates suchen.",
+          "button_text": "Suche starten"
+        }
+      },
+      "grp_3": {
         "name": "GEFAHRENZONE",
         "setting_1": {
           "name": "VALTracker zurücksetzen",
@@ -550,6 +566,14 @@
         }
       },
       "grp_2": {
+        "name": "MISES À JOUR",
+        "setting_1": {
+          "name": "Recherche de mises à jour",
+          "desc": "Laisse l'application rechercher les nouvelles mises à jour.",
+          "button_text": "Lancer la recherche"
+        }
+      },
+      "grp_3": {
         "name": "ZONE DANGEREUSE",
         "setting_1": {
           "name": "Réinitialiser VALTracker",

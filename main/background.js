@@ -1933,10 +1933,29 @@ autoUpdater.on("update-downloaded", () => {
   sendMessageToWindow("update-download-finished");
 });
 
+async function noUpdateWhileForceCheck() {
+  var title = await LocalText(L, "updates.header");
+  var desc = await LocalText(L, "updates.desc");
+  notifier.notify({
+    title: title,
+    message: desc,
+    icon: process.env.APPDATA + "/VALTracker/user_data/VALTrackerLogo.png",
+    wait: 3,
+    appID: 'VALTracker'
+  });
+}
+
 // Handler to look for updates
-ipcMain.on('fetch-update', function() {
+ipcMain.on('fetch-update', function(event, args) {
+  if(args === true) {
+    autoUpdater.once('update-not-available', () => {
+      noUpdateWhileForceCheck();
+    });
+  }
   if(!isDev) {
     autoUpdater.checkForUpdates();
+  } else {
+    noUpdateWhileForceCheck();
   }
 });
 

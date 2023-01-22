@@ -60,15 +60,53 @@ const fetchMatches = async (startIndex, endIndex, currentMatches, queue, puuid, 
     var matches = [];
     var matchIDs = [];
 
+    var prevMatch;
+
     for (var i = 0; i < history.length; i++) {
-      const match = await getMatch(region, history[i].MatchID, entitlement_token, bearer);
-      if(queue === "competitive") {
-        //var isRankup = await checkForRankup(region, puuid, match.matchInfo.matchId, entitlement_token, bearer); TODO: Check this by looking at the first match, then the second. If the first one has a lower rank, it was a rankup game, if it has a higher rank, it was a rankdown game, if it is the same rank, it was neither and if it was the most recent match, check with an extra API call, except for if the last game was a rankup.
-        //match.matchInfo.isRankupGame = isRankup;
+      var matchQ = await executeQuery(`SELECT * FROM match:⟨${history[i].MatchID}⟩`);
+
+      if(!matchQ[0]) {
+        var match = await getMatch(region, history[i].MatchID, entitlement_token, bearer);
+      } else {
+        var match = matchQ[0];
+      }
+
+      if(queue === "competitive" && (match.matchInfo.isRankupGame === undefined || match.matchInfo.isRankdownGame === undefined)) {
+        if(prevMatch === undefined) {
+          var rankInfo = await checkForRankup(region, puuid, match.matchInfo.matchId, entitlement_token, bearer);
+          match.matchInfo.isRankupGame = rankInfo.rankup;
+          match.matchInfo.isRankdownGame = rankInfo.rankdown;
+        } else {
+          var prevMatchPlayer = prevMatch.players.find(x => x.subject === puuid);
+          var currentMatchRank = prevMatchPlayer.competitiveTier;
+          var currentMatchPlayer = match.players.find(x => x.subject === puuid);
+          var prevMatchRank = currentMatchPlayer.competitiveTier;
+
+          if(currentMatchRank > prevMatchRank) {
+            match.matchInfo.isRankupGame = true;
+            match.matchInfo.isRankdownGame = false;
+          }
+
+          if(currentMatchRank < prevMatchRank) {
+            if(currentMatchRank === 0) {
+              match.matchInfo.isRankupGame = false;
+              match.matchInfo.isRankdownGame = false;
+            } else {
+              match.matchInfo.isRankupGame = false;
+              match.matchInfo.isRankdownGame = true;
+            }
+          }
+
+          if(currentMatchRank === prevMatchRank) {
+            match.matchInfo.isRankupGame = false;
+            match.matchInfo.isRankdownGame = false;
+          }
+        }
       }
       ipcRenderer.send(`createMatch`, match);
       matches.push(match);
       matchIDs.push(match.matchInfo.matchId);
+      prevMatch = match;
     }
 
     for(var i = 0; i < matches.length; i++) {
@@ -421,6 +459,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
             setCurrentMatches(newMatches);
           }
         }
+        return;
       }
   
       if(isSilentLoading === true) {
@@ -673,6 +712,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
           fetchMatchesAndCalculateStats(true, 0, 15, mode, false, false, false);
           return;
         }
+        return;
       }
   
       if(isFirstLoad === true) {
@@ -977,6 +1017,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
     
           setCurrentMatches(newMatches);
         }
+        return;
       }
     } catch(e) {
       console.log(e);
@@ -1460,6 +1501,7 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                       
                       if(activeQueueTab === "competitive") {
                         var isRankup = match.matchInfo.isRankupGame;
+                        var isRankdown = match.matchInfo.isRankdownGame;
                       }
 
                       return (
@@ -1535,6 +1577,9 @@ function Home({ isNavbarMinimized, isOverlayShown, setIsOverlayShown }) {
                                 </Tooltip>
                                 {activeQueueTab === 'competitive' && isRankup === true ? (
                                   <ArrowRoundUp className={'rankup-arrow text-val-blue val-blue-glow w-[1rem] h-[1rem] absolute top-[1.4rem] left-[1.4rem]'} />
+                                ) : null}
+                                {activeQueueTab === 'competitive' && isRankdown === true ? (
+                                  <ArrowRoundUp className={'rankdown-arrow rotate-180 text-val-red val-red-glow w-[1rem] h-[1rem] absolute top-[1.4rem] left-[1.4rem]'} />
                                 ) : null}
                                 <span className='ml-0.5'>{LocalText(L, "bot_l.gamemodes." + match.matchInfo.queueID)}</span>
                               </span>

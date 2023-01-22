@@ -15,6 +15,7 @@ import { executeQuery, fetchMatch, getCurrentUserData, getUserAccessToken, getUs
 import ValIconHandler from '../components/ValIconHandler';
 import getDifferenceInDays from '../js/getDifferenceInDays.mjs';
 import { calculateMatchStats } from '../js/calculateMatchStats.mjs';
+import { checkForRankup } from '../js/riotAPIFunctions.mjs';
 
 const card_variants = {
   hidden: { opacity: 0, x: 0, y: 0, scale: 0.8, display: 'none' },
@@ -131,9 +132,10 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
 
           const match = await getMatch(userCreds.region, favMatchesData[0].matchIDs[i], entitlement_token, bearer);
 
-          if(match.matchInfo.queueID === "competitive" && !match.matchInfo.isRankupGame) {
-            var isRankup = await checkForRankup(region, puuid, match.matchInfo.matchId, entitlement_token, bearer);
-            match.matchInfo.isRankupGame = isRankup;
+          if(match.matchInfo.queueID === "competitive" && (!match.matchInfo.isRankupGame || !match.matchInfo.isRankdownGame)) {
+            var rankInfo = await checkForRankup(region, puuid, match.matchInfo.matchId, entitlement_token, bearer);
+            match.matchInfo.isRankupGame = rankInfo.rankup;
+            match.matchInfo.isRankdownGame = rankInfo.rankdown;
           }
           
           ipcRenderer.send(`createMatch`, match);
@@ -381,7 +383,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
         transition={{ type: 'ease-in', duration: 0.3 }}
       >
         <motion.div 
-          className="modal fixed"
+          className="modal fixed-wide"
           key={"DeleteMatchCard"}
           variants={card_variants}
           initial="hidden"
@@ -399,39 +401,39 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                 <div id='agent-img'>
                   <img className='h-full shadow-img group-hover:opacity-30 transition-all duration-[0ms] ease-linear w-full' src={matchInfo.agent ? `https://media.valorant-api.com/agents/${matchInfo.agent}/displayicon.png` : ''} />
                 </div>
-                  <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
-                    <span className={`text-lg font-semibold ${matchInfo.queueID == 'competitive' ? "relative left-1.5 top-1.5" : ""}`}>{matchInfo.mapName}</span>
-                    <span className='text-base font-light flex flex-row items-center relative'> 
-                      <Tooltip 
-                        content={matchInfo.playerCurrentTier > 3 && matchInfo.rankFixed !== undefined ? matchInfo.rankFixed.tierName : ''}
-                        color="error" 
-                        placement={'top'} 
-                        className={'rounded'}
-                      >
-                        {
-                          matchInfo.queueID === 'competitive' ? 
-                          <img 
-                            src={
-                              matchInfo.playerCurrentTier ? 
-                              `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchInfo.playerCurrentTier}/smallicon.png`
-                              :
-                              `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
-                            } 
-                            className={'w-10 scale-75 shadow-img'}
-                          />
-                          :
-                          <ValIconHandler icon={`/images/${activeQueueTab}.png`} classes={'w-7 scale-75 shadow-img'} />
-                        }
-                      </Tooltip>
-                      {matchInfo.queueID === 'competitive' && matchInfo.isRankup === true ? (
-                        <ArrowRoundUp className={'rankup-arrow text-val-blue val-blue-glow w-[1.1rem] h-[1.1rem] absolute top-[1.4rem] left-[1.4rem]'} />
-                      ) : null}
-                      <span className='ml-1'>{matchInfo.fixedQueueDisplayName}</span>
-                    </span>
-                  </div>
+                <div id='match-info' className='h-full flex flex-col justify-center ml-2'>
+                  <span className={`text-lg font-semibold ${matchInfo.queueID == 'competitive' ? "relative left-1.5 top-1.5" : ""}`}>{matchInfo.map}</span>
+                  <span className='text-base font-light flex flex-row items-center relative'> 
+                    <Tooltip 
+                      content={matchInfo.currenttier > 3 && matchInfo.rankFixed !== undefined ? matchInfo.rankFixed.tierName : ''}
+                      color="error" 
+                      placement={'top'} 
+                      className={'rounded'}
+                    >
+                      {
+                        matchInfo.queueID === 'competitive' ? 
+                        <img 
+                          src={
+                            matchInfo.currenttier ? 
+                            `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/${matchInfo.currenttier}/smallicon.png`
+                            :
+                            `https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/0/smallicon.png`
+                          } 
+                          className={'w-10 scale-75 shadow-img'}
+                        />
+                        :
+                        <ValIconHandler icon={`/images/${matchInfo.queueID}.png`} classes={'w-7 scale-75 shadow-img'} />
+                      }
+                    </Tooltip>
+                    {matchInfo.queueID === 'competitive' && matchInfo.isRankup === true ? (
+                      <ArrowRoundUp className={'rankup-arrow text-val-blue val-blue-glow w-[1.1rem] h-[1.1rem] absolute top-[1.4rem] left-[1.4rem]'} />
+                    ) : null}
+                    <span className='ml-1'>{matchInfo.fixedQueueDisplayName}</span>
+                  </span>
+                </div>
               </div>
               <div id='match-score' className='w-1/2 flex flex-row items-center'>
-                <div id='scoreline' className='flex flex-col text-center w-1/2'>
+                <div id='scoreline' className='flex flex-col text-center mx-auto'>
                   <span className={'text-xl ' + matchInfo.matchOutcomeColor}>{matchInfo.matchOutcome}</span>
                   {matchInfo.fixedQueueName != 'deathmatch' ? (<span className='text-lg'>{matchInfo.matchScore}</span>) : ''}
                 </div>
@@ -532,7 +534,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                     className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-[0ms] ease-linear relative right-3'
                                     click={() => {
                                       toggleDeleteMatchDialogue();
-                                      setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore });
+                                      setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore, queueID: match.matchInfo.queueID });
                                     }}
                                   />
                                 </div>
@@ -568,6 +570,9 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                     </Tooltip>
                                     {match.matchInfo.queueID === 'competitive' && matchData.isRankup === true ? (
                                       <ArrowRoundUp className={'rankup-arrow text-val-blue val-blue-glow w-[1.1rem] h-[1.1rem] absolute top-[1.4rem] left-[1.4rem]'} />
+                                    ) : null}
+                                    {match.matchInfo.queueID === 'competitive' && matchData.isRankdown === true ? (
+                                      <ArrowRoundUp className={'rankdown-arrow rotate-180 text-val-red val-red-glow w-[1rem] h-[1rem] absolute top-[1.4rem] left-[1.4rem]'} />
                                     ) : null}
                                     <span className='ml-1'>{fixedQueueDisplayName}</span>
                                   </span>
@@ -697,7 +702,7 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                               className='w-6 h-6 ml-6 shadow-img opacity-0 group-hover:opacity-100 group-hover:block cursor-pointer transition-all duration-[0ms] ease-linear relative right-3'
                               click={() => {
                                 toggleDeleteMatchDialogue();
-                                setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore });
+                                setMatchInfo({ MatchID: match.matchInfo.matchId, key, index, fixedQueueName, fixedQueueDisplayName, agent: matchData.playerAgent, map: matchData.mapName, currenttier: matchData.playerCurrentTier, matchOutcomeColor: matchData.matchOutcomeColor, matchOutcome: matchData.matchOutcome, matchScore: matchData.matchScore, queueID: match.matchInfo.queueID });
                               }}
                             />
                           </div>
@@ -728,11 +733,14 @@ function FavoriteMatches({ isNavbarMinimized, isOverlayShown, setIsOverlayShown 
                                     className={'w-10 scale-75 shadow-img'}
                                   />
                                   :
-                                  <ValIconHandler icon={`/images/${activeQueueTab}.png`} classes={'w-7 scale-75 shadow-img'} />
+                                  <ValIconHandler icon={`/images/${match.matchInfo.queueID}.png`} classes={'w-7 scale-75 shadow-img'} />
                                 }
                               </Tooltip>
                               {match.matchInfo.queueID === 'competitive' && matchData.isRankup === true ? (
                                 <ArrowRoundUp className={'rankup-arrow text-val-blue val-blue-glow w-[1.1rem] h-[1.1rem] absolute top-[1.4rem] left-[1.4rem]'} />
+                              ) : null}
+                              {match.matchInfo.queueID === 'competitive' && matchData.isRankdown === true ? (
+                                <ArrowRoundUp className={'rankdown-arrow rotate-180 text-val-red val-red-glow w-[1rem] h-[1rem] absolute top-[1.4rem] left-[1.4rem]'} />
                               ) : null}
                               <span className='ml-1'>{fixedQueueDisplayName}</span>
                             </span>

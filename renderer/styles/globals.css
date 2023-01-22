@@ -1264,6 +1264,10 @@ tr td:last-child {
   @apply w-96;
 }
 
+.modal.fixed-wide {
+  @apply w-[32rem];
+}
+
 .modal.responsive {
   @apply 2xl:w-4/6 2xl:h-4/6 w-4/5 h-4/5;
 }
@@ -1361,6 +1365,14 @@ tr td:last-child {
 
 .rankup-arrow {
   filter: drop-shadow(0 0 7px rgba(107, 241, 230, 0.8));
+}
+
+.rankdown-arrow polyline, .rankdown-arrow circle {
+  @apply text-val-red stroke-[1.4];
+}
+
+.rankdown-arrow {
+  filter: drop-shadow(0 0 7px rgba(251, 77, 80, 0.8));
 }
 
 .close-red line {
