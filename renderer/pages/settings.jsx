@@ -434,9 +434,19 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
 
     setAccountListSwitch(current => !current);
   }
+  
+  React.useEffect(async () => {
+    var data = await executeQuery(`SELECT * FROM playerCollection:app`);
+    var arr = [];
+    for(var i = 0; i < data[0].players.length; i++) {
+      var player = await executeQuery(`SELECT * FROM ${data[0].players[i]}`);
+      arr.push(player[0]);
+    }
+    setRiot_AccountList(arr);
+  }, []);
 
   const openPopup = (setPopupOpen, info) => {
-    if(info === "riot_rm_account" && riot_accountList.length === 0) {
+    if(info === "riot_rm_account" && riot_accountList.length === 1) {
       ipcRenderer.send("relayTextbox", { persistent: false, text: "You cannot remove the account that the app is using." });
       return;
     }
@@ -672,6 +682,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
         >
           <div className="account-list mt-2">
             {riot_accountList.map((account, index) => {
+              console.log(account);
               return (
                 <div 
                   className={
@@ -901,7 +912,7 @@ function Settings({ isNavbarMinimized, setTheme, isOverlayShown, setIsOverlaySho
                 desc={LocalText(L, 'pg_3.grp_1.setting_2.desc')}
                 inputType={'button'}
                 buttonText={LocalText(L, 'pg_3.grp_1.setting_2.button_text')}
-                onClick={() => { openPopup(setRiot_RemoveAccountPopupOpen, "riot_rm_account") }}
+                onClick={() => { console.log("Monke"); openPopup(setRiot_RemoveAccountPopupOpen, "riot_rm_account") }}
               />
             </SettingsGroup>
 
