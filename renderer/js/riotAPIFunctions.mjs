@@ -229,7 +229,8 @@ export async function getPlayerMMR(region, puuid, entitlement_token, bearer) {
 
     for(var i = 0; i < Object.keys(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID).length; i++) {
       var playerSeason = mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID[Object.keys(mmrInfo.QueueSkills.competitive.SeasonalInfoBySeasonID)[i]];
-      if(playerSeason.CompetitiveTier > peaktier) playerSeason = season.CompetitiveTier;
+      console.log(playerSeason.CompetitiveTier > peaktier);
+      if(playerSeason.CompetitiveTier > peaktier) peaktier = playerSeason.CompetitiveTier;
     }
   } else {
     var currenttier = 0;
