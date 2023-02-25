@@ -1,179 +1,238 @@
 {
-  "en-US": {
-    "gamemodes": {
-      "newmap": "Unrated",
-      "competitive": "Competitive",
-      "unrated": "Unrated",
-      "spikerush": "Spike Rush",
-      "deathmatch": "Deathmatch",
-      "ggteam": "Escalation",
-      "onefa": "Replication",
-      "snowball": "Snowball Fight", 
-      "swiftplay": "Swiftplay",
-      "custom": "Custom",
-      "": "Custom"
-    },
-    "val_rp_details": {
-      "in_match": "In Match",
-      "waiting_for_round": "Waiting for next round to end...",
-      "agent_select": "Agent Select",
-      "menus": "Browsing Menus",
-      "playing_val": "Playing VALORANT",
-      "the_range": "The Range"
-    },
-    "skin_wishlist_notifications": {
-      "timer": {
-        "h_1": "hour",
-        "h_2": "hours",
-        "m": "minutes"
+    "en-US": {
+      "gamemodes": {
+        "newmap": "Unrated",
+        "competitive": "Competitive",
+        "unrated": "Unrated",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Escalation",
+        "onefa": "Replication",
+        "snowball": "Snowball Fight", 
+        "swiftplay": "Swiftplay",
+        "custom": "Custom",
+        "": "Custom"
       },
-      "notif_1": {
-        "header": "1 wishlisted item in your shop!",
-        "desc": "The {{ val1 }} is in your daily shop! It will be gone in {{ val2 }} {{ val3 }}.",
-        "melee_desc": "The {{ val1 }} is in your daily shop! It will be gone in {{ val2 }} {{ val3 }}."
+      "val_rp_details": {
+        "in_match": "In Match",
+        "waiting_for_round": "Waiting for next round to end...",
+        "agent_select": "Agent Select",
+        "menus": "Browsing Menus",
+        "playing_val": "Playing VALORANT",
+        "the_range": "The Range"
       },
-      "notif_2": {
-        "header": "Multiple Wishlisted items in your shop!",
-        "desc": "Multiple wishlisted items are in your daily shop! They will be gone in {{ val1 }} {{ val2 }}."
+      "skin_wishlist_notifications": {
+        "timer": {
+          "h_1": "hour",
+          "h_2": "hours",
+          "m": "minutes"
+        },
+        "notif_1": {
+          "header": "1 wishlisted item in your shop!",
+          "desc": "The {{ val1 }} is in your daily shop! It will be gone in {{ val2 }} {{ val3 }}.",
+          "melee_desc": "The {{ val1 }} is in your daily shop! It will be gone in {{ val2 }} {{ val3 }}."
+        },
+        "notif_2": {
+          "header": "Multiple Wishlisted items in your shop!",
+          "desc": "Multiple wishlisted items are in your daily shop! They will be gone in {{ val1 }} {{ val2 }}."
+        }
+      },
+      "tray_menu": {
+        "show": "Show VALTracker",
+        "quit": "Quit VALTracker"
+      },
+      "disabled_notifs": {
+        "no_update": {
+          "header": "VALTracker is currently disabled."
+        },
+        "update_err": {
+          "header": "We encountered an Error while updating. Please try again later."
+        },
+        "update_downloaded": {
+          "header": "New Update downloaded!",
+          "desc": "VALTracker has just downloaded a new update. It will now restart."
+        }
+      },
+      "updates": {
+        "header": "No updates found.",
+        "desc": "We couldn't find any new updates."
       }
     },
-    "tray_menu": {
-      "show": "Show VALTracker",
-      "quit": "Quit VALTracker"
-    },
-    "disabled_notifs": {
-      "no_update": {
-        "header": "VALTracker is currently disabled."
+    "de-DE": {
+      "gamemodes": {
+        "newmap": "Ungewertet",
+        "competitive": "Gewertet",
+        "unrated": "Ungewertet",
+        "spikerush": "Spike-Ansturm",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Eskalation",
+        "onefa": "Klon-Programm",
+        "snowball": "Schneeballschlacht", 
+        "swiftplay": "Schnelles Spiel",
+        "custom": "Eigenes Spiel",
+        "": "Eigenes Spiel"
       },
-      "update_err": {
-        "header": "We encountered an Error while updating. Please try again later."
+      "val_rp_details": {
+        "in_match": "Im Match",
+        "waiting_for_round": "Warte, dass nächste Runde beginnt...",
+        "agent_select": "Agenten-Auswahl",
+        "menus": "Im Menü",
+        "playing_val": "Spielt VALORANT",
+        "the_range": "Im Training"
       },
-      "update_downloaded": {
-        "header": "New Update downloaded!",
-        "desc": "VALTracker has just downloaded a new update. It will now restart."
+      "skin_wishlist_notifications": {
+        "timer": {
+          "h_1": "Stunde",
+          "h_2": "Stunden",
+          "m": "Minuten"
+        },
+        "notif_1": {
+          "header": "1 Skin von deiner Wunschliste im Shop!",
+          "desc": "Die {{ val1 }} ist in deinem täglichen Shop! Sie wird in {{ val2 }} {{ val3 }} weg sein.",
+          "melee_desc": "Das {{ val1 }} ist in deinem täglichen Shop! Es wird in {{ val2 }} {{ val3 }} weg sein."
+        },
+        "notif_2": {
+          "header": "Mehrere Skins von deiner Wunschliste im Shop!",
+          "desc": "Mehrere Skins von deiner Wunschliste sind in deinem täglichen Shop! Sie werden in {{ val1 }} {{ val2 }} weg sein."
+        }
+      },
+      "tray_menu": {
+        "show": "Zeige VALTracker",
+        "quit": "Beende VALTracker"
+      },
+      "disabled_notifs": {
+        "no_update": {
+          "header": "VALTracker ist aktuell deaktiviert."
+        },
+        "update_err": {
+          "header": "Beim Aktualisieren ist ein Fehler aufgetreten. Bitte versuche es später erneut."
+        },
+        "update_downloaded": {
+          "header": "Neues Update heruntergeladen!",
+          "desc": "VALTracker hat gerade ein neues Update heruntergeladen. Es wird jetzt neu gestartet."
+        }
+      },
+      "updates": {
+        "header": "Kein update gefunden.",
+        "desc": "Wir konnten keine neuen updates finden."
       }
     },
-    "updates": {
-      "header": "No updates found.",
-      "desc": "We couldn't find any new updates."
-    }
-  },
-  "de-DE": {
-    "gamemodes": {
-      "newmap": "Ungewertet",
-      "competitive": "Gewertet",
-      "unrated": "Ungewertet",
-      "spikerush": "Spike-Ansturm",
-      "deathmatch": "Deathmatch",
-      "ggteam": "Eskalation",
-      "onefa": "Klon-Programm",
-      "snowball": "Schneeballschlacht", 
-      "swiftplay": "Schnelles Spiel",
-      "custom": "Eigenes Spiel",
-      "": "Eigenes Spiel"
-    },
-    "val_rp_details": {
-      "in_match": "Im Match",
-      "waiting_for_round": "Warte, dass nächste Runde beginnt...",
-      "agent_select": "Agenten-Auswahl",
-      "menus": "Im Menü",
-      "playing_val": "Spielt VALORANT",
-      "the_range": "Im Training"
-    },
-    "skin_wishlist_notifications": {
-      "timer": {
-        "h_1": "Stunde",
-        "h_2": "Stunden",
-        "m": "Minuten"
+    "fr-FR": {
+      "gamemodes": {
+        "newmap": "Non classé",
+        "competitive": "Competition",
+        "unrated": "Non classé",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Combat à mort",
+        "ggteam": "Escalation",
+        "onefa": "Réplication",
+        "snowball": "Snowball Fight", 
+        "swiftplay": "Vélocité",
+        "custom": "Partie Personalisée",
+        "": "Partie Personalisée"
       },
-      "notif_1": {
-        "header": "1 Skin von deiner Wunschliste im Shop!",
-        "desc": "Die {{ val1 }} ist in deinem täglichen Shop! Sie wird in {{ val2 }} {{ val3 }} weg sein.",
-        "melee_desc": "Das {{ val1 }} ist in deinem täglichen Shop! Es wird in {{ val2 }} {{ val3 }} weg sein."
+      "val_rp_details": {
+        "in_match": "En Match",
+        "waiting_for_round": "En attente que le prochain match se finisse...",
+        "agent_select": "Séléction D'agents",
+        "menus": "Navigation Dans Les Menus",
+        "playing_val": "Joue à VALORANT",
+        "the_range": "Entraînement"
       },
-      "notif_2": {
-        "header": "Mehrere Skins von deiner Wunschliste im Shop!",
-        "desc": "Mehrere Skins von deiner Wunschliste sind in deinem täglichen Shop! Sie werden in {{ val1 }} {{ val2 }} weg sein."
+      "skin_wishlist_notifications": {
+        "timer": {
+          "h_1": "heur",
+          "h_2": "heurs",
+          "m": "minutes"
+        },
+        "notif_1": {
+          "header": "1 article en liste de souhaits dans votre boutique",
+          "desc": "Le {{ val1 }} est dans ta boutique! Il sera partit dans {{ val2 }} {{ val3 }}.",
+          "melee_desc": "Le {{ val1 }} est dans ta boutique quotidienne! Il sera partit dans {{ val2 }} {{ val3 }}."
+        },
+        "notif_2": {
+          "header": "Plusieurs articles en liste de souhaits sont dans votre boutique!",
+          "desc": "Plusieurs articles en liste de souhaits dans ta boutique quotidienne! Ils seront partit dans {{ val1 }} {{ val2 }}."
+        }
+      },
+      "tray_menu": {
+        "show": "Montre VALtracker",
+        "quit": "Quitte VALTracker"
+      },
+      "disabled_notifs": {
+        "no_update": {
+          "header": "VALTracker est désactiver."
+        },
+        "update_err": {
+          "header": "Nous avans rencontré une érreur pendant la mise à jour. Merci de réessayer plus tard."
+        },
+        "update_downloaded": {
+          "header": "Nouvelle mise à jour installer!",
+          "desc": "VALTracker viens d'installer une nouvelle mise à jour. Il va maintenant redémarer."
+        }
+      },
+      "updates": {
+        "header": "Aucune mise à jour trouvée.",
+        "desc": "Nous n'avons pas trouvé de nouvelles mises à jour."
       }
     },
-    "tray_menu": {
-      "show": "Zeige VALTracker",
-      "quit": "Beende VALTracker"
-    },
-    "disabled_notifs": {
-      "no_update": {
-        "header": "VALTracker ist aktuell deaktiviert."
-      },
-      "update_err": {
-        "header": "Beim Aktualisieren ist ein Fehler aufgetreten. Bitte versuche es später erneut."
-      },
-      "update_downloaded": {
-        "header": "Neues Update heruntergeladen!",
-        "desc": "VALTracker hat gerade ein neues Update heruntergeladen. Es wird jetzt neu gestartet."
+    "tr-TR": {
+        "gamemodes": {
+          "newmap": "Derecesiz",
+          "competitive": "Rekabete Dayalı",
+          "unrated": "Derecesiz",
+          "spikerush": "Spike'a hücum",
+          "deathmatch": "Ölüm Kalım Savaşı",
+          "ggteam": "Tırmanış",
+          "onefa": "Kopya",
+          "snowball": "Kartopu çatışması", 
+          "swiftplay": "Tam gaz",
+          "custom": "Özel Oyun",
+          "": "Özel Oyun"
+        },
+        "val_rp_details": {
+          "in_match": "Maçta",
+          "waiting_for_round": "Bir sonraki turun bitmesi bekleniyor...",
+          "agent_select": "Ajan Seçiyor",
+          "menus": "Menü'de",
+          "playing_val": "VALORANT Oynuyor",
+          "the_range": "Poligon"
+        },
+        "skin_wishlist_notifications": {
+          "timer": {
+            "h_1": "saat",
+            "h_2": "saat",
+            "m": "dakika"
+          },
+          "notif_1": {
+            "header": "İstek listenizdeki 1 skin mağazanızda!",
+            "desc": "{{ val1 }} günlük mağazanızda! {{ val2 }} {{ val3 }} sonra gitmiş olacak.",
+            "melee_desc": "{{ val1 }} günlük mağazanızda! {{ val2 }} {{ val3 }} sonra gitmiş olacak."
+          },
+          "notif_2": {
+            "header": "İstek listenizdeki birden çok skin mağazanızda!",
+            "desc": "İstek listenizdeki birden çok skin mağazanızda! {{ val1 }} {{ val2 }} sonra gitmiş olacaklar."
+          }
+        },
+        "tray_menu": {
+          "show": "VALTracker'i Göster",
+          "quit": "VALTracker'i Kapat"
+        },
+        "disabled_notifs": {
+          "no_update": {
+            "header": "VALTracker şu anda devre dışı."
+          },
+          "update_err": {
+            "header": "Güncelleme sırasında bir hata ile karşılaştık. Lütfen daha sonra tekrar dene."
+          },
+          "update_downloaded": {
+            "header": "Güncelleme indirildi!",
+            "desc": "VALTracker yeni bir güncelleme indirdi. Şimdi yeniden başlatılacak."
+          }
+        },
+        "updates": {
+          "header": "Güncelleme bulunamadı.",
+          "desc": "Yeni bir güncelleme bulamadık."
+        }
       }
-    },
-    "updates": {
-      "header": "Kein update gefunden.",
-      "desc": "Wir konnten keine neuen updates finden."
-    }
-  },
-  "fr-FR": {
-    "gamemodes": {
-      "newmap": "Non classé",
-      "competitive": "Competition",
-      "unrated": "Non classé",
-      "spikerush": "Spike Rush",
-      "deathmatch": "Combat à mort",
-      "ggteam": "Escalation",
-      "onefa": "Réplication",
-      "snowball": "Snowball Fight", 
-      "swiftplay": "Vélocité",
-      "custom": "Partie Personalisée",
-      "": "Partie Personalisée"
-    },
-    "val_rp_details": {
-      "in_match": "En Match",
-      "waiting_for_round": "En attente que le prochain match se finisse...",
-      "agent_select": "Séléction D'agents",
-      "menus": "Navigation Dans Les Menus",
-      "playing_val": "Joue à VALORANT",
-      "the_range": "Entraînement"
-    },
-    "skin_wishlist_notifications": {
-      "timer": {
-        "h_1": "heur",
-        "h_2": "heurs",
-        "m": "minutes"
-      },
-      "notif_1": {
-        "header": "1 article en liste de souhaits dans votre boutique",
-        "desc": "Le {{ val1 }} est dans ta boutique! Il sera partit dans {{ val2 }} {{ val3 }}.",
-        "melee_desc": "Le {{ val1 }} est dans ta boutique quotidienne! Il sera partit dans {{ val2 }} {{ val3 }}."
-      },
-      "notif_2": {
-        "header": "Plusieurs articles en liste de souhaits sont dans votre boutique!",
-        "desc": "Plusieurs articles en liste de souhaits dans ta boutique quotidienne! Ils seront partit dans {{ val1 }} {{ val2 }}."
-      }
-    },
-    "tray_menu": {
-      "show": "Montre VALtracker",
-      "quit": "Quitte VALTracker"
-    },
-    "disabled_notifs": {
-      "no_update": {
-        "header": "VALTracker est désactiver."
-      },
-      "update_err": {
-        "header": "Nous avans rencontré une érreur pendant la mise à jour. Merci de réessayer plus tard."
-      },
-      "update_downloaded": {
-        "header": "Nouvelle mise à jour installer!",
-        "desc": "VALTracker viens d'installer une nouvelle mise à jour. Il va maintenant redémarer."
-      }
-    },
-    "updates": {
-      "header": "Aucune mise à jour trouvée.",
-      "desc": "Nous n'avons pas trouvé de nouvelles mises à jour."
-    }
   }
-}
