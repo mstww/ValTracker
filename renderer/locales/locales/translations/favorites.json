@@ -1,0 +1,276 @@
+{
+  "en-US": {
+    "modals": {
+      "remove_match": {
+        "header": "Remove Match?",
+        "desc": "Do you really want to remove this match?",
+        "desc2": "You can go to the hub to save it as a favorite again.",
+        "button_1": "Remove Match",
+        "button_2": "Cancel"
+      }
+    },
+    "matches": {
+      "gamemodes": {
+        "newmap": "Unrated",
+        "competitive": "Competitive",
+        "unrated": "Unrated",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Escalation",
+        "onefa": "Replication",
+        "snowball": "Snowball Fight", 
+        "swiftplay": "Swiftplay",
+        "custom": "Custom",
+        "": "Custom"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTORY",
+        "DEFEAT": "DEFEAT",
+        "DRAW": "DRAW"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2nd",
+        "3rd": "3rd",
+        "4th": "4th",
+        "5th": "5th",
+        "6th": "6th",
+        "7th": "7th",
+        "8th": "8th",
+        "9th": "9th",
+        "10th": "10th"
+      }
+    },
+    "filters": {
+      "header": "Filters",
+      "modes": {
+        "header": "Mode",
+        "fm_1": "All",
+        "fm_2": "Unrated",
+        "fm_3": "Competitive",
+        "fm_4": "Swiftplay",
+        "fm_5": "Deathmatch",
+        "fm_6": "Spike Rush",
+        "fm_7": "Replication",
+        "fm_8": "Escalation",
+        "fm_9": "Custom"
+      },
+      "sort_by": {
+        "header": "Sort by",
+        "fs_1": "None",
+        "fs_2": "KD",
+        "fs_3": "HS%",
+        "fs_4": "ACS",
+        "fs_5": "Age"
+      }
+    },
+    "loading": "Loading",
+    "matches_bottom": "That's it!"
+  },
+  "de-DE": {
+    "modals": {
+      "remove_match": {
+        "header": "Match entfernen?",
+        "desc": "Willst du dieses Match wirklich entfernen?",
+        "desc2": "Du kannst ins Hub gehen um es erneut zu favorisieren.",
+        "button_1": "Match entfernen",
+        "button_2": "Abbruch"
+      }
+    },
+    "matches": {
+      "gamemodes": {
+        "newmap": "Ungewertet",
+        "competitive": "Gewertet",
+        "unrated": "Ungewertet",
+        "spikerush": "Spike-Ansturm",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Eskalation",
+        "onefa": "Klon-Programm",
+        "snowball": "Schneeballschlacht", 
+        "swiftplay": "Schnelles Spiel",
+        "custom": "Eigenes Spiel",
+        "": "Eigenes Spiel"
+      },
+      "match_outcomes": {
+        "VICTORY": "SIEG",
+        "DEFEAT": "VERLOREN",
+        "DRAW": "GLEICHST."
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2ter",
+        "3rd": "3ter",
+        "4th": "4ter",
+        "5th": "5ter",
+        "6th": "6ter",
+        "7th": "7ter",
+        "8th": "8ter",
+        "9th": "9ter",
+        "10th": "10ter"
+      }
+    },
+    "filters": {
+      "header": "Filter",
+      "modes": {
+        "header": "Mode",
+        "fm_1": "Alle",
+        "fm_2": "Ungewertet",
+        "fm_3": "Gewertet",
+        "fm_4": "Deathmatch",
+        "fm_5": "Spike-Ansturm",
+        "fm_6": "Klon-Programm",
+        "fm_7": "Eskalation",
+        "fm_8": "Eigenes Spiel"
+      },
+      "sort_by": {
+        "header": "Sortiere nach",
+        "fs_1": "Nichts",
+        "fs_2": "KD",
+        "fs_3": "HS%",
+        "fs_4": "ACS",
+        "fs_5": "Alter"
+      }
+    },
+    "loading": "Lade...",
+    "matches_bottom": "Das war's!"
+  },
+  "fr-FR": {
+    "modals": {
+      "remove_match": {
+        "header": "Enlever le match?",
+        "desc": "Veux tu vraiment enlever ce match?",
+        "desc2": "Tu peux aller dans le lobby pour le sauvegarder en tant que favoris..",
+        "button_1": "Elever le match",
+        "button_2": "Annuler"
+      }
+    },
+    "matches": {
+      "gamemodes": {
+        "newmap": "Non classé",
+        "competitive": "Competition",
+        "unrated": "Non classé",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Combat à mort",
+        "ggteam": "Escalation",
+        "onefa": "Réplication",
+        "snowball": "Snowball Fight", 
+        "swiftplay": "Vélocité",
+        "custom": "Partie Personalisée",
+        "": "Partie Personalisée"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTOIRE",
+        "DEFEAT": "DEFAITE",
+        "DRAW": "EGALITE"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2ème",
+        "3rd": "3ème",
+        "4th": "4ème",
+        "5th": "5ème",
+        "6th": "6ème",
+        "7th": "7ème",
+        "8th": "8ème",
+        "9th": "9ème",
+        "10th": "10ème"
+      }
+    },
+    "filters": {
+      "header": "Filtres",
+      "modes": {
+        "header": "Mode",
+        "fm_1": "All",
+        "fm_2": "Non classé",
+        "fm_3": "Competition",
+        "fm_4": "Combat à mort",
+        "fm_5": "Spike Rush",
+        "fm_6": "Réplication",
+        "fm_7": "Intensification",
+        "fm_8": "Partie Personnalisée"
+      },
+      "sort_by": {
+        "header": "Trier par",
+        "fs_1": "Rien",
+        "fs_2": "KD",
+        "fs_3": "HS%",
+        "fs_4": "ACS",
+        "fs_5": "Âge"
+      }
+    },
+    "loading": "Chargement",
+    "matches_bottom": "C'est ça!"
+  },
+  "tr-TR": {
+    "modals": {
+      "remove_match": {
+        "header": "Karşılaşmayı kaldıralım mı?",
+        "desc": "Bu karşılaşmayı gerçekten kaldırmak istiyor musunuz?",
+        "desc2": "Tekrar favori olarak kaydetmek için ana sayfaya gidebilirsiniz.",
+        "button_1": "Karşılaşmayı Kaldır",
+        "button_2": "İptal et"
+      }
+    },
+    "matches": {
+      "gamemodes": {
+        "newmap": "Derecesiz",
+        "competitive": "Rekabete Dayalı",
+        "unrated": "Derecesiz",
+        "spikerush": "Spike'a Hücum",
+        "deathmatch": "Ölüm Kalım Savaşı",
+        "ggteam": "Tırmanış",
+        "onefa": "Kopya",
+        "snowball": "Kartopu Çatışması", 
+        "swiftplay": "Tam Gaz",
+        "custom": "Özel Oyun",
+        "": "Özel Oyun"
+      },
+      "match_outcomes": {
+        "VICTORY": "ZAFER",
+        "DEFEAT": "BOZGUN",
+        "DRAW": "BERABERE"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "Takım MVP'si",
+        "2nd": "2'nci",
+        "3rd": "3'ncü",
+        "4th": "4'üncü",
+        "5th": "5'inci",
+        "6th": "6'ncı",
+        "7th": "7'nci",
+        "8th": "8'inci",
+        "9th": "9'uncu",
+        "10th": "10'uncu"
+      }
+    },
+    "filters": {
+      "header": "Filtreler",
+      "modes": {
+        "header": "Mod",
+        "fm_1": "Hepsi",
+        "fm_2": "Derecesiz",
+        "fm_3": "Rekabete Dayalı",
+        "fm_4": "Tam Gaz",
+        "fm_5": "Ölüm Kalım Savaşı",
+        "fm_6": "Spike'a Hücum",
+        "fm_7": "Kopya",
+        "fm_8": "Tırmanış",
+        "fm_9": "Özel Oyun"
+      },
+      "sort_by": {
+        "header": "Sıralama",
+        "fs_1": "Yok",
+        "fs_2": "KD",
+        "fs_3": "HS Oranı",
+        "fs_4": "ACS",
+        "fs_5": "Eski"
+      }
+    },
+    "loading": "Yükleniyor",
+    "matches_bottom": "Bu kadar!"
+  }
+}

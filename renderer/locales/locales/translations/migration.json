@@ -1,0 +1,26 @@
+{
+  "en-US": {
+    "header": "VALTracker is currently migrating your data.",
+    "desc": "With this update, VALTracker has moved to storing your data in a database on your computer. \nPlease sit tight while we are migrating your data.",
+    "estTime": "Estimated time remaining: {{ val1 }}.",
+    "footer": "Please do not close VALTracker or shut down your PC during the migration process."
+  },
+  "de-DE": {
+    "header": "VALTracker ist gerade dabei, deine Daten zu migrieren.",
+    "desc": "Mit diesem Update ist VALTracker dazu übergegangen, deine Daten in einer Datenbank auf deinem Computer zu speichern. Bitte warte, bis wir deine Daten migriert haben.",
+    "estTime": "Geschätzte verbleibende Zeit: {{ val1 }}.",
+    "footer": "Bitte schließe VALTracker nicht und fahren deinen PC während des Migrationsprozesses nicht herunter."
+  },
+  "fr-FR": {
+    "header": "VALTracker est en train de migrer vos données.",
+    "desc": "Avec cette mise à jour, VALTracker a décidé de stocker vos données dans une base de données sur votre ordinateur. Veuillez patienter pendant que nous procédons à la migration de vos données.",
+    "estTime": "Estimation du temps restant: {{ val1 }}.",
+    "footer": "Veuillez ne pas fermer VALTracker ou éteindre votre PC pendant le processus de migration."
+  },
+  "tr-TR": {
+    "header": "VALTracker şu anda verilerinizi aktarıyor.",
+    "desc": "Bu güncelleme ile VALTracker, verilerinizi bilgisayarınızdaki bir veritabanında depolamaya başladı. \nVerilerinizi taşınırken lütfen beklemede kalın.",
+    "estTime": "Tahmini kalan süre: {{ val1 }}.",
+    "footer": "Lütfen taşıma işlemi sırasında VALTracker'ı veya bilgisayarınızı kapatmayın."
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "en-US": {
+    "matches": {
+      "errors": {
+        "no_matches_found": "No matches for this gamemode found.",
+        "err_while_fetching": "Something went wrong while fetching new matches. Try again!"
+      },
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Unrated",
+        "competitive": "Competitive",
+        "unrated": "Unrated",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Escalation",
+        "onefa": "Replication",
+        "snowball": "Snowball Fight", 
+        "swiftplay": "Swiftplay",
+        "select_other": "Other Modes"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTORY",
+        "DEFEAT": "DEFEAT",
+        "DRAW": "DRAW"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2nd",
+        "3rd": "3rd",
+        "4th": "4th",
+        "5th": "5th",
+        "6th": "6th",
+        "7th": "7th",
+        "8th": "8th",
+        "9th": "9th",
+        "10th": "10th"
+      }
+    },
+    "ui": {
+      "level_text": "Level",
+      "comp_data_header": "Competitive Data",
+      "comp_data_subheader": "Current Season",
+      "matches_played": "Matches played",
+      "winrate": "Winrate",
+      "peak_rank": "Peak Rank",
+      "stats_header": "Stats",
+      "stats_subheader": "Last 10 Matches",
+      "avg_kd": "Avg KD",
+      "headshot_percentage": "Headshot%",
+      "kills_per_match": "Avg Kills/Match",
+      "acs": "Avg ACS",
+      "matches_played_act": "Matches played this Act:",
+      "matches_played_total": "Matches played overall:"
+    }
+  },
+  "de-DE": {
+    "matches": {
+      "errors": {
+        "no_matches_found": "Keine Matches für diesen Spielmodus gefunden.",
+        "err_while_fetching": "Irgendwas hat nicht geklappt. Versuch's nochmal!"
+      },
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Ungewertet",
+        "competitive": "Gewertet",
+        "unrated": "Ungewertet",
+        "spikerush": "Spike-Ansturm",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Eskalation",
+        "onefa": "Klon-Programm",
+        "snowball": "Schneeballschlacht", 
+        "swiftplay": "Schnelles Spiel",
+        "select_other": "Andere Modi"
+      },
+      "match_outcomes": {
+        "VICTORY": "SIEG",
+        "DEFEAT": "VERLOREN",
+        "DRAW": "GLEICHST."
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2ter",
+        "3rd": "3ter",
+        "4th": "4ter",
+        "5th": "5ter",
+        "6th": "6ter",
+        "7th": "7ter",
+        "8th": "8ter",
+        "9th": "9ter",
+        "10th": "10ter"
+      }
+    },
+    "ui": {
+      "level_text": "Level",
+      "comp_data_header": "Competitive Daten",
+      "comp_data_subheader": "Aktuelle Season",
+      "matches_played": "Gespielte Matches",
+      "winrate": "Siegesrate",
+      "peak_rank": "Bester Rang",
+      "stats_header": "Statistiken",
+      "stats_subheader": "Letzte 10 Matches",
+      "avg_kd": "Durchschn. KD",
+      "headshot_percentage": "Headshot%",
+      "kills_per_match": "Avg Kills/Match",
+      "acs": "Durchschn. ACS",
+      "matches_played_act": "Gespielte Matches diesen Akt:",
+      "matches_played_total": "Gespielte Matches insgesant:"
+    }
+  },
+  "fr-FR": {
+    "matches": {
+      "errors": {
+        "no_matches_found": "Aucun résultat trouvé pour ce mode de jeu.",
+        "err_while_fetching": "Une erreur s'est produite lors de la récupération de nouveaux match. Réessayer!"
+      },
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Non classé",
+        "competitive": "Competition",
+        "unrated": "Non classé",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Combat à mort",
+        "ggteam": "Escalation",
+        "onefa": "Réplication",
+        "snowball": "Snowball Fight", 
+        "swiftplay": "Vélocité",
+        "select_other": "Autres modes"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTOIRE",
+        "DEFEAT": "DEFAITE",
+        "DRAW": "EGALITE"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2ème",
+        "3rd": "3ème",
+        "4th": "4ème",
+        "5th": "5ème",
+        "6th": "6ème",
+        "7th": "7ème",
+        "8th": "8ème",
+        "9th": "9ème",
+        "10th": "10ème"
+      }
+    },
+    "ui": {
+      "level_text": "Niveau",
+      "comp_data_header": "Données sur la concurrence",
+      "comp_data_subheader": "Saison en cours",
+      "matches_played": "Matches joués",
+      "winrate": "Pourcentage de victoire",
+      "peak_rank": "Rang de pointe",
+      "stats_header": "Statistiques",
+      "stats_subheader": "Les 10 derniers matches",
+      "avg_kd": "Moyenne KD",
+      "headshot_percentage": "Headshot%",
+      "kills_per_match": "Moyenne de tués/match",
+      "acs": "Moyenne ACS",
+      "matches_played_act": "Matches joués dans cet acte:",
+      "matches_played_total": "Matchs joués au total:"
+    }
+  },
+  "tr-TR": {
+    "matches": {
+      "errors": {
+        "no_matches_found": "Bu oyun modu için karşılaşma bulunamadı.",
+        "err_while_fetching": "Yeni karşılaşmalar getirilirken bir şeyler ters gitti. Tekrar deneyin!"
+      },
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Derecesiz",
+        "competitive": "Rekabete Dayalı",
+        "unrated": "Derecesiz",
+        "spikerush": "Spike'a hücum",
+        "deathmatch": "Ölüm Kalım Savaşı",
+        "ggteam": "Tırmanış",
+        "onefa": "Kopya",
+        "snowball": "Kartopu Çatışması", 
+        "swiftplay": "Tam Gaz",
+        "select_other": "Diğer Modlar"
+      },
+      "match_outcomes": {
+        "VICTORY": "ZAFER",
+        "DEFEAT": "BOZGUN",
+        "DRAW": "BERABERE"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "Takım MVP'si",
+        "2nd": "2'nci",
+        "3rd": "3'ncü",
+        "4th": "4'üncü",
+        "5th": "5'inci",
+        "6th": "6'ncı",
+        "7th": "7'nci",
+        "8th": "8'inci",
+        "9th": "9'uncu",
+        "10th": "10'uncu"
+      }
+    },
+    "ui": {
+      "level_text": "Seviye",
+      "comp_data_header": "Competitive Data",
+      "comp_data_subheader": "Mevcut Sezon",
+      "matches_played": "Oynanmış Maçlar",
+      "winrate": "Kazanma Oranı",
+      "peak_rank": "Zirve Rank",
+      "stats_header": "İstatistikler",
+      "stats_subheader": "Son 10 Maç",
+      "avg_kd": "Ort KD",
+      "headshot_percentage": "Kafadan Vuruş%",
+      "kills_per_match": "Ort Öldürme/Maç",
+      "acs": "Ort ACS",
+      "matches_played_act": "Bu Kısım Oynanan Maç:",
+      "matches_played_total": "Toplam oynanan maç:"
+    }
+  }
+}

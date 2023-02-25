@@ -1,0 +1,158 @@
+{
+  "en-US": {
+    "progress": {
+      "lang": "Language",
+      "riot": "Riot Login",
+      "confirm": "Confirmation",
+      "finish": "Finish Setup",
+      "values": [6, 33, 62, 100]
+    },
+    "page_1": {
+      "header": "Choose a Language",
+      "info": "This can later be changed in the settings.",
+      "button_1_text": "Continue"
+    },
+    "page_2": {
+      "header": "Log in with your Riot Account",
+      "login_button_text_1": "Open Login Window",
+      "login_button_text_2": "Done!",
+      "loading_states": {
+        "s0": "Fetching Region...",
+        "s1": "Fetching Player Store...",
+        "s2": "Fetching Player Details...",
+        "s3": "Fetching Player Rank...",
+        "s4": "Writing to file...",
+        "err": "Error! Please join our Discord Server for help.",
+        "win_closed": "Login Window closed."
+      },
+      "button_1_text": "Continue",
+      "button_2_text": "Back"
+    },
+    "page_3": {
+      "header": "Confirm Details",
+      "button_1_text": "Continue",
+      "button_2_text": "Back"
+    },
+    "page_4": {
+      "header": "And that's it!",
+      "finish_button_text": "Finish Setup"
+    }
+  },
+  "de-DE": {
+    "progress": {
+      "lang": "Sprache",
+      "riot": "Riot Login",
+      "confirm": "Bestätigung",
+      "finish": "Setup beenden",
+      "values": [6, 31, 60, 100]
+    },
+    "page_1": {
+      "header": "Wähle eine Sprache",
+      "info": "Du kannst sie später in den Einstellungen ändern.",
+      "button_1_text": "Weiter"
+    },
+    "page_2": {
+      "header": "Logge dich mit deinem Riot-Konto ein",
+      "login_button_text_1": "Login-Fenster öffnen",
+      "login_button_text_2": "Fertig!",
+      "loading_states": {
+        "s0": "Rufe Region ab...",
+        "s1": "Täglicher Shop wird abgerufen...",
+        "s2": "Abrufen von Spielerdetails...",
+        "s3": "Abrufen des Spielerrangs...",
+        "s4": "Schreibe zu Datei...",
+        "err": "Fehler! Bitte trete unserem Discord-Server für Hilfe bei.",
+        "win_closed": "Login-Fenster geschlossen."
+      },
+      "button_1_text": "Weiter",
+      "button_2_text": "Zurück"
+    },
+    "page_3": {
+      "header": "Bestätige die Detail",
+      "button_1_text": "Weiter",
+      "button_2_text": "Zurück"
+    },
+    "page_4": {
+      "header": "Und das war's!",
+      "finish_button_text": "Setup beenden"
+    }
+  },
+  "fr-FR": {
+    "progress": {
+      "lang": "Langue",
+      "riot": "Connectez-vous à Riot",
+      "confirm": "Confirmation",
+      "finish": "Terminer la configuration",
+      "values": [6, 29, 56, 100]
+    },
+    "page_1": {
+      "header": "Choisissez une langue",
+      "info": "Cela peut ensuite être modifié dans les paramètres.",
+      "button_1_text": "Continuer"
+    },
+    "page_2": {
+      "header": "Connectez-vous avec votre compte Riot",
+      "login_button_text_1": "Ouvrir la fenêtre de connexion",
+      "login_button_text_2": "Finir!",
+      "loading_states": {
+        "s0": "Récupération de la région...",
+        "s1": "Récupération du magasin du joueur...",
+        "s2": "Récupération des détails du joueur...",
+        "s3": "Récupération du classement du joueur...",
+        "s4": "Ecriture dans un fichier...",
+        "err": "Erreur! Veuillez rejoindre notre serveur Discord pour obtenir de l'aide.",
+        "win_closed": "Fenêtre de connexion fermée."
+      },
+      "button_1_text": "Continuer",
+      "button_2_text": "Annuler"
+    },
+    "page_3": {
+      "header": "Confirm Details",
+      "button_1_text": "Continuer",
+      "button_2_text": "Annuler"
+    },
+    "page_4": {
+      "header": "Et c'est tout!",
+      "finish_button_text": "Terminer la configuration"
+    }
+  },
+  "tr-TR": {
+    "progress": {
+      "lang": "Dil",
+      "riot": "Riot Girişi",
+      "confirm": "Doğrulama",
+      "finish": "Kurulumu bitir",
+      "values": [6, 33, 62, 100]
+    },
+    "page_1": {
+      "header": "Bir dil seçin",
+      "info": "Bu daha sonra ayarlardan değiştirilebilir.",
+      "button_1_text": "Devam et"
+    },
+    "page_2": {
+      "header": "Riot Hesabınızla giriş yapın",
+      "login_button_text_1": "Giriş penceresini aç",
+      "login_button_text_2": "Hazır!",
+      "loading_states": {
+        "s0": "Bölge Kontrol Ediliyor...",
+        "s1": "Oyuncu Mağazası Kontrol Ediliyor...",
+        "s2": "Oyuncu Bilgileri Kontrol Ediliyor...",
+        "s3": "Oyuncu Rankı Kontrol Ediliyor...",
+        "s4": "Dosyaya yazılıyor...",
+        "err": "Hata! Yardım için lütfen Discord Sunucumuza katılın.",
+        "win_closed": "Giriş penceresi kapatıldı."
+      },
+      "button_1_text": "Devam et",
+      "button_2_text": "Geri dön"
+    },
+    "page_3": {
+      "header": "Bilgileri Onaylayın",
+      "button_1_text": "Devam et",
+      "button_2_text": "Geri dön"
+    },
+    "page_4": {
+      "header": "İşte Bu Kadar!",
+      "finish_button_text": "Kurulumu Bitir"
+    }
+  }
+}

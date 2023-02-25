@@ -1,0 +1,86 @@
+{
+  "en-US": {
+    "modals": {
+      "save_modal": {
+        "header": "Save current loadout",
+        "desc": "Enter a name to save this inventory to your Presets.",
+        "input_placeholder": "Preset Name",
+        "button_1_text": "Save Preset",
+        "button_2_text": "Cancel"
+      },
+      "remove_modal": {
+        "header": "Delete current preset",
+        "desc": "Do you really want to delete the current preset?",
+        "desc2": "You can restore it by saving your current inventory again.",
+        "button_1_text": "Delete Preset",
+        "button_2_text": "Cancel"
+      }
+    },
+    "save_loadout_button_text": "Save Inventory",
+    "delete_preset_button": "Delete preset",
+    "preset_select_placeholder": "Select Preset"
+  },
+  "de-DE": {
+    "modals": {
+      "save_modal": {
+        "header": "Aktuelles Inventar speichern",
+        "desc": "Gebe einen Namen ein, um das aktuelle Inventar als Voreinstellung zu speichern.",
+        "input_placeholder": "Name",
+        "button_1_text": "Voreinstellung speichern",
+        "button_2_text": "Abbruch"
+      },
+      "remove_modal": {
+        "header": "Aktuelle Voreinstellung löschen?",
+        "desc": "Willst du die aktuelle Inventar-Voreinstellung wirklich löschen?",
+        "desc2": "Du kannst sie wiederherstellen, in dem du dein aktueles Inventar erneut speicherst.",
+        "button_1_text": "Voreinstellung löschen",
+        "button_2_text": "Abbruch"
+      }
+    },
+    "save_loadout_button_text": "Aktuelles Inventar speichern",
+    "delete_preset_button": "Aktuelle Voreinstellung löschen",
+    "preset_select_placeholder": "Voreinstellung wählen"
+  },
+  "fr-FR": {
+    "modals": {
+      "save_modal": {
+        "header": "Sauvegarder le chargement utilisé",
+        "desc": "Entrer un nom pour sauvegarder cet inventaire pour ton Presets.",
+        "input_placeholder": "Nom du Preset",
+        "button_1_text": "Savegarder du Preset",
+        "button_2_text": "Annuler"
+      },
+      "remove_modal": {
+        "header": "suprimmer le preset utilisé",
+        "desc": "Veux-tu vraiment supprimé le preset utilisé?",
+        "desc2": "Vous pouvez le recharger en le sauvegardant dans ton inventaire utilisé.",
+        "button_1_text": "Supprimer le Preset",
+        "button_2_text": "Annuler"
+      }
+    },
+    "save_loadout_button_text": "Sauvegarder le chargement",
+    "delete_preset_button": "Supprimer le preset utilisé",
+    "preset_select_placeholder": "Choisir ce preset"
+  },
+  "tr-TR": {
+    "modals": {
+      "save_modal": {
+        "header": "Geçerli koleksiyonu kaydet",
+        "desc": "Ön Ayarlarınıza kaydetmek için bu envanteri adlandırın.",
+        "input_placeholder": "Ön Ayar Adı",
+        "button_1_text": "Ön Ayarı Kaydet",
+        "button_2_text": "İptal et"
+      },
+      "remove_modal": {
+        "header": "Geçerli ön ayarı sil",
+        "desc": "Geçerli ön ayarı gerçekten silmek istiyor musunuz?",
+        "desc2": "Mevcut envanterinizi tekrar kaydederek geri yükleyebilirsiniz.",
+        "button_1_text": "Ön Ayarı Kaydet",
+        "button_2_text": "İptal et"
+      }
+    },
+    "save_loadout_button_text": "Envanteri Kaydet",
+    "delete_preset_button": "Ön ayarı sil",
+    "preset_select_placeholder": "Ön Ayarı Seçin"
+  }
+}

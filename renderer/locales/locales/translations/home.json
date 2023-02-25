@@ -1,0 +1,422 @@
+{
+  "en-US": {
+    "component_err": {
+      "err_text": "Error while loading Component. Click to retry.",
+      "button_text": "Reload"
+    },
+    "top_l": {
+      "bundle_header": "Featured Bundle",
+      "contracts": {
+        "level_text": "Level",
+        "xp_text": "remanining",
+        "battle_pass_header": "Battle Pass Progress",
+        "agent_contract_header": "Agent Contract Progress",
+        "loading_tooltip": "Checking for updates..."
+      }
+    },
+    "top_r": {
+      "headers": {
+        "h_1": "Headshot% of last 8 Matches",
+        "h_2": "Damage/Round of last 8 Matches",
+        "h_3": "KD of last 8 Matches"
+      },
+      "latest_text": "Latest"
+    },
+    "bot_l": {
+      "errors": {
+        "no_matches_found": "No matches found.",
+        "err_while_fetching": "Something went wrong while fetching new matches. Try again!"
+      },
+      "loading_tooltip": "Checking for new matches...",
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Unrated",
+        "competitive": "Competitive",
+        "unrated": "Unrated",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Escalation",
+        "onefa": "Replication",
+        "snowball": "Snowball Fight", 
+        "swiftplay": "Swiftplay",
+        "custom": "Custom",
+        "": "Custom"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTORY",
+        "DEFEAT": "DEFEAT",
+        "DRAW": "DRAW"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val1 }} out of {{ val2 }} Matches shown",
+        "load_more": "Load more Matches"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2nd",
+        "3rd": "3rd",
+        "4th": "4th",
+        "5th": "5th",
+        "6th": "6th",
+        "7th": "7th",
+        "8th": "8th",
+        "9th": "9th",
+        "10th": "10th"
+      }
+    },
+    "bot_r": {
+      "comp_info": {
+        "header": "Competitive Data",
+        "subheader": "{{ val1 }} days remanining"
+      },
+      "stats": {
+        "header": "Stats of last {{ val1 }} Matches",
+        "stat_1": "Avg Kills/Match",
+        "stat_2": "Avg Kills/Round",
+        "stat_3": "Win%",
+        "stat_4": "Avg Headshot%"
+      },
+      "best_map": {
+        "header": "Best Map",
+        "stats": {
+          "stat_1": "Win%",
+          "stat_2": "Avg KD"
+        }
+      },
+      "best_agent": {
+        "header": "Best Agent",
+        "stat_1": "Avg Score/Match",
+        "stat_2": "Avg KDA",
+        "stat_3": "Avg Kills/Round",
+        "stat_4": "Avg Kills/Match"
+      },
+      "match_filter": {
+        "header": "Change Match Filter",
+        "fl_1": "Unrated",
+        "fl_2": "Competitive",
+        "fl_3": "Deathmatch",
+        "fl_4": "Spike Rush",
+        "fl_5": "Replication",
+        "fl_6": "Escalation",
+        "fl_7": "Custom",
+        "fl_8": "Swiftplay"
+      }
+    }
+  },
+  "de-DE": {
+    "component_err": {
+      "err_text": "Fehler beim Laden der Komponente. Klicke, um es erneut zu versuchen.",
+      "button_text": "Neu laden"
+    },
+    "top_l": {
+      "bundle_header": "Aktuelle Skinreihe",
+      "contracts": {
+        "level_text": "Level",
+        "xp_text": "verbleibend",
+        "battle_pass_header": "Battle-Pass Fortschritt",
+        "agent_contract_header": "Agenten-Vertrag Fortschritt",
+        "loading_tooltip": "Suche nach aktuellem Stand..."
+      }
+    },
+    "top_r": {
+      "headers": {
+        "h_1": "Headshot% der letzten 8 Matches",
+        "h_2": "Schaden/Runde der letzten 8 Matches",
+        "h_3": "KD der letzten 8 Matches"
+      },
+      "latest_text": "Letztes"
+    },
+    "bot_l": {
+      "errors": {
+        "no_matches_found": "Keine Matches gefunden.",
+        "err_while_fetching": "Irgendwas hat nicht geklappt. Versuch's nochmal!"
+      },
+      "loading_tooltip": "Suche nach neuen Matches...",
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Ungewertet",
+        "competitive": "Gewertet",
+        "unrated": "Ungewertet",
+        "spikerush": "Spike-Ansturm",
+        "deathmatch": "Deathmatch",
+        "ggteam": "Eskalation",
+        "onefa": "Klon-Programm",
+        "snowball": "Schneeballschlacht", 
+        "swiftplay": "Schnelles Spiel",
+        "custom": "Eigenes Spiel",
+        "": "Eigenes Spiel"
+      },
+      "match_outcomes": {
+        "VICTORY": "SIEG",
+        "DEFEAT": "VERLOREN",
+        "DRAW": "GLEICHST."
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val1 }} von {{ val2 }} Matches gezeigt",
+        "load_more": "Lade mehr Matches"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2ter",
+        "3rd": "3ter",
+        "4th": "4ter",
+        "5th": "5ter",
+        "6th": "6ter",
+        "7th": "7ter",
+        "8th": "8ter",
+        "9th": "9ter",
+        "10th": "10ter"
+      }
+    },
+    "bot_r": {
+      "comp_info": {
+        "header": "Kompetitive Daten",
+        "subheader": "{{ val1 }} Tage verbleibend"
+      },
+      "stats": {
+        "header": "Statistiken der letzten {{ val1 }} Matches",
+        "stat_1": "Kills/Match",
+        "stat_2": "Kills/Runde",
+        "stat_3": "Siegesrate",
+        "stat_4": "Headshot%"
+      },
+      "best_map": {
+        "header": "Beste Karte",
+        "stats": {
+          "stat_1": "Siegesrate",
+          "stat_2": "KD"
+        }
+      },
+      "best_agent": {
+        "header": "Bester Agent",
+        "stat_1": "Score/Match",
+        "stat_2": "Durchschn. KDA",
+        "stat_3": "Kills/Runde",
+        "stat_4": "Kills/Match"
+      },
+      "match_filter": {
+        "header": "Match-Filter",
+        "fl_1": "Ungewertet",
+        "fl_2": "Gewertet",
+        "fl_3": "Deathmatch",
+        "fl_4": "Spike-Ansturm",
+        "fl_5": "Klon-Programm",
+        "fl_6": "Eskalation",
+        "fl_7": "Eigenes Spiel",
+        "fl_8": "Schnelles Spiel"
+      }
+    }
+  },
+  "fr-FR": {
+    "component_err": {
+      "err_text": "Une erreur s'est produite lors de la récupération de nouveaux match. Cliquez pour réessayer.",
+      "button_text": "Réessayer"
+    },
+    "top_l": {
+      "bundle_header": "Pack en vedette",
+      "contracts": {
+        "level_text": "Niveaux",
+        "xp_text": "aller",
+        "battle_pass_header": "Progrès du Passe de Combat",
+        "agent_contract_header": "Progrès du contrat de l'agent",
+        "loading_tooltip": "Vérification des mises à jour."
+      }
+    },
+    "top_r": {
+      "headers": {
+        "h_1": "Headshot% des 8 derniers match",
+        "h_2": "Damage/Round des 8 derniers match",
+        "h_3": "KD des 8 derniers match"
+      },
+      "latest_text": "Dernier"
+    },
+    "bot_l": {
+      "errors": {
+        "no_matches_found": "Aucun match trouvés.",
+        "err_while_fetching": "Une erreur s'est produite lors de la récupération de nouveaux match. Réessayer!"
+      },
+      "date_format": "MMMM Faire",
+      "loading_tooltip": "Recherche de nouveaux match...",
+      "gamemodes": {
+        "newmap": "Non classé",
+        "competitive": "Competition",
+        "unrated": "Non classé",
+        "spikerush": "Spike Rush",
+        "deathmatch": "Combat à mort",
+        "ggteam": "Escalation",
+        "onefa": "Réplication",
+        "snowball": "Snowball Fight", 
+        "swiftplay": "Vélocité",
+        "custom": "Partie Personalisée",
+        "": "Partie Personalisée"
+      },
+      "match_outcomes": {
+        "VICTORY": "VICTOIRE",
+        "DEFEAT": "DEFAITE",
+        "DRAW": "EGALITE"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val1 }} des {{ val2 }} Match montrer",
+        "load_more": "Charge plus de match"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "MVP",
+        "2nd": "2ème",
+        "3rd": "3ème",
+        "4th": "4ème",
+        "5th": "5ème",
+        "6th": "6ème",
+        "7th": "7ème",
+        "8th": "8ème",
+        "9th": "9ème",
+        "10th": "10ème"
+      }
+    },
+    "bot_r": {
+      "comp_info": {
+        "header": "Données concurrentielles",
+        "subheader": "{{ val1 }} jours de remaniement"
+      },
+      "stats": {
+        "header": "Statistique des derniers {{ val1 }} Match",
+        "stat_1": "Avg Kills/Match",
+        "stat_2": "Avg Kills/Round",
+        "stat_3": "Victoire%",
+        "stat_4": "Avg Headshot%"
+      },
+      "best_map": {
+        "header": "Meilleure carte",
+        "stats": {
+          "stat_1": "Victoire%",
+          "stat_2": "Avg KD"
+        }
+      },
+      "best_agent": {
+        "header": "Meilleur agent",
+        "stat_1": "Avg Score/Match",
+        "stat_2": "Avg KDA",
+        "stat_3": "Avg Kills/Round",
+        "stat_4": "Avg Kills/Match"
+      },
+      "match_filter": {
+        "header": "Changement du Filtre de Match",
+        "fl_1": "Non classé",
+        "fl_2": "Competition",
+        "fl_3": "Combat à mort",
+        "fl_4": "Spike Rush",
+        "fl_5": "Réplication",
+        "fl_6": "Intensification",
+        "fl_7": "Partie Personnalisée",
+        "fl_8": "Vélocité"
+      }
+    }
+  },
+  "tr-TR": {
+    "component_err": {
+      "err_text": "İçerik yüklenirken hata oluştu. Yeniden denemek için tıklayın.",
+      "button_text": "Yeniden Yükle"
+    },
+    "top_l": {
+      "bundle_header": "Öne Çıkan Koleksiyon",
+      "contracts": {
+        "level_text": "Seviye",
+        "xp_text": "Kalan",
+        "battle_pass_header": "Battle Pass İlerlemesi",
+        "agent_contract_header": "Ajan Kontrat İlerlemesi",
+        "loading_tooltip": "Güncellemeler kontrol ediliyor..."
+      }
+    },
+    "top_r": {
+      "headers": {
+        "h_1": "Son 8 Maçın Headshot Yüzdesi",
+        "h_2": "Son 8 Maçın Hasar/Roundu",
+        "h_3": "Son 8 Maçın KD'si"
+      },
+      "latest_text": "En son"
+    },
+    "bot_l": {
+      "errors": {
+        "no_matches_found": "Hiçbir karşılaşma bulunamadı.",
+        "err_while_fetching": "Yeni karşılaşmalar getirilirken bir şeyler ters gitti. Tekrar deneyin!"
+      },
+      "loading_tooltip": "Yeni karşılaşmalar kontrol ediliyor...",
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Derecesiz",
+        "competitive": "Rekabete Dayalı",
+        "unrated": "Derecesiz",
+        "spikerush": "Spike'a Hücum",
+        "deathmatch": "Ölüm Kalım Savaşı",
+        "ggteam": "Tırmanış",
+        "onefa": "Kopya",
+        "snowball": "Kartopu Çatışması", 
+        "swiftplay": "Tam Gaz",
+        "custom": "Özel Oyun",
+        "": "Özel Oyun"
+      },
+      "match_outcomes": {
+        "VICTORY": "ZAFER",
+        "DEFEAT": "BOZGUN",
+        "DRAW": "BERABERE"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val2 }} Eşleşmeden {{ val1 }} tanesi gösterilmiştir",
+        "load_more": "Daha fazla Karşılaşma Yükle"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "Takım MVP'si",
+        "2nd": "2'nci",
+        "3rd": "3'ncü",
+        "4th": "4'üncü",
+        "5th": "5'inci",
+        "6th": "6'ncı",
+        "7th": "7'nci",
+        "8th": "8'inci",
+        "9th": "9'uncu",
+        "10th": "10'uncu"
+      }
+    },
+    "bot_r": {
+      "comp_info": {
+        "header": "Rekabetçi Verisi",
+        "subheader": "{{ val1 }} gün kaldı"
+      },
+      "stats": {
+        "header": "Son {{ val1 }} Karşılaşmanın istatistiği",
+        "stat_1": "Ortalama Öldürme/Maç",
+        "stat_2": "Ortalama Öldürme/Tur",
+        "stat_3": "Kazanma oranı",
+        "stat_4": "Ortalama Kafa Vuruşu Yüzdesi"
+      },
+      "best_map": {
+        "header": "En iyi harita",
+        "stats": {
+          "stat_1": "Kazanma oranı",
+          "stat_2": "Ortalama KD"
+        }
+      },
+      "best_agent": {
+        "header": "En iyi ajan",
+        "stat_1": "Ortalama Puan/Maç",
+        "stat_2": "Ortalama KDA",
+        "stat_3": "Ortalama Öldürme/Round",
+        "stat_4": "Ortalama Öldürme/Maç"
+      },
+      "match_filter": {
+        "header": "Eşleşme Filtresini Değiştir",
+        "fl_1": "Derecesiz",
+        "fl_2": "Rekabete Dayalı",
+        "fl_3": "Ölüm Kalım Savaşı",
+        "fl_4": "Spike'a Hücum",
+        "fl_5": "Kopya",
+        "fl_6": "Tırmanış",
+        "fl_7": "Özel Oyun",
+        "fl_8": "Tam Gaz"
+      }
+    }
+  }
+}

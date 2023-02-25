@@ -1,0 +1,478 @@
+{
+  "en-US": {
+    "link_share": {
+      "header": "Share this Match",
+      "desc": "Click the link to copy it to your clipboard. It will stay active for the next 7 days, so share it with your friends!"
+    },
+    "match_outcomes": {
+      "VICTORY": "VICTORY",
+      "DEFEAT": "DEFEAT",
+      "DRAW": "DRAW"
+    },
+    "gamemodes": {
+      "newmap": "Unrated",
+      "competitive": "Competitive",
+      "unrated": "Unrated",
+      "spikerush": "Spike Rush",
+      "deathmatch": "Deathmatch",
+      "ggteam": "Escalation",
+      "onefa": "Replication",
+      "snowball": "Snowball Fight", 
+      "swiftplay": "Swiftplay",
+      "custom": "Custom",
+      "": "Custom"
+    },
+    "nav": {
+      "overview": "Overview",
+      "scoreboard": "Scoreboard"
+    },
+    "match_info": {
+      "header": "MATCH INFORMATION",
+      "date_format": "D. MMMM YYYY, h:mm a",
+      "tooltips": {
+        "date": "Match Date",
+        "time": "Match Length",
+        "mode": "Mode",
+        "region_server": "Region // Server",
+        "patch": "Patch"
+      }
+    },
+    "awards": {
+      "rotated_text": "AWARDS",
+      "most_money": {
+        "title": "Monopoly Man",
+        "desc": "You spent the most money.",
+        "desc_external": "{{ val1 }} spent the most money."
+      },
+      "least_money": {
+        "title": "Smart Spender",
+        "desc": "You spent the least money.",
+        "desc_external": "{{ val1 }} spent the least money."
+      },
+      "most_kills": {
+        "title": "Shots fired!",
+        "desc": "You had the most kills.",
+        "desc_external": "{{ val1 }} had the most kills."
+      },
+      "most_assists": {
+        "title": "Pocket Sage",
+        "desc": "You had the most assists.",
+        "desc_external": "{{ val1 }} had the most assists."
+      },
+      "most_acs": {
+        "title": "Automaton",
+        "desc_1": "You had the highest ACS.",
+        "desc_2": "You had the highest Score." ,
+        "desc_1_external": "{{ val1 }} had the highest ACS.",
+        "desc_2_external": "{{ val1 }} had the highest Score."
+      },
+      "most_fbs": {
+        "title": "Need for Speed",
+        "desc": "You had the most first bloods.",
+        "desc_external": "{{ val1 }} had the most first bloods."
+      },
+      "most_dmg": {
+        "title": "That's a lot of damage!",
+        "desc": "You dealt the most damage.",
+        "desc_external": "{{ val1 }} dealt the most damage."
+      },
+      "best_hs": {
+        "title": "Check him PC!",
+        "desc": "You had the highest Headshot%.",
+        "desc_external": "{{ val1 }} had the highest Headshot%."
+      }
+    },
+    "round_results": {
+      "round_text": "Round",
+      "tks": "Team Kills",
+      "pks": "Player Kills",
+      "tooltips": {
+        "Eliminated": "Eliminated",
+        "Bomb-detonated": "Bomb detonated",
+        "Bomb-defused": "Bomb defused",
+        "side-switch": "Switching Sides"
+      }
+    },
+    "player_stats": {
+      "header": "PLAYER STATS",
+      "stats": {
+        "dmg_round": "Damage/Round",
+        "dmg": "Damage",
+        "fbs": "First Bloods",
+        "hit_percent": "Hit Percentages:",
+        "abilities_per_round": "Ability Usage/Round:"
+      },
+      "tooltips": {
+        "dmg_round": "Damage/Round",
+        "dmg": "Damage",
+        "fbs": "First Bloods",
+        "hit_percent": "Hit Percentages"
+      }
+    },
+    "scoreboard": {
+      "headers": {
+        "agent_name": "Agent and Name",
+        "fbs": "First Bloods",
+        "dmg_round": "Damage/Round",
+        "dmg": "Damage"
+      }
+    }
+  },
+  "de-DE": {
+    "link_share": {
+      "header": "Teile dieses Match",
+      "desc": "Klicke auf den Link, um ihn zu kopieren. Dieser Link ist für die nächsten 7 Tage aktiv, also teile ihn mit deinen Freunden!"
+    },
+    "match_outcomes": {
+      "VICTORY": "SIEG",
+      "DEFEAT": "VERLOREN",
+      "DRAW": "GLEICHST."
+    },
+    "gamemodes": {
+      "newmap": "Ungewertet",
+      "competitive": "Gewertet",
+      "unrated": "Ungewertet",
+      "spikerush": "Spike-Ansturm",
+      "deathmatch": "Deathmatch",
+      "ggteam": "Eskalation",
+      "onefa": "Klon-Programm",
+      "snowball": "Schneeballschlacht", 
+      "swiftplay": "Schnelles Spiel",
+      "custom": "Eigenes Spiel",
+      "": "Eigenes Spiel"
+    },
+    "nav": {
+      "overview": "Übersicht",
+      "scoreboard": "Scoreboard"
+    },
+    "match_info": {
+      "header": "MATCH-INFORMATIONEN",
+      "date_format": "D. MMMM YYYY, h:mm a",
+      "tooltips": {
+        "date": "Match-Datum",
+        "time": "Match-Länge",
+        "mode": "Modus",
+        "region_server": "Region // Server",
+        "patch": "Patch"
+      }
+    },
+    "awards": {
+      "rotated_text": "MEDAILLEN",
+      "most_money": {
+        "title": "Monopoly Mann",
+        "desc": "Du hast das meiste Geld ausgegeben.",
+        "desc_external": "{{ val1 }} hat das meiste Geld ausgegeben."
+      },
+      "least_money": {
+        "title": "Geizhals",
+        "desc": "Du hast am wenigsten Geld ausgegeben.",
+        "desc_external": "{{ val1 }} hat am wenigsten Geld ausgegeben."
+      },
+      "most_kills": {
+        "title": "Ratatatatata!",
+        "desc": "Du hattest die meisten Kills.",
+        "desc_external": "{{ val1 }} hatte die meisten Kills."
+      },
+      "most_assists": {
+        "title": "Pocket Sage",
+        "desc": "Du hattest die meisten Assists.",
+        "desc_external": "{{ val1 }} hatte die meisten Assists."
+      },
+      "most_acs": {
+        "title": "Maschine",
+        "desc_1": "Du hattest den höchsten ACS.",
+        "desc_2": "Du hattest den höchsten Score.",
+        "desc_1_external": "{{ val1 }} hatte den höchsten ACS.",
+        "desc_2_external": "{{ val1 }} hatte den höchsten Score." 
+      },
+      "most_fbs": {
+        "title": "Need for Speed",
+        "desc": "Du hattest die meisten First-Bloods.",
+        "desc_external": "{{ val1 }} hatte die meisten First-Bloods."
+      },
+      "most_dmg": {
+        "title": "Carglass repariert...",
+        "desc": "Du hast den meisten Schaden verursacht.",
+        "desc_external": "{{ val1 }} hat den meisten Schaden verursacht."
+      },
+      "best_hs": {
+        "title": "Der cheated!",
+        "desc": "Du hattest die höchste Headshot%.",
+        "desc_external": "{{ val1 }} hatte die höchste Headshot%."
+      }
+    },
+    "round_results": {
+      "round_text": "Runde",
+      "tks": "Team-Kills",
+      "pks": "Spieler-Kills",
+      "tooltips": {
+        "Eliminated": "Eliminiert",
+        "Bomb-detonated": "Bombe explodiert",
+        "Bomb-defused": "Bomb entschärft",
+        "side-switch": "Seitenwechsel"
+      }
+    },
+    "player_stats": {
+      "header": "SPIELER-STATISTIKEN",
+      "stats": {
+        "dmg_round": "Schaden/Runde",
+        "dmg": "Schaden",
+        "fbs": "First-Bloods",
+        "hit_percent": "Hit-Prozente:",
+        "abilities_per_round": "Fähigkeiten/Runde:"
+      },
+      "tooltips": {
+        "dmg_round": "Schaden/Runde",
+        "dmg": "Schaden",
+        "fbs": "First-Bloods",
+        "hit_percent": "Hit-Prozente"
+      }
+    },
+    "scoreboard": {
+      "headers": {
+        "agent_name": "Agent und Name",
+        "fbs": "First-Bloods",
+        "dmg_round": "Schaden/Runde",
+        "dmg": "Schaden"
+      }
+    }
+  },
+  "fr-FR": {
+    "link_share": {
+      "header": "Partager ce match",
+      "desc": "Clique sur le lien pour le copier. Ce lien est actif pour les 7 prochains jours, alors partage-le avec tes amis!"
+    },
+    "match_outcomes": {
+      "VICTORY": "VICTOIRE",
+      "DEFEAT": "DEFAITE",
+      "DRAW": "EGALITE"
+    },
+    "gamemodes": {
+      "newmap": "Non classé",
+      "competitive": "Competition",
+      "unrated": "Non classé",
+      "spikerush": "Spike Rush",
+      "deathmatch": "Combat à mort",
+      "ggteam": "Escalation",
+      "onefa": "Réplication",
+      "snowball": "Snowball Fight", 
+      "swiftplay": "Vélocité",
+      "custom": "Partie Personalisée",
+      "": "Partie Personalisée"
+    },
+    "nav": {
+      "overview": "Aperçu",
+      "scoreboard": "Tableau de score"
+    },
+    "match_info": {
+      "header": "INFORMATIONS SUR LE MATCH",
+      "date_format": "D. MMMM YYYY, h:mm a",
+      "tooltips": {
+        "date": "Date du match",
+        "time": "Longueur de match",
+        "mode": "Mode",
+        "region_server": "Région // Serveur",
+        "patch": "Patch"
+      }
+    },
+    "awards": {
+      "rotated_text": "PRIX",
+      "most_money": {
+        "title": "Homme de monopole",
+        "desc": "Vous avez dépensé le plus d'argent.",
+        "desc_external": "{{ val1 }} a dépensé le plus d'argent."
+      },
+      "least_money": {
+        "title": "Dépenseur intelligent",
+        "desc": "You spent the least money.",
+        "desc_external": "{{ val1 }} a dépensé le moins d'argent."
+      },
+      "most_kills": {
+        "title": "Shots fired!",
+        "desc": "Vous avez dépensé le moins d'argent.",
+        "desc_external": "{{ val1 }} had the most kills."
+      },
+      "most_assists": {
+        "title": "Pocket Sage",
+        "desc": "Vous avez eu le plus de kill assistés.",
+        "desc_external": "{{ val1 }} a eu le plus de morts."
+      },
+      "most_acs": {
+        "title": "Automate",
+        "desc_1": "Vous aviez le plus haut ACS.",
+        "desc_2": "Vous avez eu le score le plus élevé." ,
+        "desc_1_external": "{{ val1 }} avait l'ACS le plus élevé.",
+        "desc_2_external": "{{ val1 }} a eu le meilleur score."
+      },
+      "most_fbs": {
+        "title": "Besoin de vitesse",
+        "desc": "Vous avez eu le plus de premiers sangs.",
+        "desc_external": "{{ val1 }} a eu le plus de premiers sangs."
+      },
+      "most_dmg": {
+        "title": "C'est beaucoup de dégâts!",
+        "desc": "Vous avez infligé le plus de dégâts.",
+        "desc_external": "{{ val1 }} a fait le plus de dégâts."
+      },
+      "best_hs": {
+        "title": "Vérifiez-le PC!",
+        "desc": "Vous aviez le plus haut pourcentage de tirs dans la tête.",
+        "desc_external": "{{ val1 }} avait le plus haut pourcentage de tirs dans la tête."
+      }
+    },
+    "round_results": {
+      "round_text": "Match",
+      "tks": "Éliminations",
+      "pks": "Vos kills",
+      "tooltips": {
+        "Eliminated": "Éliminé",
+        "Bomb-detonated": "Bombe a explosé",
+        "Bomb-defused": "Bombe désamorcée",
+        "side-switch": "Changer de camp"
+      }
+    },
+    "player_stats": {
+      "header": "STATISTIQUES DU JOUEUR",
+      "stats": {
+        "dmg_round": "Dégâts du match",
+        "dmg": "Dégâts",
+        "fbs": "Premiers Sangs",
+        "hit_percent": "Pourcentages de succès:",
+        "abilities_per_round": "Utilisation de capacité/match:"
+      },
+      "tooltips": {
+        "dmg_round": "Dégâts du match",
+        "dmg": "Dégâts",
+        "fbs": "Premiers Sangs",
+        "hit_percent": "Pourcentages de succès"
+      }
+    },
+    "scoreboard": {
+      "headers": {
+        "agent_name": "Agent et nom",
+        "fbs": "Premiers Sangs",
+        "dmg_round": "Dégâts du match",
+        "dmg": "Dégâts"
+      }
+    }
+  },
+  "tr-TR": {
+    "link_share": {
+      "header": "Bu Maçı Paylaş",
+      "desc": "Kopyalamak için bağlantıya tıklayın. Önümüzdeki 7 gün boyunca aktif kalacaktır, bu yüzden arkadaşlarınızla paylaşın!"
+    },
+    "match_outcomes": {
+      "VICTORY": "ZAFER",
+      "DEFEAT": "BOZGUN",
+      "DRAW": "BERABERE"
+    },
+    "gamemodes": {
+      "newmap": "Derecesiz",
+      "competitive": "Rekabete Dayalı",
+      "unrated": "Derecesiz",
+      "spikerush": "Spike'a Hücum",
+      "deathmatch": "Ölüm Kalım Savaşı",
+      "ggteam": "Tırmanış",
+      "onefa": "Kopya",
+      "snowball": "Kartopu Çatışması", 
+      "swiftplay": "Tam Gaz",
+      "custom": "Özel Oyun",
+      "": "Özel Oyun"
+    },
+    "nav": {
+      "overview": "Genel Bakış",
+      "scoreboard": "Skor Tablosu"
+    },
+    "match_info": {
+      "header": "MAÇ BİLGİLERİ",
+      "date_format": "D. MMMM YYYY, h:mm a",
+      "tooltips": {
+        "date": "Maç Tarihi",
+        "time": "Maç Süresi",
+        "mode": "Mod",
+        "region_server": "Bölge // Sunucu",
+        "patch": "Yama"
+      }
+    },
+    "awards": {
+      "rotated_text": "ÖDÜLLER",
+      "most_money": {
+        "title": "Monopoly Man",
+        "desc": "En çok parayı sen harcadın.",
+        "desc_external": "{{ val1 }} en çok parayı harcadı."
+      },
+      "least_money": {
+        "title": "Smart Spender",
+        "desc": "En az parayı sen harcadın.",
+        "desc_external": "{{ val1 }} en az parayı harcadı."
+      },
+      "most_kills": {
+        "title": "Shots fired!",
+        "desc": "En çok öldüren sendin.",
+        "desc_external": "{{ val1 }} en çok öldüren oyuncu oldu."
+      },
+      "most_assists": {
+        "title": "Pocket Sage",
+        "desc": "En çok asisti sen yaptın.",
+        "desc_external": "{{ val1 }} en çok asist yapan oyuncu oldu."
+      },
+      "most_acs": {
+        "title": "Automaton",
+        "desc_1": "En yüksek ACS'ye sahiptiniz.",
+        "desc_2": "En yüksek puanı sen aldın." ,
+        "desc_1_external": "{{ val1 }} en yüksek ACS'ye sahipti.",
+        "desc_2_external": "{{ val1 }} en yüksek puana sahipti."
+      },
+      "most_fbs": {
+        "title": "Need for Speed",
+        "desc": "En çok ilk kanı sen aldın.",
+        "desc_external": "{{ val1 }} en çok ilk kana sahipti."
+      },
+      "most_dmg": {
+        "title": "That's a lot of damage!",
+        "desc": "En çok hasarı sen verdin.",
+        "desc_external": "{{ val1 }} en çok hasarı verdi."
+      },
+      "best_hs": {
+        "title": "Check him PC!",
+        "desc": "En yüksek Headshot yüzdesine sahiptin.",
+        "desc_external": "{{ val1 }} en yüksek Headshot yüzdesine sahipti."
+      }
+    },
+    "round_results": {
+      "round_text": "Tur",
+      "tks": "Takım Öldürmeleri",
+      "pks": "Oyuncu Öldürmeleri",
+      "tooltips": {
+        "Eliminated": "Kıyım",
+        "Bomb-detonated": "Bomba patladı",
+        "Bomb-defused": "Bomba imha edildi",
+        "side-switch": "Taraf Değiştirme"
+      }
+    },
+    "player_stats": {
+      "header": "OYUNCU İSTATİSTİKLERİ",
+      "stats": {
+        "dmg_round": "Hasar/Tur",
+        "dmg": "Hasar",
+        "fbs": "İlk Kanlar",
+        "hit_percent": "İsabet Oranları:",
+        "abilities_per_round": "Yetenek Kullanımı/Tur:"
+      },
+      "tooltips": {
+        "dmg_round": "Hasar/Tur",
+        "dmg": "Hasar",
+        "fbs": "İlk Kanlar",
+        "hit_percent": "İsabet Oranları"
+      }
+    },
+    "scoreboard": {
+      "headers": {
+        "agent_name": "Ajan ve Adı",
+        "fbs": "İlk Kanlar",
+        "dmg_round": "Hasar/Tur",
+        "dmg": "Hasar"
+      }
+    }
+  }
+}

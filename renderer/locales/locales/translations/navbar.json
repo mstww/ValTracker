@@ -1,0 +1,66 @@
+{
+  "en-US": {
+    "search_placeholder": "Search for a player",
+    "history_close": "Close History",
+    "home": "Home",
+    "shop": "Shop",
+    "inventory": "Inventory",
+    "fav_matches": "Favorite Matches",
+    "wishlist": "Your Wishlist",
+    "search_modal": {
+      "header": "Search for a player",
+      "placeholder": "Name#Tag",
+      "button_1": "Search",
+      "button_2": "Cancel",
+      "history_header": "Search History"
+    }
+  },
+  "de-DE": {
+    "search_placeholder": "Suche nach einem Spieler",
+    "history_close": "Suchverlauf schließen",
+    "home": "Home",
+    "shop": "Shop",
+    "inventory": "Inventar",
+    "fav_matches": "Favorisierte Matches",
+    "wishlist": "Deine Wunschliste",
+    "search_modal": {
+      "header": "Suche nach einem Spieler",
+      "placeholder": "Name#Tag",
+      "button_1": "Suchen",
+      "button_2": "Abbruch",
+      "history_header": "Suchverlauf"
+    }
+  },
+  "fr-FR": {
+    "search_placeholder": "Rechercher un joueur",
+    "history_close": "Fermer l'historique",
+    "home": "Home",
+    "shop": "Boutique",
+    "inventory": "Inventaire",
+    "fav_matches": "Match favoris",
+    "wishlist": "Votre liste de souhaits",
+    "search_modal": {
+      "header": "Rechercher un joueur",
+      "placeholder": "Nom#Étiquette",
+      "button_1": "Rechercher",
+      "button_2": "Annuler",
+      "history_header": "Historique des recherches"
+    }
+  },
+  "tr-TR": {
+    "search_placeholder": "Oyuncu arayın",
+    "history_close": "Geçmişi kapat",
+    "home": "Ana Sayfa",
+    "shop": "Mağaza",
+    "inventory": "Envanter",
+    "fav_matches": "Favori Karşılaşmalar",
+    "wishlist": "İstek Listeniz",
+    "search_modal": {
+      "header": "Oyuncu arayın",
+      "placeholder": "İsim#Etiket",
+      "button_1": "Ara",
+      "button_2": "İptal et",
+      "history_header": "Arama Geçmişi"
+    }
+  }
+}
