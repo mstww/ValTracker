@@ -78,6 +78,7 @@ If you want to help with Translating VALTracker, then please take a look at this
   - English 
   - German
   - French
+  - Turkish
   - Spanish (LATAM) (Work in Progress)
   - Korean (Work in Progress)
   
