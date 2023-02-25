@@ -46,5 +46,21 @@
       "button_2": "Annuler",
       "history_header": "Historique des recherches"
     }
+  },
+  "tr-TR": {
+    "search_placeholder": "Oyuncu arayın",
+    "history_close": "Geçmişi kapat",
+    "home": "Ana Sayfa",
+    "shop": "Mağaza",
+    "inventory": "Envanter",
+    "fav_matches": "Favori Karşılaşmalar",
+    "wishlist": "İstek Listeniz",
+    "search_modal": {
+      "header": "Oyuncu arayın",
+      "placeholder": "İsim#Etiket",
+      "button_1": "Ara",
+      "button_2": "İptal et",
+      "history_header": "Arama Geçmişi"
+    }
   }
 }

@@ -163,5 +163,60 @@
       "matches_played_act": "Matches joués dans cet acte:",
       "matches_played_total": "Matchs joués au total:"
     }
+  },
+  "tr-TR": {
+    "matches": {
+      "errors": {
+        "no_matches_found": "Bu oyun modu için karşılaşma bulunamadı.",
+        "err_while_fetching": "Yeni karşılaşmalar getirilirken bir şeyler ters gitti. Tekrar deneyin!"
+      },
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Derecesiz",
+        "competitive": "Rekabete Dayalı",
+        "unrated": "Derecesiz",
+        "spikerush": "Spike'a hücum",
+        "deathmatch": "Ölüm Kalım Savaşı",
+        "ggteam": "Tırmanış",
+        "onefa": "Kopya",
+        "snowball": "Kartopu Çatışması", 
+        "swiftplay": "Tam Gaz",
+        "select_other": "Diğer Modlar"
+      },
+      "match_outcomes": {
+        "VICTORY": "ZAFER",
+        "DEFEAT": "BOZGUN",
+        "DRAW": "BERABERE"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "Takım MVP'si",
+        "2nd": "2'nci",
+        "3rd": "3'ncü",
+        "4th": "4'üncü",
+        "5th": "5'inci",
+        "6th": "6'ncı",
+        "7th": "7'nci",
+        "8th": "8'inci",
+        "9th": "9'uncu",
+        "10th": "10'uncu"
+      }
+    },
+    "ui": {
+      "level_text": "Seviye",
+      "comp_data_header": "Competitive Data",
+      "comp_data_subheader": "Mevcut Sezon",
+      "matches_played": "Oynanmış Maçlar",
+      "winrate": "Kazanma Oranı",
+      "peak_rank": "Zirve Rank",
+      "stats_header": "İstatistikler",
+      "stats_subheader": "Son 10 Maç",
+      "avg_kd": "Ort KD",
+      "headshot_percentage": "Kafadan Vuruş%",
+      "kills_per_match": "Ort Öldürme/Maç",
+      "acs": "Ort ACS",
+      "matches_played_act": "Bu Kısım Oynanan Maç:",
+      "matches_played_total": "Toplam oynanan maç:"
+    }
   }
 }

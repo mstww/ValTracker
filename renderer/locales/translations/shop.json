@@ -55,5 +55,24 @@
     },
     "overlay_levels": "Niveaux",
     "add_to_wishlist": "Ajouter à la liste de souhaits"
+  },
+  "tr-TR": {
+    "bundle_header": "Öne Çıkan Koleksiyon",
+    "daily_shop_header": "Günlük Mağaza",
+    "night_market_header": "Gece Pazarı",
+    "wallet_header": "Cüzdan",
+    "timer": {
+      "d_1": "gün",
+      "d_2": "gün",
+      "h_1": "saat",
+      "h_2": "saat",
+      "m_1": "dakika",
+      "m_2": "dakika",
+      "s_1": "saniye",
+      "s_2": "saniye",
+      "rem": "kalan"
+    },
+    "overlay_levels": "Seviyeler",
+    "add_to_wishlist": "İstek listesine ekle"
   }
 }

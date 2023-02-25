@@ -49,5 +49,22 @@
       "desc": "Merci d'utiliser VALTracker. Vous pouvez redémarrer l'application en utilisant le bouton ci-dessous.",
       "button_text": "Redémarrer l'application"
     }
+  },
+  "tr-TR": {
+    "first_card": {
+      "header": "Hata",
+      "desc": "Hesaplarınızdan {{ val1 }} ile giriş yapamadık. Lütfen aşağıdaki butona tıklayın ve tekrar giriş yapmak için talimatları izleyin.",
+      "button_text": "Devam et"
+    },
+    "account_card": {
+      "header": "Hesap {{ val1 }} - {{ val2 }}",
+      "desc": "Bu hesapla tekrar giriş yapmak için aşağıdaki düğmeyi tıklayın.",
+      "button_text": "Giriş Yap"
+    },
+    "final_card": {
+      "header": "İşte bu kadar!",
+      "desc": "VALTracker'ı kullandığınız için teşekkürler. Aşağıdaki düğmeyi kullanarak uygulamayı yeniden başlatabilirsiniz.",
+      "button_text": "Uygulamayı Yeniden Başlat"
+    }
   }
 }

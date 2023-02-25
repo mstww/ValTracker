@@ -313,5 +313,110 @@
         "fl_8": "Vélocité"
       }
     }
+  },
+  "tr-TR": {
+    "component_err": {
+      "err_text": "İçerik yüklenirken hata oluştu. Yeniden denemek için tıklayın.",
+      "button_text": "Yeniden Yükle"
+    },
+    "top_l": {
+      "bundle_header": "Öne Çıkan Koleksiyon",
+      "contracts": {
+        "level_text": "Seviye",
+        "xp_text": "Kalan",
+        "battle_pass_header": "Battle Pass İlerlemesi",
+        "agent_contract_header": "Ajan Kontrat İlerlemesi",
+        "loading_tooltip": "Güncellemeler kontrol ediliyor..."
+      }
+    },
+    "top_r": {
+      "headers": {
+        "h_1": "Son 8 Maçın Headshot Yüzdesi",
+        "h_2": "Son 8 Maçın Hasar/Roundu",
+        "h_3": "Son 8 Maçın KD'si"
+      },
+      "latest_text": "En son"
+    },
+    "bot_l": {
+      "errors": {
+        "no_matches_found": "Hiçbir karşılaşma bulunamadı.",
+        "err_while_fetching": "Yeni karşılaşmalar getirilirken bir şeyler ters gitti. Tekrar deneyin!"
+      },
+      "loading_tooltip": "Yeni karşılaşmalar kontrol ediliyor...",
+      "date_format": "MMMM Do",
+      "gamemodes": {
+        "newmap": "Derecesiz",
+        "competitive": "Rekabete Dayalı",
+        "unrated": "Derecesiz",
+        "spikerush": "Spike'a Hücum",
+        "deathmatch": "Ölüm Kalım Savaşı",
+        "ggteam": "Tırmanış",
+        "onefa": "Kopya",
+        "snowball": "Kartopu Çatışması", 
+        "swiftplay": "Tam Gaz",
+        "custom": "Özel Oyun",
+        "": "Özel Oyun"
+      },
+      "match_outcomes": {
+        "VICTORY": "ZAFER",
+        "DEFEAT": "BOZGUN",
+        "DRAW": "BERABERE"
+      },
+      "bottom_text": {
+        "loaded_matches_count": "{{ val2 }} Eşleşmeden {{ val1 }} tanesi gösterilmiştir",
+        "load_more": "Daha fazla Karşılaşma Yükle"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "Takım MVP'si",
+        "2nd": "2'nci",
+        "3rd": "3'ncü",
+        "4th": "4'üncü",
+        "5th": "5'inci",
+        "6th": "6'ncı",
+        "7th": "7'nci",
+        "8th": "8'inci",
+        "9th": "9'uncu",
+        "10th": "10'uncu"
+      }
+    },
+    "bot_r": {
+      "comp_info": {
+        "header": "Rekabetçi Verisi",
+        "subheader": "{{ val1 }} gün kaldı"
+      },
+      "stats": {
+        "header": "Son {{ val1 }} Karşılaşmanın istatistiği",
+        "stat_1": "Ortalama Öldürme/Maç",
+        "stat_2": "Ortalama Öldürme/Tur",
+        "stat_3": "Kazanma oranı",
+        "stat_4": "Ortalama Kafa Vuruşu Yüzdesi"
+      },
+      "best_map": {
+        "header": "En iyi harita",
+        "stats": {
+          "stat_1": "Kazanma oranı",
+          "stat_2": "Ortalama KD"
+        }
+      },
+      "best_agent": {
+        "header": "En iyi ajan",
+        "stat_1": "Ortalama Puan/Maç",
+        "stat_2": "Ortalama KDA",
+        "stat_3": "Ortalama Öldürme/Round",
+        "stat_4": "Ortalama Öldürme/Maç"
+      },
+      "match_filter": {
+        "header": "Eşleşme Filtresini Değiştir",
+        "fl_1": "Derecesiz",
+        "fl_2": "Rekabete Dayalı",
+        "fl_3": "Ölüm Kalım Savaşı",
+        "fl_4": "Spike'a Hücum",
+        "fl_5": "Kopya",
+        "fl_6": "Tırmanış",
+        "fl_7": "Özel Oyun",
+        "fl_8": "Tam Gaz"
+      }
+    }
   }
 }

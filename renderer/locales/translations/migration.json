@@ -16,5 +16,11 @@
     "desc": "Avec cette mise à jour, VALTracker a décidé de stocker vos données dans une base de données sur votre ordinateur. Veuillez patienter pendant que nous procédons à la migration de vos données.",
     "estTime": "Estimation du temps restant: {{ val1 }}.",
     "footer": "Veuillez ne pas fermer VALTracker ou éteindre votre PC pendant le processus de migration."
+  },
+  "tr-TR": {
+    "header": "VALTracker şu anda verilerinizi aktarıyor.",
+    "desc": "Bu güncelleme ile VALTracker, verilerinizi bilgisayarınızdaki bir veritabanında depolamaya başladı. \nVerilerinizi taşınırken lütfen beklemede kalın.",
+    "estTime": "Tahmini kalan süre: {{ val1 }}.",
+    "footer": "Lütfen taşıma işlemi sırasında VALTracker'ı veya bilgisayarınızı kapatmayın."
   }
 }

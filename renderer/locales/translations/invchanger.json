@@ -82,5 +82,33 @@
       "video_button": "Montrer la vidéo",
       "wishlist_button": "Ajouter a la liste de souhaîts"
     }
+  },
+  "tr-TR": {
+    "cards": {
+      "search_placeholder": "Bir kart arayın",
+      "switch_label": "Sahip olmadığınız kartları gösterin",
+      "equip_button": {
+        "state_1": "Kartı Kuşan",
+        "state_2": "Bitti"
+      }
+    },
+    "sprays": {
+      "search_placeholder": "Bir sprey arayın",
+      "switch_label": "Sahip olmadığınız spreyleri gösterin",
+      "equip_button": {
+        "state_1": "Spreyi Kuşan",
+        "state_2": "Bitti"
+      }
+    },
+    "skins": {
+      "search_placeholder": "Bir kaplama arayın",
+      "switch_label": "Sahip olmadığınız kaplamaları gösterin",
+      "equip_button": {
+        "state_1": "Kaplamayı Kullan",
+        "state_2": "Bitti"
+      },
+      "video_button": "Videoyu Göster",
+      "wishlist_button": "İstek listesine ekle"
+    }
   }
 }

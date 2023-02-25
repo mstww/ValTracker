@@ -61,5 +61,26 @@
     "save_loadout_button_text": "Sauvegarder le chargement",
     "delete_preset_button": "Supprimer le preset utilisé",
     "preset_select_placeholder": "Choisir ce preset"
+  },
+  "tr-TR": {
+    "modals": {
+      "save_modal": {
+        "header": "Geçerli koleksiyonu kaydet",
+        "desc": "Ön Ayarlarınıza kaydetmek için bu envanteri adlandırın.",
+        "input_placeholder": "Ön Ayar Adı",
+        "button_1_text": "Ön Ayarı Kaydet",
+        "button_2_text": "İptal et"
+      },
+      "remove_modal": {
+        "header": "Geçerli ön ayarı sil",
+        "desc": "Geçerli ön ayarı gerçekten silmek istiyor musunuz?",
+        "desc2": "Mevcut envanterinizi tekrar kaydederek geri yükleyebilirsiniz.",
+        "button_1_text": "Ön Ayarı Kaydet",
+        "button_2_text": "İptal et"
+      }
+    },
+    "save_loadout_button_text": "Envanteri Kaydet",
+    "delete_preset_button": "Ön ayarı sil",
+    "preset_select_placeholder": "Ön Ayarı Seçin"
   }
 }

@@ -203,5 +203,74 @@
     },
     "loading": "Chargement",
     "matches_bottom": "C'est ça!"
+  },
+  "tr-TR": {
+    "modals": {
+      "remove_match": {
+        "header": "Karşılaşmayı kaldıralım mı?",
+        "desc": "Bu karşılaşmayı gerçekten kaldırmak istiyor musunuz?",
+        "desc2": "Tekrar favori olarak kaydetmek için ana sayfaya gidebilirsiniz.",
+        "button_1": "Karşılaşmayı Kaldır",
+        "button_2": "İptal et"
+      }
+    },
+    "matches": {
+      "gamemodes": {
+        "newmap": "Derecesiz",
+        "competitive": "Rekabete Dayalı",
+        "unrated": "Derecesiz",
+        "spikerush": "Spike'a Hücum",
+        "deathmatch": "Ölüm Kalım Savaşı",
+        "ggteam": "Tırmanış",
+        "onefa": "Kopya",
+        "snowball": "Kartopu Çatışması", 
+        "swiftplay": "Tam Gaz",
+        "custom": "Özel Oyun",
+        "": "Özel Oyun"
+      },
+      "match_outcomes": {
+        "VICTORY": "ZAFER",
+        "DEFEAT": "BOZGUN",
+        "DRAW": "BERABERE"
+      },
+      "match_pos": {
+        "Match-MVP": "MVP",
+        "Team-MVP": "Takım MVP'si",
+        "2nd": "2'nci",
+        "3rd": "3'ncü",
+        "4th": "4'üncü",
+        "5th": "5'inci",
+        "6th": "6'ncı",
+        "7th": "7'nci",
+        "8th": "8'inci",
+        "9th": "9'uncu",
+        "10th": "10'uncu"
+      }
+    },
+    "filters": {
+      "header": "Filtreler",
+      "modes": {
+        "header": "Mod",
+        "fm_1": "Hepsi",
+        "fm_2": "Derecesiz",
+        "fm_3": "Rekabete Dayalı",
+        "fm_4": "Tam Gaz",
+        "fm_5": "Ölüm Kalım Savaşı",
+        "fm_6": "Spike'a Hücum",
+        "fm_7": "Kopya",
+        "fm_8": "Tırmanış",
+        "fm_9": "Özel Oyun"
+      },
+      "sort_by": {
+        "header": "Sıralama",
+        "fs_1": "Yok",
+        "fs_2": "KD",
+        "fs_3": "HS Oranı",
+        "fs_4": "ACS",
+        "fs_5": "Eski"
+      }
+    },
+    "loading": "Yükleniyor",
+    "matches_bottom": "Bu kadar!"
   }
 }

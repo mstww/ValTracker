@@ -355,5 +355,124 @@
         "dmg": "Dégâts"
       }
     }
+  },
+  "tr-TR": {
+    "link_share": {
+      "header": "Bu Maçı Paylaş",
+      "desc": "Kopyalamak için bağlantıya tıklayın. Önümüzdeki 7 gün boyunca aktif kalacaktır, bu yüzden arkadaşlarınızla paylaşın!"
+    },
+    "match_outcomes": {
+      "VICTORY": "ZAFER",
+      "DEFEAT": "BOZGUN",
+      "DRAW": "BERABERE"
+    },
+    "gamemodes": {
+      "newmap": "Derecesiz",
+      "competitive": "Rekabete Dayalı",
+      "unrated": "Derecesiz",
+      "spikerush": "Spike'a Hücum",
+      "deathmatch": "Ölüm Kalım Savaşı",
+      "ggteam": "Tırmanış",
+      "onefa": "Kopya",
+      "snowball": "Kartopu Çatışması", 
+      "swiftplay": "Tam Gaz",
+      "custom": "Özel Oyun",
+      "": "Özel Oyun"
+    },
+    "nav": {
+      "overview": "Genel Bakış",
+      "scoreboard": "Skor Tablosu"
+    },
+    "match_info": {
+      "header": "MAÇ BİLGİLERİ",
+      "date_format": "D. MMMM YYYY, h:mm a",
+      "tooltips": {
+        "date": "Maç Tarihi",
+        "time": "Maç Süresi",
+        "mode": "Mod",
+        "region_server": "Bölge // Sunucu",
+        "patch": "Yama"
+      }
+    },
+    "awards": {
+      "rotated_text": "ÖDÜLLER",
+      "most_money": {
+        "title": "Monopoly Man",
+        "desc": "En çok parayı sen harcadın.",
+        "desc_external": "{{ val1 }} en çok parayı harcadı."
+      },
+      "least_money": {
+        "title": "Smart Spender",
+        "desc": "En az parayı sen harcadın.",
+        "desc_external": "{{ val1 }} en az parayı harcadı."
+      },
+      "most_kills": {
+        "title": "Shots fired!",
+        "desc": "En çok öldüren sendin.",
+        "desc_external": "{{ val1 }} en çok öldüren oyuncu oldu."
+      },
+      "most_assists": {
+        "title": "Pocket Sage",
+        "desc": "En çok asisti sen yaptın.",
+        "desc_external": "{{ val1 }} en çok asist yapan oyuncu oldu."
+      },
+      "most_acs": {
+        "title": "Automaton",
+        "desc_1": "En yüksek ACS'ye sahiptiniz.",
+        "desc_2": "En yüksek puanı sen aldın." ,
+        "desc_1_external": "{{ val1 }} en yüksek ACS'ye sahipti.",
+        "desc_2_external": "{{ val1 }} en yüksek puana sahipti."
+      },
+      "most_fbs": {
+        "title": "Need for Speed",
+        "desc": "En çok ilk kanı sen aldın.",
+        "desc_external": "{{ val1 }} en çok ilk kana sahipti."
+      },
+      "most_dmg": {
+        "title": "That's a lot of damage!",
+        "desc": "En çok hasarı sen verdin.",
+        "desc_external": "{{ val1 }} en çok hasarı verdi."
+      },
+      "best_hs": {
+        "title": "Check him PC!",
+        "desc": "En yüksek Headshot yüzdesine sahiptin.",
+        "desc_external": "{{ val1 }} en yüksek Headshot yüzdesine sahipti."
+      }
+    },
+    "round_results": {
+      "round_text": "Tur",
+      "tks": "Takım Öldürmeleri",
+      "pks": "Oyuncu Öldürmeleri",
+      "tooltips": {
+        "Eliminated": "Kıyım",
+        "Bomb-detonated": "Bomba patladı",
+        "Bomb-defused": "Bomba imha edildi",
+        "side-switch": "Taraf Değiştirme"
+      }
+    },
+    "player_stats": {
+      "header": "OYUNCU İSTATİSTİKLERİ",
+      "stats": {
+        "dmg_round": "Hasar/Tur",
+        "dmg": "Hasar",
+        "fbs": "İlk Kanlar",
+        "hit_percent": "İsabet Oranları:",
+        "abilities_per_round": "Yetenek Kullanımı/Tur:"
+      },
+      "tooltips": {
+        "dmg_round": "Hasar/Tur",
+        "dmg": "Hasar",
+        "fbs": "İlk Kanlar",
+        "hit_percent": "İsabet Oranları"
+      }
+    },
+    "scoreboard": {
+      "headers": {
+        "agent_name": "Ajan ve Adı",
+        "fbs": "İlk Kanlar",
+        "dmg_round": "Hasar/Tur",
+        "dmg": "Hasar"
+      }
+    }
   }
 }

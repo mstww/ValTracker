@@ -40,5 +40,19 @@
       "remove_button_text": "Retirer",
       "empty_text": "Rien à voir ici! Liste de souhaits un revêtement dans votre boutique ou dans votre inventaire."
     }
+  },
+  "tr-TR": {
+    "headers": {
+      "skin": "Kaplama",
+      "price": "Fiyat",
+      "wishlisted_on": "İstek listesinde",
+      "days_since": "Günden beri",
+      "remove": "İstek listesinden kaldır"
+    },
+    "content": {
+      "date_format": "MMMM Do, YYYY",
+      "remove_button_text": "Kaldır",
+      "empty_text": "Burada görecek birşey yok! Envanterden veya mağazadan bir skin ekleyin."
+    }
   }
 }

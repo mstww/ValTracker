@@ -115,5 +115,44 @@
       "header": "Et c'est tout!",
       "finish_button_text": "Terminer la configuration"
     }
+  },
+  "tr-TR": {
+    "progress": {
+      "lang": "Dil",
+      "riot": "Riot Girişi",
+      "confirm": "Doğrulama",
+      "finish": "Kurulumu bitir",
+      "values": [6, 33, 62, 100]
+    },
+    "page_1": {
+      "header": "Bir dil seçin",
+      "info": "Bu daha sonra ayarlardan değiştirilebilir.",
+      "button_1_text": "Devam et"
+    },
+    "page_2": {
+      "header": "Riot Hesabınızla giriş yapın",
+      "login_button_text_1": "Giriş penceresini aç",
+      "login_button_text_2": "Hazır!",
+      "loading_states": {
+        "s0": "Bölge Kontrol Ediliyor...",
+        "s1": "Oyuncu Mağazası Kontrol Ediliyor...",
+        "s2": "Oyuncu Bilgileri Kontrol Ediliyor...",
+        "s3": "Oyuncu Rankı Kontrol Ediliyor...",
+        "s4": "Dosyaya yazılıyor...",
+        "err": "Hata! Yardım için lütfen Discord Sunucumuza katılın.",
+        "win_closed": "Giriş penceresi kapatıldı."
+      },
+      "button_1_text": "Devam et",
+      "button_2_text": "Geri dön"
+    },
+    "page_3": {
+      "header": "Bilgileri Onaylayın",
+      "button_1_text": "Devam et",
+      "button_2_text": "Geri dön"
+    },
+    "page_4": {
+      "header": "İşte Bu Kadar!",
+      "finish_button_text": "Kurulumu Bitir"
+    }
   }
 }

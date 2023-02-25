@@ -619,5 +619,212 @@
         "button_2": "Annuler"
       }
     }
+  },
+  "tr-TR": {
+    "errors": {
+      "acc_already_added": "Bu hesap zaten eklendi.",
+      "invalid_settings_code": "Geçersiz Profil Ayar Kodu."
+    },
+    "nav": {
+      "el_1": "Genel",
+      "el_2": "Oyun Etkinliği",
+      "el_3": "Riot Hesabı Yönetimi",
+      "el_4": "Değişiklikler",
+      "el_5": "Diğer"
+    },
+    "pg_1": {
+      "grp_1": {
+        "name": "UYGULAMA DAVRANIŞI",
+        "setting_1": {
+          "name": "VALTracker'ı Aç",
+          "desc": "Bilgisayar çalıştığında VALTracker'i otomatik başlat."
+        },
+        "setting_2": {
+          "name": "VALTracker'i simge durumunda başlat",
+          "desc": "Otomatik başlatmada VALTracker'i simge durumunda başlat."
+        }
+      },
+      "grp_2": {
+        "name": "Dil",
+        "setting_1": {
+          "name": "Dil'i değiştir",
+          "desc": "VALTracker'in dilini değiştir. Bu bir pencere açacaktır.",
+          "button_text": "Dili değiştir"
+        }
+      },
+      "grp_3": {
+        "name": "KAPLAMA İSTEK LİSTESİ",
+        "setting_1": {
+          "name": "Kaplama İstek Listesi Bildirimi",
+          "desc": "Kaplama İstek Listesi bildirimlerini etkinleştirin veya devre dışı bırakın.",
+          "desc2": "İpucu: VALTracker'ı simge durumuna küçültülmüş olarak açın, böylece açılan pencereden rahatsız olmazsınız."
+        }
+      },
+      "grp_4": {
+        "name": "KAPATMA TUŞU",
+        "setting_1": {
+          "name": "Simge Durumuna Küçült",
+          "desc": "Uygulama penceresini kapatmak, onu sistem tepsinize küçültecektir."
+        }
+      },
+      "grp_5": {
+        "name": "PERFORMANS",
+        "setting_1": {
+          "name": "Donanım Hızlandırma",
+          "desc": "Donanım Hızlandırmayı etkinleştirin veya devre dışı bırakın. Değişikliklerin uygulanması için yeniden başlatma gerekir."
+        }
+      },
+      "grp_6": {
+        "name": "RENK TEMASI",
+        "setting_1": {
+          "name": "Renk Temasını Değiştir",
+          "desc": "Uygulamanın kullanmasını istediğiniz bir renk teması seçin!",
+          "themes": [
+            {
+              "displayName": "Varsayılan Tema",
+              "name": "normal",
+              "color": "#090909"
+            },
+            {
+              "displayName": "Açık Tema",
+              "name": "light",
+              "color": "#d1d1d1"
+            },
+            {
+              "displayName": "Eski Tema (Beta)",
+              "name": "legacyBeta",
+              "color": "#12171d"
+            },
+            {
+              "displayName": "Eski Tema (Alpha)",
+              "name": "legacyAlpha",
+              "color": "#2d2d2d"
+            }
+          ]
+        }
+      }
+    },
+    "pg_2": {
+      "grp_1": {
+        "name": "UYGULAMA OYUN ETKİNLİĞİ",
+        "setting_1": {
+          "name": "VALTracker Oyun Etkinliği",
+          "desc": "Özel oyun etkinliği ile VALTracker kullandığınızı arkadaşlarınıza gösterin"
+        },
+        "setting_2": {
+          "name": "Simge durumuna küçültüldüğünde Oyun Etkinliğini Gizle",
+          "desc": "Uygulama simge durumuna küçültüldüğünde VALTracker'ın Oyun Etkinliğini gizleyin."
+        }
+      },
+      "grp_2": {
+        "name": "VALORANT Oyun Etkinliği",
+        "setting_1": {
+          "name": "VALORANT Oyun Etkinliği",
+          "desc": "Discord Durumunuzu mevcut maçınız hakkında oyun etkinliği olarak ayarlayın!"
+        },
+        "setting_2": {
+          "name": "Maç Modunu Göster",
+          "desc": "O anda oynamakta olduğunuz modu göstermek isteyip istemediğinize karar verin!",
+          "desc2": "Bu ayarın kapatılması, rekabetçi bir maç oynarken rütbenizi gösterme özelliğini devre dışı bırakacaktır."
+        },
+        "setting_3": {
+          "name": "Ajan yerine Rütbeyi Göster",
+          "desc": "Dereceli oynuyorsanız, küçük resmi ajan yerine rütbeniz olarak değiştirin!"
+        },
+        "setting_4": {
+          "name": "Zamanlayıcıyı Göster",
+          "desc": "Oyun Etkinliği için zamanlayıcıyı açın veya kapatın!"
+        },
+        "setting_5": {
+          "name": "Skoru Göster",
+          "desc": "Oyun Etkinliği için skoru açın veya kapatın!"
+        }
+      }
+    },
+    "pg_3": {
+      "grp_1": {
+        "name": "HESAP YÖNETİMİ",
+        "setting_1": {
+          "name": "Bir hesap ekle",
+          "desc": "Yeni bir Riot Hesabı eklemek için bir oturum açma penceresi açın.",
+          "button_text": "Yeni Hesap Ekle"
+        },
+        "setting_2": {
+          "name": "Bir Hesabı Kaldırın",
+          "desc": "VALTracker'dan bir Riot Hesabını Kaldırın.",
+          "button_text": "Hesabı Kaldır"
+        }
+      }
+    },
+    "pg_4": {},
+    "pg_5": {
+      "grp_1": {
+        "name": "AYARLAR PROFİLİ",
+        "setting_1": {
+          "name": "Ayarları içe aktar",
+          "desc": "Bir ayar profilini içe aktarın. Kendi kodunuzu aşağıya kopyalayabilirsiniz.",
+          "extra_button_text": "Uygula"
+        },
+        "setting_2": {
+          "name": "Ayarları dışa aktar",
+          "desc": "Ayar paylaşım kodunuzu panoya kopyalayın.",
+          "button_text": "Panoya kopyala",
+          "button_text_2": "Bitti!"
+        }
+      },
+      "grp_2": {
+        "name": "GÜNCELLEMELER",
+        "setting_1": {
+          "name": "Güncellemeleri kontrol edin",
+          "desc": "Uygulamanın son yamaları kontrol etmesini sağlayın.",
+          "button_text": "Güncellemeyi kontrol et"
+        }
+      },
+      "grp_3": {
+        "name": "TEHLİKELİ BÖLGE",
+        "setting_1": {
+          "name": "VALTracker'i sıfırla",
+          "desc": "Uygulamayı Sıfırla. Buna hesap verileri, ayarlar ve diğer tüm veriler dahildir.",
+          "button_text": "VALTracker'i sıfırla"
+        }
+      },
+      "about": {
+        "name": "HAKKINDA",
+        "grp_1": "KULLANILAN API'ler",
+        "grp_2": "ARAYÜZ ELEMANLARI"
+      }
+    },
+    "modals": {
+      "change_lang": {
+        "header": "Dil Seçiniz",
+        "desc": "Bir dil seçin ve aşağıdaki düğmeye tıklayın. Değişiklikleri uygulamak için uygulama yeniden başlayacaktır.",
+        "button_1": "Onayla",
+        "button_2": "İptal et"
+      },
+      "reset_app": {
+        "header": "VALTracker sıfırlansın mı?",
+        "desc": "Bu işlem, hesap verileri, mağaza verileri, favori maçlar ve ayarlar dahil olmak üzere uygulama tarafından kaydedilen tüm verileri sıfırlayacaktır. Bu işlem geri alınamaz.",
+        "button_1": "Onayla",
+        "button_2": "İptal et"
+      },
+      "apply_settings_profile": {
+        "header": "Ayar Profilini Uygula?",
+        "desc": "Bu, uygulamayı yeniden başlatacak ve muhtemelen tüm ayarlarınızı değiştirecektir. Mevcut ayarlarınızı yedeklemek istiyorsanız, bu açılır pencereyi kapatın ve ayar paylaşım kodunuzu kopyalayın.",
+        "button_1": "Onayla",
+        "button_2": "İptal et"
+      },
+      "remove_riot_acc": {
+        "header": "Kaldırılacak Hesabı Seçin",
+        "desc": "VALTracker'dan kaldırmak istediğiniz hesabı seçin.",
+        "button_1": "Onayla",
+        "button_2": "İptal et"
+      },
+      "change_patchnotes_ver": {
+        "header": "Bir Sürüm Seçin",
+        "desc": "Değişiklik günlüğünü görmek istediğiniz Sürümü seçin.",
+        "button_1": "Onayla",
+        "button_2": "İptal et"
+      }
+    }
   }
 }

@@ -46,5 +46,21 @@
       "button_1": "Redémarrer l'application",
       "button_2": "Pas maintenant"
     }
+  },
+  "tr-TR": {
+    "info_card": {
+      "header": "BİR GÜNCELLEME MEVCUT",
+      "button_1": "İndir",
+      "button_2": "Daha Sonra"
+    },
+    "download_card": {
+      "header": "GÜNCELLEME İNDİRİLİYOR"
+    },
+    "finished_card": {
+      "header": "GÜNCELLEME İNDİRİLDİ",
+      "desc": "Çıkmak, yüklemek ve ardından yeniden başlatmak için tıklayın.",
+      "button_1": "Yeniden Başlat",
+      "button_2": "Daha Sonra"
+    }
   }
 }
